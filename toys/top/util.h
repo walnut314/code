@@ -7,8 +7,11 @@
 #include <map>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 
 using namespace std;
+
+const double PI = 3.141592;
 
 #define REP(i, a, b) \
     for (int i = int(a); i <= int(b); i++)
