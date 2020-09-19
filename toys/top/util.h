@@ -5,6 +5,7 @@
 #include <utility>
 #include <set>
 #include <map>
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
@@ -33,6 +34,9 @@ typedef pair<int, int> ii;
 typedef vector<vector<int>> vvi;
 typedef vector<vector<bool>> vvb;
 typedef vector<ii> vii;
+
+// geometry
+struct point { int x, y; };
 
 // Graphs
 int E, V;
