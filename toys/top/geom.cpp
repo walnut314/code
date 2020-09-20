@@ -22,7 +22,7 @@ double greatCircleDistance(double pLat, double pLong,
 // the area of an n-sided polygon (either convex or concave) with 
 // n pairs of vertex coordinates in some order (cw or ccw) is
 // (1/2) * determinant(vertices)
-int determinant(vector<point> P)
+int determinant(vector<ipoint_s> P)
 {
     int result = 0, x1, y1, x2, y2;
     for (int i = 0; i < P.size(); i++) {
@@ -37,7 +37,7 @@ int determinant(vector<point> P)
 
 // perimeter of n-sided polygon with n pairs of coords in some order
 // (clockwise or counter-clockwise) computed with Pythagorean's theorem.
-double perimeter(vector<point> P)
+double perimeter(vector<ipoint_s> P)
 {
     double result = 0.0, x1, y1, x2, y2, dx, dy;
     for (int i = 0; i < P.size(); i++) {
@@ -54,7 +54,7 @@ double perimeter(vector<point> P)
 
 // testing if a polygon is convex or concave is done using
 // the CCW test, aka Left Turn Test.
-int turn(point p, point q, point r)
+int turn(ipoint_s p, ipoint_s q, ipoint_s r)
 {
     int result = (r.x - q.x) * (p.y - q.y) - (r.y - q.y) * (p.x - q.x);
     if (result < 0) return -1; // P -> Q -> R is a right turn
@@ -63,15 +63,15 @@ int turn(point p, point q, point r)
 }
 
 // test for convexity, ie if CCW (Left Turn Test)
-bool ccw(point p, point q, point r)
+bool ccw(ipoint_s p, ipoint_s q, ipoint_s r)
 {
     return (turn(p, q, r) > 0);
 }
 
 // convex hull using Graham's Scan
-point pivot; // global variable
-vector<point> polygon, CH; // CH == convex hull
-int area2(point a, point b, point c)
+ipoint_s pivot; // global variable
+vector<ipoint_s> polygon, CH; // CH == convex hull
+int area2(ipoint_s a, ipoint_s b, ipoint_s c)
 {
     return (a.x * b.y - a.y * b.x +
             b.x * c.y - b.y * c.x +
@@ -79,7 +79,7 @@ int area2(point a, point b, point c)
 }
 
 // distance between 2 points
-int dist2(point a, point b)
+int dist2(ipoint_s a, ipoint_s b)
 {
     int dx = a.x - b.x,
         dy = a.y - b.y;
@@ -87,7 +87,7 @@ int dist2(point a, point b)
 }
 
 // angle sorting function
-bool angle_cmp(point a, point b)
+bool angle_cmp(ipoint_s a, ipoint_s b)
 {
     if (area2(pivot, a, b) == 0) // colinear
         return dist2(pivot, a) < dist2(pivot, b); // which one closer
@@ -97,7 +97,7 @@ bool angle_cmp(point a, point b)
             atan2((double)d2y, (double)d2x)) < 0;
 }
 
-vector<point> GrahamScan(vector<point> Polygon)
+vector<ipoint_s> GrahamScan(vector<ipoint_s> Polygon)
 {
     // first, find P0 = point with lowest Y and if tie: rightmost X
     int i, P0 = 0, N = Polygon.size();
@@ -108,7 +108,7 @@ vector<point> GrahamScan(vector<point> Polygon)
         }
     }
 
-    point temp = Polygon[0]; // swap selected vertex with Polygon[0]
+    ipoint_s temp = Polygon[0]; // swap selected vertex with Polygon[0]
     Polygon[0] = Polygon[P0];
     Polygon[P0] = temp;
 
@@ -117,8 +117,8 @@ vector<point> GrahamScan(vector<point> Polygon)
     sort(++Polygon.begin(), Polygon.end(), angle_cmp);
 
     // third, the ccw tests
-    stack<point> S;
-    point prev, now;
+    stack<ipoint_s> S;
+    ipoint_s prev, now;
     S.push(Polygon[N-1]); // put two starting vertices into stack S
     S.push(Polygon[0]);
 
@@ -134,7 +134,7 @@ vector<point> GrahamScan(vector<point> Polygon)
         }
     }
 
-    vector<point> ConvexHull;
+    vector<ipoint_s> ConvexHull;
     while (!S.empty()) {
         ConvexHull.push_back(S.top());
         S.pop();
@@ -144,13 +144,47 @@ vector<point> GrahamScan(vector<point> Polygon)
     return ConvexHull;
 }
 
-struct line { point p1, p2; };
+struct line { ipoint_s p1, p2; };
 int intersect(line line1, line line2)
 {
-    return 
+    double slopeOfLine1;
+    double slopeOfLine2;
+    double xin, yin;
+
+    if (line1.p2.x - line1.p1.x != 0)
+        slopeOfLine1 = (line1.p2.y - line1.p1.y)/(line1.p2.x - line1.p1.x);
+    else slopeOfLine1 = 0;
+    if (line2.p2.x - line2.p1.x != 0)
+        slopeOfLine2 = (line2.p2.y - line2.p1.y)/(line2.p2.x - line2.p1.x);
+    else slopeOfLine1 = 0;
+
+    if (slopeOfLine1 != slopeOfLine2) {
+        xin = ((line1.p1.x * line1.p2.y - line1.p1.y * line1.p2.x) * (line2.p1.x - line2.p2.x) - 
+               (line2.p1.x * line2.p2.y - line2.p1.y * line2.p2.x) * (line1.p1.x - line1.p2.x) )/
+            ( ((line1.p1.x - line1.p2.x) * (line2.p1.y - line2.p2.y)) - 
+              ((line1.p1.y - line1.p2.y) * (line2.p1.x - line2.p2.x)));
+
+        yin = ((line1.p1.x * line1.p2.y - line1.p1.y * line1.p2.x) * (line2.p1.y - line2.p2.y) - 
+               (line2.p1.x * line2.p2.y - line2.p1.y * line2.p2.x) * (line1.p1.y - line1.p2.y) )/
+            ( ((line1.p1.x - line1.p2.x) * (line2.p1.y - line2.p2.y)) - 
+              ((line1.p1.y - line1.p2.y) * (line2.p1.x - line2.p2.x)));
+    } 
+
+    bool intersects = 
         ((ccw(line1.p1, line1.p2, line2.p1) * ccw(line1.p1, line1.p2, line2.p2)) <= 0)
             &&
         ((ccw(line2.p1, line2.p2, line1.p1) * ccw(line2.p1, line2.p2, line1.p2)) <= 0);
+        
+    if (intersects) {
+        printf("intersects at: %lf %lf\n", xin, yin);
+    } else {
+        printf("no intersect\n");
+    }
+
+    return intersects;
+//        ((ccw(line1.p1, line1.p2, line2.p1) * ccw(line1.p1, line1.p2, line2.p2)) <= 0)
+//            &&
+//        ((ccw(line2.p1, line2.p2, line1.p1) * ccw(line2.p1, line2.p2, line1.p2)) <= 0);
 }
 
 void test_greatCircle()
@@ -172,14 +206,14 @@ void test_greatCircle()
 void test_GrahamScan()
 // UVa 11626 - Convex Hull
 {
-    vector<point> Polygon;
-    Polygon.push_back(point{1,1});
-    Polygon.push_back(point{1,-1});
-    Polygon.push_back(point{0,0});
-    Polygon.push_back(point{-1,-1});
-    Polygon.push_back(point{-1,1});
+    vector<ipoint_s> Polygon;
+    Polygon.push_back(ipoint_s{1,1});
+    Polygon.push_back(ipoint_s{1,-1});
+    Polygon.push_back(ipoint_s{0,0});
+    Polygon.push_back(ipoint_s{-1,-1});
+    Polygon.push_back(ipoint_s{-1,1});
 
-    vector<point> CH = GrahamScan(Polygon);
+    vector<ipoint_s> CH = GrahamScan(Polygon);
     for (int i = 0; i < CH.size(); i++) {
         printf("%d %d\n", CH[i].x, CH[i].y);
     }
@@ -187,14 +221,25 @@ void test_GrahamScan()
 
 void test_IntersectingLines()
 {
-    // 0 0 4 4 0 4 4 0
     // 5 0 7 6 1 0 2 3
-    // 5 0 7 6 3 -6 4 -3
-    // 2 0 2 27 1 5 18 5
-    // 0 3 4 0 1 2 2 5
+    //line line1 = {5,0,7,6}; // x1,y1,x2,y2
+    //line line2 = {1,0,2,3}; // x1,y1,x2,y2
 
-    line line1 = {2,0,2,27}; // x1,y1,x2,y2
-    line line2 = {1,5,18,5}; // x1,y1,x2,y2
+    // 5 0 7 6 3 -6 4 -3
+    //line line1 = {5,0,7,6}; // x1,y1,x2,y2
+    //line line2 = {3,-6,4,-3}; // x1,y1,x2,y2
+
+    // 2 0 2 27 1 5 18 5
+    //line line1 = {2,0,2,27}; // x1,y1,x2,y2
+    //line line2 = {1,5,18,5}; // x1,y1,x2,y2
+
+    // 0 0 4 4 0 4 4 0
+    //line line1 = {0,0,4,4}; // x1,y1,x2,y2
+    //line line2 = {0,4,4,0}; // x1,y1,x2,y2
+
+    // 0 3 4 0 1 2 2 5
+    line line1 = {0,3,4,0}; // x1,y1,x2,y2
+    line line2 = {1,2,2,5}; // x1,y1,x2,y2
 
     bool inter = intersect(line1, line2);
     printf("intersect: %d\n", inter);

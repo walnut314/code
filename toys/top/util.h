@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <cfloat>
 
 using namespace std;
 
@@ -36,7 +37,10 @@ typedef vector<vector<bool>> vvb;
 typedef vector<ii> vii;
 
 // geometry
-struct point { int x, y; };
+struct ipoint_s { int x, y; };
+struct dpoint_s { double x, y; };
+typedef pair<int, int> ipoint;
+typedef pair<double, double> dpoint;
 
 // Graphs
 int E, V;
