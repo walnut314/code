@@ -145,7 +145,7 @@ vector<ipoint_s> GrahamScan(vector<ipoint_s> Polygon)
 }
 
 struct line { ipoint_s p1, p2; };
-int intersect(line line1, line line2)
+int intersect(iline line1, iline line2)
 {
     double slopeOfLine1;
     double slopeOfLine2;
@@ -222,24 +222,27 @@ void test_GrahamScan()
 void test_IntersectingLines()
 {
     // 5 0 7 6 1 0 2 3
-    //line line1 = {5,0,7,6}; // x1,y1,x2,y2
-    //line line2 = {1,0,2,3}; // x1,y1,x2,y2
+    //iline line1 = {5,0,7,6}; // x1,y1,x2,y2
+    //iline line2 = {1,0,2,3}; // x1,y1,x2,y2
 
     // 5 0 7 6 3 -6 4 -3
-    //line line1 = {5,0,7,6}; // x1,y1,x2,y2
-    //line line2 = {3,-6,4,-3}; // x1,y1,x2,y2
+    //iline line1 = {5,0,7,6}; // x1,y1,x2,y2
+    //iline line2 = {3,-6,4,-3}; // x1,y1,x2,y2
 
     // 2 0 2 27 1 5 18 5
-    //line line1 = {2,0,2,27}; // x1,y1,x2,y2
-    //line line2 = {1,5,18,5}; // x1,y1,x2,y2
+    //iline line1 = {2,0,2,27}; // x1,y1,x2,y2
+    //iline line2 = {1,5,18,5}; // x1,y1,x2,y2
 
     // 0 0 4 4 0 4 4 0
-    //line line1 = {0,0,4,4}; // x1,y1,x2,y2
-    //line line2 = {0,4,4,0}; // x1,y1,x2,y2
+    //iline line1 = {0,0,4,4}; // x1,y1,x2,y2
+    //iline line2 = {0,4,4,0}; // x1,y1,x2,y2
 
     // 0 3 4 0 1 2 2 5
-    line line1 = {0,3,4,0}; // x1,y1,x2,y2
-    line line2 = {1,2,2,5}; // x1,y1,x2,y2
+    //iline line1 = {0,3,4,0}; // x1,y1,x2,y2
+    //iline line2 = {1,2,2,5}; // x1,y1,x2,y2
+
+    iline line1 = {1,1,4,4}; // x1,y1,x2,y2
+    iline line2 = {1,8,2,4}; // x1,y1,x2,y2
 
     bool inter = intersect(line1, line2);
     printf("intersect: %d\n", inter);

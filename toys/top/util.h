@@ -41,6 +41,8 @@ struct ipoint_s { int x, y; };
 struct dpoint_s { double x, y; };
 typedef pair<int, int> ipoint;
 typedef pair<double, double> dpoint;
+struct iline { ipoint_s p1, p2; };
+struct dline { dpoint_s p1, p2; };
 
 // Graphs
 int E, V;
