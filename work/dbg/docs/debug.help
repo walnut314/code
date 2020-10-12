@@ -1,4 +1,4 @@
-8/5/2020 12:09:48 PM     C:\drivers\dumps\debug.help
+10/9/2020 3:13:35 PM     C:\sandbox\code\work\dbg\docs\debug.help
 
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
@@ -829,6 +829,8 @@ https://systemdebug.in/0x9f-bugcheck-with-param-3-here-is-how-you-go-about-it/
 WDF debugging:
 https://www.osr.com/nt-insider/2015-issue1/kmdf-umdf-hints/
 
+https://www.osr.com/nt-insider/2011-issue2/analysts-perspective-10-windbg-commands-might-know/
+
 Load symbols:
 !sym noisy
 .reload /f
@@ -921,5 +923,59 @@ Usage: !classext <class device> <level [0-2]>
 Optical devices, such as DVD drives, can be listed with !wdfkd.wdfdriverinfo cdrom, and further explored 
 using the "!wdfkd.wdfdevice <device_handle>" and "!wdfkd.wdfdevicequeues <device_handle>" commands.
 
+
+ACPI:
+2: kd> !nstree
+\___ (ffff880593f10048) - Unknown
+| _SB_ (ffff880593f10258) - Device ffff8805948ea010
+| | LID0 (ffff880593f36048) - Device ffff8805928a27d0
+| | | _HID (ffff880593f36158) - Integer - 000000000d0cd041
+| | | _STA (ffff880593f36208) - Method - Flags 0000000000000000 Start ffff880593f3637a Len 000000000000000c
+| | | _LID (ffff880593f363a0) - Method - Flags 0000000000000000 Start ffff880593f36512 Len 000000000000000e
+
+2: kd> !amli dns /s \_sb.ssh._dsm
+ACPI Name Space: \_SB.SSH._DSM (ffff818892f39720)
+Method(_DSM:Flags=0x4,CodeBuff=ffff818892f39892,Len=478)
+
+1: kd> !amli dns /s \_sb.lid0
+ACPI Name Space: \_SB.LID0 (ffff880593f36048)
+Device(LID0)
+| Integer(_HID:Value=0x000000000d0cd041[218943553])
+| Method(_STA:Flags=0x0,CodeBuff=ffff880593f3637a,Len=17)
+| Method(_LID:Flags=0x0,CodeBuff=ffff880593f36512,Len=19)
+
+1: kd> !amli dns /s \_sb.lid0._lid
+ACPI Name Space: \_SB.LID0._LID (ffff880593f363a0)
+Method(_LID:Flags=0x0,CodeBuff=ffff880593f36512,Len=19)
+
+1: kd> !nsobj ffff880593f363a0
+nsobj:  dumping object at ffff880593f363a0
+NameSpace Object \ (ffff880593f363a0) - Device 0000000000000000
+  Flink 0000000000000000Blink  000000b68557d0e0
+  Parent 0000000000000000  Child 0000000000000000
+  Value 0000000000000000  Length 0000000000000000
+  Buffer 0000000000000000  Flags 0000000000000000
+    Object Data - ffff880593f363e0 Type - 08 <Method> Flags=0000000000000000 Start=ffff880593f36512 Len=000000000000000e
+    
+Dump acpi method
+1: kd> !amli u ffff880593f36512
+ffff880593f36512:[\_SB.LID0._LID]
+ffff880593f36512 : Store(M009(0x16), Local0)
+ffff880593f3651a : If(LEqual(Local0, Zero))
+ffff880593f3651f : {
+ffff880593f3651f : | Return(One)
+ffff880593f36521 : }
+ffff880593f36521 : Else
+ffff880593f36523 : {
+ffff880593f36523 : | Return(Zero)
+ffff880593f36525 : }
+
+
+Example full round trip:
+1: kd> !wdfkd.wdflogdump WudfRd -d
+494: RdPnpTracker::RdPnp - RdPnpTracker::RdPnp: RdFdoDevice 0xFFFF880597FDE9F0 !devobj 0xFFFF88059D516DD0 IRP_MJ_POWER 0x00000002(IRP_MN_SET_POWER) IRP 0xFFFF8805A09B3760 received
+495: RdPnpTracker::RdPnpProcessor - Forwarding IRP 0xFFFF8805A09B3760 to host on its way down
+499: RdPnpTracker::RdForwardRequestToHostReply - Power IRP 0xFFFF8805A09B3760 0x00000002(IRP_MN_SET_POWER) reply (0x00000000(false)) received from host. RdPnPTracker 0xFFFF88059DB97DE0 HasProblem 0x00000000(false)
+500: RdPnpTracker::RdPnpProcessor - Forwarding IRP 0xFFFF8805A09B3760 to host on completion
 
 
