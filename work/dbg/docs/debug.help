@@ -852,6 +852,8 @@ Symbol options are 0x30377:
 
 To re-enable strict mapping between .exe and .pdb use
 
+kd> .sympath+ srv*;C:\git\SurfaceOemPanelDriver\Debug\x64\bin;C:\git\SurfaceTconDriver\Debug\x64\bin
+
 0:000> .symopt- 0x40
 Symbol options are 0x30377:
 0x00000001 – SYMOPT_CASE_INSENSITIVE
