@@ -6,6 +6,7 @@ kd> !for_each_thread "!thread @#Thread"
 or just dump all threads:
 kd> !for_each_thread
 
+
 ==== WDF debugging ====
 
 Look at all WDF100 on stacks:
@@ -831,6 +832,37 @@ https://www.osr.com/nt-insider/2015-issue1/kmdf-umdf-hints/
 
 https://www.osr.com/nt-insider/2011-issue2/analysts-perspective-10-windbg-commands-might-know/
 
+http://ntcoder.com/bab/2012/03/06/how-to-force-symbol-loading-in-windbg/
+0x00000040 – SYMOPT_LOAD_ANYTHING
+
+In windbg we do this via…
+
+0:000> .symopt+ 0x40
+Symbol options are 0x30377:
+0x00000001 – SYMOPT_CASE_INSENSITIVE
+0x00000002 – SYMOPT_UNDNAME
+0x00000004 – SYMOPT_DEFERRED_LOADS
+0x00000010 – SYMOPT_LOAD_LINES
+0x00000020 – SYMOPT_OMAP_FIND_NEAREST
+0x00000040 – SYMOPT_LOAD_ANYTHING <———– Prevents validation of .pdb file
+0x00000100 – SYMOPT_NO_UNQUALIFIED_LOADS
+0x00000200 – SYMOPT_FAIL_CRITICAL_ERRORS
+0x00010000 – SYMOPT_AUTO_PUBLICS
+0x00020000 – SYMOPT_NO_IMAGE_SEARCH
+
+To re-enable strict mapping between .exe and .pdb use
+
+0:000> .symopt- 0x40
+Symbol options are 0x30377:
+0x00000001 – SYMOPT_CASE_INSENSITIVE
+0x00000002 – SYMOPT_UNDNAME
+0x00000004 – SYMOPT_DEFERRED_LOADS
+0x00000010 – SYMOPT_LOAD_LINES
+0x00000020 – SYMOPT_OMAP_FIND_NEAREST
+0x00000100 – SYMOPT_NO_UNQUALIFIED_LOADS
+0x00000200 – SYMOPT_FAIL_CRITICAL_ERRORS
+0x00010000 – SYMOPT_AUTO_PUBLICS
+0x00020000 – SYMOPT_NO_IMAGE_SEARCH
 Load symbols:
 !sym noisy
 .reload /f
