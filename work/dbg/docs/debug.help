@@ -904,6 +904,9 @@ https://www.osr.com/nt-insider/2011-issue2/analysts-perspective-10-windbg-comman
 http://ntcoder.com/bab/2012/03/06/how-to-force-symbol-loading-in-windbg/
 0x00000040 – SYMOPT_LOAD_ANYTHING
 
+Driver samples:
+https://github.com/microsoft/Windows-driver-samples
+
 In windbg we do this via…
 
 0:000> .symopt+ 0x40
