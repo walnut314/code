@@ -1,4 +1,10 @@
-10/9/2020 3:13:35 PM     C:\sandbox\code\work\dbg\docs\debug.help
+10/23/2020 12:06:40 PM     C:\sandbox\code\work\dbg\docs\debug.help
+
+latest Windbg: \\dbg\privates\latest
+
+OneNote WinDbg: search PLE-SW-DEV for:
+    1. "WinDbg - Examples and Debug Tips"
+    2. "WinDbg cheat sheet"
 
 .symopt+ 0x40
 
@@ -7,6 +13,7 @@
 
 > .sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;
 
+> .srcpath C:\git\SurfaceTconDriver\sys;C:\git\SurfaceLibrary\Kernel\DMF
 
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
