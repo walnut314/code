@@ -1,5 +1,7 @@
 10/9/2020 3:13:35 PM     C:\sandbox\code\work\dbg\docs\debug.help
 
+.symopt+ 0x40
+
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
 
