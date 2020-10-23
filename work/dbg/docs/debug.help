@@ -2,6 +2,12 @@
 
 .symopt+ 0x40
 
+> !dawg
+> !dawt
+
+> .sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;
+
+
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
 
