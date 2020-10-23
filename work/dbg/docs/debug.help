@@ -30,7 +30,7 @@ Look at all WDF100 on stacks:
 4: kd> !wdfiotarget 0xfffffe08d5bdb278
 
 6: kd> .load wdfkd.dll
-6: kd> !wdfdriverinfo SurfaceSerialHubDriver.sys 1
+6: kd> !wdfdriverinfo SurfaceSerialHubDriver.sys fff
 6: kd> !wdflogdump SurfaceSerialHubDriver.sys
 6: kd> !WDFQUEUE <queue addr>
 6: kd> !WDFDEVICE <device addr>
