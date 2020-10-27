@@ -430,7 +430,7 @@ Implicit thread is now ffffa78f`4fec5680
 > .frame x <== set to frame x of .thread
 > dv <== locals
 
-1: kd> !thread ffffa78f`4fec5680
+1: kd> !thread ffffa78f4fec5680
 THREAD ffffa78f4fec5680  Cid 0004.0308  Teb: 0000000000000000 Win32Thread: 0000000000000000 RUNNING on processor 1
 Not impersonating
 GetUlongFromAddress: unable to read from fffff8077f22ca14
@@ -461,6 +461,13 @@ ffff8380`b9c2f4c0 fffff807`81d59bba : ffffa78f`4fe99400 fffff807`81d59af0 ffffa7
 ffff8380`b9c2f510 fffff807`7ef1e135 : ffffa78f`4fec5680 fffff807`00000001 ffffa78f`4fe99000 000024ef`bd9bbfff : dxgmms2!VidSchiWorkerThread+0xca [onecoreuap\windows\core\dxkernel\dxgkrnl\dxgmms2\vidsch\vidschi.cxx @ 576]
 ffff8380`b9c2f550 fffff807`7efc99a8 : ffffdc80`45540180 ffffa78f`4fec5680 fffff807`7ef1e0e0 00000000`00000000 : nt!PspSystemThreadStartup+0x55 [minkernel\ntos\ps\psexec.c @ 9310]
 ffff8380`b9c2f5a0 00000000`00000000 : ffff8380`b9c30000 ffff8380`b9c29000 00000000`00000000 00000000`00000000 : nt!KiStartSystemThread+0x28 [minkernel\ntos\ke\amd64\threadbg.asm @ 83]
+
+
+1: kd> dt _ETHREAD ffffa78f4fec5680
+nt!_ETHREAD
+   +0x000 Tcb              : _KTHREAD
+1: kd> dt _KTHREAD ffffa78f4fec5680
+
 
 1: kd> !process ffffa78f46066040
 PROCESS ffffa78f46066040
