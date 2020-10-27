@@ -359,6 +359,13 @@ UMDF v2.15+:
 1: kd> !sysinfo
 !sysinfo [ cpuinfo | cpumicrocode | cpuspeed | gbl | machineid | registers | smbios ] [-csv | -noheaders]
 
+
+7: kd> !sysinfo smbios
+[System Information (Type 1) - Length 27 - Handle 0001h]
+  Manufacturer                  Microsoft Corporation
+  Product Name                  Surface Pro 7
+
+
 > lmv <-- dump drivers
 > lmv m igdkmdn64
 1: kd> lmv m igdkmdn64
