@@ -2,6 +2,9 @@
 
 latest Windbg: \\dbg\privates\latest
 
+Full dump - user and kernel
+.dump /ka
+
 OneNote WinDbg: search PLE-SW-DEV for:
     1. "WinDbg - Examples and Debug Tips"
     2. "WinDbg cheat sheet"
