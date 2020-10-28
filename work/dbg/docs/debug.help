@@ -939,6 +939,9 @@ http://ntcoder.com/bab/2012/03/06/how-to-force-symbol-loading-in-windbg/
 Driver samples:
 https://github.com/microsoft/Windows-driver-samples
 
+ACPI:
+https://askbob.tech/acpi-101/
+
 In windbg we do this via…
 
 0:000> .symopt+ 0x40
