@@ -1,0 +1,50 @@
+Tue, 29 Jul 2008 10:06:27 AM Pacific Daylight Time
+
+1> [QFE][07-29] : SRX080312601436 bbartel  symantec    w7 & srv08       vds
+status: se 227763 - hy sending sw to ftpsite, aliabdin/v-bamura giving me hw
+action: setup repro for aliabdin - IVdsAdviseSink::Addref() and Release() unbalanced
+
+2> [SD][07-24] : SRX080721601820 bbartel      emc      srv08   hbaapi/storport
+status: sent initial email w/detailed info on wlk and pointer to msdn
+action: wait cx fdbk on further questions - SNIA compliance
+
+3> [SD][07-28] : SRX080612600971 bbartel  falconstor      srv08       vds
+status: sent info from vds dev mtg
+action: wait cx fdbk - try close - VDS/HwProv load notify
+
+4> [SD][07-21] : SRX080617600647 bbartel      ibm    srv03 sp2   mpio\vss
+status: no import failures w/mpio fre 1.18 and hotadd rescan - 48 x's
+action: testing all wkend - should close soon
+
+5> [SD][07-29] : SRX080502601624 bbartel  broadcom      srv03   storport/iscsi
+status: located ACPI table containing the iBFT
+action: sent info to cx - close case soon - iBFT from ACPI table
+
+6> [PR][07-28] : SRZ080320000330 bbartel    itzic      vista   ramdisk
+status: sending me ramdisk - needs it to show up in LDM
+action: wait cx code - integrate w/LDM
+
+7> [PR][07-29] : SRX080728602178 bbartel      emc    vista-64   vss/requestor
+status: sent initial email - asked cx to chk if requestor is 32-bit app over 64-bit
+action: wait fdbk cx - requestor failing on Vista x64
+
+8> [PR][07-28] : SRX080714600821 bbartel  fusionio      srv03       vds
+status: have cx run sdv and generate wdf trace
+action: cx coming to redmond - engage wdf dev - mbr fails write sector0 vds/dmadmin
+
+9> [PR][07-28] : SRX080714602251 bbartel      lsi      srv08       vds
+status: analyzed data, problem is 100gb lun => 2 disk regions 60/30 %
+action: analyze vds again split region - 100 gb lun => 66/33 regions using SPW
+
+10> [PR][07-28] : SRX080714602077 bbartel      sun      srv08      spti
+status: spoke w/ken, sending code to disk, i will make it work
+action: wait cx code snippet and wedge it into srv08 umode else write driver proxy
+
+11> [PR][07-24] : SRZ080306000175 bbartel     mskk      srv03   volsnap/mpio/mscs
+status: mskk e/e is out of office - re-requested vss trace
+action: wait for mskk ee rtn 07-24 - snapshot fails w/mpio & mscs
+
+12> [PR][07-28] : SRX080307602180 bbartel      emc      srv03   storage
+status: needs triage - warm handover
+action: setup mtg w/platforms, cx and tam
+
