@@ -1,0 +1,10 @@
+.logopen power.log
+** note * is for comments
+.sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;
+.reload
+!analyze -v
+!powertriage
+!for_each_thread "!thread @#Thread"
+!dawg
+.logclose
+q
