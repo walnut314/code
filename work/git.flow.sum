@@ -56,6 +56,14 @@ branch -a
 git diff remotes/origin/product/zap/release_20191125..remotes/origin/product/zap/release_20190903 > new_diffs
 
 
+diff'ing tags:
+git diff tag1 tag2
+
+checkout by tag:
+git checkout tags/<tag> -b <new branch name>
+e.g.: git checkout tags/3.46.0-master -b master-3.46
+
+
 Bugs/Commits (links):
 https://dev.azure.com/MSFTDEVICES/Zap/_workitems/edit/1362003
 
@@ -93,6 +101,9 @@ Git Changesets list: log w/pretty format:
 ========================================
 git log --pretty=format:"%h %<(150,trunc) %s %ci %an" > commits.txt
 
+Git w/full SHA:
+==============
+git log --pretty=tformat:"%H"
 
 Renaming branch (local and remote)
 ==================================
@@ -168,3 +179,18 @@ like if you accidentally change build_version.json
 
 ------------------------
 
+Submodules:
+1. clone main branch
+    git clone SAM
+2. enumerate submodules
+    git submodule status
+3. initialize modules
+    git submodule init
+    git submodule update ## this is like a pull
+    git submodule foreach "git checkout master"
+    git submodule foreach "git branch"
+    git submodule foreach "git status"
+    git submodule foreach "git diff --stat"
+
+
+    

@@ -1,4 +1,22 @@
-8/5/2020 12:09:48 PM     C:\drivers\dumps\debug.help
+10/23/2020 12:06:40 PM     C:\sandbox\code\work\dbg\docs\debug.help
+
+latest Windbg: \\dbg\privates\latest
+
+Full dump - user and kernel
+.dump /ka
+
+OneNote WinDbg: search PLE-SW-DEV for:
+    1. "WinDbg - Examples and Debug Tips"
+    2. "WinDbg cheat sheet"
+
+.symopt+ 0x40
+
+> !dawg
+> !dawt
+
+> .sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;
+
+> .srcpath C:\git\SurfaceTconDriver\sys;C:\git\SurfaceLibrary\Kernel\DMF
 
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
@@ -6,14 +24,23 @@ kd> !for_each_thread "!thread @#Thread"
 or just dump all threads:
 kd> !for_each_thread
 
+
 ==== WDF debugging ====
 
 Look at all WDF100 on stacks:
 1: kd> !stacks 2 wdf0100
 
+4: kd> !process 0 0x1f wudfhost.exe
+4: kd> !wdfkd.wdfdriverinfo SurfaceOemPanel.dll 0x10
+4: kd> !wdfdevice 0xfffffe08d5c4a628
+4: kd> !wdfrequest 0xfffffe08d5bc4438
+4: kd> !wdfumirp 0x000001f72a374990
+4: kd> !wdfumdevstack  0x000001f72a39a5b0
+4: kd> !wdfkd.wdfdevicequeues 0xfffffe08d5c4a628
+4: kd> !wdfiotarget 0xfffffe08d5bdb278
 
 6: kd> .load wdfkd.dll
-6: kd> !wdfdriverinfo SurfaceSerialHubDriver.sys 1
+6: kd> !wdfdriverinfo SurfaceSerialHubDriver.sys fff
 6: kd> !wdflogdump SurfaceSerialHubDriver.sys
 6: kd> !WDFQUEUE <queue addr>
 6: kd> !WDFDEVICE <device addr>
@@ -335,6 +362,13 @@ UMDF v2.15+:
 1: kd> !sysinfo
 !sysinfo [ cpuinfo | cpumicrocode | cpuspeed | gbl | machineid | registers | smbios ] [-csv | -noheaders]
 
+
+7: kd> !sysinfo smbios
+[System Information (Type 1) - Length 27 - Handle 0001h]
+  Manufacturer                  Microsoft Corporation
+  Product Name                  Surface Pro 7
+
+
 > lmv <-- dump drivers
 > lmv m igdkmdn64
 1: kd> lmv m igdkmdn64
@@ -406,7 +440,7 @@ Implicit thread is now ffffa78f`4fec5680
 > .frame x <== set to frame x of .thread
 > dv <== locals
 
-1: kd> !thread ffffa78f`4fec5680
+1: kd> !thread ffffa78f4fec5680
 THREAD ffffa78f4fec5680  Cid 0004.0308  Teb: 0000000000000000 Win32Thread: 0000000000000000 RUNNING on processor 1
 Not impersonating
 GetUlongFromAddress: unable to read from fffff8077f22ca14
@@ -437,6 +471,13 @@ ffff8380`b9c2f4c0 fffff807`81d59bba : ffffa78f`4fe99400 fffff807`81d59af0 ffffa7
 ffff8380`b9c2f510 fffff807`7ef1e135 : ffffa78f`4fec5680 fffff807`00000001 ffffa78f`4fe99000 000024ef`bd9bbfff : dxgmms2!VidSchiWorkerThread+0xca [onecoreuap\windows\core\dxkernel\dxgkrnl\dxgmms2\vidsch\vidschi.cxx @ 576]
 ffff8380`b9c2f550 fffff807`7efc99a8 : ffffdc80`45540180 ffffa78f`4fec5680 fffff807`7ef1e0e0 00000000`00000000 : nt!PspSystemThreadStartup+0x55 [minkernel\ntos\ps\psexec.c @ 9310]
 ffff8380`b9c2f5a0 00000000`00000000 : ffff8380`b9c30000 ffff8380`b9c29000 00000000`00000000 00000000`00000000 : nt!KiStartSystemThread+0x28 [minkernel\ntos\ke\amd64\threadbg.asm @ 83]
+
+
+1: kd> dt _ETHREAD ffffa78f4fec5680
+nt!_ETHREAD
+   +0x000 Tcb              : _KTHREAD
+1: kd> dt _KTHREAD ffffa78f4fec5680
+
 
 1: kd> !process ffffa78f46066040
 PROCESS ffffa78f46066040
@@ -822,13 +863,20 @@ Type ".hh [command]" for more detailed help
 
 !poaction
 
-References:
-Power problems:
-https://systemdebug.in/0x9f-bugcheck-with-param-3-here-is-how-you-go-about-it/
 
-WDF debugging:
-https://www.osr.com/nt-insider/2015-issue1/kmdf-umdf-hints/
+kd> .sympath+ srv*;C:\git\SurfaceOemPanelDriver\Debug\x64\bin;C:\git\SurfaceTconDriver\Debug\x64\bin
 
+0:000> .symopt- 0x40
+Symbol options are 0x30377:
+0x00000001 – SYMOPT_CASE_INSENSITIVE
+0x00000002 – SYMOPT_UNDNAME
+0x00000004 – SYMOPT_DEFERRED_LOADS
+0x00000010 – SYMOPT_LOAD_LINES
+0x00000020 – SYMOPT_OMAP_FIND_NEAREST
+0x00000100 – SYMOPT_NO_UNQUALIFIED_LOADS
+0x00000200 – SYMOPT_FAIL_CRITICAL_ERRORS
+0x00010000 – SYMOPT_AUTO_PUBLICS
+0x00020000 – SYMOPT_NO_IMAGE_SEARCH
 Load symbols:
 !sym noisy
 .reload /f
@@ -876,6 +924,40 @@ http://pciids.sourceforge.net/pci.ids
 https://www.kernel.org/doc/html/v4.14/driver-api/pm/devices.html
 https://docs.microsoft.com/en-us/windows-hardware/drivers/storage/life-cycle-of-a-storport-driver
 
+References:
+https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/using-umdf-debugger-extensions
+https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/debugging-umdf-2-0-drivers
+Power problems:
+https://systemdebug.in/0x9f-bugcheck-with-param-3-here-is-how-you-go-about-it/
+
+WDF debugging:
+https://www.osr.com/nt-insider/2015-issue1/kmdf-umdf-hints/
+https://www.osr.com/nt-insider/2011-issue2/analysts-perspective-10-windbg-commands-might-know/
+http://ntcoder.com/bab/2012/03/06/how-to-force-symbol-loading-in-windbg/
+0x00000040 – SYMOPT_LOAD_ANYTHING
+
+Driver samples:
+https://github.com/microsoft/Windows-driver-samples
+
+ACPI:
+https://askbob.tech/acpi-101/
+
+In windbg we do this via…
+
+0:000> .symopt+ 0x40
+Symbol options are 0x30377:
+0x00000001 – SYMOPT_CASE_INSENSITIVE
+0x00000002 – SYMOPT_UNDNAME
+0x00000004 – SYMOPT_DEFERRED_LOADS
+0x00000010 – SYMOPT_LOAD_LINES
+0x00000020 – SYMOPT_OMAP_FIND_NEAREST
+0x00000040 – SYMOPT_LOAD_ANYTHING <———– Prevents validation of .pdb file
+0x00000100 – SYMOPT_NO_UNQUALIFIED_LOADS
+0x00000200 – SYMOPT_FAIL_CRITICAL_ERRORS
+0x00010000 – SYMOPT_AUTO_PUBLICS
+0x00020000 – SYMOPT_NO_IMAGE_SEARCH
+
+To re-enable strict mapping between .exe and .pdb use
 
 
 Storage:
@@ -921,5 +1003,59 @@ Usage: !classext <class device> <level [0-2]>
 Optical devices, such as DVD drives, can be listed with !wdfkd.wdfdriverinfo cdrom, and further explored 
 using the "!wdfkd.wdfdevice <device_handle>" and "!wdfkd.wdfdevicequeues <device_handle>" commands.
 
+
+ACPI:
+2: kd> !nstree
+\___ (ffff880593f10048) - Unknown
+| _SB_ (ffff880593f10258) - Device ffff8805948ea010
+| | LID0 (ffff880593f36048) - Device ffff8805928a27d0
+| | | _HID (ffff880593f36158) - Integer - 000000000d0cd041
+| | | _STA (ffff880593f36208) - Method - Flags 0000000000000000 Start ffff880593f3637a Len 000000000000000c
+| | | _LID (ffff880593f363a0) - Method - Flags 0000000000000000 Start ffff880593f36512 Len 000000000000000e
+
+2: kd> !amli dns /s \_sb.ssh._dsm
+ACPI Name Space: \_SB.SSH._DSM (ffff818892f39720)
+Method(_DSM:Flags=0x4,CodeBuff=ffff818892f39892,Len=478)
+
+1: kd> !amli dns /s \_sb.lid0
+ACPI Name Space: \_SB.LID0 (ffff880593f36048)
+Device(LID0)
+| Integer(_HID:Value=0x000000000d0cd041[218943553])
+| Method(_STA:Flags=0x0,CodeBuff=ffff880593f3637a,Len=17)
+| Method(_LID:Flags=0x0,CodeBuff=ffff880593f36512,Len=19)
+
+1: kd> !amli dns /s \_sb.lid0._lid
+ACPI Name Space: \_SB.LID0._LID (ffff880593f363a0)
+Method(_LID:Flags=0x0,CodeBuff=ffff880593f36512,Len=19)
+
+1: kd> !nsobj ffff880593f363a0
+nsobj:  dumping object at ffff880593f363a0
+NameSpace Object \ (ffff880593f363a0) - Device 0000000000000000
+  Flink 0000000000000000Blink  000000b68557d0e0
+  Parent 0000000000000000  Child 0000000000000000
+  Value 0000000000000000  Length 0000000000000000
+  Buffer 0000000000000000  Flags 0000000000000000
+    Object Data - ffff880593f363e0 Type - 08 <Method> Flags=0000000000000000 Start=ffff880593f36512 Len=000000000000000e
+    
+Dump acpi method
+1: kd> !amli u ffff880593f36512
+ffff880593f36512:[\_SB.LID0._LID]
+ffff880593f36512 : Store(M009(0x16), Local0)
+ffff880593f3651a : If(LEqual(Local0, Zero))
+ffff880593f3651f : {
+ffff880593f3651f : | Return(One)
+ffff880593f36521 : }
+ffff880593f36521 : Else
+ffff880593f36523 : {
+ffff880593f36523 : | Return(Zero)
+ffff880593f36525 : }
+
+
+Example full round trip:
+1: kd> !wdfkd.wdflogdump WudfRd -d
+494: RdPnpTracker::RdPnp - RdPnpTracker::RdPnp: RdFdoDevice 0xFFFF880597FDE9F0 !devobj 0xFFFF88059D516DD0 IRP_MJ_POWER 0x00000002(IRP_MN_SET_POWER) IRP 0xFFFF8805A09B3760 received
+495: RdPnpTracker::RdPnpProcessor - Forwarding IRP 0xFFFF8805A09B3760 to host on its way down
+499: RdPnpTracker::RdForwardRequestToHostReply - Power IRP 0xFFFF8805A09B3760 0x00000002(IRP_MN_SET_POWER) reply (0x00000000(false)) received from host. RdPnPTracker 0xFFFF88059DB97DE0 HasProblem 0x00000000(false)
+500: RdPnpTracker::RdPnpProcessor - Forwarding IRP 0xFFFF8805A09B3760 to host on completion
 
 
