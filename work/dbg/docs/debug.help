@@ -1,4 +1,4 @@
-10/23/2020 12:06:40 PM     C:\sandbox\code\work\dbg\docs\debug.help
+10/30/2020 9:48:02 AM     C:\sandbox\code\work\dbg\docs\debug.help
 
 latest Windbg: \\dbg\privates\latest
 
@@ -10,6 +10,15 @@ OneNote WinDbg: search PLE-SW-DEV for:
     2. "WinDbg cheat sheet"
 
 .symopt+ 0x40
+
+>>>>
+Here's a command to look up symbols saved to \\desmo\release\symbols:
+symchk <driver> /v /s \\desmo\release\symbols
+
+For "driver" specify a .sys or .dll or even use wildcards (e.g. "oempanel*.dll).
+Do this from the folder where you have the .sys or .dll.  It will look at that 
+file to find the GUID which it needs to look up on Desmo to find the .pdb.
+<<<<
 
 > !dawg
 > !dawt
