@@ -11,6 +11,9 @@ OneNote WinDbg: search PLE-SW-DEV for:
 
 .symopt+ 0x40
 
+.cxr <addr>; kv
+
+
 >>>>
 Here's a command to look up symbols saved to \\desmo\release\symbols:
 symchk <driver> /v /s \\desmo\release\symbols
