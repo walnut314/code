@@ -27,8 +27,11 @@ file to find the GUID which it needs to look up on Desmo to find the .pdb.
 > !dawt
 
 > .sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;
-
 > .srcpath C:\git\SurfaceTconDriver\sys;C:\git\SurfaceLibrary\Kernel\DMF
+
+.sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;C:\git\SurfaceTconDriver\Binaries\flush_d0exit_TBQ_count_flush_4.6\bin;
+.srcpath C:\git\SurfaceTconDriver\sys;C:\git\SurfaceLibrary\Kernel\DMF
+
 
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
