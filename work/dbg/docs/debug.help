@@ -969,7 +969,10 @@ OneNote: Retrieve UEFI image from Retail BB
 use grasshopper dips => DN-UP-UP-UP
 use LilyPad:
 \\desmo\Release\Shared\CI_tools-surfdbg\refs\heads\master\4.95.191121-1810
-
+UEFI debug versions use pipeline: 
+https://dev.azure.com/MSFTDEVICES/UEFI-Delos/_build?definitionId=7387
+UEFI Source Level Debugging (OneNote)
+UEFI Debug messages in OS from ACPI (OneNote)
 
 
 In windbg we do this via…
