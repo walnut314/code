@@ -964,6 +964,13 @@ UEFI reading:
 file://desmo/WDS/Devices/Paloma/SWFW/Docs/Renior/FP6/SW_docs/
 https://deviceswiki.com/wiki/Learning_UEFI
 
+UEFI debug:
+OneNote: Retrieve UEFI image from Retail BB
+use grasshopper dips => DN-UP-UP-UP
+use LilyPad:
+\\desmo\Release\Shared\CI_tools-surfdbg\refs\heads\master\4.95.191121-1810
+
+
 
 In windbg we do this via…
 
