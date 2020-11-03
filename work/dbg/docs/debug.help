@@ -944,6 +944,7 @@ https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/using-umdf-debugge
 https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/debugging-umdf-2-0-drivers
 Power problems:
 https://systemdebug.in/0x9f-bugcheck-with-param-3-here-is-how-you-go-about-it/
+https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/using-symchk
 
 WDF debugging:
 https://www.osr.com/nt-insider/2015-issue1/kmdf-umdf-hints/
@@ -1072,5 +1073,10 @@ Example full round trip:
 495: RdPnpTracker::RdPnpProcessor - Forwarding IRP 0xFFFF8805A09B3760 to host on its way down
 499: RdPnpTracker::RdForwardRequestToHostReply - Power IRP 0xFFFF8805A09B3760 0x00000002(IRP_MN_SET_POWER) reply (0x00000000(false)) received from host. RdPnPTracker 0xFFFF88059DB97DE0 HasProblem 0x00000000(false)
 500: RdPnpTracker::RdPnpProcessor - Forwarding IRP 0xFFFF8805A09B3760 to host on completion
+
+
+UEFI reading:
+file://desmo/WDS/Devices/Paloma/SWFW/Docs/Renior/FP6/SW_docs/
+https://deviceswiki.com/wiki/Learning_UEFI
 
 
