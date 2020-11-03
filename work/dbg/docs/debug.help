@@ -973,6 +973,7 @@ UEFI debug versions use pipeline:
 https://dev.azure.com/MSFTDEVICES/UEFI-Delos/_build?definitionId=7387
 UEFI Source Level Debugging (OneNote)
 UEFI Debug messages in OS from ACPI (OneNote)
+UEFI building: Delos local build (OneNote)
 
 
 In windbg we do this via…
