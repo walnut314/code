@@ -957,9 +957,13 @@ https://github.com/microsoft/Windows-driver-samples
 
 ACPI:
 https://askbob.tech/acpi-101/
+https://acpica.org/sites/acpica/files/asl_tutorial_v20190625.pdf
+https://acpica.org/sites/acpica/files/ACPI-Introduction.pdf
+
 UEFI reading:
 file://desmo/WDS/Devices/Paloma/SWFW/Docs/Renior/FP6/SW_docs/
 https://deviceswiki.com/wiki/Learning_UEFI
+
 
 In windbg we do this via…
 
