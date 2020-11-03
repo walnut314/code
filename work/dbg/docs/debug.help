@@ -957,6 +957,9 @@ https://github.com/microsoft/Windows-driver-samples
 
 ACPI:
 https://askbob.tech/acpi-101/
+UEFI reading:
+file://desmo/WDS/Devices/Paloma/SWFW/Docs/Renior/FP6/SW_docs/
+https://deviceswiki.com/wiki/Learning_UEFI
 
 In windbg we do this via…
 
@@ -1074,9 +1077,5 @@ Example full round trip:
 499: RdPnpTracker::RdForwardRequestToHostReply - Power IRP 0xFFFF8805A09B3760 0x00000002(IRP_MN_SET_POWER) reply (0x00000000(false)) received from host. RdPnPTracker 0xFFFF88059DB97DE0 HasProblem 0x00000000(false)
 500: RdPnpTracker::RdPnpProcessor - Forwarding IRP 0xFFFF8805A09B3760 to host on completion
 
-
-UEFI reading:
-file://desmo/WDS/Devices/Paloma/SWFW/Docs/Renior/FP6/SW_docs/
-https://deviceswiki.com/wiki/Learning_UEFI
 
 
