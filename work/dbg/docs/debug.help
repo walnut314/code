@@ -1,4 +1,4 @@
-10/30/2020 9:48:02 AM     C:\sandbox\code\work\dbg\docs\debug.help
+11/4/2020 9:08:24 AM     C:\sandbox\code\work\dbg\docs\debug.help
 
 latest Windbg: \\dbg\privates\latest
 
@@ -967,13 +967,24 @@ https://deviceswiki.com/wiki/Learning_UEFI
 UEFI debug:
 OneNote: Retrieve UEFI image from Retail BB
 use grasshopper dips => DN-UP-UP-UP
-use LilyPad:
+use SurfDbg (C:\sandbox\tools\SurfDbg_Try):
 \\desmo\Release\Shared\CI_tools-surfdbg\refs\heads\master\4.95.191121-1810
 UEFI debug versions use pipeline: 
 https://dev.azure.com/MSFTDEVICES/UEFI-Delos/_build?definitionId=7387
 UEFI Source Level Debugging (OneNote)
+  > py .\PlatformBuild.py BLD_*_FORCE_DEBUGGER_ENABLED=TRUE --clean
 UEFI Debug messages in OS from ACPI (OneNote)
 UEFI building: Delos local build (OneNote)
+
+
+UEFI Tianocore 3rd party setup:
+wizard: https://github.com/tianocore/tianocore.github.io/wiki/UEFI-Driver-Wizard
+Download and unzip UDK2014.IHV into c:\EDK_Workspace
+https://github.com/tianocore/tianocore.github.io/wiki/UDK2014.IHV-Setup-Guide
+Extract BaseTools(Windows)
+run edksetup.bat from VS x64 native shell
+Wizard, open workspace C:\EDK_Workspace\UDK2014.IHV
+Create driver inside workspace: C:\EDK_Workspace\UDK2014.IHV\Drivers
 
 
 In windbg we do this via…
@@ -1014,18 +1025,18 @@ minipkd error (0): drivers\storage\kdext\minipkd\minipkd.c @ line 435
 IMPORTANT NOTE: Please consider using StorageKD instead of scsikd for your debugging needs for win8 and above targets
 
 SCSIPORT Debugger Extension
-	      help - 	displays this message
-	   srbdata - 	dumps the specified SRB_DATA tracking block
-	           - 	
-	The following take either the device object or device extension - 	
-	   scsiext - 	dumps the specified scsiport extension
-	  classext - 	dumps the specified classpnp extension
-	           - 	
-	Commands for partition tables - 	
-	    layout - 	dumps the drive layout at the the specified address
-	  layoutex - 	dumps the extended drive layout at the specified address
-	      part - 	dumps the partition at the specified address
-	    partex - 	dumps the extended partition at the specified address
+          help -    displays this message
+       srbdata -    dumps the specified SRB_DATA tracking block
+               -    
+    The following take either the device object or device extension -   
+       scsiext -    dumps the specified scsiport extension
+      classext -    dumps the specified classpnp extension
+               -    
+    Commands for partition tables -     
+        layout -    dumps the drive layout at the the specified address
+      layoutex -    dumps the extended drive layout at the specified address
+          part -    dumps the partition at the specified address
+        partex -    dumps the extended partition at the specified address
 
 7: kd> !scsikd.classext 
 Storage class devices:
