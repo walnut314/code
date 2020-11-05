@@ -966,12 +966,14 @@ https://deviceswiki.com/wiki/Learning_UEFI
 
 UEFI debug:
 OneNote: Retrieve UEFI image from Retail BB
+UEFI release history : OneNote
 use grasshopper dips => DN-UP-UP-UP
 use SurfDbg (C:\sandbox\tools\SurfDbg_Try):
 \\desmo\Release\Shared\CI_tools-surfdbg\refs\heads\master\4.95.191121-1810
 UEFI debug versions use pipeline: 
 https://dev.azure.com/MSFTDEVICES/UEFI-Delos/_build?definitionId=7387
 UEFI Source Level Debugging (OneNote)
+UEFI Firmware update: OneNote Retrieve UEFI image from Retail BB
   > py .\PlatformBuild.py BLD_*_FORCE_DEBUGGER_ENABLED=TRUE --clean
 UEFI Debug messages in OS from ACPI (OneNote)
 UEFI building: Delos local build (OneNote)
