@@ -1106,4 +1106,154 @@ Example full round trip:
 500: RdPnpTracker::RdPnpProcessor - Forwarding IRP 0xFFFF8805A09B3760 to host on completion
 
 
+cache*;SRV*https://msdl.microsoft.com/download/symbols
+
+!object \
+!object \Global??\
+!object \Global??\PhysicalDrive0
+
+6: kd> !object \Global??\PhysicalDrive0
+Object: ffff808c5a148460  Type: (ffffa708ea48c4e0) SymbolicLink
+    ObjectHeader: ffff808c5a148430 (new version)
+    HandleCount: 0  PointerCount: 1
+    Directory Object: ffff808c58c079c0  Name: PhysicalDrive0
+    Flags: 00000000 ( Local )
+    Target String is '\Device\Harddisk0\DR0'
+
+6: kd> !object \Device\Harddisk0\DR0
+Object: ffffa708ef066060  Type: (ffffa708ea4e2220) Device
+    ObjectHeader: ffffa708ef066030 (new version)
+    HandleCount: 0  PointerCount: 3
+    Directory Object: ffff808c58cd8220  Name: DR0
+
+6: kd> !devobj ffffa708ef066060
+Device object (ffffa708ef066060) is for:
+ DR0 \Driver\disk DriverObject ffffa708ecec2b00
+Current Irp 00000000 RefCount 5 Type 00000007 Flags 01000050
+Vpb ffffa708ef091cd0 SecurityDescriptor ffff808c58dc77e0 DevExt ffffa708ef0661b0 DevObjExt ffffa708ef066a60 Dope ffffa708ef091bf0 
+ExtensionFlags (0x00000800)  DOE_DEFAULT_SD_PRESENT
+Characteristics (0x00000100)  FILE_DEVICE_SECURE_OPEN
+AttachedDevice (Upper) ffffa708ecece8d0 \Driver\partmgr
+AttachedTo (Lower) ffffa708ecec4de0 \Driver\EhStorClass
+Device queue is not busy.
+
+6: kd> !devstack ffffa708ef066060
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffffa708ecece8d0  \Driver\partmgr    ffffa708ececea20  
+> ffffa708ef066060  \Driver\disk       ffffa708ef0661b0  DR0
+  ffffa708ecec4de0  \Driver\EhStorClassffffa708ecec4ba0  
+  ffffa708ec9a9060  \Driver\stornvme   ffffa708ec9a91b0  00000037
+!DevNode ffffa708ec9aa8d0 :
+  DeviceInst is "SCSI\Disk&Ven_NVMe&Prod_HFM256GDGTNG-87A\000000"
+  ServiceName is "disk"
+
+6: kd> !vpb ffffa708ef091cd0
+Vpb at 0xffffa708ef091cd0
+Flags: 0x30 
+DeviceObject: 0x0000000000000000
+RealDevice:   0xffffa708ef066060
+RefCount: 0
+Volume Label: 
+
+
+6: kd> !devnode ffffa708ec9aa8d0
+DevNode 0xffffa708ec9aa8d0 for PDO 0xffffa708ec9a9060
+  Parent 0xffffa708ec933cd0   Sibling 0000000000   Child 0000000000   
+  InstancePath is "SCSI\Disk&Ven_NVMe&Prod_HFM256GDGTNG-87A\000000"
+  ServiceName is "disk"
+  TargetDeviceNotify List - f 0xffff808c5c486db0  b 0xffff808c5c486db0
+  State = DeviceNodeStarted (0x308)
+  Previous State = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[01] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[00] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[19] = DeviceNodeStarted (0x308)
+  StateHistory[18] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[17] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[16] = DeviceNodeStarted (0x308)
+  StateHistory[15] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[14] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[13] = DeviceNodeStarted (0x308)
+  StateHistory[12] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[11] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[10] = DeviceNodeStarted (0x308)
+  StateHistory[09] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[08] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[07] = DeviceNodeStarted (0x308)
+  StateHistory[06] = DeviceNodeStartPostWork (0x307)
+  StateHistory[05] = DeviceNodeStartCompletion (0x306)
+  StateHistory[04] = DeviceNodeStartPending (0x305)
+  StateHistory[03] = DeviceNodeResourcesAssigned (0x304)
+  StateHistory[02] = DeviceNodeDriversAdded (0x303)
+  Flags (0x24000130)  DNF_ENUMERATED, DNF_IDS_QUERIED, 
+                      DNF_NO_RESOURCE_REQUIRED, DNF_NO_LOWER_DEVICE_FILTERS, 
+                      DNF_NO_UPPER_DEVICE_FILTERS
+  UserFlags (0x00000008)  DNUF_NOT_DISABLEABLE
+  CapabilityFlags (0x004001c1)  DeviceD1, UniqueID, 
+                                SilentInstall, RawDeviceOK
+                                Unknown flags 0x00400000
+  DisableableDepends = 1 (including self)
+
+
+6: kd> !object \Global??\Volume{e2faca35-8b0f-41fd-9743-4fa665234538}
+Object: ffff808c5a14d380  Type: (ffffa708ea48c4e0) SymbolicLink
+    ObjectHeader: ffff808c5a14d350 (new version)
+    HandleCount: 0  PointerCount: 1
+    Directory Object: ffff808c58c079c0  Name: Volume{e2faca35-8b0f-41fd-9743-4fa665234538}
+    Flags: 00000000 ( Local )
+    Target String is '\Device\HarddiskVolume3'
+
+6: kd> !object \Device\HarddiskVolume3
+Object: ffffa708ecf7c930  Type: (ffffa708ea4e2220) Device
+    ObjectHeader: ffffa708ecf7c900 (new version)
+    HandleCount: 0  PointerCount: 11
+    Directory Object: ffff808c58c04a20  Name: HarddiskVolume3
+
+6: kd> !devstack ffffa708ecf7c930
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffffa708ef179040  \Driver\volsnap    ffffa708ef179190  
+  ffffa708ecec18d0  \Driver\volume     ffffa708ecec1a20  
+  ffffa708eceee8d0  \Driver\rdyboost   ffffa708eceeea20  
+  ffffa708eceed8d0  \Driver\iorate     ffffa708eceeda20  
+  ffffa708ef177030  \Driver\fvevol     ffffa708ef177180  
+> ffffa708ecf7c930  \Driver\volmgr     ffffa708ecf7ca80  HarddiskVolume3
+!DevNode ffffa708ecee3c90 :
+  DeviceInst is "STORAGE\Volume\{bb1d3e22-3c95-11ea-ad85-806e6f6e6963}#0000000018500000"
+  ServiceName is "volume"
+
+6: kd> !drvobj \Driver\volmgr 
+Driver object (ffffa708ec995e30) is for:
+ \Driver\volmgr
+
+Driver Extension List: (id , addr)
+
+Device Object list:
+ffffa708ecee38f0  ffffa708ecf7c930  ffffa708eceb3b40  ffffa708ecee2b90
+ffffa708ec921900  
+
+6: kd> !object \Driver\mountmgr
+Object: ffffa708ec939d20  Type: (ffffa708ea4e24e0) Driver
+    ObjectHeader: ffffa708ec939cf0 (new version)
+    HandleCount: 0  PointerCount: 7
+    Directory Object: ffff808c58cd7420  Name: mountmgr
+
+
+6: kd> !drvobj ffffa708ec939d20
+Driver object (ffffa708ec939d20) is for:
+ \Driver\mountmgr
+
+Driver Extension List: (id , addr)
+
+Device Object list:
+ffffa708ec9a2ca0  
+
+6: kd> !devobj ffffa708ec9a2ca0
+Device object (ffffa708ec9a2ca0) is for:
+ MountPointManager \Driver\mountmgr DriverObject ffffa708ec939d20
+Current Irp 00000000 RefCount 0 Type 00000012 Flags 00000840
+SecurityDescriptor ffff808c58df8b20 DevExt ffffa708ec9a2df0 DevObjExt ffffa708ec9a2f68 
+ExtensionFlags (0x00000800)  DOE_DEFAULT_SD_PRESENT
+Characteristics (0x00000100)  FILE_DEVICE_SECURE_OPEN
+Device queue is not busy.
+
+
 
