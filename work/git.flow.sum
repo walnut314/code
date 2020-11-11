@@ -7,6 +7,10 @@ git reset --hard HEAD // uncommit
 git reset --soft HEAD^ Will keep the modified changes in your working tree.
 git reset --hard HEAD^ WILL THROW AWAY THE CHANGES YOU MADE !!!
 
+Show contents of a commit:
+=========================
+git show [commit] # from git log
+
 Git flow:
 ========
 $ git branch -a
