@@ -26,12 +26,27 @@ Environment:
 #include "Trace.h" // contains macros for WPP tracing
 
 #define NTDEVICE_NAME_STRING      L"\\Device\\MODERN"
-#define SYMBOLIC_NAME_STRING     L"\\DosDevices\\MODERN"
-#define POOL_TAG                   'ELIF'
+#define SYMBOLIC_NAME_STRING      L"\\DosDevices\\MODERN"
+#define POOL_TAG                  'ELIF'
+
+#define ENABLE_THEAD              (FALSE)
 
 typedef struct _CONTROL_DEVICE_EXTENSION {
 
-    HANDLE   FileHandle; // Store your control data here
+    HANDLE      FileHandle;     // Store your control data here
+    WDFDEVICE   Device;
+
+    PETHREAD    ThreadObject;
+    HANDLE      ThreadHandle;
+    BOOLEAN     ThreadShouldStop;
+
+    KEVENT      AdapterObjectIsAcquired;
+    KEVENT      DeviceOperationComplete;
+    KEVENT      IrpQueueEventStop;
+
+    KSEMAPHORE  IrpQueueSemaphore;
+    LIST_ENTRY  IrpQueueListHead;
+    KSPIN_LOCK  IrpQueueSpinLock;
 
 } CONTROL_DEVICE_EXTENSION, *PCONTROL_DEVICE_EXTENSION;
 
@@ -65,6 +80,22 @@ NTSTATUS
 ModernDeviceAdd(
     IN WDFDRIVER Driver,
     IN PWDFDEVICE_INIT DeviceInit
+    );
+
+NTSTATUS
+ModernCreateDevice(
+    IN WDFDEVICE Device
+    );
+
+VOID
+ModernThreadMain(
+    IN PVOID Context
+    );
+
+CCHAR
+ModernPerformDataTransfer(
+    IN WDFDEVICE Device,
+    IN PIRP Irp
     );
 
 EVT_WDF_DRIVER_UNLOAD ModernEvtDriverUnload;

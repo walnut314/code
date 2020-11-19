@@ -1,29 +1,18 @@
 /*++
-
-Copyright (c) Microsoft Corporation.  All rights reserved.
-
-    THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
-    KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
-    PURPOSE.
-
 Module Name:
-
     modern.c
 
 Abstract:
 
-    Purpose of this driver is to demonstrate how to write a legacy (NON WDM)
-    driver using framework, show how to handle 4 different ioctls -
-    METHOD_NEITHER - in particular and also show how to read & write to file
-    from KernelMode using Zw functions.
-
-    For a non-framework version of sample on how to handle IOCTLs in driver,
-    study src\general\IOCTL in the DDK.
-
 Environment:
-
     Kernel mode only.
+
+Project Status:
+    1. Add IOCTL to stop thread using bool
+    2. Add Requests/Irps to feed the queue
+    3. Modify app to queue requests using IOCTL
+    4. Add stop event instead of boolean
+    5. check this out: https://github.com/microsoft/Windows-driver-samples/blob/master/serial/VirtualSerial2/queue.c
 
 --*/
 
@@ -40,7 +29,6 @@ Environment:
 //
 #include "modern.tmh"
 
-
 #ifdef ALLOC_PRAGMA
 #pragma alloc_text( INIT, DriverEntry )
 #pragma alloc_text( PAGE, ModernDeviceAdd)
@@ -53,7 +41,6 @@ Environment:
 #pragma alloc_text( PAGE, FileEvtIoWrite)
 #pragma alloc_text( PAGE, FileEvtIoDeviceControl)
 #endif // ALLOC_PRAGMA
-
 
 NTSTATUS
 DriverEntry(
@@ -79,11 +66,11 @@ Return Value:
 
 --*/
 {
-    NTSTATUS                       status;
-    WDF_DRIVER_CONFIG              config;
-    WDFDRIVER                      hDriver;
-    PWDFDEVICE_INIT                pInit = NULL;
-    WDF_OBJECT_ATTRIBUTES          attributes;
+    NTSTATUS                        status;
+    WDF_DRIVER_CONFIG               config;
+    WDFDRIVER                       hDriver;
+    PWDFDEVICE_INIT                 pInit = NULL;
+    WDF_OBJECT_ATTRIBUTES           attributes;
 
     KdPrint(("Driver Frameworks Modern Legacy Driver Example\n"));
 
@@ -150,7 +137,7 @@ Return Value:
     // Call ModernDeviceAdd to create a deviceobject to represent our
     // software device.
     status = ModernDeviceAdd(hDriver, pInit);
-    
+
     return status;
 }
 
@@ -179,12 +166,14 @@ Return Value:
 
 --*/
 {
-    NTSTATUS                       status;
-    WDF_OBJECT_ATTRIBUTES           attributes;
-    WDF_IO_QUEUE_CONFIG      ioQueueConfig;
-    WDF_FILEOBJECT_CONFIG fileConfig;
-    WDFQUEUE                            queue;
-    WDFDEVICE   controlDevice;
+    NTSTATUS               status;
+    WDF_OBJECT_ATTRIBUTES  attributes;
+    WDF_IO_QUEUE_CONFIG    ioQueueConfig;
+    WDF_FILEOBJECT_CONFIG  fileConfig;
+    WDFQUEUE               queue;
+    WDFDEVICE              controlDevice;
+    PCONTROL_DEVICE_EXTENSION devExt = NULL;
+
     DECLARE_CONST_UNICODE_STRING(ntDeviceName, NTDEVICE_NAME_STRING) ;
     DECLARE_CONST_UNICODE_STRING(symbolicLinkName, SYMBOLIC_NAME_STRING) ;
 
@@ -250,6 +239,9 @@ Return Value:
         goto End;
     }
 
+    devExt = ControlGetData(controlDevice);
+    devExt->Device = controlDevice;
+    
     // Create a symbolic link for the control object so that usermode can open
     // the device.
     status = WdfDeviceCreateSymbolicLink(controlDevice,
@@ -317,8 +309,75 @@ End:
         WdfDeviceInitFree(DeviceInit);
     }
 
+    if (NT_SUCCESS(status)) {
+        ASSERT(devExt != NULL);
+        if (ENABLE_THEAD) {
+            status = ModernCreateDevice(devExt->Device);
+        }
+    }
     return status;
 
+}
+
+NTSTATUS
+ModernCreateDevice(
+    IN WDFDEVICE Device
+    )
+{
+    NTSTATUS status = STATUS_SUCCESS;
+    PCONTROL_DEVICE_EXTENSION devExt;
+
+    devExt = ControlGetData(Device);
+
+    KeInitializeSpinLock(
+            &devExt->IrpQueueSpinLock);
+
+    InitializeListHead(
+            &devExt->IrpQueueListHead);
+
+    KeInitializeSemaphore(
+            &devExt->IrpQueueSemaphore,
+            0,
+            MAXLONG);
+
+    KeInitializeEvent(
+            &devExt->AdapterObjectIsAcquired,
+            SynchronizationEvent,
+            FALSE);
+
+    KeInitializeEvent(
+            &devExt->DeviceOperationComplete,
+            SynchronizationEvent,
+            FALSE);
+
+    devExt->ThreadShouldStop = FALSE;
+
+    status = PsCreateSystemThread(
+            &devExt->ThreadHandle,
+            (ACCESS_MASK) 0,
+            NULL,
+            (HANDLE) 0,
+            NULL,
+            ModernThreadMain,
+            devExt);
+
+    if (!NT_SUCCESS(status)) {
+        // TODO
+        // clean up symlink and device object
+        return status;
+    }
+
+    ObReferenceObjectByHandle(
+            devExt->ThreadHandle,
+            THREAD_ALL_ACCESS,
+            NULL,
+            KernelMode,
+            &devExt->ThreadObject,
+            NULL);
+
+    ZwClose(devExt->ThreadHandle);
+
+    return status;
 }
 
 VOID
@@ -358,9 +417,9 @@ Return Value:
 
 VOID
 ModernEvtDeviceFileCreate (
-    IN WDFDEVICE            Device,
-    IN WDFREQUEST Request,
-    IN WDFFILEOBJECT        FileObject
+    IN WDFDEVICE     Device,
+    IN WDFREQUEST    Request,
+    IN WDFFILEOBJECT FileObject
     )
 /*++
 
@@ -614,8 +673,6 @@ Return Value:
     WdfRequestCompleteWithInformation(Request, status, bytesRead);
 }
 
-
-
 VOID
 FileEvtIoWrite(
     IN WDFQUEUE         Queue,
@@ -709,8 +766,8 @@ VOID
 FileEvtIoDeviceControl(
     IN WDFQUEUE         Queue,
     IN WDFREQUEST       Request,
-    IN size_t            OutputBufferLength,
-    IN size_t            InputBufferLength,
+    IN size_t           OutputBufferLength,
+    IN size_t           InputBufferLength,
     IN ULONG            IoControlCode
     )
 /*++
@@ -745,9 +802,12 @@ Return Value:
     ULONG               datalen = (ULONG) strlen(data)+1;//Length of data including null
     PCHAR               buffer = NULL;
     PREQUEST_CONTEXT    reqContext = NULL;
-    size_t               bufSize;
-
-    UNREFERENCED_PARAMETER( Queue );
+    size_t              bufSize;
+    PCONTROL_DEVICE_EXTENSION   devExt;
+    PIRP                irp;
+    BOOLEAN             completeRequest = TRUE;
+        
+    devExt = ControlGetData(WdfIoQueueGetDevice(Queue));
 
     PAGED_CODE();
     DbgBreakPoint();
@@ -761,6 +821,28 @@ Return Value:
     // Determine which I/O control code was specified.
     switch (IoControlCode)
     {
+    case IOCTL_MODERN_STOP_THREAD:
+        devExt->ThreadShouldStop = TRUE;
+        break;
+            
+    case IOCTL_MODERN_QUEUE_REQUEST:
+        irp = WdfRequestWdmGetIrp(Request);
+        IoMarkIrpPending(irp);
+        ExInterlockedInsertTailList(
+                &devExt->IrpQueueListHead,
+                &irp->Tail.Overlay.ListEntry,
+                &devExt->IrpQueueSpinLock);
+
+        KeReleaseSemaphore(
+                &devExt->IrpQueueSemaphore,
+                0, // no priority boost
+                1, // increment by 1
+                FALSE); // no wait after this call
+        status = STATUS_PENDING;
+        completeRequest = FALSE;
+
+        break;
+        
     case IOCTL_MODERN_METHOD_BUFFERED:
 
         TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "Called IOCTL_MODERN_METHOD_BUFFERED\n");
@@ -944,7 +1026,9 @@ Return Value:
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "Completing Request %p with status %X",
                    Request, status );
 
-    WdfRequestComplete( Request, status);
+    if (completeRequest == TRUE) {
+        WdfRequestComplete( Request, status);
+    }
 
 }
 
@@ -1186,4 +1270,117 @@ PrintChars(
     }
     return;
 }
+
+VOID
+ModernThreadMain(
+    IN PVOID Context
+    )
+{
+    PCONTROL_DEVICE_EXTENSION devExt = Context;
+    PLIST_ENTRY ListEntry;
+    PIRP Irp;
+    NTSTATUS waitStatus;
+    CCHAR PriorityBoost;
+    PVOID /*KEVENT**/ waitObjects[2];
+
+    KeSetPriorityThread(
+            KeGetCurrentThread(),
+            LOW_REALTIME_PRIORITY);
+
+    // enter main Irp processing loop
+    // TODO: add 2nd wait object stop event
+    waitObjects[0] = (PVOID) &devExt->IrpQueueSemaphore;
+    waitObjects[1] = (PVOID) &devExt->IrpQueueEventStop;
+#if 0
+    // 
+    while (TRUE) {
+        KeWaitForSingleObject(
+            &devExt->IrpQueueSemaphore,
+            Executive,
+            KernelMode,
+            FALSE,
+            NULL);
+
+
+        ListEntry = ExInterlockedRemoveHeadList(
+                &devExt->IrpQueueListHead,
+                &devExt->IrpQueueSpinLock);
+
+        Irp = CONTAINING_RECORD(
+                ListEntry,
+                IRP,
+                Tail.Overlay.ListEntry);
+
+        PriorityBoost = ModernPerformDataTransfer(
+                devExt->Device,
+                Irp);
+
+        IoCompleteRequest(Irp, PriorityBoost);
+    }
+#endif
+
+    waitStatus = STATUS_WAIT_0;
+    while (STATUS_WAIT_1 != waitStatus)
+    {
+        waitStatus = KeWaitForMultipleObjects(ARRAYSIZE(waitObjects),
+                                              waitObjects,
+                                              WaitAny,
+                                              Executive,
+                                              KernelMode,
+                                              FALSE,
+                                              NULL,
+                                              NULL);
+
+#if 0
+        if (devExt->ThreadShouldStop) {
+            DbgBreakPoint();
+            PsTerminateSystemThread(STATUS_SUCCESS);
+        }
+#endif
+        switch (waitStatus)
+        {
+            case STATUS_WAIT_0:
+            {
+                ListEntry = ExInterlockedRemoveHeadList(
+                        &devExt->IrpQueueListHead,
+                        &devExt->IrpQueueSpinLock);
+        
+                Irp = CONTAINING_RECORD(
+                        ListEntry,
+                        IRP,
+                        Tail.Overlay.ListEntry);
+
+                PriorityBoost = ModernPerformDataTransfer(
+                        devExt->Device,
+                        Irp);
+
+                IoCompleteRequest(Irp, PriorityBoost);
+                break;
+            }
+            case STATUS_WAIT_1:
+            {
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+
+    }
+
+}
+
+CCHAR
+ModernPerformDataTransfer(
+    IN WDFDEVICE Device,
+    IN PIRP Irp
+    )
+{
+    UNREFERENCED_PARAMETER(Device);
+    UNREFERENCED_PARAMETER(Irp);
+
+    return IO_NO_INCREMENT;
+}
+
 
