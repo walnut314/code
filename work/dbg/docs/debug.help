@@ -71,14 +71,14 @@ Look at all WDF100 on stacks:
 4: kd> !process 0 0x1f wudfhost.exe
 4: kd> !wdfkd.wdfdriverinfo SurfaceOemPanel.dll 0x10
 4: kd> !wdfdevice 0xfffffe08d5c4a628
-4: kd> !wdfrequest 0xfffffe08d5bc4438
+4: kd> !wdfrequest 0xfffffe08d5bc4438 -- aka dt FxRequest 0xfffffe08d5bc4438
 4: kd> !wdfumirp 0x000001f72a374990
 4: kd> !wdfumdevstack  0x000001f72a39a5b0
 4: kd> !wdfkd.wdfdevicequeues 0xfffffe08d5c4a628
 4: kd> !wdfiotarget 0xfffffe08d5bdb278
 4: kd> !wdfkd.wdflogdump WudfRd -d
 4: kd> !wdfldr WudfRd !! verify driver was successfully loaded
-
+4: kd> !mex.us -a surfaceoempanel
 
 6: kd> .load wdfkd.dll
 6: kd> !wdfdriverinfo SurfaceSerialHubDriver.sys fff
