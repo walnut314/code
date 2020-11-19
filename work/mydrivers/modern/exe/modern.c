@@ -1,28 +1,22 @@
+#define _GNU_SOURCE
 #include <windows.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define DEVICE_NAME       "\\\\.\\Modern"
-//
-// Device type           -- in the "User Defined" range."
-//
-#define FILEIO_TYPE 40001
-//
-// The IOCTL function codes from 0x800 to 0xFFF are for customer use.
-//
-#define IOCTL_MODERN_METHOD_IN_DIRECT \
-    CTL_CODE( FILEIO_TYPE, 0x900, METHOD_IN_DIRECT, FILE_ANY_ACCESS  )
+#include "..\sys\public.h"
 
-#define IOCTL_MODERN_METHOD_OUT_DIRECT \
-    CTL_CODE( FILEIO_TYPE, 0x901, METHOD_OUT_DIRECT , FILE_ANY_ACCESS  )
+/* Fake getline function */
+size_t getline(char** line, size_t *len, FILE *h)
+{
+    size_t rlen;
+    char *pline = *line;
+    fgets(pline, *len-1, h);
+    rlen = strlen(pline);
+    return rlen-1;
+}
 
-#define IOCTL_MODERN_METHOD_BUFFERED \
-    CTL_CODE( FILEIO_TYPE, 0x902, METHOD_BUFFERED, FILE_ANY_ACCESS  )
-
-#define IOCTL_MODERN_METHOD_NEITHER \
-    CTL_CODE( FILEIO_TYPE, 0x903, METHOD_NEITHER , FILE_ANY_ACCESS  )
-
-
-void doIo(HANDLE hDevice)
+void doIoctl(HANDLE hDevice, DWORD ioctl)
 {
     char OutputBuffer[100];
     char InputBuffer[200];
@@ -43,19 +37,20 @@ void doIo(HANDLE hDevice)
     
     if ( !bRc )
     {
-        printf ( "Error in DeviceIoControl : %d", GetLastError());
+        printf ( "Error in DeviceIoControl : %d\n", GetLastError());
         return;
-
     }
     printf("    OutBuffer (%d): %s\n", bytesReturned, OutputBuffer);
-
-
 }
 
 int main()
 {
     HANDLE hDevice;
     DWORD  errnum = 0;
+    size_t len = 0;
+    ssize_t read;
+    char line[256];
+    char *pline = line;
 
     hDevice = CreateFile(DEVICE_NAME,
                          GENERIC_READ | GENERIC_WRITE,
@@ -70,8 +65,34 @@ int main()
         printf("failed to open device %s err %x\n", DEVICE_NAME, errnum);
     } else {
         printf("success opening %s\n", DEVICE_NAME);
-        doIo(hDevice);
-        CloseHandle ( hDevice );
+
+        printf("$ ");
+        fflush(stdin);
+        len = 80;
+        while ((read = getline(&pline, &len, stdin)) != -1) {
+            //printf("Retrieved line of length %zu : %s\n", read, line);
+            if (strncmp("quit", line, 4) == 0) {
+                printf("quit\n");
+                break;
+            } else 
+            if (strncmp("help", line, 4) == 0) {
+                printf("start, stop, send\n");
+            } else
+            if (strncmp("start", line, 5) == 0) {
+                doIoctl(hDevice, IOCTL_MODERN_START_THREAD);
+                printf("start\n");
+            } else 
+            if (strncmp("stop", line, 4) == 0) {
+                doIoctl(hDevice, IOCTL_MODERN_STOP_THREAD);
+                printf("stop\n");
+            } else
+            if (strncmp("send", line, 4) == 0) {
+                doIoctl(hDevice, IOCTL_MODERN_QUEUE_REQUEST);
+                printf("send\n");
+            }
+            printf("$ ");
+        }
+        CloseHandle (hDevice);
     }
 }
 

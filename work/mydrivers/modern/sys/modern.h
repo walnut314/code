@@ -42,6 +42,7 @@ typedef struct _CONTROL_DEVICE_EXTENSION {
 
     KEVENT      AdapterObjectIsAcquired;
     KEVENT      DeviceOperationComplete;
+    KEVENT      IrpQueueEventStart;
     KEVENT      IrpQueueEventStop;
 
     KSEMAPHORE  IrpQueueSemaphore;

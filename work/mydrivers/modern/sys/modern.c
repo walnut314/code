@@ -346,6 +346,16 @@ ModernCreateDevice(
             FALSE);
 
     KeInitializeEvent(
+            &devExt->IrpQueueEventStart,
+            SynchronizationEvent,
+            FALSE);
+
+    KeInitializeEvent(
+            &devExt->IrpQueueEventStop,
+            SynchronizationEvent,
+            FALSE);
+
+    KeInitializeEvent(
             &devExt->DeviceOperationComplete,
             SynchronizationEvent,
             FALSE);
@@ -821,8 +831,20 @@ Return Value:
     // Determine which I/O control code was specified.
     switch (IoControlCode)
     {
+    case IOCTL_MODERN_START_THREAD:
+        devExt->ThreadShouldStop = FALSE;
+        KeSetEvent(
+                &devExt->IrpQueueEventStart,
+                IO_NO_INCREMENT,
+                FALSE);
+        break;
+
     case IOCTL_MODERN_STOP_THREAD:
         devExt->ThreadShouldStop = TRUE;
+        KeSetEvent(
+                &devExt->IrpQueueEventStop,
+                IO_NO_INCREMENT,
+                FALSE);
         break;
             
     case IOCTL_MODERN_QUEUE_REQUEST:
