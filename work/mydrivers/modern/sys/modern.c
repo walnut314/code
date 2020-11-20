@@ -9,7 +9,8 @@ Environment:
 
 Project Status:
     1. change devExt to DeviceContext _DEVICE_CONTEXT
-    5. check this out: https://github.com/microsoft/Windows-driver-samples/blob/master/serial/VirtualSerial2/queue.c
+    2. https://www.osr.com/nt-insider/2011-issue2/basics-wdf-queues/
+    3. check this out: https://github.com/microsoft/Windows-driver-samples/blob/master/serial/VirtualSerial2/queue.c
 
 --*/
 
@@ -724,16 +725,8 @@ Return Value:
 --*/
 {
     NTSTATUS            status = STATUS_SUCCESS;// Assume success
-    //PCHAR               inBuf = NULL, outBuf = NULL; // pointer to Input and output buffer
-    //PCHAR               data = "this String is from Device Driver !!!";
-    //ULONG               datalen = (ULONG) strlen(data)+1;//Length of data including null
-    //PCHAR               buffer = NULL;
-    //PREQUEST_CONTEXT    reqContext = NULL;
-    //size_t              bufSize;
     PCONTROL_DEVICE_EXTENSION DeviceContext;
     WDFDEVICE           Device;
-    //PIRP                irp;
-    //BOOLEAN             completeRequest = TRUE;
     BOOLEAN RequestPending = FALSE;
     size_t BytesReturned = 0;
         
@@ -769,21 +762,6 @@ Return Value:
         break;
             
     case IOCTL_MODERN_QUEUE_REQUEST:
-#if 0
-        irp = WdfRequestWdmGetIrp(Request);
-        IoMarkIrpPending(irp);
-        MyWdfRequest = Request;
-        ExInterlockedInsertTailList(
-                &DeviceContext->IrpQueueListHead,
-                &irp->Tail.Overlay.ListEntry,
-                &DeviceContext->IrpQueueSpinLock);
-        KeReleaseSemaphore(
-                &DeviceContext->IrpQueueSemaphore,
-                0, // no priority boost
-                1, // increment by 1 entry
-                FALSE); // no wait after this call
-        status = STATUS_PENDING;
-#endif
         status = WdfRequestForwardToIoQueue(Request,
                                             DeviceContext->MsgQueue);
         
@@ -796,14 +774,6 @@ Return Value:
                 0, // no priority boost
                 1, // increment by 1 entry
                 FALSE); // no wait after this call
-#if 0
-        MyRequest.Request = Request;
-        ExInterlockedInsertTailList(
-                &DeviceContext->IrpQueueListHead,
-                &MyRequest.Entry,
-                &DeviceContext->IrpQueueSpinLock);
-
-#endif
         break;
 
     default:
@@ -816,9 +786,6 @@ Return Value:
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "Completing Request %p with status %X",
                    Request, status );
 
-    //if (completeRequest == TRUE) {
-    //    WdfRequestComplete( Request, status);
-    //}
     if (RequestPending == FALSE)
     {
         WdfRequestCompleteWithInformation(Request, STATUS_SUCCESS, BytesReturned);
@@ -925,12 +892,8 @@ ModernThreadMain(
     )
 {
     PCONTROL_DEVICE_EXTENSION DeviceContext = Context;
-    //PLIST_ENTRY ListEntry;
-    //PIRP Irp;
-    //CCHAR PriorityBoost;
     //PVOID waitObjects[3];
     //NTSTATUS waitStatus;
-    //MYREQUEST *pMyRequest;
     WDFREQUEST Request;
     NTSTATUS status;
     size_t BytesReturned = 0;
@@ -944,7 +907,7 @@ ModernThreadMain(
     //waitObjects[0] = (PVOID) &DeviceContext->IrpQueueSemaphore;    // STATUS_WAIT_0
     //waitObjects[1] = (PVOID) &DeviceContext->IrpQueueEventStart;   // STATUS_WAIT_1
     //waitObjects[2] = (PVOID) &DeviceContext->IrpQueueEventStop;    // STATUS_WAIT_2
-#if 1
+
     // 
     while (TRUE) {
         KeWaitForSingleObject(
@@ -976,76 +939,5 @@ ModernThreadMain(
             }
         }
     }
-
-#if 0
-        ListEntry = ExInterlockedRemoveHeadList(
-                &DeviceContext->IrpQueueListHead,
-                &DeviceContext->IrpQueueSpinLock);
-
-        Irp = CONTAINING_RECORD(
-                ListEntry,
-                IRP,
-                Tail.Overlay.ListEntry);
-
-        PriorityBoost = IO_NO_INCREMENT;
-
-        //IoCompleteRequest(Irp, PriorityBoost);
-        Request = MyWdfRequest;
-        WdfRequestComplete( Request, STATUS_SUCCESS);
-#endif
-#endif
-#if 0
-    waitStatus = STATUS_WAIT_0;
-    while (STATUS_WAIT_1 != waitStatus)
-    {
-        waitStatus = KeWaitForMultipleObjects(ARRAYSIZE(waitObjects),
-                                              waitObjects,
-                                              WaitAny,
-                                              Executive,DeviceContext
-                                              KernelMode,
-                                              FALSE,
-                                              NULL,
-                                              NULL);
-
-#if 0
-        if (devExt->ThreadShouldStop) {
-            DbgBreakPoint();
-            PsTerminateSystemThread(STATUS_SUCCESS);
-        }
-#endif
-        switch (waitStatus)
-        {
-            case STATUS_WAIT_0:
-            {
-                ListEntry = ExInterlockedRemoveHeadList(
-                        &devExt->IrpQueueListHead,
-                        &devExt->IrpQueueSpinLock);
-        
-                pMyRequest = CONTAINING_RECORD(
-                            ListEntry,
-                            MYREQUEST,
-                            Entry);
-
-                Request = pMyRequest->Request;
-
-                WdfRequestComplete( Request, STATUS_SUCCESS);
-                break;
-            }
-            case STATUS_WAIT_1:
-            {
-                break;
-            }
-            case STATUS_WAIT_2:
-            {
-                break;
-            }
-            default:
-            {
-                break;
-            }
-        }
-
-    }
-#endif
 }
 
