@@ -20,6 +20,7 @@ void doIoctl(HANDLE hDevice, DWORD ioctl)
 {
     char OutputBuffer[100];
     char InputBuffer[200];
+    PSWITCH_STATE SwitchState;
     BOOL bRc;
     ULONG bytesReturned;
 
@@ -40,7 +41,15 @@ void doIoctl(HANDLE hDevice, DWORD ioctl)
         printf ( "Error in DeviceIoControl : %d\n", GetLastError());
         return;
     }
+
     printf("    OutBuffer (%d): %s\n", bytesReturned, OutputBuffer);
+
+    if (ioctl == IOCTL_MODERN_QUEUE_REQUEST) {
+        SwitchState = (PSWITCH_STATE) OutputBuffer;
+        printf("switch state: (%d)\n", SwitchState->State);
+    }
+
+
 }
 
 int main()

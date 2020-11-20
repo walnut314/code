@@ -49,3 +49,7 @@ Environment:
 #define DRIVER_NAME       "MODERN"
 #define DEVICE_NAME       "\\\\.\\Modern"
 
+typedef struct _SWITCH_STATE {
+    BOOLEAN State;
+} SWITCH_STATE, *PSWITCH_STATE;
+

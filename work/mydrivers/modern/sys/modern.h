@@ -48,6 +48,7 @@ typedef struct _CONTROL_DEVICE_EXTENSION {
     KSEMAPHORE  IrpQueueSemaphore;
     LIST_ENTRY  IrpQueueListHead;
     KSPIN_LOCK  IrpQueueSpinLock;
+    WDFQUEUE    MsgQueue;
 
 } CONTROL_DEVICE_EXTENSION, *PCONTROL_DEVICE_EXTENSION;
 

@@ -8,10 +8,7 @@ Environment:
     Kernel mode only.
 
 Project Status:
-    1. Add IOCTL to stop thread using bool
-    2. Add Requests/Irps to feed the queue
-    3. Modify app to queue requests using IOCTL
-    4. Add stop event instead of boolean
+    1. change devExt to DeviceContext _DEVICE_CONTEXT
     5. check this out: https://github.com/microsoft/Windows-driver-samples/blob/master/serial/VirtualSerial2/queue.c
 
 --*/
@@ -292,6 +289,21 @@ Return Value:
         TraceEvents(TRACE_LEVEL_ERROR, DBG_INIT, "WdfIoQueueCreate failed %!STATUS!", status);
         goto End;
     }
+
+
+    // internally managed queue
+    WDF_IO_QUEUE_CONFIG_INIT(&ioQueueConfig, WdfIoQueueDispatchManual);
+    ioQueueConfig.PowerManaged = WdfFalse;
+    status = WdfIoQueueCreate(controlDevice,
+                              &ioQueueConfig,
+                              WDF_NO_OBJECT_ATTRIBUTES,
+                              &devExt->MsgQueue);
+
+    if (!NT_SUCCESS(status)) {
+        TraceEvents(TRACE_LEVEL_ERROR, DBG_INIT, "WdfIoQueueCreate failed msg queue %!STATUS!", status);
+        goto End;
+    }
+
 
     // Control devices must notify WDF when they are done initializing.   I/O is
     // rejected until this call is made.
@@ -718,11 +730,15 @@ Return Value:
     //PCHAR               buffer = NULL;
     //PREQUEST_CONTEXT    reqContext = NULL;
     //size_t              bufSize;
-    PCONTROL_DEVICE_EXTENSION   devExt;
-    PIRP                irp;
-    BOOLEAN             completeRequest = TRUE;
+    PCONTROL_DEVICE_EXTENSION DeviceContext;
+    WDFDEVICE           Device;
+    //PIRP                irp;
+    //BOOLEAN             completeRequest = TRUE;
+    BOOLEAN RequestPending = FALSE;
+    size_t BytesReturned = 0;
         
-    devExt = ControlGetData(WdfIoQueueGetDevice(Queue));
+    Device = WdfIoQueueGetDevice(Queue);
+    DeviceContext = ControlGetData(Device);
 
     PAGED_CODE();
     DbgBreakPoint();
@@ -737,42 +753,55 @@ Return Value:
     switch (IoControlCode)
     {
     case IOCTL_MODERN_START_THREAD:
-        devExt->ThreadShouldStop = FALSE;
+        DeviceContext->ThreadShouldStop = FALSE;
         //KeSetEvent(
-        //        &devExt->IrpQueueEventStart,
+        //        &DeviceContext->IrpQueueEventStart,
         //        IO_NO_INCREMENT,
         //        FALSE);
         break;
 
     case IOCTL_MODERN_STOP_THREAD:
-        devExt->ThreadShouldStop = TRUE;
+        DeviceContext->ThreadShouldStop = TRUE;
         //KeSetEvent(
-        //        &devExt->IrpQueueEventStop,
+        //        &DeviceContext->IrpQueueEventStop,
         //        IO_NO_INCREMENT,
         //        FALSE);
         break;
             
     case IOCTL_MODERN_QUEUE_REQUEST:
+#if 0
         irp = WdfRequestWdmGetIrp(Request);
         IoMarkIrpPending(irp);
         MyWdfRequest = Request;
         ExInterlockedInsertTailList(
-                &devExt->IrpQueueListHead,
+                &DeviceContext->IrpQueueListHead,
                 &irp->Tail.Overlay.ListEntry,
-                &devExt->IrpQueueSpinLock);
+                &DeviceContext->IrpQueueSpinLock);
         KeReleaseSemaphore(
-                &devExt->IrpQueueSemaphore,
+                &DeviceContext->IrpQueueSemaphore,
                 0, // no priority boost
                 1, // increment by 1 entry
                 FALSE); // no wait after this call
         status = STATUS_PENDING;
-        completeRequest = FALSE;
+#endif
+        status = WdfRequestForwardToIoQueue(Request,
+                                            DeviceContext->MsgQueue);
+        
+        if (NT_SUCCESS(status))
+        {
+            RequestPending = TRUE;
+        }
+        KeReleaseSemaphore(
+                &DeviceContext->IrpQueueSemaphore,
+                0, // no priority boost
+                1, // increment by 1 entry
+                FALSE); // no wait after this call
 #if 0
         MyRequest.Request = Request;
         ExInterlockedInsertTailList(
-                &devExt->IrpQueueListHead,
+                &DeviceContext->IrpQueueListHead,
                 &MyRequest.Entry,
-                &devExt->IrpQueueSpinLock);
+                &DeviceContext->IrpQueueSpinLock);
 
 #endif
         break;
@@ -787,8 +816,12 @@ Return Value:
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "Completing Request %p with status %X",
                    Request, status );
 
-    if (completeRequest == TRUE) {
-        WdfRequestComplete( Request, status);
+    //if (completeRequest == TRUE) {
+    //    WdfRequestComplete( Request, status);
+    //}
+    if (RequestPending == FALSE)
+    {
+        WdfRequestCompleteWithInformation(Request, STATUS_SUCCESS, BytesReturned);
     }
 
 }
@@ -891,41 +924,63 @@ ModernThreadMain(
     IN PVOID Context
     )
 {
-    PCONTROL_DEVICE_EXTENSION devExt = Context;
-    PLIST_ENTRY ListEntry;
-    PIRP Irp;
-    CCHAR PriorityBoost;
+    PCONTROL_DEVICE_EXTENSION DeviceContext = Context;
+    //PLIST_ENTRY ListEntry;
+    //PIRP Irp;
+    //CCHAR PriorityBoost;
     //PVOID waitObjects[3];
     //NTSTATUS waitStatus;
     //MYREQUEST *pMyRequest;
     WDFREQUEST Request;
+    NTSTATUS status;
+    size_t BytesReturned = 0;
+    PSWITCH_STATE SwitchState = NULL;
 
     KeSetPriorityThread(
             KeGetCurrentThread(),
             LOW_REALTIME_PRIORITY);
 
     // enter main Irp processing loop
-    //waitObjects[0] = (PVOID) &devExt->IrpQueueSemaphore;    // STATUS_WAIT_0
-    //waitObjects[1] = (PVOID) &devExt->IrpQueueEventStart;   // STATUS_WAIT_1
-    //waitObjects[2] = (PVOID) &devExt->IrpQueueEventStop;    // STATUS_WAIT_2
+    //waitObjects[0] = (PVOID) &DeviceContext->IrpQueueSemaphore;    // STATUS_WAIT_0
+    //waitObjects[1] = (PVOID) &DeviceContext->IrpQueueEventStart;   // STATUS_WAIT_1
+    //waitObjects[2] = (PVOID) &DeviceContext->IrpQueueEventStop;    // STATUS_WAIT_2
 #if 1
     // 
     while (TRUE) {
         KeWaitForSingleObject(
-            &devExt->IrpQueueSemaphore,
+            &DeviceContext->IrpQueueSemaphore,
             Executive,
             KernelMode,
             FALSE,
             NULL);
 
-        if (devExt->ThreadShouldStop) {
+        if (DeviceContext->ThreadShouldStop) {
             DbgBreakPoint();
             PsTerminateSystemThread(STATUS_SUCCESS);
         }
 
+        status = WdfIoQueueRetrieveNextRequest(DeviceContext->MsgQueue,
+                                               &Request);
+
+        if (NT_SUCCESS(status))
+        {
+            status = WdfRequestRetrieveOutputBuffer(Request,
+                                                    sizeof(SWITCH_STATE),
+                                                    &SwitchState,
+                                                    NULL);
+            if (NT_SUCCESS(status))
+            {
+                BytesReturned = sizeof(SWITCH_STATE);
+                SwitchState->State ^= 1;
+                WdfRequestCompleteWithInformation(Request, status, BytesReturned);
+            }
+        }
+    }
+
+#if 0
         ListEntry = ExInterlockedRemoveHeadList(
-                &devExt->IrpQueueListHead,
-                &devExt->IrpQueueSpinLock);
+                &DeviceContext->IrpQueueListHead,
+                &DeviceContext->IrpQueueSpinLock);
 
         Irp = CONTAINING_RECORD(
                 ListEntry,
@@ -937,8 +992,7 @@ ModernThreadMain(
         //IoCompleteRequest(Irp, PriorityBoost);
         Request = MyWdfRequest;
         WdfRequestComplete( Request, STATUS_SUCCESS);
-
-    }
+#endif
 #endif
 #if 0
     waitStatus = STATUS_WAIT_0;
@@ -947,7 +1001,7 @@ ModernThreadMain(
         waitStatus = KeWaitForMultipleObjects(ARRAYSIZE(waitObjects),
                                               waitObjects,
                                               WaitAny,
-                                              Executive,
+                                              Executive,DeviceContext
                                               KernelMode,
                                               FALSE,
                                               NULL,
