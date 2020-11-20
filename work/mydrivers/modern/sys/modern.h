@@ -29,7 +29,7 @@ Environment:
 #define SYMBOLIC_NAME_STRING      L"\\DosDevices\\MODERN"
 #define POOL_TAG                  'ELIF'
 
-#define ENABLE_THEAD              (FALSE)
+#define ENABLE_THEAD              (TRUE)
 
 typedef struct _CONTROL_DEVICE_EXTENSION {
 
@@ -50,6 +50,11 @@ typedef struct _CONTROL_DEVICE_EXTENSION {
     KSPIN_LOCK  IrpQueueSpinLock;
 
 } CONTROL_DEVICE_EXTENSION, *PCONTROL_DEVICE_EXTENSION;
+
+typedef struct _MYREQUEST {
+    LIST_ENTRY Entry;
+    WDFREQUEST Request;
+} MYREQUEST, *PMYREQUEST;
 
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(CONTROL_DEVICE_EXTENSION,
                                         ControlGetData)
@@ -93,12 +98,6 @@ ModernThreadMain(
     IN PVOID Context
     );
 
-CCHAR
-ModernPerformDataTransfer(
-    IN WDFDEVICE Device,
-    IN PIRP Irp
-    );
-
 EVT_WDF_DRIVER_UNLOAD ModernEvtDriverUnload;
 
 EVT_WDF_DEVICE_CONTEXT_CLEANUP ModernEvtDriverContextCleanup;
@@ -108,7 +107,7 @@ EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL FileEvtIoDeviceControl;
 EVT_WDF_IO_QUEUE_IO_READ FileEvtIoRead;
 EVT_WDF_IO_QUEUE_IO_WRITE FileEvtIoWrite;
 
-EVT_WDF_IO_IN_CALLER_CONTEXT ModernEvtDeviceIoInCallerContext;
+//EVT_WDF_IO_IN_CALLER_CONTEXT ModernEvtDeviceIoInCallerContext;
 EVT_WDF_DEVICE_FILE_CREATE ModernEvtDeviceFileCreate;
 EVT_WDF_FILE_CLOSE ModernEvtFileClose;
 

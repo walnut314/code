@@ -26,7 +26,7 @@ void doIoctl(HANDLE hDevice, DWORD ioctl)
     memset(OutputBuffer, 0, sizeof(OutputBuffer));
 
     bRc = DeviceIoControl ( hDevice,
-                            (DWORD) IOCTL_MODERN_METHOD_BUFFERED,
+                            ioctl,
                             InputBuffer,
                             (DWORD) strlen( InputBuffer )+1,
                             OutputBuffer,

@@ -1283,4 +1283,8 @@ Characteristics (0x00000100)  FILE_DEVICE_SECURE_OPEN
 Device queue is not busy.
 
 
+HID Debug
+!hidkd.help
+!hidtree ffffc30219e12060
+!hidpdo ffffc30219e11060
 
