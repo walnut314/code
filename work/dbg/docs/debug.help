@@ -1282,6 +1282,25 @@ ExtensionFlags (0x00000800)  DOE_DEFAULT_SD_PRESENT
 Characteristics (0x00000100)  FILE_DEVICE_SECURE_OPEN
 Device queue is not busy.
 
+UMDF Irps:
+=========
+Here is how I get the new IRP in this dump. From UMDF point of view, it calls DeviceIoControl to the remote target device with a file handle, and UMDF really does not know nor record the new IRP that is created for this win32 i/o. You can search around but in general wdfkd won't be able to help.
+
+6: kd> !wdfiotarget 0xfffffe5530e11bf8 
+Requests sent: 1
+    WDFREQUEST fffffe5530ea7078 !wdfumirp 0x000001aad18945b0
+Target name:  \\?\HID#MSHW0124&Col02#4&1d271488&1&0001#{4d1e55b2-f16f-11cf-88cb-001111000030}
+WDF file !handle  0x0000000000000418. Search for 'Object: xxxx Type: File', run '!fileobj xxxx'
+
+6: kd> !handle  0x0000000000000418
+Object: ffffc302212d62a0  Type: (ffffc3020d505400) File
+
+6: kd> !fileobj ffffc302212d62a0
+Device Object: 0xffffc30219e12060   \Driver\mshidkmdf
+IRPs queued to File Object:
+    ffffc302245f6a20   \Driver\mshidkmdf
+
+
 
 HID Debug
 !hidkd.help
