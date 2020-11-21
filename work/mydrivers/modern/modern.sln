@@ -4,6 +4,8 @@ VisualStudioVersion = 12.0
 MinimumVisualStudioVersion = 12.0
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modern", "sys\modern.vcxproj", "{50EE7E00-D19A-4741-9440-33BECFCF6BED}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC943}") = "umodern", "usys\umodern.vcxproj", "{82306592-0B90-44A7-AC88-F75A9E98E645}"
+EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
         Debug|Win32 = Debug|Win32
@@ -12,6 +14,7 @@ Global
         Release|x64 = Release|x64
     EndGlobalSection
     GlobalSection(ProjectConfigurationPlatforms) = postSolution
+
         {50EE7E00-D19A-4741-9440-33BECFCF6BED}.Debug|Win32.ActiveCfg = Debug|Win32
         {50EE7E00-D19A-4741-9440-33BECFCF6BED}.Debug|Win32.Build.0 = Debug|Win32
         {50EE7E00-D19A-4741-9440-33BECFCF6BED}.Release|Win32.ActiveCfg = Release|Win32
@@ -20,5 +23,15 @@ Global
         {50EE7E00-D19A-4741-9440-33BECFCF6BED}.Debug|x64.Build.0 = Debug|x64
         {50EE7E00-D19A-4741-9440-33BECFCF6BED}.Release|x64.ActiveCfg = Release|x64
         {50EE7E00-D19A-4741-9440-33BECFCF6BED}.Release|x64.Build.0 = Release|x64
+
+        {82306592-0B90-44A7-AC88-F75A9E98E645}.Debug|Win32.ActiveCfg = Debug|Win32
+        {82306592-0B90-44A7-AC88-F75A9E98E645}.Debug|Win32.Build.0 = Debug|Win32
+        {82306592-0B90-44A7-AC88-F75A9E98E645}.Release|Win32.ActiveCfg = Release|Win32
+        {82306592-0B90-44A7-AC88-F75A9E98E645}.Release|Win32.Build.0 = Release|Win32
+        {82306592-0B90-44A7-AC88-F75A9E98E645}.Debug|x64.ActiveCfg = Debug|x64
+        {82306592-0B90-44A7-AC88-F75A9E98E645}.Debug|x64.Build.0 = Debug|x64
+        {82306592-0B90-44A7-AC88-F75A9E98E645}.Release|x64.ActiveCfg = Release|x64
+        {82306592-0B90-44A7-AC88-F75A9E98E645}.Release|x64.Build.0 = Release|x64
+
     EndGlobalSection
 EndGlobal
