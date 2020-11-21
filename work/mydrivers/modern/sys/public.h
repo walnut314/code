@@ -50,6 +50,6 @@ Environment:
 #define DEVICE_NAME       "\\\\.\\Modern"
 
 typedef struct _SWITCH_STATE {
-    BOOLEAN State;
+    unsigned int State;
 } SWITCH_STATE, *PSWITCH_STATE;
 

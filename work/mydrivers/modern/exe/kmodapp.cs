@@ -37,13 +37,23 @@ namespace proto {
         private static UInt32 IOCTL_MODERN_STOP_THREAD   = CTL_CODE(FILEIO_TYPE, 0x901, METHOD_BUFFERED, FILE_ANY_ACCESS);
         private static UInt32 IOCTL_MODERN_QUEUE_REQUEST = CTL_CODE(FILEIO_TYPE, 0x902, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
+        struct SWITCH_STATE {
+            public UInt32 State;
+        };
+
         public static void doIO(IntPtr hDevice, UInt32 ioctl) {
-            UInt32 retVal = 0;
-            IntPtr outBuffer = Marshal.AllocHGlobal(sizeof(UInt32));
-            IntPtr inBuffer = Marshal.AllocHGlobal(sizeof(UInt64));
+            SWITCH_STATE State;
+            State.State = 0;
+
+            IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(State));
+            IntPtr inBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(State));
+
+            State.State = 0x5a;
+            Marshal.StructureToPtr(State, inBuffer, true);
+            Console.WriteLine("[in] state: " + Convert.ToString(State.State, 16));
 
             int dwBytes = 0;
-            bool ret = DeviceIoControl(hDevice, ioctl, inBuffer, sizeof(UInt64), outBuffer, sizeof(UInt32), ref dwBytes, IntPtr.Zero);
+            bool ret = DeviceIoControl(hDevice, ioctl, inBuffer, Marshal.SizeOf(State), outBuffer, Marshal.SizeOf(State), ref dwBytes, IntPtr.Zero);
             if (ret == false)
             {
                 int error = Marshal.GetLastWin32Error();
@@ -54,7 +64,10 @@ namespace proto {
                 }
             }
 
-            retVal = (UInt32)Marshal.PtrToStructure(outBuffer, typeof(UInt32));
+            Console.WriteLine("ret: " + dwBytes);
+
+            State = (SWITCH_STATE)Marshal.PtrToStructure(outBuffer, typeof(SWITCH_STATE));
+            Console.WriteLine("[out] state: " + Convert.ToString(State.State, 16));
 
             Marshal.FreeHGlobal(inBuffer);
             Marshal.FreeHGlobal(outBuffer);
@@ -66,12 +79,13 @@ namespace proto {
 
             try {
                 hDevice = CreateFile(@"\\.\Modern", GENERIC_WRITE | GENERIC_READ, 0, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
-                Console.Write("sweet!!");
+                Console.WriteLine("sweet!!");
                 
                 while (true) {
                     Console.Write("$ ");
                     line = Console.ReadLine();
                     if (line == "quit") {
+                        CloseHandle(hDevice);
                         return;
                     }
                     else if (line == "start") {
