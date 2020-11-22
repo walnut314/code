@@ -6,12 +6,28 @@ import win32file
 import win32api
 import win32con
 import winioctlcon
+import ctypes
+from ctypes import *
 
+class SWITCH_STATE(ctypes.Structure):
+    _pack_ = 1
+    _fields_ = [("State", c_int)]
 
-MODERN_DEVICE = "Modern"
+def CTL_CODE(DeviceType, Function, Method, Access):
+    return ((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method);
+
+FILEIO_TYPE      = 40001
+METHOD_BUFFERED  = 0x00
+FILE_ANY_ACCESS  = 0x00
+FILE_READ_ACCESS = 0x01
+
+IOCTL_MODERN_START_THREAD  = CTL_CODE(FILEIO_TYPE, 0x900, METHOD_BUFFERED, FILE_ANY_ACCESS);
+IOCTL_MODERN_STOP_THREAD   = CTL_CODE(FILEIO_TYPE, 0x901, METHOD_BUFFERED, FILE_ANY_ACCESS);
+IOCTL_MODERN_QUEUE_REQUEST = CTL_CODE(FILEIO_TYPE, 0x902, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
 def main():
-    device_name = "\\\\.\\{:s}:".format(MODERN_DEVICE)
+
+    device_name = r'\\.\Modern'
     print("device: ", device_name)
     access_flags = win32con.GENERIC_WRITE | win32con.GENERIC_READ
     share_flags = 0
@@ -21,17 +37,13 @@ def main():
 
     if hDevice != None:
         print("sweet")
+        state = SWITCH_STATE(State = 0x5A)
+        buf_len = ctypes.sizeof(state)
+        buf = win32file.DeviceIoControl(hDevice, IOCTL_MODERN_QUEUE_REQUEST, state, state)
+        print(hex(state.State))
+        win32api.CloseHandle(hDevice)
     else:
         print("oh horrors")
-
-#    buf_len = struct.calcsize(vol_data_buf_fmt)
-#    for i in [buf_len]:
-#        print("    Passing a buffer size of: {:d}".format(i))
-#        buf = win32file.DeviceIoControl(hDevice, winioctlcon.FSCTL_GET_NTFS_VOLUME_DATA, None, i)
-#        print("    DeviceIocontrol returned a {:d} bytes long {:}".format(len(buf), type(buf)))
-#        out = struct.unpack_from(vol_data_buf_fmt, buf)
-#        print("\n    NumberSectors: {:}\n    TotalClusters: {:}\n    BytesPerCluster: {:}".format(out[1], out[2], out[6]))
-    win32api.CloseHandle(hDevice)
 
 if __name__ == "__main__":
     print("Python {:s} on {:s}\n".format(sys.version, sys.platform))
