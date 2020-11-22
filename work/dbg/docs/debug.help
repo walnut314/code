@@ -972,6 +972,7 @@ https://theartofdev.com/windbg-cheat-sheet/
 Power problems:
 https://systemdebug.in/0x9f-bugcheck-with-param-3-here-is-how-you-go-about-it/
 https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/using-symchk
+https://www.osr.com/nt-insider/2011-issue2/basics-wdf-queues/
 
 WDF debugging:
 https://www.osr.com/nt-insider/2015-issue1/kmdf-umdf-hints/
