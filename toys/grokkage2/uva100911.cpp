@@ -1,12 +1,12 @@
 #include <iostream>
 #include <algorithm>
 #include <string.h>
-#include <ath.h>
+#include <math.h>
 
 using namespace std;
 
 int N;
-doubld dist[20][20], memo[1<<16];
+double dist[20][20], memo[1<<16];
 
 double matching(int bit_mask)
 {
@@ -16,5 +16,12 @@ double matching(int bit_mask)
         return memo[bit_mask] = 0;
 
     // start here
+    return 0.0;
+}
+
+
+int main()
+{
+    return 0;
 }
 
