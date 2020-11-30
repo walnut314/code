@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 // Hex Dump In Many Programming Languages
 // http://c2.com/cgi/wiki?HexDumpInManyProgrammingLanguages
@@ -49,17 +50,29 @@ void hexdump(const unsigned char *buffer, unsigned long long length)
 }
 
 int BUFFER_SIZE = 2000000;
-FILE *source;
+#define FILENAME_SIZE  (32)
+FILE *hfile;
 int n;
 int count = 0;
 int written = 0;
 
-int main() {
+int main(int argc, char *argv[])
+{
     char buffer[BUFFER_SIZE];
-    source = fopen("test.bin", "rb");
-    if (source) {
-        while (!feof(source)) {
-            n = fread(buffer, 1, BUFFER_SIZE, source);
+    char source[FILENAME_SIZE];
+    if (argc == 2) {
+        strcpy(source, argv[1]);
+    } else {
+        printf("usage: binhex <file>\n");
+        return -1;
+    }
+
+    hfile = fopen(source, "rb");
+
+    if (hfile) {
+        printf("binhex %s\n", source);
+        while (!feof(hfile)) {
+            n = fread(buffer, 1, BUFFER_SIZE, hfile);
             count += n;
             printf("n = %d\n", n);
             hexdump((const unsigned char *) buffer, n);
@@ -68,8 +81,7 @@ int main() {
     } else {
         printf("fail\n");
     }
-
-    fclose(source);
+    fclose(hfile);
 
     return 0;
 }
