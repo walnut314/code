@@ -64,6 +64,9 @@ Object: ffff888ab0d923e0  Type: (ffff888aa3ad0bc0) Event
    +0x004 SignalState      : 0n1
 
 
+Register based stack dump:
+> dps esp-100 esp+100
+
 ==== WDF debugging ====
 
 Look at all WDF100 on stacks:
