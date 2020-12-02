@@ -15,6 +15,7 @@ Last event: Break instruction exception - code 80000003 (first/second chance not
 random stuff:
 0: kd> .printf "%y\n" , @eip
 00000000`487a8304
+0: kd> uf .
 
 
 Full dump - user and kernel
@@ -909,6 +910,89 @@ whatperftime <perf>          - Converts performance time to HH:MM:SS.mmm
 whattime <ticks>             - Converts ticks to HH:MM:SS.mmm
 wsle [<flags> [address]]     - Display Working Set List Entries
 zombies [<flags> [address]]  - Find all zombie processes
+
+
+0: kd> !userkdx.help
+-------------- USERKDX Debug Extension help:--------------
+
+help -v [cmd]                 - Displays this list or gives details on command
+atom                          - Dump atoms or atom tables
+dcls [pcls]                   - Dump window class
+dcur -aivp [pcur]             - Dump cursors
+dde -vr [conv|window|xact]    - Dump DDE tracking information
+ddl -vl [pdesk] [tag1] [tag2] - Dump desktop log for pdesk (filtered by tag1/tag2)
+ddesk -vhd <pdesk>            - Displays objects allocated in desktop
+ddk <pKbdTbl>                 - Dump deadkey table
+df [flags] | [-p pid] | [-l]  - Displays or sets debug flags
+dhe [pointer|handle] | [-t[o[p]] type [pti/ppi]] - Dump handle entry(ies)
+dhard                         - Dump hard error list
+dhid [-pv] [ppi]              - Dump HID info
+dhk -ag[d] [pti]              - Dump hooks
+dhot                          - Dump registered hotkeys
+dhnr                          - Dump HID notification record
+dhs -vpty [id|type]           - Dump handle table statistics
+di                            - Displays USER input processing globals.
+dimc [-hrvus] -[wci] [imc|wnd,etc.] - Dump Input Context
+dimk [pImeHotKeyObj]          - Dump IME Hotkeys
+dinp -v [pDeviceInfo]         - Dump input diagnostics
+dinp_rim -v [pDeviceInfo]         - Dump input diagnostics
+dkl -akv <pkl>                - Dump keyboard layout structures
+dll [*]addr [l#] [b#] [o#] [c#] [t[addr]] - Dump linked list (can Ctrl-C)
+dlr -lsc <pointer|handle>     - Displays assignment locks for object
+dm -vris <menu|window>        - Dumps a menu
+dmon <pMonitor>               - Dump MONITOR
+dmq [-act] [pq]               - Messages in queues
+dp -vcpt  [id]                - Displays simple process information
+dpi [-cphsdlmbvf] [ppi]       - Displays PROCESSINFO structure specified
+dq [-ampt] [pq]               - Displays Q structure specified
+dsi [-bchmopvw]               - Displays SERVERINFO struct
+dsms -vl [psms]               - Displays SMS (SendMessage structure) specified
+dt -gvcp [id]                 - Displays simple thread information
+dtdb [ptdb]                   - Dump Task Database
+dti [pti]                     - Displays THREADINFO structure
+dtin [Win32Thread]  - Displays THREADINFO structure
+dtl [-t] [pointer|handle]     - Displays thread locks
+dtmr [-itpqvc] [ptmr|pti|ppi|pq] - Dumps timer structure.
+dupm                          - User Preference Bitmask
+dw -aefhvsprwoz [hwnd/pwnd]   - Displays information on windows in system
+dws [pws]                     - Dump windowstations
+dpa -cvsfrp                   - Dump pool allocations
+dvs -s                        - Dump sections and mapped views
+dy [pdi]                      - Dump DISPLAYINFO
+find baseaddr addr [o#]       - Find linked list element
+kbd -au [pq]                  - Displays key state for queue
+sas [-s] <addr> [length]      - Stack Analysis Stuff
+tag [<tag #> [<flags>]]       - Displays or sets tags
+test                          - Test basic debug functions.
+uver                          - show versions of user and exts.
+hh                            - dumps gdwHydraHint.
+wm, vkey, ddlgt, disi: see each help
+hogs [N]                      - Dump CPU hogs
+dce                           - Dumps DC Cache Entry information.
+daccel <pAccelTable | hAccelTable> - Dump the given accelerator table
+heapff <pHeapBlock> - Looks for the given heap address in our list of freed heap.
+dheap [-o <pid>] [-p] [-t] [-s] <pheap>  - dumps heap information for a win32 heap.
+csrp [-vfp] [<pid>|<cp>]     - finds the given PID in the CSR process list.
+dsmwp psmwp                   - Dumps the given smwp chain
+dcvr pcvr                     - Dumps the given CVR structure
+dclip       - Dumps clipboard
+dwe                           - Dump winevents
+dpow            - Dumps power related information like state of the display etc
+dmaginp                       - Displays magnification input transform.
+dmip                          - Displays MiP info.
+dlw                           - Displays Window link log.
+dlfg                          - Displays foreground change log.
+dlfc [<pwndShellFrame>]       - Displays focus change log.
+dfal                          - Displays foreground activation log.
+dkcl                          - Displays Keyboard Correction log.
+datmchk                       - Display Atomic Check log.
+newsharingmode                - Tell the extesion about USER objects shared memory implementation
+dumpentrypoints               - Dumps all win32k entry point functions.
+cbs Prints complete callback stack
+lcbs      - Callback stacks logging
+luserint      - NTUSER interaction logging
+bcumcb - Breaks/Crashes a given thread when it makes user mode callbacks
+
 
 X64-specific:
 
