@@ -3,6 +3,20 @@ dude7776
 
 latest Windbg: \\dbg\privates\latest
 
+Identify dump or LKD:
+0: kd> ||
+.  0 64-bit Kernel triage dump: C:\sandbox\dumps\Bug_2051983\0000e5380_PDCRevocation-20201111-0836.dmp
+
+Get the last event:
+0: kd> .lastevent
+Last event: Break instruction exception - code 80000003 (first/second chance not available)
+  debugger time: Tue Dec  1 16:21:40.638 2020 (UTC - 8:00)
+
+random stuff:
+0: kd> .printf "%y\n" , @eip
+00000000`487a8304
+
+
 Full dump - user and kernel
 .dump /ka <file>
 
