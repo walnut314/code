@@ -1,0 +1,155 @@
+0: kd> !gdikdx.help
+=======================================================================
+GDIEXTS server debugger extentions:
+-----------------------------------------------------------------------
+
+help                                     -- Displays this help page.
+
+All of the debugger extensions support a -? option for extension
+ specific help.
+All of the debugger extensions that expect a pointer (or handle)
+ can parse expressions such as:
+    ebp+8
+ or
+    win32k[full]!gpentHmgr
+
+Switches are case insensitive and can be reordered unless otherwise
+specified in the extension help.
+
+  - general extensions -
+
+dumphmgr                                 -- handle manager objects
+dumpobj      [-p pid] [type]             -- all objects of specific type
+dh           <GDI HANDLE>                -- HMGR entry of handle
+dht          <GDI HANDLE>                -- handle type/uniqueness/index
+dldev        [LDEV ptr]                  -- LDEV
+dgdev        [-clr | GRAPHICS_DEVICE]    -- GRAPHICS_DEVICE list
+dfloat       [-l num] Value              -- Dump an IEEE float or float array
+dblt         [BLTRECORD ptr]             -- BLTRECORD
+rgnlog       nnn                         -- last nnn rgnlog entries
+stats                                    -- accumulated statistics
+verifier                                 -- Dump verifier information
+
+
+  - type dump extensions -
+
+dt           <Type> <Offset>              -- GDI Type Dump w/ flag/enums
+bltinfo      <BLTINFO Address>            -- BLTINFO
+blendobj     <BLENDOBJ Address>           -- BLENDOBJ
+brush        <BRUSH Address | HBRUSH>     -- BRUSH
+brushobj     <BRUSHOBJ Address>           -- BRUSHOBJ
+clipobj      <CLIPOBJ Address>            -- CLIPOBJ
+ddc          <DC Address | HDC>           -- DC (ddc -? for more info)
+devmodea     <DEVMODEA Address>           -- Ascii DEVMODE
+devmodew     <DEVMODEW Address>           -- Unicode DEVMODE
+ebrush       <EBRUSHOBJ Address>          -- EBRUSHOBJ
+epathobj     <EPATHOBJ Address>           -- EPATHOBJ (+PATH)
+lineattrs    <LINEATTRS Address>          -- LINEATTRS
+maxtrix      <MATRIX Address>             -- MATRIX
+palette      <PALETTE Address | HPALETTE> -- PALETTE
+path         <PATH Address | HPATH>       -- PATH
+pathobj      <PATHOBJ Address>            -- PATHOBJ
+pdev         <PDEV Address>               -- PDEV (pdev -? for more info)
+region       <REGION Address | HRGN>      -- REGION
+sprite       <SPRITE Address>             -- SPRITE
+spritestate  <SPRITESTATE Address>        -- SPRITE_STATE
+surface      <SURFACE Address | HSURF>    -- SURFACE
+surfobj      <SURFOBJ Address | HSURF>    -- SURFOBJ
+wndobj       <WNDOBJ Address>             -- WNDOBJ
+xlate        <XLATE Address>              -- XLATE
+xlateobj     <XLATEOBJ Address>           -- XLATEOBJ
+
+
+  - dc extensions -
+
+dclist         -- list compact info about all known and readble surfaces
+ddc          <DC Address | HDC>           -- DC (ddc -? for more info)
+
+  - session extensions -
+
+session      [SessionId]                 -- Get/set session settings
+spoolfind    <Tag>                       -- Search session pool for Tag
+spoolsum                                 -- Summarize/verify pool numbers
+spoolused                                -- Show pool allocs by tag
+sprocess     [SessionId [Flags]]         -- Dump Processes in Session
+svtop        <Session Virtual Address>   -- Lookup physical address
+
+  - surface extensions -
+
+pageinsurfs                          -- Page-in all surf objects found in hmgr
+pageinsurface <SURFACE Address>      -- Page-in image bits for a surface
+surface    <SURFACE Address | HSURF | -o SURFOBJ Address>  -- Dump SURFACE type
+surfobj    <SURFOBJ Address | HSURF>                       -- Dump SURFOBJ type
+surflist       -- list compact info about all known and readable surfaces
+vsurf      <SURFACE Address | HSURF | -o SURFOBJ Address>  -- display a surface
+
+  - process/thread extensions -
+
+batch      [TEB Address | -t Thread]           -- list batched GDI commands
+semorder   [Thread]                            -- show semaphore usage history
+w32p       [W32PROCESS Address | -p Process]   -- dump W32PROCESS structure
+w32t       [W32THREAD Address | -t Thread]     -- dump W32THREAD structure
+
+
+hdc          HDC [-?gltf]
+dcl          DCLEVEL*
+dca          DC_ATTR*
+ca           COLORADJUSTMENT*
+efloat       <EFLOAT Address> [Count]
+batch        DISPLAY TEB BATCHED COMMANDS
+dpeb         DISPLAY PEB CACHED OBJECTS
+floatl       <FLOATL Address> [Count]
+xo           XFORMOBJ*
+
+  - font extensions -
+
+tstats
+gs        FD_GLYPHSET*
+gdata     GLYPHDATA*
+elf       LOGFONTW*
+tm        TEXTMETRICW*
+tmwi      TMW_INTERNAL*
+helf      HFONT
+ifi       IFIMETRICS*
+fo        RFONT* [-?axedtrfmoculhw]
+pfe       PFE*
+pff       PFF*
+pft       PFT*
+dglyph    GLYPHBITS* FONTOBJ* QFDMODE [WCHAR]
+dcache    [RFONTOBJ* | RFONT*] [-?DISPLAYALL]
+dgppdevlist
+umfdmsg   UmfdAlpcMessage*
+stro      STROBJ* [-?pheo]
+gb        GLYPHBITS* [-?gh]
+gdf       GLYPHDEF*
+gp        GLYPHPOS*
+cache     CACHE*
+fh        FONTHASH*
+hb        HASHBUCKET*
+fv        FILEVIEW*
+ffv       FONTFILEVIEW*
+fntcache  <FntCache.dat path>
+dhelf     HFONT
+difi      IFIMETRICS*
+dstro     STROBJ*
+hpfe      HPFE
+proxymsg  PROXYMSG*
+
+pubft -- dumps all PUBLIC fonts
+pvtft -- dumps all Private or Embedded fonts
+devft -- dumps all DEVICE fonts
+dispcache -- dumps glyph cache for display PDEV
+
+  - leak extensions -
+
+pootrk                                         -- List tracked tags and allocations
+ubt                                            -- List unique tracked back traces
+dbt      [-r] <CBackTraceStroageUnit Address>  -- Show allocation back trace
+leakdemo                                       -- Leak a timer allocation
+reftrk                                         -- List reference tracked tags
+reftype                                        -- List reference tracked allocations of a given type
+refobj                                         -- List allocation reference tracking information
+hleaks                                         -- Show leaked GDI handle backtraces from a MiniDump
+
+=======================================================================
+
