@@ -1,6 +1,7 @@
-#!/usr/bin/en python3
+#!/usr/bin/env python3
+
 #-----------------------------------------------------------------------
-# Name:         play.py
+# Name:         template.py
 # Purpose:      Template playground.
 #-----------------------------------------------------------------------
 
@@ -23,6 +24,8 @@ introduction_string = """
 """
 
 import sys
+print("py ver ", sys.version_info[0])
+
 if sys.version_info[0] != 3:
     sys.stdout.write("""
     %s
@@ -185,11 +188,13 @@ def Main():
 
     while True:
         c = msvcrt.getch()
+        print("sup: ", c)
         if c == '.':
             console.putch(data[dptr])
         elif c == ',':
             data[dptr] = console.getch()
-
+        elif c == 'q':
+            return
 
     usage = """
     %prog [-h] [options] <path> ... 
@@ -262,13 +267,13 @@ def Main():
     #_error("PRE: ", spew=__release_notes__)
 
     if len(args) < 1 and not opts.registry:
+        print("dude")
         return not okay and parser.print_help() or None
 
     return
 
 if __name__ == '__main__':
     sys.exit(Main())
-
 
 if 0:
     print("zero")
