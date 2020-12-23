@@ -89,6 +89,7 @@ Look at all WDF100 on stacks:
 
 4: kd> !process 0 0x1f wudfhost.exe
 4: kd> !wdfkd.wdfdriverinfo SurfaceOemPanel.dll 0x10
+4: kd> !wdfkd.wdfumirps
 4: kd> !wdfdevice 0xfffffe08d5c4a628
 4: kd> !wdfrequest 0xfffffe08d5bc4438 -- aka dt FxRequest 0xfffffe08d5bc4438
 4: kd> !wdfumirp 0x000001f72a374990
