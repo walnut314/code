@@ -108,6 +108,14 @@ Look at all WDF100 on stacks:
 6: kd> !WDFQUEUE <queue addr>
 6: kd> !WDFDEVICE <device addr>
 
+0: kd> !ioctldecode 0x230c14
+Unknown IOCTL  : 0x230c14 
+Device Type    : 0x23 (FILE_DEVICE_VIDEO)
+Method         : 0x0 METHOD_BUFFERED 
+Access         : FILE_ANY_ACCESS
+Function       : 0x305
+
+
 6: kd> !wdfkd.help
 Wdfkd.dll extension built on Jan 01 2016 at 08:00:00
 
