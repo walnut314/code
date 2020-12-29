@@ -1079,6 +1079,9 @@ https://www.kernel.org/doc/html/v4.14/driver-api/pm/devices.html
 https://docs.microsoft.com/en-us/windows-hardware/drivers/storage/life-cycle-of-a-storport-driver
 
 References:
+http://www.brandonfa.lk/win8/index.html
+http://www.brandonfa.lk/win8/win8_devrel_head_x64/
+http://www.brandonfa.lk/win8/win8_devrel_head_x86/usbhub3.h
 https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/using-umdf-debugger-extensions
 https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/debugging-umdf-2-0-drivers
 https://theartofdev.com/windbg-cheat-sheet/
