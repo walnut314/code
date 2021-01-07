@@ -15,7 +15,7 @@ Last event: Break instruction exception - code 80000003 (first/second chance not
 random stuff:
 0: kd> .printf "%y\n" , @eip
 00000000`487a8304
-0: kd> uf .
+0: kd> uf <function-address> -- dumps the whole function.
 
 
 Full dump - user and kernel
@@ -1098,6 +1098,9 @@ https://www.osr.com/nt-insider/2011-issue2/analysts-perspective-10-windbg-comman
 http://ntcoder.com/bab/2012/03/06/how-to-force-symbol-loading-in-windbg/
 0x00000040 – SYMOPT_LOAD_ANYTHING
 
+Decompiler:
+https://derevenets.com/
+
 Driver samples:
 https://github.com/microsoft/Windows-driver-samples
 
@@ -1205,6 +1208,42 @@ ACPI:
 | | | _HID (ffff880593f36158) - Integer - 000000000d0cd041
 | | | _STA (ffff880593f36208) - Method - Flags 0000000000000000 Start ffff880593f3637a Len 000000000000000c
 | | | _LID (ffff880593f363a0) - Method - Flags 0000000000000000 Start ffff880593f36512 Len 000000000000000e
+
+2: kd> !amli find PCI0
+\_SB.PCI0
+
+2: kd> !amli find UA00
+\_SB.PCI0.UA00
+
+2: kd> !amli find _PS3
+\_SB.PCI0.GFX0._PS3
+\_SB.PCI0.XHC._PS3
+\_SB.PCI0.XHC.RHUB._PS3
+\_SB.PCI0.HDAS._PS3
+\_SB.PCI0.SAT0._PS3
+\_SB.PCI0.SAT0.NVM1._PS3
+\_SB.PCI0.SAT0.NVM2._PS3
+\_SB.PCI0.SAT0.NVM3._PS3
+\_SB.PCI0.I2C0._PS3
+\_SB.PCI0.I2C0.FINK._PS3
+\_SB.PCI0.I2C2._PS3
+\_SB.PCI0.I2C3._PS3
+\_SB.PCI0.I2C4._PS3
+\_SB.PCI0.UA00._PS3
+\_SB.PCI0.UA01._PS3
+\_SB.PCI0.UA02._PS3
+\_SB.PCI0.PEMC._PS3
+\_SB.PCI0.PSDC._PS3
+\_SB.PCI0.CNVW._PS3
+\_SB.PCI0.TXHC._PS3
+\_SB.PCI0.TXHC.RHUB._PS3
+\_SB.PCI0.TDM0._PS3
+\_SB.PCI0.TDM1._PS3
+\_SB.PCI0.TRP0._PS3
+\_SB.PCI0.TRP1._PS3
+\_SB.PCI0.TRP2._PS3
+\_SB.PCI0.TRP3._PS3
+
 
 2: kd> !amli dns /s \_sb.ssh._dsm
 ACPI Name Space: \_SB.SSH._DSM (ffff818892f39720)
