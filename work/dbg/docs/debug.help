@@ -1282,6 +1282,56 @@ ffff880593f36523 : {
 ffff880593f36523 : | Return(Zero)
 ffff880593f36525 : }
 
+SSH:
+#define SSH_PORT "\\_SB.PCI0.UA00" // SurfaceSerialHub.asl
+| | SSH_ (ffff8e87b297d208) - Device ffff8e87b1a4f010
+| | | _HID (ffff8e87b297d2b8) - String - MSHW0084
+| | | SULS (ffff8e87b297d368) - Integer - 0000000000000000
+| | | _S0W (ffff8e87b297d418) - Integer - 0000000000000003
+| | | _STA (ffff8e87b297d4c8) - Method - Flags 0000000000000000 Start ffff8e87b297d63a Len 000000000000000d
+| | | _DEP (ffff8e87b297d6d8) - Package - NumElements 1
+| | | SBUF (ffff8e87b297d808) - Buffer - b297d788 L=006d
+| | | BAUD (ffff8e87b297d940) - Buffer Field Ptr=b297d788 Len=6d Offset=c Start=0NumBits=20 Flgas=3
+| | | _INI (ffff8e87b297d9f0) - Method - Flags 0000000000000000 Start ffff8e87b297db62 Len 000000000000006f
+| | | _CRS (ffff8e87b297dbe8) - Method - Flags 0000000000000000 Start ffff8e87b297dd5a Len 0000000000000000
+| | | _DSM (ffff8e87b297dd70) - Method - Flags 0000000000000004 Start ffff8e87b297dee2 Len 000000000000018d
+
+2: kd> !nsobj ffff8e87b297d208
+nsobj:  dumping object at ffff8e87b297d208
+NameSpace Object \_SB.SSH (ffff8e87b297d208) - Device ffff8e87b1a4f010
+  Flink ffff8e87b297e088
+Blink  ffff8e87b2979708
+  Parent ffff8e87b0f10258  Child ffff8e87b297d2b8
+  Value 0000000000000000  Length 0000000000000000
+  Buffer 0000000000000000  Flags 0000000000000000
+    Object Data - ffff8e87b297d248 Type - 06 <Device>
+
+2: kd> !acpiext ffff8e87b1a4f010
+ACPI!DEVICE_EXTENSION ffff8e87b1a4f010 - ACPI\MSHW0084
+  DevObject  ffff8e87af4b0cd0  PhysObject  ffff8e87af4b0cd0  NextObject   0000000000000000
+  AcpiObject SSH_ ffff8e87b297d208 [\_SB.SSH]  ParentExt   ffff8e87af47e0d0
+  PnpState   ActRunng  OldPnpState Started 
+  Dispatch   fffff802373dd0f0
+  RefCounts  3-Device 2-Irp 0-Hiber 1-Wake
+  State      D3        Sw->S0 Dw->D3     Wake Pin        0
+  SxD Table  S0->D0 S4->D3 S5->D3 
+  Flags      0560200000010a20
+    Types    PDO Enumerated ValidPnP 
+    Caps     CanWake 
+    Props    HasHID RanINI Enabled AcpiPower D3ColdNotEnabled DEP BusDriverSupportsD3Cold DEP_checked LckEnabled DisEnabled PostDisplayD0Succeeded CapSidebandWake CapGpioInterrupt CCA_checked PEP_checked 
+
+Shows dependency of SSH on UA00
+2: kd> !nsobj ffff8e87b297d6d8
+nsobj:  dumping object at ffff8e87b297d6d8
+NameSpace Object \_SB.SSH._DEP (ffff8e87b297d6d8) - Device 0000000000000000
+  Flink ffff8e87b297d808
+Blink  ffff8e87b297d4c8
+  Parent ffff8e87b297d208  Child 0000000000000000
+  Value 0000000000000000  Length 0000000000000030
+  Buffer ffff8e87b297d698  Flags 0000000000000000
+    Object Data - ffff8e87b297d718 Type - 04 <Package> NumElements=0000000000000001
+      Object Data - ffff8e87b297d6a0 Type - 02 <String> String=^PCI0.UA00
+
 
 Example full round trip:
 1: kd> !wdfkd.wdflogdump WudfRd -d
