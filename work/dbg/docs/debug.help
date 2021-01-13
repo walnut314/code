@@ -1142,6 +1142,8 @@ Create driver inside workspace: C:\EDK_Workspace\UDK2014.IHV\Drivers
 Scripting:
 https://www.dumpanalysis.org/WCDA/WCDA-Sample-Chapter.pdf
 https://github.com/lallousx86/Windbg-Scripts/tree/master/practical-reverse-engineering
+https://chris.eldredge.io/blog/2014/03/05/windbg-dump-entries-in-array/
+https://www.exploit-db.com/docs/english/18576-deep-dive-into-os-internals-with-windbg.pdf
 
 
 In windbg we do this via…
@@ -1514,6 +1516,9 @@ Device Object: 0xffffc30219e12060   \Driver\mshidkmdf
 IRPs queued to File Object:
     ffffc302245f6a20   \Driver\mshidkmdf
 
+
+DLL Dump:
+0:013> !dh gdi32 -f
 
 
 HID Debug

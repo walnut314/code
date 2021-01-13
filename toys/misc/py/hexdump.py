@@ -3,6 +3,7 @@
 import os, sys
 import binascii
 
+"""
 def hexdump(buf, hexSize):
 
     PrintHeading()
@@ -25,7 +26,7 @@ def hexdump(buf, hexSize):
                 print '.',
         print
     return
-
+"""
 
 def PrintHeading():
     print("Offset 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E OF ASCII")
@@ -42,6 +43,33 @@ def hexdump2(src, length=16):
         lines.append("%04x  %-*s  %s\n" % (c, length*3, hex, printable))
     return ''.join(lines)
 
+"""
+# hexdump3("BUF:", 0, buffer)
+def hexdump3(prefix, address, data, offset=0):
+    if prefix is not None: print prefix
+    if type(data) is str: data = map(ord, data)
+    length = len(data)
+    while length > 0:
+        size = min(length, 8)
+        line = '%08X:  ' % (address) + ' '.join(map(lambda x: "%02X" % x, data[offset:offset+size]))
+        address += size
+        mark = offset
+        offset += size
+        length -= size
+        if length > 0:
+            size = min(length, 8)
+            line += '  ' + ' '.join(map(lambda x: "%02X" % x, data[offset:offset+size]))
+            address += size
+            offset += size
+            length -= size
+        line += ' ' * (61 - len(line)) + '"'
+        for c in data[mark:offset]:
+            line += (c < 32 or c > 126) and '?' or chr(c)
+        line += ' ' * (78 - len(line)) + '"'
+        print(line)
+        #print line + ' ' * (78 - len(line)) + '"'
+"""
+
 def main():
     ret="#012abc"
     #ret="#~½|"
@@ -52,6 +80,7 @@ def main():
 
     s = sys.stdin.read()    
     hexdump2(s, 256)
+    #hexdump3("BUF:", 0, s)
 
 if __name__=='__main__':
     main()
