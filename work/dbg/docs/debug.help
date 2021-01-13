@@ -7,6 +7,9 @@ Identify dump or LKD:
 0: kd> ||
 .  0 64-bit Kernel triage dump: C:\sandbox\dumps\Bug_2051983\0000e5380_PDCRevocation-20201111-0836.dmp
 
+Run scripts:
+kd> $$< <path to script>
+
 Get the last event:
 0: kd> .lastevent
 Last event: Break instruction exception - code 80000003 (first/second chance not available)
@@ -1127,7 +1130,6 @@ UEFI Firmware update: OneNote Retrieve UEFI image from Retail BB
 UEFI Debug messages in OS from ACPI (OneNote)
 UEFI building: Delos local build (OneNote)
 
-
 UEFI Tianocore 3rd party setup:
 wizard: https://github.com/tianocore/tianocore.github.io/wiki/UEFI-Driver-Wizard
 Download and unzip UDK2014.IHV into c:\EDK_Workspace
@@ -1136,6 +1138,10 @@ Extract BaseTools(Windows)
 run edksetup.bat from VS x64 native shell
 Wizard, open workspace C:\EDK_Workspace\UDK2014.IHV
 Create driver inside workspace: C:\EDK_Workspace\UDK2014.IHV\Drivers
+
+Scripting:
+https://www.dumpanalysis.org/WCDA/WCDA-Sample-Chapter.pdf
+https://github.com/lallousx86/Windbg-Scripts/tree/master/practical-reverse-engineering
 
 
 In windbg we do this via…
