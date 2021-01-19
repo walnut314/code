@@ -46,6 +46,8 @@ file to find the GUID which it needs to look up on Desmo to find the .pdb.
 > !dawt
 
 > .sympath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;
+    srv*\\desmo\wds\Devices\Paloma\SWFW\AMD_Driver_Firmware\Symbols\SymSrv
+
 > .srcpath C:\git\SurfaceTconDriver\sys;C:\git\SurfaceLibrary\Kernel\DMF
 
 .sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;C:\git\SurfaceTconDriver\Binaries\flush_d0exit_TBQ_count_flush_4.6\bin;
@@ -1498,6 +1500,65 @@ ExtensionFlags (0x00000800)  DOE_DEFAULT_SD_PRESENT
 Characteristics (0x00000100)  FILE_DEVICE_SECURE_OPEN
 Device queue is not busy.
 
+
+4: kd> !drvobj amduart 7
+Driver object (ffffb9860d65ae00) is for:
+ \Driver\amduart
+
+Driver Extension List: (id , addr)
+(fffff80028787310 ffffb9860d4f5860)  
+Device Object list:
+ffffb98609be42e0  
+
+DriverEntry:   fffff8002ed5fb00	amduart
+DriverStartIo: 00000000	
+DriverUnload:  fffff8002ed5fc70	amduart
+AddDevice:     fffff800287870c0	Wdf01000!FxDriver::AddDevice
+
+Dispatch routines:
+[00] IRP_MJ_CREATE                      fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[01] IRP_MJ_CREATE_NAMED_PIPE           fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[02] IRP_MJ_CLOSE                       fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[03] IRP_MJ_READ                        fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[04] IRP_MJ_WRITE                       fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[05] IRP_MJ_QUERY_INFORMATION           fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[06] IRP_MJ_SET_INFORMATION             fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[07] IRP_MJ_QUERY_EA                    fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[08] IRP_MJ_SET_EA                      fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[09] IRP_MJ_FLUSH_BUFFERS               fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[0a] IRP_MJ_QUERY_VOLUME_INFORMATION    fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[0b] IRP_MJ_SET_VOLUME_INFORMATION      fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[0c] IRP_MJ_DIRECTORY_CONTROL           fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[0d] IRP_MJ_FILE_SYSTEM_CONTROL         fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[0e] IRP_MJ_DEVICE_CONTROL              fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[0f] IRP_MJ_INTERNAL_DEVICE_CONTROL     fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[10] IRP_MJ_SHUTDOWN                    fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[11] IRP_MJ_LOCK_CONTROL                fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[12] IRP_MJ_CLEANUP                     fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[13] IRP_MJ_CREATE_MAILSLOT             fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[14] IRP_MJ_QUERY_SECURITY              fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[15] IRP_MJ_SET_SECURITY                fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[16] IRP_MJ_POWER                       fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[17] IRP_MJ_SYSTEM_CONTROL              fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[18] IRP_MJ_DEVICE_CHANGE               fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[19] IRP_MJ_QUERY_QUOTA                 fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[1a] IRP_MJ_SET_QUOTA                   fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[1b] IRP_MJ_PNP                         fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+
+
+Device Object stacks:
+
+!devstack ffffb98609be42e0 :
+  !DevObj           !DrvObj            !DevExt           ObjectName
+> ffffb98609be42e0  \Driver\amduart    ffffb9860d616310  00000044
+  ffffb9860966c060  \Driver\ACPI       ffffb9860bae7010  00000019
+!DevNode ffffb9860bb278a0 :
+  DeviceInst is "ACPI\AMDI0020\0"
+  ServiceName is "amduart"
+
+Processed 1 device objects.
+
+
 UMDF Irps:
 =========
 Here is how I get the new IRP in this dump. From UMDF point of view, it calls DeviceIoControl to the remote target device with a file handle, and UMDF really does not know nor record the new IRP that is created for this win32 i/o. You can search around but in general wdfkd won't be able to help.
@@ -1515,6 +1576,37 @@ Object: ffffc302212d62a0  Type: (ffffc3020d505400) File
 Device Object: 0xffffc30219e12060   \Driver\mshidkmdf
 IRPs queued to File Object:
     ffffc302245f6a20   \Driver\mshidkmdf
+
+
+1: kd> !process 0 0x1f wudfhost.exe
+PROCESS ffff880597dbf480
+PROCESS ffff88059cda50c0
+PROCESS ffff88059d7ae0c0
+
+1: kd> .process ffff880597dbf480
+1: kd> .reload
+1: kd> !wdfkd.wdfumirps
+Number of pending IRPS: 0x5
+####  CWudfIrp          Current Type                                        UniqueId          KernelIrp         Device Stack
+----  ----------------  --------------------------------------------------  ----------------  ----------------  ----------------
+0000  0x148143d4ec0     WdfRequestRead                                      0                 0x00000000        0x148143aac80    
+0001  0x148143d5360     WdfRequestRead                                      0                 0x00000000        0x148143aac80    
+0002  0x148143d5940     WdfRequestRead                                      0                 0x00000000        0x148143aac80    
+0003  0x148143df000     WdfRequestUndefined                                 0                 0x00000000        0x148143d5bc0    
+0004  0x148143e0790     WdfRequestRead                                      0                 0x00000000        0x148143d5bc0    
+
+1: kd> .process ffff88059cda50c0
+1: kd> !wdfkd.wdfumirps
+Number of pending IRPS: 0x0
+
+1: kd> .process ffff88059d7ae0c0
+1: kd> !wdfkd.wdfumirps
+Number of pending IRPS: 0x2
+####  CWudfIrp          Current Type                                        UniqueId          KernelIrp         Device Stack
+----  ----------------  --------------------------------------------------  ----------------  ----------------  ----------------
+0000  0x216bc1d2c50     Power (SET_POWER)                                   0                 0xffff880597b17010  0x216bc12c1e0    
+0001  0x216bea32ee0     WdfRequestDeviceIoControl                           
+
 
 
 DLL Dump:
