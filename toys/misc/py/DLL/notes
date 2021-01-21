@@ -1,0 +1,47 @@
+
+https://cygwin.com/cygwin-ug-net/dll.html
+
+#include <stdio.h>
+
+int
+hello()
+{
+  printf ("Hello World!\n");
+}  
+First compile mydll.c to object code:
+
+gcc -c mydll.c
+Then, tell gcc that it is building a shared library:
+
+gcc -shared -o mydll.dll mydll.o
+That's it! To finish up the example, you can now link to the dll with a simple program:
+
+int 
+main ()
+{
+  hello ();
+}  
+Then link to your dll with a command like:
+
+gcc -o myprog myprog.c -L./ -lmydll
+However, if you are building a dll as an export library, you will probably want to use the complete syntax:
+
+gcc -shared -o cyg${module}.dll \
+    -Wl,--out-implib=lib${module}.dll.a \
+    -Wl,--export-all-symbols \
+    -Wl,--enable-auto-import \
+    -Wl,--whole-archive ${old_libs} \
+    -Wl,--no-whole-archive ${dependency_libs}
+The name of your library is ${module}, prefixed with cyg for the DLL and lib for the import library. Cygwin DLLs use the cyg prefix to differentiate them from native-Windows MinGW DLLs, see the MinGW website for more details. ${old_libs} are all your object files, bundled together in static libs or single object files and the ${dependency_libs} are import libs you need to link against, e.g '-lpng -lz -L/usr/local/special -lmyspeciallib'.
+
+Linking Against DLLs
+If you have an existing DLL already, you need to build a Cygwin-compatible import library. If you have the source to compile the DLL, see the section called “Building DLLs” for details on having gcc build one for you. If you do not have the source or a supplied working import library, you can get most of the way by creating a .def file with these commands (you might need to do this in bash for the quoting to work correctly):
+
+echo EXPORTS > foo.def
+nm foo.dll | grep ' T _' | sed 's/.* T _//' >> foo.def
+Note that this will only work if the DLL is not stripped. Otherwise you will get an error message: "No symbols in foo.dll".
+
+Once you have the .def file, you can create an import library from it like this:
+
+dlltool --def foo.def --dllname foo.dll --output-lib foo.a
+
