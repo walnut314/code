@@ -7,8 +7,8 @@ import logging
 import random
 
 svc   = "SurfaceService"
-start = "net start %s" % (svc)
-stop  = "net stop  %s" % (svc)
+start = "sc start %s" % (svc)
+stop  = "sc stop  %s" % (svc)
 quantum = 50.0/1000.0 # milliseconds
 iteration = 0
 
