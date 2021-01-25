@@ -1,3 +1,18 @@
+1/25/2021 9:47:15 AM     C:\sandbox\code\work\uefi\notes
+
+Flow:
+UEFI System Table
+    UEFI Boot Services Table
+    UEFI Runtime Services Table
+    UEFI Protocol Services Groups (GUID)
+        Driver->methods/attrs
+Handle Database (global)
+    collection of protocols
+Drivers create handles to protocols
+    contain all method handlers and attrs
+
+ExitBootServices -> no more Handle Database
+OS Loader Image Start
 
 
 https://software.intel.com/content/www/us/en/develop/articles/unified-extensible-firmware-interface.html
