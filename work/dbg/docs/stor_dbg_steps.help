@@ -1,0 +1,135 @@
+1: kd> !object \device\
+ => then locate all \device\harddiskN
+
+!object \device\harddisk0
+
+1: kd> !object \device\harddisk0
+Object: e168fed8  Type: (8a191040) Directory
+    ObjectHeader: e168fec0
+    HandleCount: 1  PointerCount: 8
+    Directory Object: e1001090  Name: Harddisk0
+
+    Hash Address  Type          Name
+    ---- -------  ----          ----
+     08  899f1030 Device        DP(2)0x426e4f000-0x43b7c4400+9
+     11  899f2030 Device        DP(1)0x7e00-0x426e47200+8
+     21  899f8030 Device        DR0
+     33  e1651da8 SymbolicLink  Partition0
+     34  e15d5998 SymbolicLink  Partition1
+     35  e1592630 SymbolicLink  Partition2
+
+=> !object on the Partition1,2,etc... not 0
+!object e15d5998
+!object e1592630
+
+1: kd> !object e15d5998
+Object: e15d5998  Type: (8a191e70) SymbolicLink
+    ObjectHeader: e15d5980
+    HandleCount: 0  PointerCount: 1
+    Directory Object: e168fed8  Name: Partition1
+    Target String is '\Device\HarddiskVolume1'
+1: kd> !object e1592630
+Object: e1592630  Type: (8a191e70) SymbolicLink
+    ObjectHeader: e1592618
+    HandleCount: 0  PointerCount: 1
+    Directory Object: e168fed8  Name: Partition2
+    Target String is '\Device\HarddiskVolume2'
+
+=> now get the mountmgr device object
+!drvobj mountmgr
+
+1: kd> !drvobj mountmgr
+Driver object (8a157f38) is for:
+ \Driver\MountMgr
+Driver Extension List: (id , addr)
+
+Device Object list:
+8a190288  
+
+=> dump the device stack of the mountmgr device object
+!devstack 8a190288
+
+1: kd> !devstack 8a190288
+  !DevObj   !DrvObj            !DevExt   ObjectName
+> 8a190288  \Driver\MountMgr   8a190340  MountPointManager
+
+dt mountmgr!_DEVICE_EXTENSION 8a190340 MountedDeviceList
+1: kd> dt mountmgr!_DEVICE_EXTENSION 8a190340 MountedDeviceList
+   +0x008 MountedDeviceList : _LIST_ENTRY [ 0xe15744c8 - 0xe36dc520 ]
+
+=> dump all the mount point names
+!list "-t nt!_LIST_ENTRY.Flink -e -x \"dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames\" 0xe15744c8"
+
+1: kd> !list "-t nt!_LIST_ENTRY.Flink -e -x \"dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames\" 0xe15744c8"
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe162c200 - 0xe15d9748 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskVolume1"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe15a3e08 - 0xe166ee08 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskVolume2"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe1686cc0 - 0xe167fef8 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskVolume3"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe167de20 - 0xe1575b98 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskVolume4"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe164c7a8 - 0xe1656358 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskDmVolumes\Fdw8Dg0\Volume1"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe16668f8 - 0xe1606198 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskDmVolumes\Fdw8Dg0\Volume2"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe164c758 - 0xe1656308 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskDmVolumes\Fdw8Dg0\Volume3"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe1674398 - 0xe1672788 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskDmVolumes\Fdw8Dg0\Volume5"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe17bb068 - 0xe2b36c08 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskDmVolumes\Fdw8Dg0\Volume4"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe30f9438 - 0xe3205520 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskDmVolumes\Fdw8Dg0\Volume6"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe1047d58 - 0xe2c596d8 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskDmVolumes\Fdw8Dg0\Volume7"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe2f0e1e8 - 0xe15d70a0 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\HarddiskDmVolumes\Fdw8Dg0\Volume8"
+
+dt mountmgr!_MOUNTED_DEVICE_INFORMATION @$extret DeviceName SymbolicLinkNames 
+   +0x008 SymbolicLinkNames : _LIST_ENTRY [ 0xe3527e48 - 0xe1072968 ]
+   +0x02c DeviceName        : _UNICODE_STRING "\Device\CdRom0"
+
+
+1: kd> !classext
+Storage class devices:
+
+  !classext 899f8030  nStor NexStor Wahoo Disk       
+  !classext 899f7030  nStor NexStor Wahoo Disk       
+* !classext 899f6030  HITACHI HUS151473VL3800 Paging Disk       
+* !classext 899f3728  HITACHI HUS151473VL3800 Paging Disk       
+  !classext 88a73ab8  FUJITSU MAP3367NC Disk       
+  !classext 899e2ab8  FUJITSU MAP3367NC Disk       
+  !classext 899e6030  FUJITSU MAP3367NC Disk       
+  !classext 899f0030  FUJITSU MAP3367NC Disk       
+  !classext 8a0674d8  MITSUMI CD-ROM SR244W Removable Cdrom      
+
+Usage: !classext <class device> <level [0-2]>
+
+=> the classext is the DRN device in the \Device\HarddiskN device list
+
+
+
