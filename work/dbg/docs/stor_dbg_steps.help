@@ -131,5 +131,77 @@ Usage: !classext <class device> <level [0-2]>
 
 => the classext is the DRN device in the \Device\HarddiskN device list
 
+2: kd> dt classpnp!_TRANSFER_PACKET ffffac8a947f3a30
+   +0x000 AllPktsListEntry : _LIST_ENTRY [ 0xffffac8a947f50f0 - 0xffffac8a8ad24530 ]
+
+2: kd> !list "-t nt!_LIST_ENTRY.Flink -e -x \"dt classpnp!_TRANSFER_PACKET @$extret Irp Srb\" 0xffffac8a947f50f0"
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`9a96fde0 _IRP
+   +0x120 Srb : 0xffffac8a`9b24a9e0 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`93a547b0 _IRP
+   +0x120 Srb : 0xffffac8a`9b24f300 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`9afa8de0 _IRP
+   +0x120 Srb : 0xffffac8a`9b2502f0 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`96a43de0 _IRP
+   +0x120 Srb : 0xffffac8a`9b24f990 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`99ec8ba0 _IRP
+   +0x120 Srb : 0xffffac8a`9b24f6c0 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`94152e00 _IRP
+   +0x120 Srb : 0xffffac8a`9b24fa80 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`93ab02c0 _IRP
+   +0x120 Srb : 0xffffac8a`9b24e8b0 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`91b52e00 _IRP
+   +0x120 Srb : 0xffffac8a`978c93c0 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`90d5e7a0 _IRP
+   +0x120 Srb : 0xffffac8a`978ca2c0 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`935657a0 _IRP
+   +0x120 Srb : 0xffffac8a`978ce460 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`97ff0a10 _IRP
+   +0x120 Srb : 0xffffac8a`952e9230 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`978e39e0 _IRP
+   +0x120 Srb : 0xffffac8a`952eee10 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`8a8d4440 _IRP
+   +0x120 Srb : (null) 
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`8a19ad40 _IRP
+   +0x120 Srb : 0xffffac8a`8a8c86e0 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`9a8eede0 _IRP
+   +0x120 Srb : 0xffffac8a`9b25a340 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`997dade0 _IRP
+   +0x120 Srb : 0xffffac8a`9b25d8b0 _STORAGE_REQUEST_BLOCK_HEADER
+
+dt classpnp!_TRANSFER_PACKET @$extret Irp Srb 
+   +0x020 Irp : 0xffffac8a`8f10cde0 _IRP
+   +0x120 Srb : 0xffffac8a`9b25e210 _STORAGE_REQUEST_BLOCK_HEADER
+
 
 
