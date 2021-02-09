@@ -87,6 +87,8 @@ Object: ffff888ab0d923e0  Type: (ffff888aa3ad0bc0) Event
 Register based stack dump:
 > dps esp-100 esp+100
 
+> !rcdrkd.rcdrlogdump <driver>
+
 ==== WDF debugging ====
 
 Look at all WDF100 on stacks:
