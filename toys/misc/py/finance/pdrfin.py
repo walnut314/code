@@ -128,14 +128,27 @@ def process(stock_csv):
     finally:
         f.close()
 
+def getData2(ticker, start_datum, end_datum):
+    print (ticker)
+    data = None
+    try:
+        data = pdr.get_data_yahoo(ticker, start_datum, end_datum)
+    finally:
+        return data
+
+year = '2021'
+month = '2'
+day = '12'
+start_datum = year + '-' + month + '-' + day
+end_datum   = year + '-' + month + '-' + day
 
 def all_data(tik):
-    data = getData(tik)
+    print(start_datum)
+    print(end_datum)
+    data = getData2(tik, start_datum, end_datum)
     if data is None:
         return
     print(data)
-    #print(data['Close'].values)
-
 
 def main():
     for tik in ticker_list:
