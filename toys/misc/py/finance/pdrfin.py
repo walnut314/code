@@ -13,18 +13,19 @@ import matplotlib.pyplot as plt
 # Tickers list
 # We can add and delete any ticker from the list to get desired ticker live data
 #ticker_list = ['AMZN', 'MSFT', 'WDC', 'FB', 'AAPL']
-ticker_list = ['WDC', 'OXY', 'IVV']
+ticker_list = ['XLK', 'SPY', 'AAPL', 'OXY', 'IVV']
 
 today = datetime.today()
 # We can get data by our choice by giving days bracket
-start_date = datetime(2020, 3, 1) #'2017–01–01'
-end_date   = datetime(2020, 6, 26) #'2019–11–30'
+start_date = datetime(2021, 2, 12) #'2017–01–01'
+end_date   = datetime(2021, 2, 12) #'2019–11–30'
 files=[]
 def getData(ticker):
     print (ticker)
     data = None
     try:
-        data = pdr.get_data_yahoo(ticker, start=start_date, end=today)
+        #data = pdr.get_data_yahoo(ticker, start=start_date, end=today)
+        data = pdr.get_data_yahoo(ticker, start=start_date, end=end_date)
     finally:
         return data
 #    data = pdr.get_data_yahoo(ticker, start="2017-08-13",end="2017-08-14")    
@@ -128,9 +129,18 @@ def process(stock_csv):
         f.close()
 
 
+def all_data(tik):
+    data = getData(tik)
+    if data is None:
+        return
+    print(data)
+    #print(data['Close'].values)
+
+
 def main():
     for tik in ticker_list:
-        analyze(tik)
+        all_data(tik)
+#       analyze(tik)
 
 #     process('nyse.csv');
 #     process('nasdaq.csv');

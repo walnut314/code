@@ -1625,4 +1625,6 @@ Dump Lists:
 !list "-t nt!_LIST_ENTRY.Flink -e -x \"dt nt!_ETHREAD\" 0xffff98851c21bba8"
 !list "-t nt!_LIST_ENTRY.Flink -e -x \"!thread\" 0xffff98851c21bba8"
 
+WinDe.help
+!winde.activity
 
