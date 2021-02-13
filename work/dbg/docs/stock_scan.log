@@ -1,0 +1,54 @@
+2/13/2021 12:06:01 PM     C:\sandbox\stock_scan.log
+
+SPX = S&P 500
+NDX = Nasdaq 100
+
+https://www.sectorspdr.com/sectorspdr/sector/xle/portfolio
+
+XLE,XOM,CVX,COP,SLB,EOJ,PSX,MPC,KMI,WMB,PXD,VLO
+XLE,OXY,OKE,HAL,HES,BKR,DVN,FANG,MRO,COG
+XLE,APA,NOV,HFC,FTI,1XAEH1,CXO
+
+Indexes
+HWI - NYSE Computer hardware index
+
+==> etfdb.com, stockcharts.com
+Sectors: XLF (Fin), XLU (Util), XLY (Cons disc), XLP (Stapl), XLE (Ener), 
+         XLV (Health), XLE (Indus), XLK (Tech), VOX (Telcom), XLB (Mater), 
+         VNQ (RealEst)
+
+Industries:
+https://en.wikipedia.org/wiki/Global_Industry_Classification_Standard
+
+Broad:  SPX, NDX
+Sector: see above
+Industry: 
+Equity:  ???
+
+Screener:
+========
+Weekly:
+a. [BSE] $ > prev week's high       : yahoo historical weekly
+b. [BSE] $ > weekly opening $       : yahoo historical weekly
+c. [BSE] $ > prev week's close      : yahoo historical weekly
+c. [BSE] $ > 8-period EMA           : yahoo indicator
+
+Daily:
+a. [BSE] $ > prev session's high    : yahoo historical daily
+b. [BSE] $ > prev session's close   : yahoo historical daily
+c. [BSE] $ > 8-period EMA           : yahoo indicator
+d. [BSE] $ > opening $              : yahoo chart
+
+Intraday:
+a. [SE] $ > 8-period EMA 60-min     : yahoo chart interval/indicator
+b. [SE] $ > 8-period EMA 15-min     : yahoo chart interval/indicator
+
+
+Buy/Sell signals:
+================
+OPI: current $ - opening $
+NPI: current $ - previous session's close $
+
+Long is both > 0.25 buy if > 0.50
+
+
