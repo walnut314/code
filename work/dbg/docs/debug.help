@@ -87,7 +87,7 @@ Object: ffff888ab0d923e0  Type: (ffff888aa3ad0bc0) Event
 Register based stack dump:
 > dps esp-100 esp+100
 
-> !rcdrkd.rcdrlogdump <driver>
+> !rcdrkd.rcdrlogdump <driver_name.sys>
 
 ==== WDF debugging ====
 
@@ -1627,4 +1627,14 @@ Dump Lists:
 
 WinDe.help
 !winde.activity
+
+Cpu activity:
+7: kd> !prcb 0
+PRCB for Processor 0 at fffff80332863180:
+Current IRQL -- 0
+Threads--  Current fffff8033418f400 Next ffff9207da314080 Idle fffff8033418f400
+Processor Index 0 Number (0, 0) GroupSetMember 1
+Interrupt Count -- 0098b63a
+Times -- Dpc    0000041f Interrupt 000006da 
+         Kernel 0009784f User      00004e86 
 
