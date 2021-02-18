@@ -1,0 +1,68 @@
+2/18/2021 7:10:15 AM     C:\sandbox\fin\stock_scan.log
+
+SPX = S&P 500
+NDX = Nasdaq 100
+
+https://www.sectorspdr.com/sectorspdr/sector/xle/portfolio
+
+Just Broad market
+['SPX','NDX']
+Just Sectors:
+['XLE','XLC','XLY','XLP','XLF','XLV','XLI','XLB,'XLRE','XLK','XLU']
+['XLE','XOM','CVX','COP','SLB','EOG','PSX','MPC','KMI','WMB','PXD','VLO','OXY','OKE','HAL','HES','BKR','DVN','FANG','MRO','COG','APA','NOV','HFC','FTI','CXO']
+[XLB','LIN','SHW','APD','ECL','FCX','NEM','DOW','DD','IFF','CTVA','PPG','BLL','LYB','VMC','MLM','IP','ALB','AMCR','NUE','CE','EMN','AVY','FMC','PKG','WRK','MOS','CF','SEE']
+[XLC','FB','GOOGL','GOOG','ATVI','TWTR','NFLX','DIS','CMCSA','CHTR','T','VZ','TMUS','EA','VIAC','TTWO','OMC','DISCK','LYV','LUMN','FOXA','IPG','NWSA','DISH','DISCA','FOX','NWS']
+[XLF','BRK.B','JPM','BAC','WFC','C','MS','GS','BLK','SCHW','AXP','SPGI','CB','TFC','PNC','CME','USB','ICE','MMC','COF','AON','PGR','MCO','MET','TRV','AIG','TROW','MSCI','BK','PRU','ALL','AFL','WLTW','FRC','DFS','SIVB','STT','AMP','FITB','AJG','MKTX','SYF','NTRS','MTB','RF','KEY','HIG','CFG','NDAQ','HBANL','CINF','RJF','PFG','L','CBOE','RE','LNC','WRB','GL','CMA','IVZ','ZION','BEN','AIZ','PBCT','UNM']
+[XLI','UNP','HON','UPS','BA','RTX','CAT','GE','MMM','DE','LMT','CSX','NSC','FDX','ITW','EMR','ETN','NOC','WM','ROP','JCI','LHX','GD','TT','CMI','PH','INFO','PCAR','LUV','TDG','VRSK','CARR','CTAS','ROK','DAL','AME','SWK','FAST','OTIS','CPRT','FTV','EFX','URI','ODFL','KSU','RSG','XYL','DOV','GWW','IR','EXPD','TDY','J','IEX','MAS','WAB','UAL','CHRW','FBHS','JBHT','TXT','AAL','HWM','PWR','SNA','ALLE','PNR','RHI','NLSN','AOS','ROL','ALK','HII','FLS']
+[XLK','AAPL','MSFT','NVDA','V','PYPL','MA','INTC','ADBE','CRM','CSCO','AVGO','ACN','TXN','QCOM','ORCL','NOW','INTU','AMD','IBM','AMAT','MU','LRCX','FIS','ADP','ADSK','FISV','ADI','GPN','KLAC','SNPS','MCHP','TEL','CTSH','APH','CDNS','HPQ','XLNX','ANSS','SWKS','MSI','GLW','PAYX','KEYS','ZBRA','MXIM','ENPH','CDW','TER','FLT','FTNT','WDC','QRVO','VRSN','TYL','PAYC','TRMB','HPE','BR','ANET','IT','AKAM','STX','CTXS','MPWR','NTAP','LDOS','NLOK','FFIV','JKHY','WU','IPGP','JNPR','FLIR','DXC','VNT','XRX']
+[XLP','PG','WMT','KO','PEP','PM','MO','MDLZ','COST','CL','EL','KMB','STZ','SYY','WBA','GIS','MNST','ADM','KR','KHC','CLX','HSY','MKC','CHD','TSN','CAG','K','BF.B','SJM','HRL','LW','CPB','TAP']
+[XLRE','AMT','PLD','CCI','EQIX','DLR','PSA','SPG','SBAC','WELL','WY','AVB','CBRE','EQR','O','ARE','VTR','ESS','PEAK','MAA','DRE','EXR','BXP','UDR','HST','IRM','REG','KIM','FRT','VNO','SLG']
+[XLU','NEE','DUK','SO','D','EXC','AEP','SRE','XEL','PEG','AWK','ES','WEC','ED','DTE','PPL','EIX','AES','ETR','AEE','FE','CMS','EVRG','LNT','CNP','ATO','NRG','PNW','NI']
+[XLV','JNJ','UNH','ABT','TMO','PFE','MRK','ABBV','LLY','MDT','DHR','AMGN','BMY','CVS','ISRG','GILD','SYK','ZTS','CI','BDX','ANTM','ILMN','VRTX','BSX','EW','REGN','HUM','HCA','IDXX','ALGN','BIIB','A','DXCM','BAX','IQV','ALXN','CNC','ZBH','RMD','MCK','MTD','LH','VTRS','CERN','WST','HOLX','CTLT','COO','TFX','WAT','VAR','DGX','PKI','INCY','STE','ABC','CAH','ABMD','BIO','XRAY','UHS','HSIC','DVA','PRGO']
+[XLY','AMZN','TSLA','HD','MCD','NKE','LOW','SBUX','TGT','BKNG','TJX','GM','DG','F','ROST','APTV','EBAY','CMG','MAR','ORLY','YUM','HLT','ETSY','AZO','BBY','DHI','DLTR','VFC','LEN','EXPE','TSCO','KMX','GRMN','LVS','ULTA','CCL','DRI','NVR','DPZ','MGM','GPC','RCL','POOL','WYNN','PHM','WHR','HAS','LB','AAP','BWA','TPR','LKQ','MHK','NWL','NCLH','PVH','HBI','LEG','RL','GPS','UAA','UA']
+
+
+
+Indexes
+HWI - NYSE Computer hardware index
+
+==> etfdb.com, stockcharts.com
+Sectors: XLF (Fin), XLU (Util), XLY (Cons disc), XLP (Stapl), XLE (Ener), 
+         XLV (Health), XLE (Indus), XLK (Tech), VOX (Telcom), XLB (Mater), 
+         VNQ (RealEst)
+
+Industries:
+https://en.wikipedia.org/wiki/Global_Industry_Classification_Standard
+
+Broad:  SPX, NDX
+Sector: see above
+Industry: 
+Equity:  ???
+
+Screener:
+========
+Weekly:
+a. [BSE] $ > prev week's high       : yahoo historical weekly
+b. [BSE] $ > weekly opening $       : yahoo historical weekly
+c. [BSE] $ > prev week's close      : yahoo historical weekly
+c. [BSE] $ > 8-period EMA           : yahoo indicator
+
+Daily:
+a. [BSE] $ > prev session's high    : yahoo historical daily
+b. [BSE] $ > prev session's close   : yahoo historical daily
+c. [BSE] $ > 8-period EMA           : yahoo indicator
+d. [BSE] $ > opening $              : yahoo chart
+
+Intraday:
+a. [SE] $ > 8-period EMA 60-min     : yahoo chart interval/indicator
+b. [SE] $ > 8-period EMA 15-min     : yahoo chart interval/indicator
+
+
+Buy/Sell signals:
+================
+OPI: current $ - opening $
+NPI: current $ - previous session's close $
+
+Long is both > 0.25 buy if > 0.50
+
+

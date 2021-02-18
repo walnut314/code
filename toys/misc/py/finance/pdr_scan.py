@@ -18,6 +18,12 @@ lastFriday = lastMonday+week_delta
 
 # Tickers list
 ticker_list = ['SPY', 'XLE', 'OXY']
+broad_list = ['IVV','QQQ']
+sector_list = ['XLE','XLC','XLY','XLP','XLF','XLV','XLI','XLB','XLRE','XLK','XLU']
+xle_list = ['XLE','XOM','CVX','COP','SLB','EOG','PSX','MPC','KMI','WMB','PXD','VLO','OXY','OKE','HAL','HES','BKR','DVN','FANG','MRO','COG','APA','NOV','HFC','FTI','CXO']
+
+mother_ship = [broad_list, sector_list, xle_list]
+
 # globals
 [now_high, now_open, now_close]                   = [0, 0, 0]
 [prev_day_high, prev_day_open, prev_day_close]    = [0, 0, 0]
@@ -52,32 +58,36 @@ def show_week(ticker, now, week):
         week_signal = True
     return week_signal
 
+def process_tick(ticker):
+    [now, week, day]                                  = [None, None, None]
+    [week_signal, day_signal, opi_npi_signal]         = [False, False, False]
+    [now_high, now_open, now_close]                   = [0, 0, 0]
+    [prev_day_high, prev_day_open, prev_day_close]    = [0, 0, 0]
+    [prev_week_high, prev_week_open, prev_week_close] = [0, 0, 0]
+    try:
+        [now, week, day]   = [pdr.get_data_yahoo(ticker, today, today), 
+                              pdr.get_data_yahoo(ticker, start_week, end_week),
+                              pdr.get_data_yahoo(ticker, start_day, end_day)]
+    finally:
+        if week is not None and day is not None and now is not None:
+            [now_high, now_open, now_close] = [now['High'].values[0], now['Open'].values[0], now['Close'].values[0]]
+            [prev_day_high, prev_day_open, prev_day_close] = [day['High'].values[0], day['Open'].values[0], day['Close'].values[0]]
+
+            length = len(week['Close'].values)
+            [high, open, close]  = [np.zeros(length), np.zeros(length), np.zeros(length)]
+            for i in range(length):
+                [high[i], open[i], close[i]] = [week['High'].values[i], week['Open'].values[i], week['Close'].values[i]]
+            [prev_week_high, prev_week_open, prev_week_close]  = [np.amax(high), np.amax(open), np.amax(close)]
+            [week_signal, day_signal, opi_npi_signal] = [show_week(ticker, now, week), show_day(ticker, now, day), opi_npi(ticker, now, day)]
+
+        print('{0} week: {1}, day: {2}, opi/npi: {3}'.format(ticker, week_signal, day_signal, opi_npi_signal))
+        if week_signal == True and day_signal == True and opi_npi_signal == True:
+            print('DUDE!!! buy {0}'.format(ticker))
+
 def main():
-    for ticker in ticker_list:
-        [now, week, day]                                  = [None, None, None]
-        [week_signal, day_signal, opi_npi_signal]         = [False, False, False]
-        [now_high, now_open, now_close]                   = [0, 0, 0]
-        [prev_day_high, prev_day_open, prev_day_close]    = [0, 0, 0]
-        [prev_week_high, prev_week_open, prev_week_close] = [0, 0, 0]
-        try:
-            [now, week, day]   = [pdr.get_data_yahoo(ticker, today, today), 
-                                  pdr.get_data_yahoo(ticker, start_week, end_week),
-                                  pdr.get_data_yahoo(ticker, start_day, end_day)]
-        finally:
-            if week is not None and day is not None and now is not None:
-                [now_high, now_open, now_close] = [now['High'].values[0], now['Open'].values[0], now['Close'].values[0]]
-                [prev_day_high, prev_day_open, prev_day_close] = [day['High'].values[0], day['Open'].values[0], day['Close'].values[0]]
-
-                length = len(week['Close'].values)
-                [high, open, close]  = [np.zeros(length), np.zeros(length), np.zeros(length)]
-                for i in range(length):
-                    [high[i], open[i], close[i]] = [week['High'].values[i], week['Open'].values[i], week['Close'].values[i]]
-                [prev_week_high, prev_week_open, prev_week_close]  = [np.amax(high), np.amax(open), np.amax(close)]
-                [week_signal, day_signal, opi_npi_signal] = [show_week(ticker, now, week), show_day(ticker, now, day), opi_npi(ticker, now, day)]
-
-            print('{0} week: {1}, day: {2}, opi/npi: {3}'.format(ticker, week_signal, day_signal, opi_npi_signal))
-            if week_signal == True and day_signal == True and opi_npi_signal == True:
-                print('DUDE!!! buy {0}'.format(ticker))
+    for ticker_list in mother_ship:
+        for ticker in ticker_list:
+            process_tick(ticker)
 
 if __name__ == "__main__":
     main()    

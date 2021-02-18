@@ -3,6 +3,8 @@ dude7776
 
 latest Windbg: \\dbg\privates\latest
 
+!Winde.help
+
 Identify dump or LKD:
 0: kd> ||
 .  0 64-bit Kernel triage dump: C:\sandbox\dumps\Bug_2051983\0000e5380_PDCRevocation-20201111-0836.dmp
