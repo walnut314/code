@@ -1649,3 +1649,11 @@ Interrupt Count -- 0098b63a
 Times -- Dpc    0000041f Interrupt 000006da 
          Kernel 0009784f User      00004e86 
 
+GFLAGS:
+======
+trick on clearing gflags (in case it prevents you from booting) in windbg - 
+view flags !gflag => dd NtGlobalFlag, you can zero 
+it ed NtGlobalFlag 0 and go and you're back in business.
+
+
+
