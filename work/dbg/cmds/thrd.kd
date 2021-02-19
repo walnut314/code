@@ -1,4 +1,6 @@
-.logopen dude.log
+.logappend dude.log
+||
 !analyze -v
+!amli lc
 .logclose
 q

@@ -1223,6 +1223,15 @@ ACPI:
 | | | _STA (ffff880593f36208) - Method - Flags 0000000000000000 Start ffff880593f3637a Len 000000000000000c
 | | | _LID (ffff880593f363a0) - Method - Flags 0000000000000000 Start ffff880593f36512 Len 000000000000000e
 
+The !amli lc extension lists all active ACPI contexts.
+4: kd> !amli lc
+ Ctxt=ffff9707d0081010, ThID=0000000000000000, Flgs=---C-----, pbOp=ffff9707c39ed30b, Obj=\_SB._SAN.GEN1.PAT0
+ Ctxt=ffff9707d125d010, ThID=0000000000000000, Flgs=---C-----, pbOp=ffff9707c39ed14d, Obj=\_SB._SAN.GEN7._TMP
+ Ctxt=ffff9707d290f270, ThID=0000000000000000, Flgs=---C-----, pbOp=ffff9707c39799cf, Obj=\_SB.BAT1._BIX
+ Ctxt=ffff9707d0506010, ThID=0000000000000000, Flgs=---C-----, pbOp=ffff9707c397e93c, Obj=\_SB.SRTC._STV
+ Ctxt=ffff9707d08f5010, ThID=0000000000000000, Flgs=---C-----, pbOp=ffff9707c397b9a9, Obj=\_SB.TPWR._BST
+
+
 2: kd> !amli find PCI0
 \_SB.PCI0
 
