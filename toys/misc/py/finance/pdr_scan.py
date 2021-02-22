@@ -14,14 +14,17 @@ lastMonday = today - start_delta
 week_delta = datetime.timedelta(days=4)
 lastFriday = lastMonday+week_delta
 [start_week, end_week] = [lastMonday, lastFriday]
+
+if weekday == 0: # Monday's set yesterday to Friday
+    yesterday = lastFriday
+
 [start_day, end_day] = [yesterday, yesterday]
 
 print('today:       {0}'.format(today))
-#print('weekday {0}'.format(weekday))
+print('weekday {0}'.format(weekday))
 print('yesterday:   {0}'.format(yesterday))
 print('last monday: {0}'.format(lastMonday))
 print('last friday: {0}'.format(lastFriday))
-
 
 
 # Tickers list
