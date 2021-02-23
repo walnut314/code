@@ -1655,5 +1655,17 @@ trick on clearing gflags (in case it prevents you from booting) in windbg -
 view flags !gflag => dd NtGlobalFlag, you can zero 
 it ed NtGlobalFlag 0 and go and you're back in business.
 
+Memory:
+======
+get details of virtual address
+!vm <address>
+
+DPCs:
+====
+!dpcs <cpu number>
+6: kd> !dpcs 4
+CPU Type      KDPC       Function
+dpcs: no pending DPCs found
 
 
+!list "-e -x \"dt nt!_EPROCESS @$extret-@@(#FIELD_OFFSET(nt!_EPROCESS, TimerResolutionLink)) ImageFileName SmallestTimerResolution RequestedTimerResolution\" nt!ExpTimerResolutionListHead"
