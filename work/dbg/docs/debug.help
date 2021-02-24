@@ -1669,3 +1669,9 @@ dpcs: no pending DPCs found
 
 
 !list "-e -x \"dt nt!_EPROCESS @$extret-@@(#FIELD_OFFSET(nt!_EPROCESS, TimerResolutionLink)) ImageFileName SmallestTimerResolution RequestedTimerResolution\" nt!ExpTimerResolutionListHead"
+
+DevCon:
+https://docs.microsoft.com/en-us/windows-hardware/drivers/devtest/devcon
+======
+List devices hwid: devcon hwids *
+
