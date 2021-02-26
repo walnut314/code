@@ -32,6 +32,7 @@ Sectors: XLF (Fin), XLU (Util), XLY (Cons disc), XLP (Stapl), XLE (Ener),
          XLV (Health), XLE (Indus), XLK (Tech), VOX (Telcom), XLB (Mater), 
          VNQ (RealEst)
 
+OIL: XLE,BNO,MRO,OXY,FCG
 Industries:
 https://en.wikipedia.org/wiki/Global_Industry_Classification_Standard
 
