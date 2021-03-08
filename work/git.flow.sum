@@ -197,4 +197,14 @@ Submodules:
     git submodule foreach "git diff --stat"
 
 
-    
+
+References
+008 Introduction to Git Submodules - YouTube
+https://www.youtube.com/watch?v=UQvXst5I41I
+009 More about git submodules - YouTube
+https://www.youtube.com/watch?v=w4AyLtIEibo
+https://git-scm.com/book/en/v2/Git-Tools-Submodules
+https://www.deviceswiki.com/wiki/Git_Usage_and_Submodules
+https://marklodato.github.io/visual-git-guide/index-en.html
+
+
