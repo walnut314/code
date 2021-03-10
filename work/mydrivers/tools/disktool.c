@@ -129,7 +129,7 @@ int main()
                 break;
             } else 
             if (strncmp("help", line, 4) == 0) {
-                printf("start, stop, send\n");
+                printf("geo, quit, boot\n");
             } else
             if (strncmp("boot", line, 4) == 0) {
                   fResult = ReadFile(hDevice, 
@@ -142,7 +142,7 @@ int main()
                   }
 
             } else
-            if (strncmp("part", line, 4) == 0) {
+            if (strncmp("geo", line, 3) == 0) {
 
                 dwBufSize = sizeof(DRIVE_LAYOUT_INFORMATION) +
                                 sizeof(PARTITION_INFORMATION)*3;
