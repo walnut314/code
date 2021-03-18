@@ -1676,3 +1676,37 @@ https://docs.microsoft.com/en-us/windows-hardware/drivers/devtest/devcon
 ======
 List devices hwid: devcon hwids *
 
+Digging out UMDF Irps in Flight
+===============================
+1: kd> !process 0 0x1f wudfhost.exe
+PROCESS ffff880597dbf480
+PROCESS ffff88059cda50c0
+PROCESS ffff88059d7ae0c0
+
+1: kd> .process ffff880597dbf480
+1: kd> .reload
+1: kd> !wdfkd.wdfumirps
+Number of pending IRPS: 0x5
+####  CWudfIrp          Current Type                                        UniqueId          KernelIrp         Device Stack
+----  ----------------  --------------------------------------------------  ----------------  ----------------  ----------------
+0000  0x148143d4ec0     WdfRequestRead                                      0                 0x00000000        0x148143aac80    
+0001  0x148143d5360     WdfRequestRead                                      0                 0x00000000        0x148143aac80    
+0002  0x148143d5940     WdfRequestRead                                      0                 0x00000000        0x148143aac80    
+0003  0x148143df000     WdfRequestUndefined                                 0                 0x00000000        0x148143d5bc0    
+0004  0x148143e0790     WdfRequestRead                                      0                 0x00000000        0x148143d5bc0    
+
+1: kd> .process ffff88059cda50c0
+1: kd> !wdfkd.wdfumirps
+Number of pending IRPS: 0x0
+
+1: kd> .process ffff88059d7ae0c0
+1: kd> !wdfkd.wdfumirps
+Number of pending IRPS: 0x2
+####  CWudfIrp          Current Type                                        UniqueId          KernelIrp         Device Stack
+----  ----------------  --------------------------------------------------  ----------------  ----------------  ----------------
+0000  0x216bc1d2c50     Power (SET_POWER)                                   0                 0xffff880597b17010  0x216bc12c1e0    
+0001  0x216bea32ee0     WdfRequestDeviceIoControl                           0                 0x00000000        0x216bc12c1e0     
+
+
+
+
