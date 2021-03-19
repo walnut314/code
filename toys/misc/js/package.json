@@ -13,7 +13,7 @@
     "fs-extra": "^7.0.1",
     "hexdump-nodejs": "^0.1.0",
     "pegjs": "^0.10.0",
-    "printf": "^0.5.1",
+    "printf": "^0.6.1",
     "socket.io": "^2.2.0",
     "tail": "^2.0.2",
     "unzip": "^0.1.11",
