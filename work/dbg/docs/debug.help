@@ -1709,4 +1709,9 @@ Number of pending IRPS: 0x2
 
 
 
+Viewing Devmgmt devices:
+>Many times I want to find something in device manager however it does not have a ‘search’ button. I have used powershell’s gwmi often, but the Out-GridView takes it to the next level!
+>Run the following in a powershell window: 
+
+PS:> gwmi win32_pnpentity | Out-GridView
 
