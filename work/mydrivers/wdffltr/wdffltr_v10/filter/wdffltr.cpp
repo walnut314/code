@@ -151,7 +151,7 @@ DriverEntry(
     NTSTATUS          status;
 
 
-    WdfFltrTrace(("WDF Filter Driver...Compiled %s %s\n" ,__DATE__, __TIME__));
+    //WdfFltrTrace(("WDF Filter Driver...Compiled %s %s\n" ,__DATE__, __TIME__));
 
     //
     // Initialize our driver config structure, specifying our 
@@ -175,7 +175,7 @@ DriverEntry(
                              &config,
                              NULL);
     if (!NT_SUCCESS(status)) {
-        WdfFltrTrace(("WdfDriverCreate failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfDriverCreate failed - 0x%x\n", status));
         return status;
     }
 
@@ -186,8 +186,8 @@ DriverEntry(
 
     if (!NT_SUCCESS(status)) {
 
-        WdfFltrTrace(("WdfFltrInitRequestBufferTracker failed - 0x%x\n", 
-                      status));
+        //WdfFltrTrace(("WdfFltrInitRequestBufferTracker failed - 0x%x\n", 
+        //              status));
         return status;
 
     }
@@ -228,7 +228,8 @@ DriverUnload(
     ) {
 
 
-    WdfFltrTrace(("Unloading...\n"));
+    UNREFERENCED_PARAMETER(Driver);
+    //WdfFltrTrace(("Unloading...\n"));
 
     //
     // Cleanup any global data that exists
@@ -289,7 +290,7 @@ WdfFltrEvtDeviceAdd(
     WDF_IO_QUEUE_CONFIG          ioQueueConfig;
     WDF_PNPPOWER_EVENT_CALLBACKS pnpPowerCallbacks;
 
-    WdfFltrTrace(("Adding device...\n"));
+    //WdfFltrTrace(("Adding device...\n"));
 
     //
     // We're a filter, so mark our device init structure
@@ -322,8 +323,8 @@ WdfFltrEvtDeviceAdd(
                                 0);
 
     if (!NT_SUCCESS(status)) {
-        WdfFltrTrace(("WdfDeviceInitAssignWdmIrpPreprocessCallback "\
-                      "failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfDeviceInitAssignWdmIrpPreprocessCallback "\
+        //              "failed - 0x%x\n", status));
         return status;
     }
 
@@ -370,7 +371,7 @@ WdfFltrEvtDeviceAdd(
                              &wdfDevice);
 
     if (!NT_SUCCESS(status)) {
-        WdfFltrTrace(("WdfDeviceCreate failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfDeviceCreate failed - 0x%x\n", status));
         return status;
     }
 
@@ -426,7 +427,7 @@ WdfFltrEvtDeviceAdd(
                               NULL);
 
     if (!NT_SUCCESS(status)) {
-        WdfFltrTrace(("WdfIoQueueCreate failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfIoQueueCreate failed - 0x%x\n", status));
         return status;
     }
 
@@ -439,13 +440,13 @@ WdfFltrEvtDeviceAdd(
 
         status = WdfFltrCreateControlDevice(Driver);
         if (!NT_SUCCESS(status)) {
-            WdfFltrTrace(("WdfFltrCreateControlDevice failed - 0x%x\n", status));
+            //WdfFltrTrace(("WdfFltrCreateControlDevice failed - 0x%x\n", status));
             return status;
         }
 
     } else {
 
-        WdfFltrTrace(("Control device already created, skipping\n"));
+        //WdfFltrTrace(("Control device already created, skipping\n"));
 
     }
 
@@ -510,12 +511,12 @@ WdfFltrCreateControlDevice(
         //  a user application had an open handle to it
         //  when we last tried to delete it
         //
-        WdfFltrTrace(("Control device already exists\n"));
+        //WdfFltrTrace(("Control device already exists\n"));
         return STATUS_SUCCESS;
 
     }
 
-    WdfFltrTrace(("Creating control device\n"));
+    //WdfFltrTrace(("Creating control device\n"));
 
     //
     // We need a PWDFDEVICE_INIT structure with which to
@@ -531,7 +532,7 @@ WdfFltrCreateControlDevice(
                             &SDDL_DEVOBJ_SYS_ALL_ADM_RWX_WORLD_RWX_RES_RWX);
 
     if (!deviceInit) {
-        WdfFltrTrace(("WdfControlDeviceInitAllocate failed\n"));
+        //WdfFltrTrace(("WdfControlDeviceInitAllocate failed\n"));
         return STATUS_INSUFFICIENT_RESOURCES;
 
     }
@@ -548,7 +549,7 @@ WdfFltrCreateControlDevice(
     status = WdfDeviceInitAssignName(deviceInit, &deviceName);
 
     if (!NT_SUCCESS(status)) {
-        WdfFltrTrace(("WdfDeviceInitAssignName failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfDeviceInitAssignName failed - 0x%x\n", status));
         return status;
     }
 
@@ -572,7 +573,7 @@ WdfFltrCreateControlDevice(
                              WDF_NO_OBJECT_ATTRIBUTES,
                              &WdfFltrControlDevice);
     if (!NT_SUCCESS(status)) {
-        WdfFltrTrace(("WdfDeviceCreate failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfDeviceCreate failed - 0x%x\n", status));
         return status;
     }
 
@@ -584,7 +585,7 @@ WdfFltrCreateControlDevice(
                                          &linkName);
 
     if (!NT_SUCCESS(status)) {
-        WdfFltrTrace(("WdfDeviceCreateSymbolicLink failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfDeviceCreateSymbolicLink failed - 0x%x\n", status));
         return status;
     }
 
@@ -607,7 +608,7 @@ WdfFltrCreateControlDevice(
                               WDF_NO_OBJECT_ATTRIBUTES,
                               NULL);
     if (!NT_SUCCESS(status)) {
-        WdfFltrTrace(("WdfIoQueueCreate failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfIoQueueCreate failed - 0x%x\n", status));
         return status;
     }
 
@@ -657,6 +658,8 @@ WdfFltrQueryRemove(
     IN WDFDEVICE Device
     ) {
 
+    UNREFERENCED_PARAMETER(Device);
+
     if (InterlockedDecrement(&WdfFltrDeviceCount) == 0) {
 
 #if DBG
@@ -684,8 +687,8 @@ WdfFltrQueryRemove(
         //     occasional crash is OK)
         //
         if (WdfFltrControlDeviceOpen) {
-            WdfFltrTrace(("Not allowing remove of device 0x%p, control "\
-                          "device is open...\n", Device));
+            //WdfFltrTrace(("Not allowing remove of device 0x%p, control "\
+            //              "device is open...\n", Device));
             //
             // The device didn't really go away...
             //
@@ -741,7 +744,10 @@ WdfFltrD0Entry(
     IN WDF_POWER_DEVICE_STATE PreviousState
     ) {
 
-    WdfFltrTrace(("Power up from %s\n", WdfPowerStateToString(PreviousState)));
+    UNREFERENCED_PARAMETER(Device);
+    UNREFERENCED_PARAMETER(PreviousState);
+    
+    //WdfFltrTrace(("Power up from %s\n", WdfPowerStateToString(PreviousState)));
 
     return STATUS_SUCCESS;
 
@@ -782,7 +788,10 @@ WdfFltrD0Exit(
     IN WDF_POWER_DEVICE_STATE PreviousState
     ) {
 
-    WdfFltrTrace(("Power down from %s\n", WdfPowerStateToString(PreviousState)));
+    UNREFERENCED_PARAMETER(Device);
+    UNREFERENCED_PARAMETER(PreviousState);
+    
+    //WdfFltrTrace(("Power down from %s\n", WdfPowerStateToString(PreviousState)));
 
     return STATUS_SUCCESS;
 
@@ -841,7 +850,7 @@ WdfFltrWdmPnp(
     //
     // And spit out the info to the debugger.
     //
-    WdfFltrTrace(("MinorFunction 0x%x\n", ioStack->MinorFunction));
+    //WdfFltrTrace(("MinorFunction 0x%x\n", ioStack->MinorFunction));
 
     //
     // Also send info about the operation to user mode...
@@ -939,8 +948,8 @@ WdfFltrRead(
             //  and let the next device decide what to do with 
             //  this.
             //
-            WdfFltrTrace(("RetrieveOutputBuffer failed - 0x%x\n", 
-                         status));
+            //WdfFltrTrace(("RetrieveOutputBuffer failed - 0x%x\n", 
+            //             status));
         }
 
     }
@@ -953,8 +962,8 @@ WdfFltrRead(
     //
     // Print the info to the debugger
     //
-    WdfFltrTrace(("IRP-0x%p; Buffer-0x%p; Length-0x%x\n",
-        wdmReadIrp, dataBuffer, Length));
+    //WdfFltrTrace(("IRP-0x%p; Buffer-0x%p; Length-0x%x\n",
+    //    wdmReadIrp, dataBuffer, Length));
 
 
     //
@@ -1026,6 +1035,8 @@ WdfFltrReadComplete(
     PWDFFLTR_READ_REQUEST readRequest;
     PIRP                  wdmReadIrp;
 
+    UNREFERENCED_PARAMETER(Target);
+    UNREFERENCED_PARAMETER(Context);
 
     //
     // Get the IRP back
@@ -1035,9 +1046,9 @@ WdfFltrReadComplete(
     //
     // And print the information to the debugger
     //
-    WdfFltrTrace(("IRP-0x%p; Status-0x%x; Information-0x%x\n",
-        wdmReadIrp, Params->IoStatus.Status, 
-        Params->IoStatus.Information));
+    //WdfFltrTrace(("IRP-0x%p; Status-0x%x; Information-0x%x\n",
+    //    wdmReadIrp, Params->IoStatus.Status, 
+    //    Params->IoStatus.Information));
 
     //
     // Also send information about the completion to user mode.
@@ -1124,8 +1135,8 @@ WdfFltrWrite(
             //  and let the next device decide what to do with 
             //  this.
             //
-            WdfFltrTrace(("RetrieveInputBuffer failed - 0x%x\n", 
-                         status));
+            //WdfFltrTrace(("RetrieveInputBuffer failed - 0x%x\n", 
+            //             status));
         }
 
     }
@@ -1138,8 +1149,8 @@ WdfFltrWrite(
     //
     // Print the info to the debugger
     //
-    WdfFltrTrace(("IRP-0x%p; Buffer-0x%p; Length-0x%x\n",
-        wdmWriteIrp, dataBuffer, Length));
+    //WdfFltrTrace(("IRP-0x%p; Buffer-0x%p; Length-0x%x\n",
+    //    wdmWriteIrp, dataBuffer, Length));
 
 
     //
@@ -1219,10 +1230,10 @@ WdfFltrDeviceControl(
     //  need to be customized based on the target device you're
     //  filtering.
     //
-    WdfFltrTrace(("IRP-0x%p; InputBufferLength-0x%x; OutputBufferLength-0x%x; "\
-                  "Control Code-0x%x\n",
-                   deviceControlIrp, InputBufferLength, OutputBufferLength,
-                   IoControlCode));
+    //WdfFltrTrace(("IRP-0x%p; InputBufferLength-0x%x; OutputBufferLength-0x%x; "\
+    //              "Control Code-0x%x\n",
+    //               deviceControlIrp, InputBufferLength, OutputBufferLength,
+    //               IoControlCode));
 
     //
     // Send the information to user mode.
@@ -1302,10 +1313,10 @@ WdfFltrInternalDeviceControl(
     //  need to be customized based on the target device you're
     //  filtering.
     //
-    WdfFltrTrace(("IRP-0x%p; InputBufferLength-0x%x; OutputBufferLength-0x%x; "\
-                  "Control Code-0x%x\n",
-                   deviceControlIrp, InputBufferLength, OutputBufferLength,
-                   IoControlCode));
+    //WdfFltrTrace(("IRP-0x%p; InputBufferLength-0x%x; OutputBufferLength-0x%x; "\
+    //              "Control Code-0x%x\n",
+    //               deviceControlIrp, InputBufferLength, OutputBufferLength,
+    //               IoControlCode));
 
     //
     // Send the information to user mode.
@@ -1399,7 +1410,7 @@ WdfFltrForwardRequest(
         // Oops! Something bad happened, complete the request
         //
         status = WdfRequestGetStatus(Request);
-        WdfFltrTrace(("WdfRequestSend failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfRequestSend failed - 0x%x\n", status));
         WdfRequestComplete(Request, status);
     }
     return;
@@ -1483,7 +1494,7 @@ WdfFltrForwardRequestWithCompletion(
         // Oops! Something bad happened, complete the request
         //
         status = WdfRequestGetStatus(Request);
-        WdfFltrTrace(("WdfRequestSend failed - 0x%x\n", status));
+        //WdfFltrTrace(("WdfRequestSend failed - 0x%x\n", status));
         WdfRequestComplete(Request, status);
     }
     return;

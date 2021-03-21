@@ -84,7 +84,9 @@ WdfFltrControlCreate(
     IN WDFFILEOBJECT FileObject
     ) {
 
-    WdfFltrTrace(("Control device being opened\n"));
+    UNREFERENCED_PARAMETER(Device);
+    UNREFERENCED_PARAMETER(FileObject);
+    //WdfFltrTrace(("Control device being opened\n"));
 
     //
     // Globally set the device as open
@@ -127,7 +129,8 @@ WdfFltrControlClose(
     IN WDFFILEOBJECT FileObject
     ) {
     
-    WdfFltrTrace(("Control device being closed\n"));
+    UNREFERENCED_PARAMETER(FileObject);
+    //WdfFltrTrace(("Control device being closed\n"));
     //
     // Globally set the device as closed
     //
@@ -188,7 +191,7 @@ WdfFltrInitRequestBufferTracker(
                                                'BRsO');
 
     if (!BufferTracker->ActiveBuffer) {
-        WdfFltrTrace(("ExAllocatePoolWithTag failed\n"));
+        //WdfFltrTrace(("ExAllocatePoolWithTag failed\n"));
         return STATUS_INSUFFICIENT_RESOURCES;
     }
 
@@ -364,7 +367,7 @@ WdfFltrAddRequestToTracker(
         if (BufferTracker->PendingRequestBuffersCount 
                                 == WDFFLTR_MAX_PENDING_BUFFERS) {
 
-            WdfFltrTrace(("Too many pending buffers...Data loss imminent\n"));
+            //WdfFltrTrace(("Too many pending buffers...Data loss imminent\n"));
 
             activeBuffer->ValidRequestCount = 0;
             WdfFltrUnLockBufferTracker(BufferTracker, oldIrql);
@@ -383,7 +386,7 @@ WdfFltrAddRequestToTracker(
                                                 '1RsO');
         if (!newBuffer) {
 
-            WdfFltrTrace(("Bad news...ExAllocatePoolWithTag failed\n"));
+            //WdfFltrTrace(("Bad news...ExAllocatePoolWithTag failed\n"));
 
             //
             // Just lose everything that we've collected...System is
@@ -574,6 +577,8 @@ WdfFltrAppIntDeviceControl(
     size_t                  realLength;
     size_t                  bytesRemaining;
 
+    UNREFERENCED_PARAMETER(Queue);
+    UNREFERENCED_PARAMETER(OutputBufferLength);
     //
     // Let's see what we have...
     //
@@ -612,7 +617,7 @@ WdfFltrAppIntDeviceControl(
         //
         if (InputBufferLength) {
 
-            WdfFltrTrace(("Sorry buddy...No input buffers allowed\n"));
+            //WdfFltrTrace(("Sorry buddy...No input buffers allowed\n"));
             WdfRequestComplete(Request, STATUS_INVALID_PARAMETER);
             return;
 
@@ -627,8 +632,8 @@ WdfFltrAppIntDeviceControl(
                                                 &realLength);
 
         if (!NT_SUCCESS(status)) {
-            WdfFltrTrace(("WdfRequestRetrieveOutputBuffer failed - 0x%x\n",
-                status));
+            //WdfFltrTrace(("WdfRequestRetrieveOutputBuffer failed - 0x%x\n",
+            //    status));
             WdfRequestComplete(Request, status);
             return;
         }

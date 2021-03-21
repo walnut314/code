@@ -1,5 +1,7 @@
 WDFFLTR V1.0
 
+http://www.osronline.com/article.cfm%5earticle=446.htm
+
 This archive contains a generic KMDF class filter driver and two associated applications,
 one to install the filter and one to test user-driver communication.
 
