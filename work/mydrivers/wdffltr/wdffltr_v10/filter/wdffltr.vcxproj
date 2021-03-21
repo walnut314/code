@@ -82,12 +82,6 @@
       <WppTraceFunction>TraceEvents(LEVEL,FLAGS,MSG,...);Hexdump((LEVEL,FLAGS,MSG,...))</WppTraceFunction>
       <WppGenerateUsingTemplateFile>{km-WdfDefault.tpl}*.tmh</WppGenerateUsingTemplateFile>
     </ClCompile>
-    <ClCompile Include="appint.cpp">
-      <WppEnabled>true</WppEnabled>
-      <WppKernelMode>true</WppKernelMode>
-      <WppTraceFunction>TraceEvents(LEVEL,FLAGS,MSG,...);Hexdump((LEVEL,FLAGS,MSG,...))</WppTraceFunction>
-      <WppGenerateUsingTemplateFile>{km-WdfDefault.tpl}*.tmh</WppGenerateUsingTemplateFile>
-    </ClCompile>
     <OtherWpp Include="wdffltr.rc">
       <WppEnabled>true</WppEnabled>
       <WppKernelMode>true</WppKernelMode>
