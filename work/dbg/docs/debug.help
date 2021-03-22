@@ -1715,3 +1715,58 @@ Viewing Devmgmt devices:
 
 PS:> gwmi win32_pnpentity | Out-GridView
 
+Heinlein article:
+https://www.tor.com/2012/10/28/something-else-like-heinlein/
+
+============================================================================================================
+Power policy problems - BEGIN:
+============================================================================================================
+kd> !popolicy
+C:\> powercfg -qh
+
+OneNote: Driver Dev - Building Provisioning Packages (PPKG Files)
+
+icd.exe path:
+"C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Imaging and Configuration Designer\x86\"
+
+To update a build a provisioning package
+    1) Edit the XML file for the package.
+        a. Don't forget to bump the version number in the package.
+    2) Build the ppkg file. For Example:
+        a. " icd.exe /Build-ProvisioningPackage /CustomizationXML:Surface.Power.Policy.Defaults.xml /PackagePath:Surface.Power.Policy.Defaults.ppkg +Overwrite "
+    3) Build and test the driver.
+    4) Commit and push both the XML file and the compiled PPKG package.
+
+Verifying the Provisioning Package
+
+You can verify your PPKG file by opening it and looking in it. Provisioning packages are special WIM files, and can be mounted with DISM using an ADMIN command prompt.  
+
+mkdir c:\temp
+
+dism /get-wiminfo /wimfile:Surface.Power.Policy.Defaults.ppkg
+
+    Deployment Image Servicing and Management tool
+    Version: 10.0.18362.1
+    
+    Details for image : Surface.Power.Policy.Defaults.ppkg
+    
+    Index : 1
+    Name : Surface.Power.Policy.Defaults
+    Description :
+    Size : 173,283 bytes
+    
+    The operation completed successfully.
+
+This indicates the index for this package is 1, which you will need for the next step.
+
+dism /mount-wim /wimfile:Surface.Power.Policy.Defaults.ppkg /index:1 /mountdir:c:\temp /readonly
+
+You can now browse through the package, which will be mounted on C:\temp. When you are done, you must unmount the WIM:
+
+dism /unmount-image /mountdir:c:\temp /discard
+
+============================================================================================================
+Power policy problems - END
+============================================================================================================
+
+
