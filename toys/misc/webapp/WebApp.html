@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Webapp </title>
+    <style>
+        input[type="button"] {
+            background-color: pink;
+        }
+    </style>
+    <script>
+        function addItem() {
+            var newItem = document.createElement("div");
+            newItem.innerHTML = document.getElementById("box").value;
+            newItem.onclick = removeItem;
+            document.getElementById("list").appendChild(newItem);
+            saveList();
+        }
+        function removeItem() {
+            document.getElementById("list").removeChild(this);
+            saveList();
+        }
+        function saveList() {
+            localStorage.storedList = document.getElementById("list").innerHTML;
+        }
+        function loadList() {
+            document.getElementById("list").innerHTML = localStorage.storedList;
+            for (var i = 0; i < list.children.length; i++) {
+                list.children[i].onclick = removeItem;
+            }
+        }
+    </script>
+</head>
+<body>
+    <p> Special Exhibition To-Do List</p>
+    <br/>
+    <input type="text" id="box" value="Type here to add task"/> <br/>
+    <input type="button" value="Add item" onclick="addItem();"/> <br/>
+    <div id="list"></div>
+    <script>
+        if (localStorage.storedList) {
+            loadList();
+        }
+    </script>
+    <br/>
+</body>
+</html>
+
+
