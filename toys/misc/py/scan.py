@@ -2,26 +2,18 @@
 
 import re
 import sys
-import colorama
-from colorama import Fore, Back
 
-regexp = "(import)"
+regexp = "Pal"
+cnt = 1
+line = sys.stdin.readline()
+while line:
+    cap = re.search(regexp, line)
+    if cap:
+        n = len(cap.groups())
+        print("Line {}: {} {}".format(cnt, n, line.strip()))
+    else:
+        print("Line {}: {}".format(cnt, line.strip()))
+    line = sys.stdin.readline()
+    cnt += 1
 
-color = Back.BLACK + Fore.BLUE
-print(color + "\nhere we go")
-try:
-    for line in sys.stdin:
-        if line:
-            line = line.rstrip()
-            cap = re.search(regexp, line)
-            if (cap):
-                n = len(cap.groups())
-                color = Fore.YELLOW + Back.BLACK
-                print(color + "-> " + str(n))
-    raise Exception
-except Exception:
-    color = Back.BLACK + Fore.RED
-    print(color, "now you're fucked")
-finally:
-    print(Fore.RESET)
 
