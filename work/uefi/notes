@@ -20,6 +20,8 @@ https://software.intel.com/content/www/us/en/develop/articles/unified-extensible
 UEFI reading:
 file://desmo/WDS/Devices/Paloma/SWFW/Docs/Renior/FP6/SW_docs/
 https://deviceswiki.com/wiki/Learning_UEFI
+https://github.com/tianocore/tianocore.github.io/wiki/UEFI-EDKII-Learning-Dev
+
 
 UEFI debug:
 OneNote: Retrieve UEFI image from Retail BB
