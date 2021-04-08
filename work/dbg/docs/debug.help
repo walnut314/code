@@ -57,6 +57,7 @@ file to find the GUID which it needs to look up on Desmo to find the .pdb.
 
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
+kd> !for_each_thread ".thread @#Thread; kP"
 
 or just dump all threads:
 kd> !for_each_thread
