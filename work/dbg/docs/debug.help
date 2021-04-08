@@ -1,5 +1,4 @@
 11/4/2020 9:08:24 AM     C:\sandbox\code\work\dbg\docs\debug.help
-dude7776
 
 latest Windbg: \\dbg\privates\latest
 
@@ -1820,4 +1819,441 @@ Header files:
     suppress.h
     windot11.h
     winerror.h
+
+    
+kd> !mex.help
+7: kd> !mex.help -all
+Command                                               Description                                                                                                                                                                                                                                                   Category     Owner
+===================================================== ============================================================================================================================================================================================================================================================= ============ ========
+ab                                                    Debug Stop 0xAB (session pool leak)                                             
+addr                                                  Display information about an address                                           
+afd                                                   Afd Command Help                                                              
+aspnetperfcounters                    (!AspxCounters) Get the ASP.Net performance counters                                         
+aspxpagesext                                          Like !aspxpages, but more powerful                                          
+autod                                                 Enable or disable AutoDiscover tracing output for Outlook                  
+axaot                                          (!axa) Gets version information about AOT objects from SD                        
+axcfg                                          (!axg) Displays configuration information about the connected process           
+axdump                                       (!axdmp) Show information about dump file                                        
+axinfo                                         (!axo) Show info about bug                                                    
+axptr                                          (!axp) Generate file.ptr file for AX Symbols                                 
+axsrc                                          (!axs) Automatically downloads Source Files for current frame from SD       
+backtrace                                       (!bt) Displays the stack backtrace for the specified index into ntdll!Rtlp
+base64                                         (!b64) Displays or saves base64 data                                      
+baseitem                                              Dumps an object which inherits from outlook!BaseItem              
+beep                                                  Beeps                                                            
+bin                                                   Displays binary information located at the given address        
+bing                                                  Bings for something                                            
+bits2                                           (!b2) Executes a command with all possible values of a single bit flip  
+bl                                                    Replaces the built in breakpoint list (bl) command with DML'd version 
+bp                                                    Replaces the built in breakpoint (bp) command with a DML'd version   
+btree                                                 Btree Extension                                                      
+bugcheck                                         (!b) Queries Bugcheck                                                     
+cache                                            (!c) Cache the output of a command to replay later                        
+cattrarray                                    (!_maa) Dump mshtml!CAttrArray object from address                           
+cdocs                                      (!_mcdocs) List mshtml!CDoc objects                                             
+celement                                      (!_mce) Dump mshtml!CElement object from address                             
+chkall                                                Shortcut for !chkimg against all modules                             
+cinethttp                                     (!_uci) Dump urlmon!CInetHttp object from address                            
+classtype                                       (!ct) Tries to determine the C++ class type of a pointer                   
+clipboard                                             Dump clipboard contents                                              
+clipboard2                                            Gets/Sets text on the clipboard, or enable/disable clipboard access  
+clrperfcounters                            (!clrperf) Get the CLR performance counters                                     
+clrstack2                                (!clrstack2) Prints the stack trace of a managed thread                           
+clusdisk                                              Shows all the disk cluster is aware of for W2k3 - W28R2              
+cluster                                               Cluster related commands                                             
+codescope                                             Prints all available code analysis checklists                        
+colescript                                 (!_jscole) Dump jscript!COleScript object from address                          
+colkconnectionhttp                           (!ohttp) Dumps a COlkConnectionHTTP object                                    
+colkconnectionrpc                             (!orpc) Dumps a COlkConnectionRPC object                                     
+commandline                                     (!cl) Prints out the command line of a process                             
+comment                                               Displays the comments for the dump                                   
+computername                                    (!cn) Computer Name Command Help                                           
+conhost                                        (!con) Displays console host (conhost.exe) info                             
+context                                          (!w) Prints out the current implicit process and thread context (e.g. where am I) 
+cordll                                      (!cordll) Displays available CLR versions                                             
+count                                                 Counts the number of lines returned by a command                           
+criticalsection                                 (!cs) CS - Displays details for a critical section                               
+croppipeline                                          Dumps a CROPPipeline                                                       
+croprequest                                           Dumps a CROPRequest                                                        
+croptask                                              Dumps a CROPTask                                                           
+crypt32                                               Dumps crypt32.dll info                                                     
+cscriptbody                                           Dumps information about a vbscript!CScriptBody object                      
+cut                                                   Filters output, removing unwanted areas                                    
+cxmlhttprequest                           (!_mxmlreq) Dump mshtml!CXMLHttpRequest object from address                           
+da                                                    Displays an ANSI string                                                   
+dae                              (!DumpAllExceptions) Replacement for !dae                                                      
+dce                                                   Dump NTUSER DCE Objects                                                   
+ddt                                                   Wrapper for dt that adds some DML                                         
+deadlocks                                      (!dls) This command looks for deadlocked threads. It will also take advantage of 
+decodeoplockstate                             (!dols) Decode an OpLockState to human readable values                            
+decompilemember                                       Decompile and print psuedo-C# source code for the given [MemberName]      
+decompiletype                                         Decompile and print psuedo-C# source code for the given [TypeName]        
+deferredqueue                                   (!dq) Dumps Outlook's deferred call queue                                       
+deferredready                                  (!dfr) Shows the current deferredready threads                                   
+delegaterefs                                 (!drefs) Displays information about objects referenced by delegates                
+desktop                                   (!desktops) Displays the desktops for the Windows Stations                            
+deviceobject                                  (!devo) Displays information about a device object                                
+dhcp                                                  Displays information for the DHCP server process                          
+diffimg                                               Compares the process' loaded module list with a scan of memory and display
+dispid                                                Interprets a dispid                                                       
+displayobj                                     (!do2) Display a managed object structure                                        
+dnsclient                                     (!dnsc) Displays the DNS client cache, and includes many other features for the DN
+dnsserver                                     (!dnss) Allows display and search of the DNS server database and cache.           
+domaininfo                                 (!dominfo) Displays domain information from LSASS process                            
+dr                                                    Displays registers showing volatile registers highlighted with (*)        
+driverobject                                  (!drvo) Displays details about a driver object                                    
+drives                                                Displays drive info for each disk with a letter association               
+dtpool                                         (!dtp) Displays information about a pool allocation, if it is a known pooltag we 
+du                                                    Displays a Unicode string                                                 
+dumpabp                                               Interprets an ABP                                                         
+dumpadapters                                          Dumps Outlook's adapter list from OLMAPI32!g_pCurrentConnectionManager    
+dumpaddins                                            Dumps the addin list from mso!g_pAddInsX                                  
+dumpaspnetsession                                     Prints information on ASP.NET InProc Sessions                             
+dumpattachmentcol                              (!dac) Dumps an object which inherits from AttachmentCol                         
+dumpattachmentobject                           (!dao) Dumps an object which inherits from AttachmentObject                      
+dumpccnctconnprovhttp                        (!dccph) Dumps an emsmdb32!CCnctConnProvHTTP object                                
+dumpcelement                                 (!_mdce) Dump mshtml!CElement object from address                                  
+dumpcnct                                      (!cnct) Dumps an emsmdb32!CNCT object                                             
+dumpconnections                                 (!dc) Dumps Outlook's connection list from OLMAPI32!g_pCurrentConnectionManager 
+dumpcontactinfo                                (!dci) Dumps an CMsoContactInfo object                                           
+dumpcontextlinks                               (!dcl) Dumps the chain of context links of type outlook!OMContextLink            
+dumpdataset                                           Dumps a list of all DataSet objects                                       
+dumpdotsourcedfiles                                   Outputs any dot sourced Powershell files optionally with their accompanyin
+dumpdynamicassemblies2                        (!dda2) Like !DumpDynamicAssemblies, but better                                   
+dumpexchangeconnections                        (!dec) Dump Exchange Connections                                                 
+dumpexchangeserverconnection                  (!desc) Dumps an emsmdb32!CExchangeServerConnection object                        
+dumpexchangestatusbar                         (!desb) Dumps Exchange sync status from OUTLOOK!ThreadSafeSingleton<COlkCEProgress
+dumpexplorer                               (!procexp) Opens a process explorer-like UI for a kernel dump.                       
+dumpfielddrawinfo                             (!dfdi) Dumps a RGFLDDI array of FieldDrawInfo structures                         
+dumpfoldertreeitem                            (!dfti) Outputs an outlook!FolderTreeItem or outlook!ScopeItem                    
+dumpgcalloc                                 (!_jsgca) Dump jscript Garbage Collector Alloc from address                         
+dumphttpruntime2                                      Dumps the HttpRuntime objects on the heap                                 
+dumpiestacks                             (!_iestacks) Dump all IE objects found in all threads                                  
+dumpinfo                                        (!di) Display dump information                                                  
+dumpjscriptgc                                (!_jdgc) Dump all JScript Garbage Collector                                        
+dumpjscriptstacks                           (!_jdjss) Dump all JScript functions found with the related callstack               
+dumplcie                                   (!_ielcie) Dump LCIE status for current dump                                         
+dumpmapimemory                                 (!dmm) Interprets MAPI memory allocated using MAPIAllocateBuffer/MAPIAllocateMore
+dumpmarkup                                    (!_mdm) Dump Mshtml!CMarkup object from address                                   
+dumpnamechecksessions                         (!dncs) Dumps the name check sessions (Nickname cache) from OUTLOOK!CDll::s_NameCh
+dumppersona                                           Dumps an CMsoPersona object                                               
+dumpprintfieldinfo                            (!dpfi) Dumps a RGPFI array of PrintFieldInfo structures                          
+dumpprop                                              Dumps an SPropValue at the given address                                  
+dumppropdefcollection                         (!dpdc) Dumps an RgPdisp structure                                                
+dumpprops                                             Dumps an array of SPropValue at the given address                         
+dumpproviders                                         Dumps a chain of lstprov objects                                          
+dumpproxystacks                              (!_wdps) Dump all proxy stack found with related callstack                         
+dumppsvariables                                       Outputs the Powershell Variables of the currently running script on the cu
+dumpreminderdialog                             (!drd) Dumps the reminder dialog from OUTLOOK!g_pReminder                        
+dumpreminderqueue                              (!drq) Dumps the reminder queue from OUTLOOK!ReminderQueue::s_pReminderQueue     
+dumprenitem                                    (!dri) Dumps an object which inherits from RenItem                               
+dumpres                            (!dumprestriction) Dumps an SRestriction at the given address                                
+dumprow                                               Dumps one SRow value at the given address                                 
+dumprows                                (!dumprowset) Dumps SRows at the given address                                          
+dumprpcs                                              Finds MAPI RPCs using olmapi32!g_ServerReqMgrList                         
+dumpscriptbody                              (!_jscsb) Dump jscript!CScriptBody object from address                              
+dumpscriptexception                         (!_jsdse) Dump jscript!RuntimeScriptException object from address                   
+dumpscriptruntime                           (!_jscsr) Dump jscript!CScriptRuntime object from address                           
+dumpsessions                                (!pmapix) Dumps the open MAPI sessions from pinst_MAPIX                             
+dumpsharedlock                                 (!dsl) Dumps the mso!CSharedLock object for the current thread                   
+dumpsort                                              Dumps an SSortOrderSet at the given address                               
+dumpstackpscommands                                   Outputs the commands, cmdlets, etc. found on the current thread including 
+dumpstackpsobjects                                    Outputs the PSObjects found on the current thread including those referenc
+dumpstackstrings                               (!dss) Displays all the strings on the stack                                     
+dumpsubmitters                                        Dumps SUBMITTER_REC records                                               
+dumpsystemstring                      (!systemstring) Dumps a pstprx32!Microsoft::System::String                                
+dumptagarray                              (!dumptags) Dumps a tag array at the given address                                    
+dumptasks                                             Dumps SERVER_REQ_TASK_REC records                                         
+dumptime                                              Time Information                                                          
+dumptreenode                                 (!_mdtn) Dump mshtml!CTreeNode object from address                                 
+dumpvar                                     (!dumpvt) Dumps a VARIANT at the given address                                      
+dumpwcfmessage                              (!wcfmsg) Dumps information about a WCF buffered message                            
+dumpwindowsurfaces                             (!dws) Dump window surfaces to a directory                                       
+dumpwrappercontexts                            (!dwc) Dumps Outlook wrapper contexts from outlook!OMPerTypeList<OMWrapperContext
+dwm                                          (!ghost) Displays the applications that are in a 'Not Responding' state from ghost 
+dwmport                                               Display DWM ALPC Port messages                                            
+env                                            (!env) Displays helpful links to get the debugger setup, optimized, or to add 3rd
+eresource                                     (!eres) Displays details for a nt!_ERESOURCE                                      
+err                                                   Interprets an error code                                                  
+evt                                                   Show detail for a nt!_KEVENT                                              
+exec                                                  Runs a series of commands. Use this instead of using semicolons           
+executive                                             Displays details on threads waiting on the executive                      
+fileobject                                      (!fo) Displays information about a given file object                            
+fileserver                                      (!fs) Displays thread running the SRV.sys or SRV2.sys drivers, excluding threads
+filesystem                                     (!vol) FileSystem - Analyze file system information.                             
+filetime                                        (!ft) Dumps a FILETIME at the given address                                     
+filter                                         (!flt) Displays all registered filters as well as options for more information   
+finalizable                            (!finalizable) Displays information about finalizable objects in the GC Heap             
+findapptinfo                                   (!fai) Finds all ApptInfo objects                                                
+findohttp                                   (!fohttp) Finds all COlkConnectionHTTP objects in memory (potentially slow)         
+findorpc                                     (!forpc) Finds all COlkConnectionRPC objects in memory (potentially slow)          
+findpipelines                                  (!fpl) Finds all CROPPipeline objects in memory (potentially slow)               
+findpst                                    (!findpst) Finds PSTs                                                                
+findstackbaseitems                            (!fsbi) Finds all outlook!BaseItem objects on the stack                           
+findstackfolders                               (!fsf) Finds all MNSFolder objects on the stack                                  
+findstackrenitems                             (!fsri) Finds all outlook!RenItem objects on the stack                            
+findunkobj                                     (!fuo) Finds all emsmdb32!UNKOBJ objects in memory (potentially slow)            
+fixadplus                                     (!fadp) Fixes stacks in an ADPlus log                                             
+fixexchangesource                              (!fes) Fixes source path for common Exchange symbols                             
+fixofficesource                                (!fos) Fixes source path for common Office symbols                               
+fixscsource                                   (!fscs) Adds the source code path (.srcpath+) for a System Center or MDOP applicat
+fixthis                                               Preface a broken command with this one to open an email and send it to the
+flags                                        (!Flags) Interprets flags for a given property tag                                 
+fncinfo                                               Dumps information about a vbscript!FncInfo object                         
+foldobj                                               Dumps a folder which inherits from emsmdb32!FOLDOBJ                       
+foreachcpu                                     (!fec) Executes a command on each processor                                      
+foreachframe                                   (!fef) An implementation of !for_each_frame that supports filtering and sets the 
+foreachitem                                    (!fei) Iterates through a list, executing a command for each item.               
+foreachline                                    (!fel) Runs a command against every line of data                                 
+foreachmatchingstack                          (!fems) Run a command against identical stacks                                    
+foreachmodule                                  (!fem) An implementation of !for_each_module that supports filtering             
+foreachobject                                  (!feo) Runs a command against each CLR object                                    
+foreachprocess                                 (!fep) An implementation of !for_each_process that supports filtering and sets th
+foreachthread                                  (!fet) An implementation of .for_each_thread that works in user and kernel mode  
+functionbody                                 (!_jsfb) Dump jscript9!Js::FunctionBody object from address                        
+functioninfo                                 (!_jsfi) Dump jscript9!Js::FunctionInfo object from address                        
+gatewait                                              Shows threads with a state of GateWait                                    
+gchandleinfo                              (!gchandle) Displays information on GC Handles                                        
+gcheapinfo                                    (!gchi) Get info on the managed GC Heap                                           
+genericarray                                    (!ga) Dumps an Outlook GenericArray                                             
+goodoldtimes                                   (!got) Trace value to origin.                                                    
+grep                                                  Search the output of a command for a specific string or pattern           
+gtc                                                   Gets the tick count from the shared memory area of an iDNA trace.         
+gub                                            (!g-u) Same as gu, but backwards in time: runs p- until hitting the call to the c
+guid                                                  Dumps a GUID at the given address                                         
+handlefind                                      (!hf) Find handles for a given kernel object                                    
+head                                                  Displays the first X lines of a command's output                          
+help                                                  Help                                                                      
+hidefsurf                                             Encapsulates visualization of the HiDef RDP surfaces                      
+hilite                                          (!hl) Highlights the specified text using the specified options (alias: !hilight
+httpheaders                                           Print the contents of an HttpHeaderCollection                             
+httptrace                                             Enable or Disable HTTP tracing output for Outlook                         
+idlequeue                                       (!iq) Dumps the MAPI idle queue                                                 
+idna                                             (!i) Displays compact iDNA position for note taking                            
+if                                             (!mif) Condition detection based on command output                               
+il                                                    Prints the IL for the specified method                                    
+ilspy                                                 Automatically extracts the module from the dump, and launches ILSpy       
+imports                                               Displays the import table for a module                                    
+initialized                                   (!init) Shows the current threads in the initialized state                        
+interpretrawstack                              (!irs) This command dumps the raw stack and interprets the values as symbols, and
+ioctl                                                 Looks up and displays the properties of an ioctl code                     
+ioq                                                   Displays information about local storage IO                               
+ip                                                    Converts an address into an IP address format                             
+irpbyfilename                                 (!ibfn) Dump any IRP containing the specified text in filename                    
+javascriptfunction                          (!_jsfct) Dump jscript9!Js::JavascriptFunction object from address                  
+jscriptglobals                           (!_jscriptg) Dump jscript globals                                                      
+jscsession                                  (!_jscss) Dump jscript!CSession object from address                                 
+jumptoload                                     (!jtl) Jumps to the load timestamp of a given module in an IDNA trace            
+kbsearchmodules                                (!kbs) SilverSeekKB debug extension                                              
+ldap                                                  Displays LDAP client or server details                                    
+ldaparena                                (!ldaparena) Displays Memory usage by LDAP/ESENT in Windows 8.1 and later              
+listthreads                                     (!lt) Displays a list of threads                                                
+listticks                                   (!lticks) Show tick counts for threads                                              
+lls                                                   Check for logon/logoff/shutdown hangs                                     
+loaderlock                                      (!ll) Displays loader lock information                                          
+logoff                                        (!loff) Logoff hang analyzer                                                      
+logon                                          (!lon) Logon hang analyzer                                                       
+logonobj                                              Dumps an object which inherits from emsmdb32!LOGONOBJ                     
+logonsession                         (!logonsessions) Displays LSASS's logon session details                                    
+loop                                                  Loops either forwards or backwards through a series of numbers with variab
+lpdriver                                              Outputs local printer driver structures for an application                
+lphandle                                              Outputs local spooler handles for an application                          
+lsahandletable                                 (!lht) Displays LSASS's logon session details                                    
+lsasessions                                           Displays LSASS's  session details                                         
+lsass                                          (!lsa) Displays LSASS information                                                
+managedthreads                            (!mthreads) A !threads look-alike, with !aspxpagexext-like output                     
+mapiobjectcache                                (!moc) Dumps an object which inherits from outlook!MapiObjectCache               
+mapiobjinstancedata                           (!moid) Dumps an object which inherits from outlook!MapiObjInstanceData           
+mapistruct                                            Dumps a MAPI object                                                       
+mappeddrives                               (!mdrives) Displays mapped drives                                                    
+mem                                                   Memory usage information                                                  
+messagequeue                                    (!mq) Displays message queue                                                    
+mheap                                                 A DML'd version of !heap.                                                 
+mirp                                                  Displays IRP details (replaces !irp)                                      
+mirpfind                                              Mex version of IRPFIND                                                    
+mnsfolder                                             Dumps an object which inherits from MNSFolder                             
+mods                                                  Displays modules loaded in a process                                      
+more                                                  Runs a command in paged mode, asking for input every X lines              
+mreg                                                  This is a DML'd version of !reg                                           
+mrmsg                                          (!msg) Interprets a Windows message                                              
+ms                                              (!ms) Dumps a message store which inherits from MSPST32!MS                      
+msgobj                                                Dumps a message which inherits from emsmdb32!MSGOBJ                       
+mshtmlglobals                             (!_mshtmlg) Dump mshtml globals                                                       
+mshtmlthreadstates                          (!_mcdoc) List mshtml!THREADSTATE objects                                           
+mshtmlwindows                               (!_mcwnd) List mshtml!CWindow objects                                               
+msodoc                                                Displays detailed information about an object which inherits from mso!CMso
+msprvdrobj                                            Dumps a folder which inherits from emsmdb32!MSPRVDROBJ                    
+mup                                                   Displays info for the Multiple UNC Provider (MUP)                         
+namedprop                                       (!np) Dumps the named prop table list from olmapi32!s_rgNamedPropTable          
+namedproptable                                 (!npt) Dumps a named prop table derived from olmapi32!NamedPropMapTableEntry     
+namelist                                     (!_jsnl) Dump jscript!NameList object from address                                 
+nametbl                                      (!_jsnt) Dump jscript!NameTbl object from address                                  
+nativeheapleak                                 (!nhl) If a heap stack database is present, prints out the main consumers.       
+ncsi                                                  Displays Network Connectivity Status Indicator (NCSI) configuration       
+ndao                                                  Native Dump ALL Objects - Potentially very slow                           
+ndb                                            (!ndb) Dumps an MSPST32!NDB object                                               
+ndro                                                  Native Dump Register Objects                                              
+ndso                                                  Native Dump Stack Objects                                                 
+net                                                   Net Command Help                                                          
+notes                                            (!n) Annotate thread analysis in realtime                                      
+notification                                 (!notif) Dumps a NOTIFICATION object                                               
+notifications                               (!notifs) Dumps an array of NOTIFICATION objects                                    
+notifyobj                                             Dumps a message which inherits from emsmdb32!NOTIFYOBJ                    
+ntfsacl                                               Displays information on the NTFS AsyncCloseList.                          
+obj                                                   Displays details for a given kernel object (object manager)               
+objectsummary                                         Outputs object analysis summary                                           
+objt                                                  Interprets an OBJT                                                        
+obtrace                                               Dumps the trace information for an object                                 
+olanalyze                                      (!ola) Basic Outlook/MAPI dump analysis                                          
+olcmd                                    (!olglobals) Dumps the command line parameters from OUTLOOK!g_psoclCmdLine             
+olic                                 (!officelicense) Dumps the Office Licensing information from mso!vplic                     
+openprinters                                    (!op) Shows a list of currently open printers                                   
+oracleclientperfcounters                              Display System.Data.OracleClient performance counters                     
+outline                                         (!ol) Outlines the calls inside a given function                                
+p                                                     Displays process details                                                  
+phandles                                        (!ph) Shows a list of currently open printer handles                            
+pingtrack                                             Pingtrack command                                                         
+printdbcommand                                        Prints information about a DBCommand object                               
+printexception2                                (!pe2) Like !PrintException, with DML                                            
+printmanifest                                         Prints the assembly manifest for the specified module                     
+printmembers                                          Scans specified module and type [Module!TypeName] and prints all members  
+printtypes                                            Scans specified [Module] and prints all types                             
+propset                                               Dumps an object which inherits from PropSet                               
+proxyinfo                                     (!_wpi) Dump wininet!PROXY_INFO object from address                               
+proxymanager                                  (!_wpm) Dump WininetProxyManager object from address                              
+psh                                                   Allow to execute debugger commands and to process results with powershell 
+psrunspace                                            Outputs the runspaces in the process.                                     
+psscriptblock                                         Outputs the script blocks in the process.                                 
+pstobj                                                Dumps an object which inherits from MSPST32!OBJ                           
+ptag                                       (!proptag) Interprets a property tag                                                 
+publicsymbolcreep                                     Detects whether any public symbols have been loaded for Microsoft binaries
+rasmans                                               Displays the rasmans!ConnectionBlockList                                  
+readfile                                              Read a file from the filesystem and display the output in the debugger    
+ready                                          (!rdy) Shows the currently ready threads                                         
+recenterror                                     (!re) Dumps the recent error queue from olmapi32!g_RecentErrInfo                
+rnotf                                                 Dumps a message which inherits from emsmdb32!RNOTF                        
+rollup                                          (!ru) Takes an input value and rolls it up to the appropriate bucket (e.g. bytes
+rop                                                   Interprets a ROP                                                          
+rot                                                   Dumps Outlook's Running Object Table (ROT)                                
+rpctrace                                              Enable or Disable RPC tracing output for Outlook                          
+rtime                                                 Interprets an rtime value                                                 
+runaway2                                              Runaway2.. Replacement for !runaway                                       
+runcheck                                 (!runchecks) runs the specified check(s) on the specified module(s)                    
+runchecklist                                          runs the specified checklist(s) on the specified module(s)                
+running                                        (!cpu) (Kernel mode only) A brief overview of currently executing threads        
+rxirps                                                Displays the list of IRPs stored in rdbss!RxIrpsList                      
+sccm                                                  SCCM                                                                      
+scom                                            (!om) Utilities for SC Operations Manager.                                      
+scrfncobj                                   (!_jssfo) Dump jscript!ScrFncObj object from address                                
+scsm                                            (!sm) Utilities for SC Service Manager                                          
+scvmm                                          (!vmm) System Center Virtual Machine Manager                                     
+searchthreadstacks                             (!sts) Searches thread stacks for a value                                        
+serverinfo                                    (!_wsi) Dump wininet!CServerInfo list                                             
+serverinfoidna                            (!_wsiydna) Parse IDNA and check wininet!CServerInfo objects                          
+services                                   (!service) Displays details about services. Requires access to the usermode address s
+session                                   (!sessions) Display details for sessions                                              
+settings                                              Mex Settings                                                              
+shutdown                                              Analyze shutdown hangs                                                    
+sort                                                  Sort command                                                              
+sourceinfo                                   (!_jssi) Dump jscript9!Js::FunctionBody::SourceInfo object from address            
+spdisposecheck                                        Executes the SharePoint Dispose and Do Not Dispose Checklist items        
+spirenitem                                            Dumps an SPIRenItem object                                                
+sqlclientperfcounters                                 Display System.Data.SqlClient performance counters                        
+sqlcmd                                                Provides information about ADO.NET Commands to SQL Server                 
+sqlcn                                                 Provides an overview of ADO.NET connections to SQL Server                 
+sqlports                                  (!sqlports) Gets the local and remote TCP ports from a SqlConnection object           
+srvnet                                                Displays info on SRVNET                                                   
+stackoverflow                                   (!so) Queries StackOverflow                                                     
+standby                                        (!sby) Shows the current standby threads                                         
+staticfields                                          Display static fields of a managed type                                   
+strings                                               Prints out readable strings in an address range                           
+stx                                            (!stx) Annotate thread stacks in realtime                                        
+sum                                            (!sum) Sums the output returned by a command                                     
+suspended                                             Displays details on suspended threads                                     
+svcreg                                                Dumps the passed in service/driver registry key                           
+svcthreads                              (!svcthreads) Find threads executing WCF services                                       
+t                                                     A new implementation of !thread for user & kernel mode                    
+tableobj                                              Dumps a folder which inherits from emsmdb32!TABLEOBJ                      
+tac                                                   Writes input to console, last line first.                                 
+tag                                                   Searches kernel modules for a given pooltag                               
+tail                                                  Displays the final X lines of a command's output                          
+tasklist                                        (!tl) Displays information about running tasks (processes)                      
+tasktriage                                   (!tasks) Analyzes the System.Threading.Tasks.Task objects still on the heap.       
+tcpip                                          (!tcp) TCP/IP - Gets TCP and UDP ports from Kernel Memory                        
+threadpool                                      (!tp) Displays information regarding NTDLL thread pools                         
+threadreport                                  (!trep) Displays a thread report.                                                 
+time                                                  Time how long a command takes to execute                                  
+tr                                         (!replace) Search and Replace. Translate a char/string into another char/string.     
+transition                                   (!trans) Shows the current threads in the transition state                         
+tttcache                                      (!tttc) Caches code execution locations throughout a time travel trace utilizing m
+tttfindcachedcodelocations                     (!fcc) Finds code execution locations from a previously created TTTCache         
+tttfindreturnvalue                             (!frv) Finds return value locations from a previously created TTTCache           
+tttlistpositionsbymodule                       (!lpm) Finds code execution positions and counts for functions within a module fr
+tttraceback                                    (!ttb) "Steps Out" of the specified location then displays a timeline of what fun
+udescan                                   (!manalyze) Scans dump for known issues and displays them in human-readable format.   
+uniqlines                                       (!ul) Prints each line of output and a count of how many times they appeared    
+uniquestacks                                    (!us) Like the built-in !uniqstacks except it associates thread IDs with the sta
+unkobj                                                Interprets an UNKOBJ                                                      
+update                                                Updates mex to the latest version                                         
+urlmonglobals                             (!_urlmong) Dump urlmon globals                                                       
+urlmonzones                                   (!_wsz) Dump urlmon Security zones                                                
+userrequest                                           Displays details on threads with a wait reason of UserRequest             
+vbaproj                                               Displays detailed information about a VBA project (vbe7!ProjItem)         
+vbscript                                       (!vbs) Displays detailed information about vbscript running on the current thread
+ver                                                   Displays OS version info                                                  
+vrdpfb                                                Encapsulates visualization of the RDP frame buffer                        
+vss                                                   Vss Command Help                                                          
+wcfperfcounters                                       Dumps performance counters for WCF services                               
+wcftcpconnectionpools                         (!wtcp) Display WCF Net.TCP connection pools                                      
+wdanalyze                                             Displays Word-specific information (open documents, active document, last 
+wddoc                                          (!doc) Displays detailed information about a particular document which inherits f
+wddocs                                        (!docs) Finds currently opened Word documents and templates using wwlib!vpdodUser 
+wdflags                                               Displays information about global flags                                   
+wdfn                                                  Displays detailed information about open files                            
+wdt                                                   Displays information about last fetch                                     
+whocalls                                              Scans all loaded managed modules and finds methods that call [MethodName] 
+whoimplements                                         Scans all loaded managed modules and finds types that implement [Interface
+whoinherits                                           Scans all loaded managed modules and finds types that inherit [TypeName]  
+whonews                                               Scans all loaded managed modules and finds methods that construct [TypeNam
+whopins                                               Scans managed modules and all finds methods that pin objects of a given [T
+window                                         (!wnd) Displays windows for each desktop. You must be in the context of a given s
+windowstation                               (!winsta) Display details for windows station(s)                                    
+wininetaddrinfo                               (!_wai) Dump wininet!AddrInfo object from address                                 
+wininetcache                               (!_wcache) Dump wininet!CCacheClientStore informations                               
+wininetccacheclientcontainerinfo      (!_wccacheinfo) Dump CCacheClientContainerInfo object from address                        
+wininetccacheclientstoreitem              (!_wccache) Dump CCacheClientStoreItem object from address                            
+wininetcookies                              (!_wcook) Dump cookies informations                                                 
+wininetdnscache                              (!_wdns) Dump wininet DNS cache                                                    
+wininetglobals                                 (!_wg) Dump wininet globals                                                      
+wininethandles                                 (!_wh) List wininet!INTERNET_HANDLE_OBJECT                                       
+wininetkeepalive                              (!_wka) List wininet!ICSocket Keep-Alive from  address                            
+wininetrequests                              (!_wreq) Dump wininet!HTTP_REQUEST_HANDLE_OBJECT list                              
+wininetrequestsidna                      (!_wreqidna) Parse IDNA and check wininet!HTTP_REQUEST_HANDLE_OBJECT objects           
+winlogon                                              Displays details about Winlogon (pre-Vista)                               
+winnsi                                                winnsi Command Help                                                       
+winrm                                                 WinRM / wsmsvc related commands                                           
+wldap32                                               Displays wldap32.dll details (dll responsible for client side LDAP connect
+wmi                                                   WMI / WINMGMT related commands                                            
+wolfram                                         (!wa) Queries Wolfram Alpha                                                     
+wq                                                    Displays executive work queue threads                                     
+wrcpuratecontrol                                      Displays details on threads with a wait reason of WrCpuRateControl        
+wrfastmutex                                           Displays details on threads waiting for a Fast Mutex                      
+wrfreepage                                            Displays details on threads with a wait reason of WrFreePage              
+writefile                                             Runs a command and writes the data to a file                              
+writemem                                              Writes memory to disk                                                     
+writemodule                                           Writes a module to your temp directory                                    
+wrlpcreceive                                  (!lpcs) Displays details on LPC/ALPC server threads                               
+wrresource                                            Displays details on threads with a wait reason of WrResource              
+wsus                                                  Utilities WSUS                                                            
+x                                                     Wrapper for x that adds some DML                                          
+xlanalyze                                      (!xla) Analyzes Excel session and displays debug information.                    
+xlbooks                                        (!xlb) Displays information about open workbooks.                                
+xlvbe                                                 Displays information about the Visual Basic Environment (VBE).            
+xlwindows                                      (!xlw) Displays information about open windows.                                  
+xx                                              (!x2) Replacement for !x                                                        
+zonemappings                                  (!_wzm) Dump zones mappings informations                                          
+
+
+Ndis registery path (example):
+HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0003\Ndi\params\NetworkAddress
 
