@@ -7,8 +7,33 @@ rename shell.efi to bootx64.efi
 Reboot with Vol Down -> shell should come up
 
 http://x86asm.net/articles/uefi-programming-first-steps/
-
 https://edk2-docs.gitbook.io/edk-ii-basetools-user-guides/genfw
+https://edk2-docs.gitbook.io/edk-ii-uefi-driver-writer-s-guide/
+https://edk2-docs.gitbook.io/edk-ii-uefi-driver-writer-s-guide/31_testing_and_debugging_uefi_drivers/313_uefi_shell_debugging/3133_loading_uefi_drivers
+
+REM https://edk2-docs.gitbook.io/edk-ii-basetools-user-guides/genfw
+REM https://github.com/tianocore/edk2/blob/master/BaseTools/Source/C/GenFw/GenFw.c
+REM     (ModuleType, "BASE")
+REM     (ModuleType, "SEC")
+REM     (ModuleType, "SECURITY_CORE")
+REM     (ModuleType, "PEI_CORE")
+REM     (ModuleType, "PEIM")
+REM     (ModuleType, "COMBINED_PEIM_DRIVER")
+REM     (ModuleType, "PIC_PEIM")
+REM     (ModuleType, "RELOCATABLE_PEIM")
+REM     (ModuleType, "DXE_CORE")
+REM     (ModuleType, "BS_DRIVER")
+REM     (ModuleType, "DXE_DRIVER")
+REM     (ModuleType, "DXE_SMM_DRIVER")
+REM     (ModuleType, "UEFI_DRIVER")
+REM     (ModuleType, "SMM_CORE")
+REM     (ModuleType, "MM_STANDALONE")
+REM     (ModuleType, "MM_CORE_STANDALONE")
+REM     (ModuleType, "UEFI_APPLICATION")
+REM     (ModuleType, "DXE_RUNTIME_DRIVER")
+REM     (ModuleType, "RT_DRIVER")
+REM     (ModuleType, "DXE_SAL_DRIVER")
+REM     (ModuleType, "SAL_RT_DRIVER")
 
 cl /c /Z1 main.c
 link /entry:EfiMain /dll /IGNORE:4086 main.obj
