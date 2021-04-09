@@ -1,0 +1,39 @@
+ driver
+
+ Timestamp is 6070c3cf (Fri Apr  9 14:14:55 2021)
+
+ Preferred load address is 0000000000000000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00000023H .text$mn                CODE
+ 0002:00000000 00000050H .rdata                  DATA
+ 0002:00000050 00000008H .bss                    DATA
+ 0002:00000058 00000070H .rdata$zzzdbg           DATA
+ 0003:00000000 0000000cH .pdata                  DATA
+ 0004:00000000 00000008H .xdata                  DATA
+
+  Address         Publics by Value              Rva+Base               Lib:Object
+
+ 0000:00000000       __dynamic_value_reloc_table 0000000000000000     <absolute>
+ 0000:00000000       __hybrid_auxiliary_iat     0000000000000000     <absolute>
+ 0000:00000000       __volatile_metadata        0000000000000000     <absolute>
+ 0000:00000000       __guard_fids_table         0000000000000000     <absolute>
+ 0000:00000000       __enclave_config           0000000000000000     <absolute>
+ 0000:00000000       __guard_iat_count          0000000000000000     <absolute>
+ 0000:00000000       __guard_iat_table          0000000000000000     <absolute>
+ 0000:00000000       __guard_longjmp_table      0000000000000000     <absolute>
+ 0000:00000000       __hybrid_code_map          0000000000000000     <absolute>
+ 0000:00000000       __guard_longjmp_count      0000000000000000     <absolute>
+ 0000:00000000       __hybrid_code_map_count    0000000000000000     <absolute>
+ 0000:00000000       __guard_fids_count         0000000000000000     <absolute>
+ 0000:00000000       __guard_flags              0000000000000000     <absolute>
+ 0001:00000000       TestDriverEntryPoint       0000000000001000 f   driver.obj
+ 0002:00000000       ??_C@_1CM@PCAODLNH@?$AAT?$AAe?$AAs?$AAt?$AAD?$AAr?$AAi?$AAv?$AAe?$AAr?$AAE?$AAn?$AAt?$AAr?$AAy@ 0000000000002000     driver.obj
+ 0002:00000050       MySystemTable              0000000000002050     <common>
+
+ entry point at        0001:00000000
+
+ Static symbols
+
+ 0003:00000000       $pdata$TestDriverEntryPoint 0000000000003000     driver.obj
+ 0004:00000000       $unwind$TestDriverEntryPoint 0000000000004000     driver.obj

@@ -1,0 +1,19 @@
+https://hgokhale.medium.com/getting-started-with-uefi-driver-programing-c048b7156cb
+
+loading driver:
+Shell> fs1:
+FS1:\> load driver.efi
+// or no connect: no call to support, start, stop
+FS1:\> load -nc driver.efi
+// list drivers
+FS1:\> drivers
+// unload
+FS1:\> unload 27
+
+MU git:
+url = https://github.com/microsoft/mu.git
+
+Driver diagnostics - lists out stuff ???
+FS1:\> DrvDiag 27
+
+
