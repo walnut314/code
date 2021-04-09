@@ -1,5 +1,7 @@
 https://hgokhale.medium.com/getting-started-with-uefi-driver-programing-c048b7156cb
 
+Drivers have: .c, .h, .inf
+
 loading driver:
 Shell> fs1:
 FS1:\> load driver.efi
