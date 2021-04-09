@@ -1,0 +1,27 @@
+4/9/2021 7:57:47 AM     C:\sandbox\uefi_train\App\uefi-simple\notes.txt
+
+Load Shell.efi
+Copy Shell.efi to WinPE USB booter at: EFI\Boot
+rename shell.efi to bootx64.efi
+
+Reboot with Vol Down -> shell should come up
+
+http://x86asm.net/articles/uefi-programming-first-steps/
+
+https://edk2-docs.gitbook.io/edk-ii-basetools-user-guides/genfw
+
+cl /c /Z1 main.c
+link /entry:EfiMain /dll /IGNORE:4086 main.obj
+GenFw.exe -e PEI_CORE main.dll -o main.efi
+
+Delos local build
+BUILD_UNIT_TESTS DEBUG
+see SM_MU_BASECORE\MdeModulePkg\Application
+
+UEFI
+Shell> fs0:
+FS0:\>
+map <-- shows devices
+FS1:
+FS1:\>
+
