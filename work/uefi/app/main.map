@@ -1,34 +1,37 @@
  main
 
- Timestamp is 60707421 (Fri Apr  9 08:34:57 2021)
+ Timestamp is 607089bf (Fri Apr  9 10:07:11 2021)
 
- Preferred load address is 00000000
+ Preferred load address is 0000000000000000
 
  Start         Length     Name                   Class
- 0001:00000000 00000014H .text$mn                CODE
+ 0001:00000000 00000017H .text$mn                CODE
  0002:00000000 0000003cH .rdata                  DATA
- 0002:0000003c 00000040H .rdata$zzzdbg           DATA
+ 0002:0000003c 00000060H .rdata$zzzdbg           DATA
+ 0003:00000000 0000000cH .pdata                  DATA
+ 0004:00000000 00000008H .xdata                  DATA
 
-  Address         Publics by Value              Rva+Base       Lib:Object
+  Address         Publics by Value              Rva+Base               Lib:Object
 
- 0000:00000000       ___hybrid_code_map         00000000     <absolute>
- 0000:00000000       ___volatile_metadata       00000000     <absolute>
- 0000:00000000       ___enclave_config          00000000     <absolute>
- 0000:00000000       ___guard_flags             00000000     <absolute>
- 0000:00000000       ___guard_iat_table         00000000     <absolute>
- 0000:00000000       ___guard_fids_table        00000000     <absolute>
- 0000:00000000       ___hybrid_code_map_count   00000000     <absolute>
- 0000:00000000       ___guard_longjmp_table     00000000     <absolute>
- 0000:00000000       ___guard_fids_count        00000000     <absolute>
- 0000:00000000       ___guard_iat_count         00000000     <absolute>
- 0000:00000000       ___dynamic_value_reloc_table 00000000     <absolute>
- 0000:00000000       ___guard_longjmp_count     00000000     <absolute>
- 0000:00000000       ___hybrid_auxiliary_iat    00000000     <absolute>
- 0000:00000000       ___AbsoluteZero            00000000     <absolute>
- 0001:00000000       _EfiMain                   00000220 f   main.obj
- 0002:00000000       ??_C@_1BM@EIJJDCKO@?$AAH?$AAe?$AAl?$AAl?$AAo?$AA?5?$AAW?$AAo?$AAr?$AAl?$AAd?$AA?$CB?$AA?6@ 00000240     main.obj
+ 0000:00000000       __dynamic_value_reloc_table 0000000000000000     <absolute>
+ 0000:00000000       __hybrid_auxiliary_iat     0000000000000000     <absolute>
+ 0000:00000000       __guard_fids_table         0000000000000000     <absolute>
+ 0000:00000000       __volatile_metadata        0000000000000000     <absolute>
+ 0000:00000000       __enclave_config           0000000000000000     <absolute>
+ 0000:00000000       __guard_iat_table          0000000000000000     <absolute>
+ 0000:00000000       __guard_longjmp_table      0000000000000000     <absolute>
+ 0000:00000000       __guard_longjmp_count      0000000000000000     <absolute>
+ 0000:00000000       __guard_fids_count         0000000000000000     <absolute>
+ 0000:00000000       __hybrid_code_map_count    0000000000000000     <absolute>
+ 0000:00000000       __hybrid_code_map          0000000000000000     <absolute>
+ 0000:00000000       __guard_iat_count          0000000000000000     <absolute>
+ 0000:00000000       __guard_flags              0000000000000000     <absolute>
+ 0001:00000000       EfiMain                    0000000000001000 f   main.obj
+ 0002:00000000       ??_C@_1BM@EIJJDCKO@?$AAH?$AAe?$AAl?$AAl?$AAo?$AA?5?$AAW?$AAo?$AAr?$AAl?$AAd?$AA?$CB?$AA?6@ 0000000000002000     main.obj
 
  entry point at        0001:00000000
 
  Static symbols
 
+ 0003:00000000       $pdata$EfiMain             0000000000003000     main.obj
+ 0004:00000000       $unwind$EfiMain            0000000000004000     main.obj

@@ -33,6 +33,6 @@ EfiMain (
     )
 {
     SystemTable->ConOut->OutputString(SystemTable->ConOut, L"Hello World!\n");
-    while(1);
+    //while(1);
     return EFI_SUCCESS;
 }
