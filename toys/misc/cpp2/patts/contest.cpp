@@ -43,6 +43,12 @@ void stl_sorts()
     }
 }
 
+struct circle { int r, th; };
+bool comp_circle(circle& c1, circle& c2)
+{
+    if (c1.r < c2.r) return c1.r < c2.r;
+    return c2.r < c1.r;
+}
 void struct_sort()
 {
     struct point {
@@ -54,8 +60,16 @@ void struct_sort()
     };
     point p[4] = {{3,4},{1,3},{4,5},{1,2}};
     for (auto pt : p) cout << pt.x << "," << pt.y << endl;
+    cout << endl;
     std::sort( p, p+4); //, &custom_sorter);
     for (auto pt : p) cout << pt.x << "," << pt.y << endl;
+    cout << endl;
+    circle c[4] = {{3,4},{1,3},{4,5},{1,2}};
+    for (auto cr : c) cout << cr.r << "," << cr.th << endl;
+    cout << endl;
+    std::sort( c, c+4, &comp_circle);
+    for (auto cr : c) cout << cr.r << "," << cr.th << endl;
+
 }
 
 int collatz()
