@@ -1330,7 +1330,7 @@ Blink  ffff8e87b2979708
   Buffer 0000000000000000  Flags 0000000000000000
     Object Data - ffff8e87b297d248 Type - 06 <Device>
 
-2: kd> !acpiext ffff8e87b1a4f010
+2: kd> !acpike.acpiext ffff8e87b1a4f010
 ACPI!DEVICE_EXTENSION ffff8e87b1a4f010 - ACPI\MSHW0084
   DevObject  ffff8e87af4b0cd0  PhysObject  ffff8e87af4b0cd0  NextObject   0000000000000000
   AcpiObject SSH_ ffff8e87b297d208 [\_SB.SSH]  ParentExt   ffff8e87af47e0d0
