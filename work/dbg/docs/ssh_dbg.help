@@ -1,0 +1,66 @@
+7: kd> !devstack 0xFFFFAF8AF364BBD0
+  !DevObj           !DrvObj            !DevExt           ObjectName
+> ffffaf8af364bbd0  \Driver\SurfaceSerialHubDriver ffffaf8af3f152f0  0000006e
+  ffffaf8aed8a1450  \Driver\ACPI       ffffaf8aefcaa010  00000016
+!DevNode ffffaf8aefd70bd0 :
+  DeviceInst is "ACPI\MSHW0084\2&daba3ff&0"
+  ServiceName is "SurfaceSerialHubDriver"
+
+Note: !DevExt of SSH is the SurfaceSerialHubDriver!DEVICE_CONTEXT
+
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 (*((SurfaceSerialHubDriver!DEVICE_CONTEXT *)0xffffaf8af3f152f0))
+(*((SurfaceSerialHubDriver!DEVICE_CONTEXT *)0xffffaf8af3f152f0))                 [Type: DEVICE_CONTEXT]
+    [+0x000] WdfDevice        : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x008] UspRequestIdSpinLock : 0x50750c627e68 [Type: WDFSPINLOCK__ *]
+    [+0x010] RequestCancelSpinLock : 0x50750c627bf8 [Type: WDFSPINLOCK__ *]
+    [+0x018] UspAckContext    [Type: USP_ACK_CONTEXT]
+    [+0x050] SetUTCTimerHandle : 0x50750c6e1628 : [object Object] [!wdf...] [Type: WDFTIMER__ *]
+    [+0x058] SamNotificationPendingRequests [Type: _SSH_PENDING_NOTIFICATION_REQUESTS [39]]
+    [+0x55a8] KipNotificationPendingRequests [Type: _SSH_PENDING_NOTIFICATION_REQUESTS [39]]
+    [+0xaaf8] SequenceNumber   : 696 [Type: long]
+    [+0xaafc] RequestId        : 0x2e0 [Type: unsigned short]
+    [+0xab00] PowerSettingHandle [Type: void * [2]]
+    [+0xab10] PowerSettingState [Type: unsigned long [2]]
+    [+0xab18] StandbyState     : 0x1 [Type: unsigned char]
+    [+0xab19] StopIdleOnDisplayOn : 0x0 [Type: unsigned char]
+    [+0xab1c] SshPowerProfile  : SSH_POWER_PROFILE_LEGACY (0) [Type: _SSH_POWER_PROFILE]
+    [+0xab20] IdleTimeoutScreenOn : 0x1388 [Type: unsigned long]
+    [+0xab24] IdleTimeoutScreenOff : 0x1e [Type: unsigned long]
+    [+0xab28] EnableWorkaroundToConfigureUartInD0Entry : 0x0 [Type: unsigned char]
+    [+0xab2c] UartReadBufferSize : 0x218 [Type: unsigned long]
+    [+0xab30] BaudRateOverride : 0x0 [Type: unsigned long]
+    [+0xab34] SshIoProtocolType : SSH_IO_PROTOCOL_UART (2) [Type: _SSH_IO_PROTOCOL_TYPE]
+    [+0xab38] LogUSPPackets    : 0x0 [Type: unsigned char]
+    [+0xab39] EnumerateClientPdos : 0x0 [Type: unsigned char]
+    [+0xab40] DmfModuleBufferPoolUsp : 0x50750d747e08 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab48] DmfModulePingPongBufferUsp : 0x50750c0f3b48 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab50] DmfModuleThreadProcessUsp : 0x50750c0f3fd8 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab58] DmfModuleThreadedBufferQueueRequestComplete : 0x50750c0f46b8 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab60] DmfModuleBufferQueueRequest : 0x50750c553fd8 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab68] DmfModuleBufferPoolResponse : 0x50750c554fd8 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab70] DmfModuleThreadProcessIoctl : 0x50750c5556b8 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab78] DmfModuleSerialTarget : 0x50750c555b48 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab80] DmfModuleHeciTarget : 0x0 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab88] DmfModuleSelfTarget : 0x50750c0f0b48 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab90] DmfModuleGpioTarget : 0x50750c0effd8 : [object Object] [Type: DMFMODULE__ *]
+    [+0xab98] DmfModuleBranchTrack : 0x0 : [object Object] [Type: DMFMODULE__ *]
+    [+0xaba0] DmfModulePdo     : 0x0 : [object Object] [Type: DMFMODULE__ *]
+    [+0xaba8] DmfModuleRegistry : 0x0 : [object Object] [Type: DMFMODULE__ *]
+
+
+context    0xffffaf8af3f152f0
+array base 0xffffaf8af38ba9d0
+
+7: kd> !surfaceserialhubdriver 0x50750c0eaff8
+@$surfaceserialhubdriver(0x50750c0eaff8)                 [Re-Populate]
+    Kd_SurfaceSerialHubDeviceContext [Type: DEVICE_CONTEXT]
+    Kd_SamRegistrations : RegisteredTargetCategories : 3
+    Kd_KipRegistrations : RegisteredTargetCategories : 0
+    Kd_PendingSshRequests : RequestCount: 0x0 [Populate]
+    Kd_WaitForResponseSshRequests : RequestCount: 0x0 [Populate]
+    Kd_IdleTimeoutScreenOn : 5000ms
+    Kd_IdleTimeoutScreenOff : 30ms
+    Kd_EnableWorkaroundToConfigureUartInD0Entry : 0x0 [Type: BOOLEAN]
+    Kd_SshIoProtocolType : SSH_IO_PROTOCOL_UART (2) [Type: SSH_IO_PROTOCOL_TYPE]
+
+
