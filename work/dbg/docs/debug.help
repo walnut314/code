@@ -54,6 +54,70 @@ file to find the GUID which it needs to look up on Desmo to find the .pdb.
 .sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;C:\git\SurfaceTconDriver\Binaries\flush_d0exit_TBQ_count_flush_4.6\bin;
 .srcpath C:\git\SurfaceTconDriver\sys;C:\git\SurfaceLibrary\Kernel\DMF
 
+DMFKd info:
+7: kd> !dmfkd.help
+Commands for C:\Users\v-babart\AppData\Local\Dbg\UserExtensions\DmfKd\1.233.137.0\x64\DmfKd.dll:
+  !dmfbuffer            - [Deprecated] use !dmf_buffer
+  !dmfbufferpool        - [Deprecated] use !dmf_bufferpool
+  !dmfbufferqueue       - [Deprecated] use !dmf_bufferqueue
+  !dmfconfig            - [Deprecated] use !dmf_module
+  !dmfconfigaddr        - [Internal Use Only]
+  !dmfcontext           - [Deprecated] use !dmf_module
+  !dmfcontextaddr       - [Internal Use Only]
+  !dmfmoduleinfo        - [Deprecated] use !dmf_module
+  !dmfobject            - [Deprecated] use !dmf_module
+  !dmftree              - Displays the DMF Tree starting from a WDF Device /
+                          DMF Module / DMF Collection
+                          Type !dmftree /? for flag usages.
+  !dmfwdfmemorytobuffer - [Internal Use Only]
+  !help                 - Displays information on available extension commands
+  !helpex               - Displays information on all commands : Both C++ and
+                          JS commands
+  !surfacedriverlegacy  - Displays information regarding the specified Surface driver
+  !surfacedriverslegacy - Lists all the loaded Surface drivers
+!help <cmd> will give more information for a particular command
+7: kd> !dmfkd.helpex
+Commands for C:\Users\v-babart\AppData\Local\Dbg\UserExtensions\DmfKd\1.233.137.0\x64\DmfKd.dll:
+  !dmftree              - Displays the DMF Tree starting from a WDF Device /
+                          DMF Module / DMF Collection
+                          Type !dmftree /? for flag usages.
+  !dmfwdfmemorytobuffer - [Internal Use Only]
+  !help                 - Displays information on available extension commands
+  !helpex               - Displays information on all commands : Both C++ and JS commands
+  !surfacedriverlegacy  - Displays information regarding the specified Surface driver
+  !surfacedriverslegacy - Lists all the loaded Surface drivers
+
+Below are the JavaScript command descriptions:
+  !dmf_bufferpool                 - Displays BufferPool Details
+  !dmf_bufferqueue                - Displays BufferQueue Details
+  !dmf_componentfirmwareupdatehidtransportsurface  - Displays Component firmware update hid transport surface Details
+  !dmf_componentfirmwareupdatev2  - Displays Component firmware update surface Details
+  !dmf_continuousrequesttarget    - Displays ContinuousRequestTarget Details
+  !dmf_deviceinterfacetarget      - Displays DeviceInterfaceTarget Details
+  !dmf_gpiotarget                 - Displays GpioTarget Details
+  !dmf_hidtarget                  - Displays HidTarget Details
+  !dmf_interface                     - Displays DmfInterface Details
+  !dmf_interruptresource          - Displays InterruptResource Details
+  !dmf_ioctlhandler               - Displays IoctlHandler Details
+  !dmf_module                     - Displays DmfModule Details
+  !dmf_pdo                        - Displays Pdo Details
+  !dmf_pingpongbuffer             - Displays PingPongBuffer Details
+  !dmf_queuedworkitem             - Displays QueuedWorkItem Details
+  !dmf_requesttarget              - Displays RequestTarget Details
+  !dmf_samcommunicationviassh     - Displays SamCommunicationViaSsh Details
+  !dmf_scheduledtask              - Displays ScheduledTask Details
+  !dmf_selftarget                 - Displays SelfTarget Details
+  !dmf_serialtarget               - Displays SerialTarget Details
+  !dmf_spbtarget                  - Displays SpbTarget Details
+  !dmf_thread                     - Displays Thread Details
+  !dmf_threadedbufferqueue        - Displays ThreadedBufferQueue Details
+  !dmf_wdfhandle                  - Displays WDFHANDLE Details
+  !surfacecfuoverhid         - Displays SurfaceCFUOverHid Driver Details
+  !surfacedriver                  - Displays details of a specific Surface Driver
+  !surfacedrivers                 - Displays Surface Drivers
+  !surfaceserialhubdriver         - Displays SurfaceSerialHub Driver Details
+!helpex <cmd> will give more information for a particular command
+
 
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
@@ -2260,4 +2324,6 @@ zonemappings                                  (!_wzm) Dump zones mappings inform
 
 Ndis registery path (example):
 HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}\0003\Ndi\params\NetworkAddress
+
+PDB Dump: cvdump.exe @ https://github.com/Microsoft/microsoft-pdb/blob/master/cvdump/cvdump.exe
 

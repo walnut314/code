@@ -6,7 +6,7 @@
   DeviceInst is "ACPI\MSHW0084\2&daba3ff&0"
   ServiceName is "SurfaceSerialHubDriver"
 
-Note: !DevExt of SSH is the SurfaceSerialHubDriver!DEVICE_CONTEXT
+Note: !DevExt of SSH is the SurfaceSerialHubDriver!DEVICE_CONTEXT => ffffaf8af3f152f0
 
 7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 (*((SurfaceSerialHubDriver!DEVICE_CONTEXT *)0xffffaf8af3f152f0))
 (*((SurfaceSerialHubDriver!DEVICE_CONTEXT *)0xffffaf8af3f152f0))                 [Type: DEVICE_CONTEXT]
@@ -48,8 +48,412 @@ Note: !DevExt of SSH is the SurfaceSerialHubDriver!DEVICE_CONTEXT
     [+0xaba8] DmfModuleRegistry : 0x0 : [object Object] [Type: DMFMODULE__ *]
 
 
-context    0xffffaf8af3f152f0
-array base 0xffffaf8af38ba9d0
+Find the array of objects:
+pick any DMF module => DmfModuleThreadProcessUsp (0x50750c0f3fd8)
+
+7: kd> !dmfkd.dmfobject 0x50750c0f3fd8
+DMF_OBJECT 0xffffaf8af3f0c0a0
+SurfaceSerialHubDriver!DMF_OBJECT
+   +0x000 ChildListEntry   : _LIST_ENTRY [ 0x00000000`00000000 - 0x00000000`00000000 ]
+   +0x010 ModuleConfig     : 0xffffaf8a`f237bb30 Void
+   +0x018 ModuleConfigMemory : 0x00005075`0dc84548 WDFMEMORY__
+   +0x020 ModuleContext    : 0xffffaf8a`f3956bf0 Void
+   +0x028 ReferenceCount   : 0n1
+   +0x030 ParentDevice     : 0x00005075`0c0eaff8 WDFDEVICE__
+   +0x038 MemoryDmfObject  : 0x00005075`0c0f3fd8 WDFMEMORY__
+   +0x040 ModuleState      : 3 ( ModuleState_Opened )
+   +0x044 ModuleOpenedDuring : 2 ( ModuleOpenedDuringType_Create )
+   +0x048 ModuleNotificationRegisteredDuring : 0 ( ModuleOpenedDuringType_Invalid )
+   +0x050 ModuleName       : 0xfffff806`8b1d3e70  "Thread"
+   +0x058 ClientModuleInstanceNameMemory : 0x00005075`0dc85358 WDFMEMORY__
+   +0x060 ClientModuleInstanceName : 0xffffaf8a`f237ad20  "ThreadProcessUsp"
+   +0x068 Signature        : 0x12345678
+   +0x070 InternalCallbacksDmf : DMF_CALLBACKS_DMF
+   +0x0b0 InternalCallbacksWdf : DMF_CALLBACKS_WDF
+   +0x1a0 InternalCallbacksInternal : DMF_CALLBACKS_INTERNAL
+   +0x1c8 ModuleDescriptor : DMF_MODULE_DESCRIPTOR
+   +0x250 ModuleAttributes : _DMF_MODULE_ATTRIBUTES
+   +0x2a0 Callbacks        : DMF_MODULE_EVENT_CALLBACKS
+   +0x2b0 IsClosePending   : 0 ''
+   +0x2b1 NeedToCallPreClose : 0x1 ''
+   +0x2b2 DynamicModuleImmediate : 0 ''
+   +0x2b8 ChildObjectList  : _LIST_ENTRY [ 0xffffaf8a`f3f0c358 - 0xffffaf8a`f3f0c358 ]
+   +0x2c8 NumberOfChildModules : 0
+   +0x2d0 InterfaceBindings : 0x00005075`0c613968 WDFCOLLECTION__
+   +0x2d8 InterfaceBindingsLock : 0x00005075`0c627b28 WDFSPINLOCK__
+   +0x2e0 TransportModule  : (null) 
+   +0x2e8 DmfObjectParent  : (null) 
+   +0x2f0 ModuleCollection : 0xffffaf8a`f3dd2f20 _DMF_MODULE_COLLECTION_
+   +0x2f8 Synchronizations : [5] DMF_SYNCHRONIZATION
+   +0x370 InFlightRecorder : 0xffffaf8a`f2391000 RECORDER_LOG__
+   +0x378 ClientEvtCleanupCallback : (null) 
+   +0x380 IsTransport      : 0 ''
+   +0x384 DesiredTransportInterfaceGuid : _GUID {00000000-0000-0000-0000-000000000000}
+
+Now dump the ModuleCollection
+7: kd> dt _DMF_MODULE_COLLECTION_ 0xffffaf8a`f3dd2f20
+SurfaceSerialHubDriver!_DMF_MODULE_COLLECTION_
+   +0x000 ModuleCollectionHandleMemory : 0x00005075`0c22d158 WDFMEMORY__
+   +0x008 ClientDriverDmfModules : 0xffffaf8a`f38ba9d0  -> 0xffffaf8a`f28b8270 _DMF_OBJECT_
+   +0x010 ClientDriverDmfModulesMemory : 0x00005075`0c7456a8 WDFMEMORY__
+   +0x018 NumberOfClientDriverDmfModules : 0n11
+   +0x01c ManualCallToD0EntrySucceeded : 0 ''
+   +0x020 DmfObjectFeature : [3] (null) 
+   +0x038 DmfCallbacksWdfCheck : DMF_CALLBACKS_WDF_CHECK
+   +0x05c ManualDestroyCallbackIsPending : 0 ''
+   +0x060 ClientDevice     : 0x00005075`0c0eaff8 WDFDEVICE__
+
+Every collection has a pointer back to the client driver's list of DMF objects ClientDriverDmfModules:
+it is an array of modules - depending on the number of modules used -- here SSH uses [7]
+
+DMF BufferPool
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 ((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[0]
+((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[0]                 : 0xffffaf8af28b8270 [Type: _DMF_OBJECT_ *]
+    [+0x000] ChildListEntry   [Type: _LIST_ENTRY]
+    [+0x010] ModuleConfig     : 0xffffaf8af237ab40 [Type: void *]
+    [+0x018] ModuleConfigMemory : 0x50750dc85538 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x020] ModuleContext    : 0xffffaf8af2eeea30 [Type: void *]
+    [+0x028] ReferenceCount   : 1 [Type: long]
+    [+0x030] ParentDevice     : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x038] MemoryDmfObject  : 0x50750d747e08 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x040] ModuleState      : ModuleState_Opened (3) [Type: ModuleStateType]
+    [+0x044] ModuleOpenedDuring : ModuleOpenedDuringType_Create (2) [Type: ModuleOpenedDuringType]
+    [+0x048] ModuleNotificationRegisteredDuring : ModuleOpenedDuringType_Invalid (0) [Type: ModuleOpenedDuringType]
+    [+0x050] ModuleName       : 0xfffff8068b1d3ec0 : "BufferPool" [Type: char *]
+    [+0x058] ClientModuleInstanceNameMemory : 0x50750c613268 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x060] ClientModuleInstanceName : 0xffffaf8af39ece10 : "BufferPoolUsp" [Type: char *]
+    [+0x068] Signature        : 0x12345678 [Type: unsigned __int64]
+    [+0x070] InternalCallbacksDmf [Type: DMF_CALLBACKS_DMF]
+    [+0x0b0] InternalCallbacksWdf [Type: DMF_CALLBACKS_WDF]
+    [+0x1a0] InternalCallbacksInternal [Type: DMF_CALLBACKS_INTERNAL]
+    [+0x1c8] ModuleDescriptor [Type: DMF_MODULE_DESCRIPTOR]
+    [+0x250] ModuleAttributes [Type: _DMF_MODULE_ATTRIBUTES]
+    [+0x2a0] Callbacks        [Type: DMF_MODULE_EVENT_CALLBACKS]
+    [+0x2b0] IsClosePending   : 0x0 [Type: unsigned char]
+    [+0x2b1] NeedToCallPreClose : 0x1 [Type: unsigned char]
+    [+0x2b2] DynamicModuleImmediate : 0x0 [Type: unsigned char]
+    [+0x2b8] ChildObjectList  [Type: _LIST_ENTRY]
+    [+0x2c8] NumberOfChildModules : 0x0 [Type: unsigned long]
+    [+0x2d0] InterfaceBindings : 0x50750c612c48 : [object Object] [!wdf...] [Type: WDFCOLLECTION__ *]
+    [+0x2d8] InterfaceBindingsLock : 0x50750c6285b8 [Type: WDFSPINLOCK__ *]
+    [+0x2e0] TransportModule  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2e8] DmfObjectParent  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2f0] ModuleCollection : 0xffffaf8af3dd2f20 [Type: _DMF_MODULE_COLLECTION_ *]
+    [+0x2f8] Synchronizations [Type: DMF_SYNCHRONIZATION [5]]
+    [+0x370] InFlightRecorder : 0xffffaf8af2391000 [Type: RECORDER_LOG__ *]
+    [+0x378] ClientEvtCleanupCallback : 0x0 [Type: void (__cdecl*)(void *)]
+    [+0x380] IsTransport      : 0x0 [Type: unsigned char]
+    [+0x384] DesiredTransportInterfaceGuid : {00000000-0000-0000-0000-000000000000} [Type: _GUID]
+
+the MemoryDmfObject handle is addr 0xffffaf8af28b8270 which is the _DMF_OBJECT_
+7: kd> !wdfmemory 0x50750d747e08
+Treating handle as a KMDF handle!
+WDFMEMORY 0x000050750d747e08:  Buffer 0xffffaf8af28b8270, Length 0x398 (920) bytes
+
+
+DMF PingPongBuffer
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 ((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[1]
+((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[1]                 : 0xffffaf8af3f0c530 [Type: _DMF_OBJECT_ *]
+    [+0x000] ChildListEntry   [Type: _LIST_ENTRY]
+    [+0x010] ModuleConfig     : 0xffffaf8af39ec550 [Type: void *]
+    [+0x018] ModuleConfigMemory : 0x50750c613b28 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x020] ModuleContext    : 0xffffaf8af2eeec70 [Type: void *]
+    [+0x028] ReferenceCount   : 1 [Type: long]
+    [+0x030] ParentDevice     : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x038] MemoryDmfObject  : 0x50750c0f3b48 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x040] ModuleState      : ModuleState_Opened (3) [Type: ModuleStateType]
+    [+0x044] ModuleOpenedDuring : ModuleOpenedDuringType_Create (2) [Type: ModuleOpenedDuringType]
+    [+0x048] ModuleNotificationRegisteredDuring : ModuleOpenedDuringType_Invalid (0) [Type: ModuleOpenedDuringType]
+    [+0x050] ModuleName       : 0xfffff8068b1d3f80 : "PingPongBuffer" [Type: char *]
+    [+0x058] ClientModuleInstanceNameMemory : 0x50750c613f88 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x060] ClientModuleInstanceName : 0xffffaf8af39ec0f0 : "PingPongBuffer" [Type: char *]
+    [+0x068] Signature        : 0x12345678 [Type: unsigned __int64]
+    [+0x070] InternalCallbacksDmf [Type: DMF_CALLBACKS_DMF]
+    [+0x0b0] InternalCallbacksWdf [Type: DMF_CALLBACKS_WDF]
+    [+0x1a0] InternalCallbacksInternal [Type: DMF_CALLBACKS_INTERNAL]
+    [+0x1c8] ModuleDescriptor [Type: DMF_MODULE_DESCRIPTOR]
+    [+0x250] ModuleAttributes [Type: _DMF_MODULE_ATTRIBUTES]
+    [+0x2a0] Callbacks        [Type: DMF_MODULE_EVENT_CALLBACKS]
+    [+0x2b0] IsClosePending   : 0x0 [Type: unsigned char]
+    [+0x2b1] NeedToCallPreClose : 0x1 [Type: unsigned char]
+    [+0x2b2] DynamicModuleImmediate : 0x0 [Type: unsigned char]
+    [+0x2b8] ChildObjectList  [Type: _LIST_ENTRY]
+    [+0x2c8] NumberOfChildModules : 0x0 [Type: unsigned long]
+    [+0x2d0] InterfaceBindings : 0x50750c612708 : [object Object] [!wdf...] [Type: WDFCOLLECTION__ *]
+    [+0x2d8] InterfaceBindingsLock : 0x50750c627f38 [Type: WDFSPINLOCK__ *]
+    [+0x2e0] TransportModule  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2e8] DmfObjectParent  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2f0] ModuleCollection : 0xffffaf8af3dd2f20 [Type: _DMF_MODULE_COLLECTION_ *]
+    [+0x2f8] Synchronizations [Type: DMF_SYNCHRONIZATION [5]]
+    [+0x370] InFlightRecorder : 0xffffaf8af2391000 [Type: RECORDER_LOG__ *]
+    [+0x378] ClientEvtCleanupCallback : 0x0 [Type: void (__cdecl*)(void *)]
+    [+0x380] IsTransport      : 0x0 [Type: unsigned char]
+    [+0x384] DesiredTransportInterfaceGuid : {00000000-0000-0000-0000-000000000000} [Type: _GUID]
+
+DMF Thread
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 ((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[2]
+((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[2]                 : 0xffffaf8af3f0c0a0 [Type: _DMF_OBJECT_ *]
+    [+0x000] ChildListEntry   [Type: _LIST_ENTRY]
+    [+0x010] ModuleConfig     : 0xffffaf8af237bb30 [Type: void *]
+    [+0x018] ModuleConfigMemory : 0x50750dc84548 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x020] ModuleContext    : 0xffffaf8af3956bf0 [Type: void *]
+    [+0x028] ReferenceCount   : 1 [Type: long]
+    [+0x030] ParentDevice     : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x038] MemoryDmfObject  : 0x50750c0f3fd8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x040] ModuleState      : ModuleState_Opened (3) [Type: ModuleStateType]
+    [+0x044] ModuleOpenedDuring : ModuleOpenedDuringType_Create (2) [Type: ModuleOpenedDuringType]
+    [+0x048] ModuleNotificationRegisteredDuring : ModuleOpenedDuringType_Invalid (0) [Type: ModuleOpenedDuringType]
+    [+0x050] ModuleName       : 0xfffff8068b1d3e70 : "Thread" [Type: char *]
+    [+0x058] ClientModuleInstanceNameMemory : 0x50750dc85358 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x060] ClientModuleInstanceName : 0xffffaf8af237ad20 : "ThreadProcessUsp" [Type: char *]
+    [+0x068] Signature        : 0x12345678 [Type: unsigned __int64]
+    [+0x070] InternalCallbacksDmf [Type: DMF_CALLBACKS_DMF]
+    [+0x0b0] InternalCallbacksWdf [Type: DMF_CALLBACKS_WDF]
+    [+0x1a0] InternalCallbacksInternal [Type: DMF_CALLBACKS_INTERNAL]
+    [+0x1c8] ModuleDescriptor [Type: DMF_MODULE_DESCRIPTOR]
+    [+0x250] ModuleAttributes [Type: _DMF_MODULE_ATTRIBUTES]
+    [+0x2a0] Callbacks        [Type: DMF_MODULE_EVENT_CALLBACKS]
+    [+0x2b0] IsClosePending   : 0x0 [Type: unsigned char]
+    [+0x2b1] NeedToCallPreClose : 0x1 [Type: unsigned char]
+    [+0x2b2] DynamicModuleImmediate : 0x0 [Type: unsigned char]
+    [+0x2b8] ChildObjectList  [Type: _LIST_ENTRY]
+    [+0x2c8] NumberOfChildModules : 0x0 [Type: unsigned long]
+    [+0x2d0] InterfaceBindings : 0x50750c613968 : [object Object] [!wdf...] [Type: WDFCOLLECTION__ *]
+    [+0x2d8] InterfaceBindingsLock : 0x50750c627b28 [Type: WDFSPINLOCK__ *]
+    [+0x2e0] TransportModule  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2e8] DmfObjectParent  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2f0] ModuleCollection : 0xffffaf8af3dd2f20 [Type: _DMF_MODULE_COLLECTION_ *]
+    [+0x2f8] Synchronizations [Type: DMF_SYNCHRONIZATION [5]]
+    [+0x370] InFlightRecorder : 0xffffaf8af2391000 [Type: RECORDER_LOG__ *]
+    [+0x378] ClientEvtCleanupCallback : 0x0 [Type: void (__cdecl*)(void *)]
+    [+0x380] IsTransport      : 0x0 [Type: unsigned char]
+    [+0x384] DesiredTransportInterfaceGuid : {00000000-0000-0000-0000-000000000000} [Type: _GUID]
+
+DMF ThreadedBufferQueue
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 ((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[3]
+((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[3]                 : 0xffffaf8af3f0b9c0 [Type: _DMF_OBJECT_ *]
+    [+0x000] ChildListEntry   [Type: _LIST_ENTRY]
+    [+0x010] ModuleConfig     : 0xffffaf8af38044a0 [Type: void *]
+    [+0x018] ModuleConfigMemory : 0x50750c7fbbd8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x020] ModuleContext    : 0xffffaf8af2389360 [Type: void *]
+    [+0x028] ReferenceCount   : 1 [Type: long]
+    [+0x030] ParentDevice     : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x038] MemoryDmfObject  : 0x50750c0f46b8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x040] ModuleState      : ModuleState_Opened (3) [Type: ModuleStateType]
+    [+0x044] ModuleOpenedDuring : ModuleOpenedDuringType_Create (2) [Type: ModuleOpenedDuringType]
+    [+0x048] ModuleNotificationRegisteredDuring : ModuleOpenedDuringType_Invalid (0) [Type: ModuleOpenedDuringType]
+    [+0x050] ModuleName       : 0xfffff8068b1d3e80 : "ThreadedBufferQueue" [Type: char *]
+    [+0x058] ClientModuleInstanceNameMemory : 0x50750c7fa6d8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x060] ClientModuleInstanceName : 0xffffaf8af38059a0 : "ThreadedBufferQueueCompleteRequest" [Type: char *]
+    [+0x068] Signature        : 0x12345678 [Type: unsigned __int64]
+    [+0x070] InternalCallbacksDmf [Type: DMF_CALLBACKS_DMF]
+    [+0x0b0] InternalCallbacksWdf [Type: DMF_CALLBACKS_WDF]
+    [+0x1a0] InternalCallbacksInternal [Type: DMF_CALLBACKS_INTERNAL]
+    [+0x1c8] ModuleDescriptor [Type: DMF_MODULE_DESCRIPTOR]
+    [+0x250] ModuleAttributes [Type: _DMF_MODULE_ATTRIBUTES]
+    [+0x2a0] Callbacks        [Type: DMF_MODULE_EVENT_CALLBACKS]
+    [+0x2b0] IsClosePending   : 0x0 [Type: unsigned char]
+    [+0x2b1] NeedToCallPreClose : 0x1 [Type: unsigned char]
+    [+0x2b2] DynamicModuleImmediate : 0x0 [Type: unsigned char]
+    [+0x2b8] ChildObjectList  [Type: _LIST_ENTRY]
+    [+0x2c8] NumberOfChildModules : 0x2 [Type: unsigned long]
+    [+0x2d0] InterfaceBindings : 0x50750c612b68 : [object Object] [!wdf...] [Type: WDFCOLLECTION__ *]
+    [+0x2d8] InterfaceBindingsLock : 0x50750c6284e8 [Type: WDFSPINLOCK__ *]
+    [+0x2e0] TransportModule  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2e8] DmfObjectParent  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2f0] ModuleCollection : 0xffffaf8af3dd2f20 [Type: _DMF_MODULE_COLLECTION_ *]
+    [+0x2f8] Synchronizations [Type: DMF_SYNCHRONIZATION [5]]
+    [+0x370] InFlightRecorder : 0xffffaf8af2391000 [Type: RECORDER_LOG__ *]
+    [+0x378] ClientEvtCleanupCallback : 0x0 [Type: void (__cdecl*)(void *)]
+    [+0x380] IsTransport      : 0x0 [Type: unsigned char]
+    [+0x384] DesiredTransportInterfaceGuid : {00000000-0000-0000-0000-000000000000} [Type: _GUID]
+
+DMF BufferQueue
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 ((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[4]
+((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[4]                 : 0xffffaf8af3aac0a0 [Type: _DMF_OBJECT_ *]
+    [+0x000] ChildListEntry   [Type: _LIST_ENTRY]
+    [+0x010] ModuleConfig     : 0xffffaf8af237b950 [Type: void *]
+    [+0x018] ModuleConfigMemory : 0x50750dc84728 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x020] ModuleContext    : 0xffffaf8af2389480 [Type: void *]
+    [+0x028] ReferenceCount   : 1 [Type: long]
+    [+0x030] ParentDevice     : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x038] MemoryDmfObject  : 0x50750c553fd8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x040] ModuleState      : ModuleState_Opened (3) [Type: ModuleStateType]
+    [+0x044] ModuleOpenedDuring : ModuleOpenedDuringType_Create (2) [Type: ModuleOpenedDuringType]
+    [+0x048] ModuleNotificationRegisteredDuring : ModuleOpenedDuringType_Invalid (0) [Type: ModuleOpenedDuringType]
+    [+0x050] ModuleName       : 0xfffff8068b1d3f70 : "BufferQueue" [Type: char *]
+    [+0x058] ClientModuleInstanceNameMemory : 0x50750c613428 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x060] ClientModuleInstanceName : 0xffffaf8af39ecc50 : "BufferQueue" [Type: char *]
+    [+0x068] Signature        : 0x12345678 [Type: unsigned __int64]
+    [+0x070] InternalCallbacksDmf [Type: DMF_CALLBACKS_DMF]
+    [+0x0b0] InternalCallbacksWdf [Type: DMF_CALLBACKS_WDF]
+    [+0x1a0] InternalCallbacksInternal [Type: DMF_CALLBACKS_INTERNAL]
+    [+0x1c8] ModuleDescriptor [Type: DMF_MODULE_DESCRIPTOR]
+    [+0x250] ModuleAttributes [Type: _DMF_MODULE_ATTRIBUTES]
+    [+0x2a0] Callbacks        [Type: DMF_MODULE_EVENT_CALLBACKS]
+    [+0x2b0] IsClosePending   : 0x0 [Type: unsigned char]
+    [+0x2b1] NeedToCallPreClose : 0x1 [Type: unsigned char]
+    [+0x2b2] DynamicModuleImmediate : 0x0 [Type: unsigned char]
+    [+0x2b8] ChildObjectList  [Type: _LIST_ENTRY]
+    [+0x2c8] NumberOfChildModules : 0x2 [Type: unsigned long]
+    [+0x2d0] InterfaceBindings : 0x50750c612628 : [object Object] [!wdf...] [Type: WDFCOLLECTION__ *]
+    [+0x2d8] InterfaceBindingsLock : 0x50750c628418 [Type: WDFSPINLOCK__ *]
+    [+0x2e0] TransportModule  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2e8] DmfObjectParent  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2f0] ModuleCollection : 0xffffaf8af3dd2f20 [Type: _DMF_MODULE_COLLECTION_ *]
+    [+0x2f8] Synchronizations [Type: DMF_SYNCHRONIZATION [5]]
+    [+0x370] InFlightRecorder : 0xffffaf8af2391000 [Type: RECORDER_LOG__ *]
+    [+0x378] ClientEvtCleanupCallback : 0x0 [Type: void (__cdecl*)(void *)]
+    [+0x380] IsTransport      : 0x0 [Type: unsigned char]
+    [+0x384] DesiredTransportInterfaceGuid : {00000000-0000-0000-0000-000000000000} [Type: _GUID]
+
+DMF BufferPool
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 ((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[5]
+((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[5]                 : 0xffffaf8af3aab0a0 [Type: _DMF_OBJECT_ *]
+    [+0x000] ChildListEntry   [Type: _LIST_ENTRY]
+    [+0x010] ModuleConfig     : 0xffffaf8af237b2c0 [Type: void *]
+    [+0x018] ModuleConfigMemory : 0x50750dc84db8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x020] ModuleContext    : 0xffffaf8af2eee1c0 [Type: void *]
+    [+0x028] ReferenceCount   : 1 [Type: long]
+    [+0x030] ParentDevice     : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x038] MemoryDmfObject  : 0x50750c554fd8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x040] ModuleState      : ModuleState_Opened (3) [Type: ModuleStateType]
+    [+0x044] ModuleOpenedDuring : ModuleOpenedDuringType_Create (2) [Type: ModuleOpenedDuringType]
+    [+0x048] ModuleNotificationRegisteredDuring : ModuleOpenedDuringType_Invalid (0) [Type: ModuleOpenedDuringType]
+    [+0x050] ModuleName       : 0xfffff8068b1d3ec0 : "BufferPool" [Type: char *]
+    [+0x058] ClientModuleInstanceNameMemory : 0x50750dc858f8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x060] ClientModuleInstanceName : 0xffffaf8af237a780 : "BufferPoolResponse" [Type: char *]
+    [+0x068] Signature        : 0x12345678 [Type: unsigned __int64]
+    [+0x070] InternalCallbacksDmf [Type: DMF_CALLBACKS_DMF]
+    [+0x0b0] InternalCallbacksWdf [Type: DMF_CALLBACKS_WDF]
+    [+0x1a0] InternalCallbacksInternal [Type: DMF_CALLBACKS_INTERNAL]
+    [+0x1c8] ModuleDescriptor [Type: DMF_MODULE_DESCRIPTOR]
+    [+0x250] ModuleAttributes [Type: _DMF_MODULE_ATTRIBUTES]
+    [+0x2a0] Callbacks        [Type: DMF_MODULE_EVENT_CALLBACKS]
+    [+0x2b0] IsClosePending   : 0x0 [Type: unsigned char]
+    [+0x2b1] NeedToCallPreClose : 0x1 [Type: unsigned char]
+    [+0x2b2] DynamicModuleImmediate : 0x0 [Type: unsigned char]
+    [+0x2b8] ChildObjectList  [Type: _LIST_ENTRY]
+    [+0x2c8] NumberOfChildModules : 0x0 [Type: unsigned long]
+    [+0x2d0] InterfaceBindings : 0x50750c88a7a8 : [object Object] [!wdf...] [Type: WDFCOLLECTION__ *]
+    [+0x2d8] InterfaceBindingsLock : 0x50750c6288f8 [Type: WDFSPINLOCK__ *]
+    [+0x2e0] TransportModule  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2e8] DmfObjectParent  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2f0] ModuleCollection : 0xffffaf8af3dd2f20 [Type: _DMF_MODULE_COLLECTION_ *]
+    [+0x2f8] Synchronizations [Type: DMF_SYNCHRONIZATION [5]]
+    [+0x370] InFlightRecorder : 0xffffaf8af2391000 [Type: RECORDER_LOG__ *]
+    [+0x378] ClientEvtCleanupCallback : 0x0 [Type: void (__cdecl*)(void *)]
+    [+0x380] IsTransport      : 0x0 [Type: unsigned char]
+    [+0x384] DesiredTransportInterfaceGuid : {00000000-0000-0000-0000-000000000000} [Type: _GUID]
+
+DMF Thread
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 ((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[6]
+((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[6]                 : 0xffffaf8af3aaa9c0 [Type: _DMF_OBJECT_ *]
+    [+0x000] ChildListEntry   [Type: _LIST_ENTRY]
+    [+0x010] ModuleConfig     : 0xffffaf8af237a690 [Type: void *]
+    [+0x018] ModuleConfigMemory : 0x50750dc859e8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x020] ModuleContext    : 0xffffaf8af39556a0 [Type: void *]
+    [+0x028] ReferenceCount   : 1 [Type: long]
+    [+0x030] ParentDevice     : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x038] MemoryDmfObject  : 0x50750c5556b8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x040] ModuleState      : ModuleState_Opened (3) [Type: ModuleStateType]
+    [+0x044] ModuleOpenedDuring : ModuleOpenedDuringType_Create (2) [Type: ModuleOpenedDuringType]
+    [+0x048] ModuleNotificationRegisteredDuring : ModuleOpenedDuringType_Invalid (0) [Type: ModuleOpenedDuringType]
+    [+0x050] ModuleName       : 0xfffff8068b1d3e70 : "Thread" [Type: char *]
+    [+0x058] ClientModuleInstanceNameMemory : 0x50750c663188 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x060] ClientModuleInstanceName : 0xffffaf8af399cef0 : "ThreadIoctl" [Type: char *]
+    [+0x068] Signature        : 0x12345678 [Type: unsigned __int64]
+    [+0x070] InternalCallbacksDmf [Type: DMF_CALLBACKS_DMF]
+    [+0x0b0] InternalCallbacksWdf [Type: DMF_CALLBACKS_WDF]
+    [+0x1a0] InternalCallbacksInternal [Type: DMF_CALLBACKS_INTERNAL]
+    [+0x1c8] ModuleDescriptor [Type: DMF_MODULE_DESCRIPTOR]
+    [+0x250] ModuleAttributes [Type: _DMF_MODULE_ATTRIBUTES]
+    [+0x2a0] Callbacks        [Type: DMF_MODULE_EVENT_CALLBACKS]
+    [+0x2b0] IsClosePending   : 0x0 [Type: unsigned char]
+    [+0x2b1] NeedToCallPreClose : 0x1 [Type: unsigned char]
+    [+0x2b2] DynamicModuleImmediate : 0x0 [Type: unsigned char]
+    [+0x2b8] ChildObjectList  [Type: _LIST_ENTRY]
+    [+0x2c8] NumberOfChildModules : 0x0 [Type: unsigned long]
+    [+0x2d0] InterfaceBindings : 0x50750c613a48 : [object Object] [!wdf...] [Type: WDFCOLLECTION__ *]
+    [+0x2d8] InterfaceBindingsLock : 0x50750c6281a8 [Type: WDFSPINLOCK__ *]
+    [+0x2e0] TransportModule  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2e8] DmfObjectParent  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2f0] ModuleCollection : 0xffffaf8af3dd2f20 [Type: _DMF_MODULE_COLLECTION_ *]
+    [+0x2f8] Synchronizations [Type: DMF_SYNCHRONIZATION [5]]
+    [+0x370] InFlightRecorder : 0xffffaf8af2391000 [Type: RECORDER_LOG__ *]
+    [+0x378] ClientEvtCleanupCallback : 0x0 [Type: void (__cdecl*)(void *)]
+    [+0x380] IsTransport      : 0x0 [Type: unsigned char]
+    [+0x384] DesiredTransportInterfaceGuid : {00000000-0000-0000-0000-000000000000} [Type: _GUID]
+
+DMF SerialTarget
+7: kd> dx -id 0,0,ffffaf8af99e0080 -r1 ((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[7]
+((SurfaceSerialHubDriver!_DMF_OBJECT_ * *)0xffffaf8af38ba9d0)[7]                 : 0xffffaf8af3aaa530 [Type: _DMF_OBJECT_ *]
+    [+0x000] ChildListEntry   [Type: _LIST_ENTRY]
+    [+0x010] ModuleConfig     : 0xffffaf8af3dd31a0 [Type: void *]
+    [+0x018] ModuleConfigMemory : 0x50750c22ced8 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x020] ModuleContext    : 0xffffaf8af2eabc50 [Type: void *]
+    [+0x028] ReferenceCount   : 1 [Type: long]
+    [+0x030] ParentDevice     : 0x50750c0eaff8 : [object Object] [!wdf...] [Type: WDFDEVICE__ *]
+    [+0x038] MemoryDmfObject  : 0x50750c555b49 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x040] ModuleState      : ModuleState_Opened (3) [Type: ModuleStateType]
+    [+0x044] ModuleOpenedDuring : ModuleOpenedDuringType_PrepareHardware (3) [Type: ModuleOpenedDuringType]
+    [+0x048] ModuleNotificationRegisteredDuring : ModuleOpenedDuringType_Invalid (0) [Type: ModuleOpenedDuringType]
+    [+0x050] ModuleName       : 0xfffff8068b1d3ea0 : "SerialTarget" [Type: char *]
+    [+0x058] ClientModuleInstanceNameMemory : 0x50750c613508 : [object Object] [!wdf...] [Type: WDFMEMORY__ *]
+    [+0x060] ClientModuleInstanceName : 0xffffaf8af39ecb70 : "SerialTarget" [Type: char *]
+    [+0x068] Signature        : 0x12345678 [Type: unsigned __int64]
+    [+0x070] InternalCallbacksDmf [Type: DMF_CALLBACKS_DMF]
+    [+0x0b0] InternalCallbacksWdf [Type: DMF_CALLBACKS_WDF]
+    [+0x1a0] InternalCallbacksInternal [Type: DMF_CALLBACKS_INTERNAL]
+    [+0x1c8] ModuleDescriptor [Type: DMF_MODULE_DESCRIPTOR]
+    [+0x250] ModuleAttributes [Type: _DMF_MODULE_ATTRIBUTES]
+    [+0x2a0] Callbacks        [Type: DMF_MODULE_EVENT_CALLBACKS]
+    [+0x2b0] IsClosePending   : 0x0 [Type: unsigned char]
+    [+0x2b1] NeedToCallPreClose : 0x1 [Type: unsigned char]
+    [+0x2b2] DynamicModuleImmediate : 0x0 [Type: unsigned char]
+    [+0x2b8] ChildObjectList  [Type: _LIST_ENTRY]
+    [+0x2c8] NumberOfChildModules : 0x1 [Type: unsigned long]
+    [+0x2d0] InterfaceBindings : 0x50750c612a88 : [object Object] [!wdf...] [Type: WDFCOLLECTION__ *]
+    [+0x2d8] InterfaceBindingsLock : 0x50750c626948 [Type: WDFSPINLOCK__ *]
+    [+0x2e0] TransportModule  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2e8] DmfObjectParent  : 0x0 [Type: _DMF_OBJECT_ *]
+    [+0x2f0] ModuleCollection : 0xffffaf8af3dd2f20 [Type: _DMF_MODULE_COLLECTION_ *]
+    [+0x2f8] Synchronizations [Type: DMF_SYNCHRONIZATION [5]]
+    [+0x370] InFlightRecorder : 0xffffaf8af2391000 [Type: RECORDER_LOG__ *]
+    [+0x378] ClientEvtCleanupCallback : 0x0 [Type: void (__cdecl*)(void *)]
+    [+0x380] IsTransport      : 0x0 [Type: unsigned char]
+    [+0x384] DesiredTransportInterfaceGuid : {00000000-0000-0000-0000-000000000000} [Type: _GUID]
+
+The actual memory address is for the SerialTarget Module should be 0x50750c555b48 and not 0x50750c555b49
+
+Check the MemoryDmfObject(s)
+
+7: kd> !wdfmemory 0x50750c555b49
+Treating handle as a KMDF handle!
+Handle offset 0x22e8 does not match system buffer offset 0xd8 or output buffer offset 0xe8
+
+7: kd> !wdfmemory 0x50750c555b48
+Treating handle as a KMDF handle!
+WDFMEMORY 0x000050750c555b48:  Buffer 0xffffaf8af3aaa530, Length 0x398 (920) bytes
+
+we can get the wdf memory for a DMF handle
+7: kd> !wdfmemory 0x50750c0f3fd8
+Treating handle as a KMDF handle!
+WDFMEMORY 0x000050750c0f3fd8:  Buffer 0xffffaf8af3f0c0a0, Length 0x398 (920) bytes
+
+
+7: kd> !dmf_serialtarget 0x50750c555b48
+@$dmf_serialtarget(0x50750c555b48)                 : SerialTarget (SerialTarget) 0x50750c555b48 - {12}
+    Kd_DmfModule     : SerialTarget (SerialTarget) 0x50750c555b48
+    Kd_SerialTargetContext [Type: DMF_CONTEXT_SerialTarget]
+    Kd_SerialTargetConfig [Type: DMF_CONFIG_SerialTarget]
+    Kd_EvtSerialTargetCustomConfiguration : SerialConfigurationParametersCallback [ln]
+    Kd_IoTarget      : 0x50750c557d68 : [object Object] [!wdf...] [Type: WDFIOTARGET__ *]
+    Kd_DmfModuleContinuousRequestTarget : ContinuousRequestTarget (ContinuousRequestTarget) 0x50750c555fd8 - [object Object], 0, Cnt:0
+    Kd_ModuleOpenOption : SerialTarget_OpenOption_PrepareHardware (0) [Type: SerialTarget_OpenOption]
+    Kd_PeripheralId  : {12} [Type: _LARGE_INTEGER]
+    Kd_ContinuousRequestTargetMode : ContinuousRequestTarget_Mode_Manual (0) [Type: ContinuousRequestTarget_ModeType]
+
 
 7: kd> !surfaceserialhubdriver 0x50750c0eaff8
 @$surfaceserialhubdriver(0x50750c0eaff8)                 [Re-Populate]
@@ -62,5 +466,432 @@ array base 0xffffaf8af38ba9d0
     Kd_IdleTimeoutScreenOff : 30ms
     Kd_EnableWorkaroundToConfigureUartInD0Entry : 0x0 [Type: BOOLEAN]
     Kd_SshIoProtocolType : SSH_IO_PROTOCOL_UART (2) [Type: SSH_IO_PROTOCOL_TYPE]
+
+Dumping out the wdf driver info, we should be able to track the memory objects for the DMF objects, 
+also let's find the colletion object while we're at it:  Nope no correlation
+
+
+
+
+7: kd> !wdfdriverinfo SurfaceSerialHubDriver.sys fff
+----------------------------------
+Default driver image name: SurfaceSerialHubDriver
+WDF library image name: Wdf01000
+ FxDriverGlobals  0xffffaf8af3aa5da0
+ WdfBindInfo      0xfffff8068b1ac650
+   Version        v1.15
+ Library module   0xffffaf8aed8c22b0
+   ServiceName    \Registry\Machine\System\CurrentControlSet\Services\Wdf01000
+   ImageName      Wdf01000
+----------------------------------
+Driver Handles:
+ dt FxDriver 0xFFFFAF8AF37F1B60           : !wdfhandle 0x000050750c80e498 Cleanup fffff8068b183c00
+ dt FxDevice 0xFFFFAF8AF3F15000           :     !wdfdevice 0x000050750c0eaff8 Context ffffaf8af3f152f0 Cleanup fffff8068b1814c0, Context ffffaf8af2eeed00
+ dt FxDefaultIrpHandler 0xFFFFAF8AF2F6F16 :         WDF INTERNAL 
+ dt FxPkgGeneral 0xFFFFAF8AF237AD90       :         WDF INTERNAL 
+ dt FxWmiIrpHandler 0xFFFFAF8AF237B9C0    :         WDF INTERNAL 
+ dt FxPkgIo 0xFFFFAF8AF391E670            :         WDF INTERNAL 
+ dt FxIoQueue 0xFFFFAF8AED3C0C20          :             !wdfqueue 0x0000507512c3f3d8
+ dt FxIoQueue 0xFFFFAF8AED3C2C20          :             !wdfqueue 0x0000507512c3d3d8
+ dt FxPkgFdo 0xFFFFAF8AF3AA96A0           :         WDF INTERNAL 
+ dt FxCmResList 0xFFFFAF8AF237BBA0        :         !wdfhandle 0x000050750dc84458
+ dt FxResourceCm 0xFFFFAF8AF3F6ACD0       :             WDF INTERNAL 
+ dt FxResourceCm 0xFFFFAF8AF3F6B5C0       :             WDF INTERNAL 
+ dt FxResourceCm 0xFFFFAF8AF3F6AA10       :             WDF INTERNAL 
+ dt FxCmResList 0xFFFFAF8AF237ABB0        :         !wdfhandle 0x000050750dc85448
+ dt FxResourceCm 0xFFFFAF8AF3F6B040       :             WDF INTERNAL 
+ dt FxResourceCm 0xFFFFAF8AF3F6B1A0       :             WDF INTERNAL 
+ dt FxResourceCm 0xFFFFAF8AF3F6A800       :             WDF INTERNAL 
+ dt FxChildList 0xFFFFAF8AF37F1D20        :         !wdfchildlist 0x000050750c80e2d8
+ dt FxIoTarget 0xFFFFAF8AF391E820         :         !wdfiotarget 0x000050750c6e17d8
+ dt FxTimer 0xFFFFAF8AF391E9D0            :         !wdfhandle 0x000050750c6e1628
+ dt FxSpinLock 0xFFFFAF8AF39D8190         :         !wdfspinlock 0x000050750c627e68
+ dt FxSpinLock 0xFFFFAF8AF39D8400         :         !wdfspinlock 0x000050750c627bf8
+ dt FxMemoryObject 0xFFFFAF8AF3DD2EA0     :         !wdfmemory 0x000050750c22d158 [DMFCOLLECTION_TYPE] Cleanup fffff8068b18f150, Context ffffaf8af2389180
+ dt FxMemoryObject 0xFFFFAF8AF38BA950     :             !wdfmemory 0x000050750c7456a8
+ dt FxMemoryObject 0xFFFFAF8AF28B81F0     :         !wdfmemory 0x000050750d747e08 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eeea30, Context ffffaf8af2389420, Context ffffaf8af2389660
+ dt FxMemoryObject 0xFFFFAF8AF39ECD90     :             !wdfmemory 0x000050750c613268
+ dt FxMemoryObject 0xFFFFAF8AF237AAC0     :             !wdfmemory 0x000050750dc85538
+ dt FxCollection 0xFFFFAF8AF39ED3B0       :             !wdfcollection 0x000050750c612c48
+ dt FxSpinLock 0xFFFFAF8AF39D7A40         :             !wdfspinlock 0x000050750c6285b8
+ dt FxSpinLock 0xFFFFAF8AF39D85A0         :             !wdfspinlock 0x000050750c627a58
+ dt FxMemoryObject 0xFFFFAF8AF3907E30     :             !wdfmemory 0x000050750c6f81c8
+ dt FxMemoryObject 0xFFFFAF8AF37EF320     :             !wdfmemory 0x000050750c810cd8
+ dt FxMemoryObject 0xFFFFAF8AF3F0C4B0     :         !wdfmemory 0x000050750c0f3b48 [DMFMODULE_TYPE, PingPongBuffer] Context ffffaf8af2eeec70, Context ffffaf8af23891e0, Context ffffaf8af2389840
+ dt FxMemoryObject 0xFFFFAF8AF39EC070     :             !wdfmemory 0x000050750c613f88
+ dt FxMemoryObject 0xFFFFAF8AF39EC4D0     :             !wdfmemory 0x000050750c613b28
+ dt FxCollection 0xFFFFAF8AF39ED8F0       :             !wdfcollection 0x000050750c612708
+ dt FxSpinLock 0xFFFFAF8AF39D80C0         :             !wdfspinlock 0x000050750c627f38
+ dt FxSpinLock 0xFFFFAF8AF39D8260         :             !wdfspinlock 0x000050750c627d98
+ dt FxMemoryObject 0xFFFFAF8AF39074A0     :             !wdfmemory 0x000050750c6f8b58
+ dt FxMemoryObject 0xFFFFAF8AF37EF4E0     :             !wdfmemory 0x000050750c810b18
+ dt FxMemoryObject 0xFFFFAF8AF39A5080     :             !wdfmemory 0x000050750c65af78
+ dt FxMemoryObject 0xFFFFAF8AF3987AA0     :             !wdfmemory 0x000050750c678558
+ dt FxMemoryObject 0xFFFFAF8AF3F0C020     :         !wdfmemory 0x000050750c0f3fd8 [DMFMODULE_TYPE, Thread] Context ffffaf8af3956bf0, Context ffffaf8af23897e0, Context ffffaf8af23896c0
+ dt FxMemoryObject 0xFFFFAF8AF237ACA0     :             !wdfmemory 0x000050750dc85358
+ dt FxMemoryObject 0xFFFFAF8AF237BAB0     :             !wdfmemory 0x000050750dc84548
+ dt FxCollection 0xFFFFAF8AF39EC690       :             !wdfcollection 0x000050750c613968
+ dt FxSpinLock 0xFFFFAF8AF39D84D0         :             !wdfspinlock 0x000050750c627b28
+ dt FxSpinLock 0xFFFFAF8AF39D78A0         :             !wdfspinlock 0x000050750c628758
+ dt FxMemoryObject 0xFFFFAF8AF3908270     :             !wdfmemory 0x000050750c6f7d88
+ dt FxMemoryObject 0xFFFFAF8AF37F2960     :             !wdfmemory 0x000050750c80d698
+ dt FxMemoryObject 0xFFFFAF8AF3F0B940     :         !wdfmemory 0x000050750c0f46b8 [DMFMODULE_TYPE, ThreadedBufferQueue] Context ffffaf8af2389360, Context ffffaf8af2389240, Context ffffaf8af2389120
+ dt FxMemoryObject 0xFFFFAF8AF3805920     :             !wdfmemory 0x000050750c7fa6d8
+ dt FxMemoryObject 0xFFFFAF8AF3804420     :             !wdfmemory 0x000050750c7fbbd8
+ dt FxCollection 0xFFFFAF8AF39ED490       :             !wdfcollection 0x000050750c612b68
+ dt FxSpinLock 0xFFFFAF8AF39D7B10         :             !wdfspinlock 0x000050750c6284e8
+ dt FxSpinLock 0xFFFFAF8AF39D8DC0         :             !wdfspinlock 0x000050750c627238
+ dt FxMemoryObject 0xFFFFAF8AF39088D0     :             !wdfmemory 0x000050750c6f7728
+ dt FxMemoryObject 0xFFFFAF8AF37F3AE0     :             !wdfmemory 0x000050750c80c518
+ dt FxMemoryObject 0xFFFFAF8AF3F0B4B0     :             !wdfmemory 0x000050750c0f4b48 [DMFMODULE_TYPE, BufferQueue] Context ffffaf8af2389300, Context ffffaf8af2389b40, Context ffffaf8af23899c0
+ dt FxMemoryObject 0xFFFFAF8AF39EC3F0     :                 !wdfmemory 0x000050750c613c08
+ dt FxMemoryObject 0xFFFFAF8AF237A160     :                 !wdfmemory 0x000050750dc85e98
+ dt FxCollection 0xFFFFAF8AF39EC150       :                 !wdfcollection 0x000050750c613ea8
+ dt FxSpinLock 0xFFFFAF8AF39D8330         :                 !wdfspinlock 0x000050750c627cc8
+ dt FxSpinLock 0xFFFFAF8AF39D77D0         :                 !wdfspinlock 0x000050750c628828
+ dt FxMemoryObject 0xFFFFAF8AF3908D10     :                 !wdfmemory 0x000050750c6f72e8
+ dt FxMemoryObject 0xFFFFAF8AF37F3060     :                 !wdfmemory 0x000050750c80cf98
+ dt FxMemoryObject 0xFFFFAF8AF3F0B020     :                 !wdfmemory 0x000050750c0f4fd8 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eef210, Context ffffaf8af23898a0, Context ffffaf8af2389c00
+ dt FxMemoryObject 0xFFFFAF8AF237AE80     :                     !wdfmemory 0x000050750dc85178
+ dt FxMemoryObject 0xFFFFAF8AF237A250     :                     !wdfmemory 0x000050750dc85da8
+ dt FxCollection 0xFFFFAF8AF39EC930       :                     !wdfcollection 0x000050750c6136c8
+ dt FxSpinLock 0xFFFFAF8AF39D8810         :                     !wdfspinlock 0x000050750c6277e8
+ dt FxSpinLock 0xFFFFAF8AF39D89B0         :                     !wdfspinlock 0x000050750c627648
+ dt FxMemoryObject 0xFFFFAF8AF3907B00     :                     !wdfmemory 0x000050750c6f84f8
+ dt FxMemoryObject 0xFFFFAF8AF37F27A0     :                     !wdfmemory 0x000050750c80d858
+ dt FxMemoryObject 0xFFFFAF8AF3AAC940     :                 !wdfmemory 0x000050750c5536b8 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eeed90, Context ffffaf8af23893c0, Context ffffaf8af2389a80
+ dt FxMemoryObject 0xFFFFAF8AF237B150     :                     !wdfmemory 0x000050750dc84ea8
+ dt FxMemoryObject 0xFFFFAF8AF237A070     :                     !wdfmemory 0x000050750dc85f88
+ dt FxCollection 0xFFFFAF8AF39ECA10       :                     !wdfcollection 0x000050750c6135e8
+ dt FxSpinLock 0xFFFFAF8AF39D8670         :                     !wdfspinlock 0x000050750c627988
+ dt FxSpinLock 0xFFFFAF8AF39D8740         :                     !wdfspinlock 0x000050750c6278b8
+ dt FxMemoryObject 0xFFFFAF8AF3908490     :                     !wdfmemory 0x000050750c6f7b68
+ dt FxMemoryObject 0xFFFFAF8AF37F3920     :                     !wdfmemory 0x000050750c80c6d8
+ dt FxMemoryObject 0xFFFFAF8AF3AAC4B0     :             !wdfmemory 0x000050750c553b48 [DMFMODULE_TYPE, Thread] Context ffffaf8af3956880, Context ffffaf8af23892a0, Context ffffaf8af2389900
+ dt FxMemoryObject 0xFFFFAF8AF39ECCB0     :                 !wdfmemory 0x000050750c613348
+ dt FxMemoryObject 0xFFFFAF8AF237B330     :                 !wdfmemory 0x000050750dc84cc8
+ dt FxCollection 0xFFFFAF8AF39EC230       :                 !wdfcollection 0x000050750c613dc8
+ dt FxSpinLock 0xFFFFAF8AF39D88E0         :                 !wdfspinlock 0x000050750c627718
+ dt FxSpinLock 0xFFFFAF8AF39D8A80         :                 !wdfspinlock 0x000050750c627578
+ dt FxMemoryObject 0xFFFFAF8AF3907D20     :                 !wdfmemory 0x000050750c6f82d8
+ dt FxMemoryObject 0xFFFFAF8AF37F3220     :                 !wdfmemory 0x000050750c80cdd8
+ dt FxMemoryObject 0xFFFFAF8AF3AAC020     :         !wdfmemory 0x000050750c553fd8 [DMFMODULE_TYPE, BufferQueue] Context ffffaf8af2389480, Context ffffaf8af2389720, Context ffffaf8af2389a20
+ dt FxMemoryObject 0xFFFFAF8AF39ECBD0     :             !wdfmemory 0x000050750c613428
+ dt FxMemoryObject 0xFFFFAF8AF237B8D0     :             !wdfmemory 0x000050750dc84728
+ dt FxCollection 0xFFFFAF8AF39ED9D0       :             !wdfcollection 0x000050750c612628
+ dt FxSpinLock 0xFFFFAF8AF39D7BE0         :             !wdfspinlock 0x000050750c628418
+ dt FxSpinLock 0xFFFFAF8AF39D8B50         :             !wdfspinlock 0x000050750c6274a8
+ dt FxMemoryObject 0xFFFFAF8AF3908E20     :             !wdfmemory 0x000050750c6f71d8
+ dt FxMemoryObject 0xFFFFAF8AF37F33E0     :             !wdfmemory 0x000050750c80cc18
+ dt FxMemoryObject 0xFFFFAF8AF3AAB940     :             !wdfmemory 0x000050750c5546b8 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eee910, Context ffffaf8af2389ba0, Context ffffaf8af23894e0
+ dt FxMemoryObject 0xFFFFAF8AF237B060     :                 !wdfmemory 0x000050750dc84f98
+ dt FxMemoryObject 0xFFFFAF8AF237B420     :                 !wdfmemory 0x000050750dc84bd8
+ dt FxCollection 0xFFFFAF8AF2315A10       :                 !wdfcollection 0x000050750dcea5e8
+ dt FxSpinLock 0xFFFFAF8AF39D8C20         :                 !wdfspinlock 0x000050750c6273d8
+ dt FxSpinLock 0xFFFFAF8AF39D7490         :                 !wdfspinlock 0x000050750c628b68
+ dt FxMemoryObject 0xFFFFAF8AF3908380     :                 !wdfmemory 0x000050750c6f7c78
+ dt FxMemoryObject 0xFFFFAF8AF37F2B20     :                 !wdfmemory 0x000050750c80d4d8
+ dt FxMemoryObject 0xFFFFAF8AF3AAB4B0     :             !wdfmemory 0x000050750c554b48 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eee130, Context ffffaf8af2389540, Context ffffaf8af238a800
+ dt FxMemoryObject 0xFFFFAF8AF237A520     :                 !wdfmemory 0x000050750dc85ad8
+ dt FxMemoryObject 0xFFFFAF8AF237BC90     :                 !wdfmemory 0x000050750dc84368
+ dt FxCollection 0xFFFFAF8AF373DE70       :                 !wdfcollection 0x000050750c8c2188
+ dt FxSpinLock 0xFFFFAF8AF39D7560         :                 !wdfspinlock 0x000050750c628a98
+ dt FxSpinLock 0xFFFFAF8AF39D7CB0         :                 !wdfspinlock 0x000050750c628348
+ dt FxMemoryObject 0xFFFFAF8AF39085A0     :                 !wdfmemory 0x000050750c6f7a58
+ dt FxMemoryObject 0xFFFFAF8AF37F2260     :                 !wdfmemory 0x000050750c80dd98
+ dt FxMemoryObject 0xFFFFAF8AF3AAB020     :         !wdfmemory 0x000050750c554fd8 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eee1c0, Context ffffaf8af2389f60, Context ffffaf8af238a4a0
+ dt FxMemoryObject 0xFFFFAF8AF237A700     :             !wdfmemory 0x000050750dc858f8
+ dt FxMemoryObject 0xFFFFAF8AF237B240     :             !wdfmemory 0x000050750dc84db8
+ dt FxCollection 0xFFFFAF8AF3775850       :             !wdfcollection 0x000050750c88a7a8
+ dt FxSpinLock 0xFFFFAF8AF39D7700         :             !wdfspinlock 0x000050750c6288f8
+ dt FxSpinLock 0xFFFFAF8AF39D7D80         :             !wdfspinlock 0x000050750c628278
+ dt FxMemoryObject 0xFFFFAF8AF3907060     :             !wdfmemory 0x000050750c6f8f98
+ dt FxMemoryObject 0xFFFFAF8AF37F35A0     :             !wdfmemory 0x000050750c80ca58
+ dt FxMemoryObject 0xFFFFAF8AF3AAA940     :         !wdfmemory 0x000050750c5556b8 [DMFMODULE_TYPE, Thread] Context ffffaf8af39556a0, Context ffffaf8af238a860, Context ffffaf8af2389fc0
+ dt FxMemoryObject 0xFFFFAF8AF399CE70     :             !wdfmemory 0x000050750c663188
+ dt FxMemoryObject 0xFFFFAF8AF237A610     :             !wdfmemory 0x000050750dc859e8
+ dt FxCollection 0xFFFFAF8AF39EC5B0       :             !wdfcollection 0x000050750c613a48
+ dt FxSpinLock 0xFFFFAF8AF39D7E50         :             !wdfspinlock 0x000050750c6281a8
+ dt FxSpinLock 0xFFFFAF8AF39DA480         :             !wdfspinlock 0x000050750c625b78
+ dt FxMemoryObject 0xFFFFAF8AF39075B0     :             !wdfmemory 0x000050750c6f8a48
+ dt FxMemoryObject 0xFFFFAF8AF37F3CA0     :             !wdfmemory 0x000050750c80c358
+ dt FxMemoryObject 0xFFFFAF8AF3AAA4B0     :         !wdfmemory 0x000050750c555b48 [DMFMODULE_TYPE, SerialTarget] Context ffffaf8af2eabc50, Context ffffaf8af238a3e0, Context ffffaf8af238a1a0
+ dt FxMemoryObject 0xFFFFAF8AF39ECAF0     :             !wdfmemory 0x000050750c613508
+ dt FxMemoryObject 0xFFFFAF8AF3DD3120     :             !wdfmemory 0x000050750c22ced8
+ dt FxCollection 0xFFFFAF8AF39ED570       :             !wdfcollection 0x000050750c612a88
+ dt FxSpinLock 0xFFFFAF8AF39D96B0         :             !wdfspinlock 0x000050750c626948
+ dt FxSpinLock 0xFFFFAF8AF39DA550         :             !wdfspinlock 0x000050750c625aa8
+ dt FxMemoryObject 0xFFFFAF8AF39076C0     :             !wdfmemory 0x000050750c6f8938
+ dt FxMemoryObject 0xFFFFAF8AF37F3760     :             !wdfmemory 0x000050750c80c898
+ dt FxMemoryObject 0xFFFFAF8AF3AAA020     :             !wdfmemory 0x000050750c555fd8 [DMFMODULE_TYPE, ContinuousRequestTarget] Context ffffaf8af39d9d60, Context ffffaf8af238a680, Context ffffaf8af238a620
+ dt FxMemoryObject 0xFFFFAF8AF237B7E0     :                 !wdfmemory 0x000050750dc84818
+ dt FxMemoryObject 0xFFFFAF8AEFDE5720     :                 !wdfmemory 0x000050751021a8d8
+ dt FxCollection 0xFFFFAF8AF39EDD50       :                 !wdfcollection 0x000050750c6122a8
+ dt FxSpinLock 0xFFFFAF8AF39DA140         :                 !wdfspinlock 0x000050750c625eb8
+ dt FxSpinLock 0xFFFFAF8AF39D9E00         :                 !wdfspinlock 0x000050750c6261f8
+ dt FxMemoryObject 0xFFFFAF8AF3907C10     :                 !wdfmemory 0x000050750c6f83e8
+ dt FxMemoryObject 0xFFFFAF8AF37F20A0     :                 !wdfmemory 0x000050750c80df58
+ dt FxMemoryObject 0xFFFFAF8AF3F148C0     :                 !wdfmemory 0x000050750c0eb738 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eeee20, Context ffffaf8af238a380, Context ffffaf8af2389cc0
+ dt FxMemoryObject 0xFFFFAF8AF237B600     :                     !wdfmemory 0x000050750dc849f8
+ dt FxMemoryObject 0xFFFFAF8AF237A7F0     :                     !wdfmemory 0x000050750dc85808
+ dt FxCollection 0xFFFFAF8AF2315930       :                     !wdfcollection 0x000050750dcea6c8
+ dt FxSpinLock 0xFFFFAF8AF39D9780         :                     !wdfspinlock 0x000050750c626878
+ dt FxSpinLock 0xFFFFAF8AF39DA210         :                     !wdfspinlock 0x000050750c625de8
+ dt FxMemoryObject 0xFFFFAF8AF39078E0     :                     !wdfmemory 0x000050750c6f8718
+ dt FxMemoryObject 0xFFFFAF8AF37F2420     :                     !wdfmemory 0x000050750c80dbd8
+ dt FxMemoryObject 0xFFFFAF8AF3F14430     :                 !wdfmemory 0x000050750c0ebbc8 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eeeeb0, Context ffffaf8af238a260, Context ffffaf8af238a6e0
+ dt FxMemoryObject 0xFFFFAF8AF237B510     :                     !wdfmemory 0x000050750dc84ae8
+ dt FxMemoryObject 0xFFFFAF8AF237A8E0     :                     !wdfmemory 0x000050750dc85718
+ dt FxCollection 0xFFFFAF8AF23823B0       :                     !wdfcollection 0x000050750dc7dc48
+ dt FxSpinLock 0xFFFFAF8AF39D9ED0         :                     !wdfspinlock 0x000050750c626128
+ dt FxSpinLock 0xFFFFAF8AF39DA2E0         :                     !wdfspinlock 0x000050750c625d18
+ dt FxMemoryObject 0xFFFFAF8AF3907170     :                     !wdfmemory 0x000050750c6f8e88
+ dt FxMemoryObject 0xFFFFAF8AF37F25E0     :                     !wdfmemory 0x000050750c80da18
+ dt FxMemoryObject 0xFFFFAF8AF3F11940     :                 !wdfmemory 0x000050750c0ee6b8 [DMFMODULE_TYPE, QueuedWorkItem] Context ffffaf8af238a500, Context ffffaf8af238a2c0, Context ffffaf8af238a560
+ dt FxMemoryObject 0xFFFFAF8AF2381D90     :                     !wdfmemory 0x000050750dc7e268
+ dt FxMemoryObject 0xFFFFAF8AF237A340     :                     !wdfmemory 0x000050750dc85cb8
+ dt FxCollection 0xFFFFAF8AF23813F0       :                     !wdfcollection 0x000050750dc7ec08
+ dt FxSpinLock 0xFFFFAF8AF39D9370         :                     !wdfspinlock 0x000050750c626c88
+ dt FxSpinLock 0xFFFFAF8AF39D9850         :                     !wdfspinlock 0x000050750c6267a8
+ dt FxMemoryObject 0xFFFFAF8AF3907280     :                     !wdfmemory 0x000050750c6f8d78
+ dt FxMemoryObject 0xFFFFAF8AF37F2CE0     :                     !wdfmemory 0x000050750c80d318
+ dt FxMemoryObject 0xFFFFAF8AF3F114B0     :                     !wdfmemory 0x000050750c0eeb48 [DMFMODULE_TYPE, ScheduledTask] Context ffffaf8af2eabcd0, Context ffffaf8af238a7a0, Context ffffaf8af2389e40
+ dt FxMemoryObject 0xFFFFAF8AF2381BD0     :                         !wdfmemory 0x000050750dc7e428
+ dt FxMemoryObject 0xFFFFAF8AF3805C20     :                         !wdfmemory 0x000050750c7fa3d8
+ dt FxCollection 0xFFFFAF8AF2381150       :                         !wdfcollection 0x000050750dc7eea8
+ dt FxSpinLock 0xFFFFAF8AF39D9030         :                         !wdfspinlock 0x000050750c626fc8
+ dt FxWaitLock 0xFFFFAF8AF2382030         :                         !wdfhandle 0x000050750dc7dfc8
+ dt FxMemoryObject 0xFFFFAF8AF2385B00     :                         !wdfmemory 0x000050750dc7a4f8
+ dt FxMemoryObject 0xFFFFAF8AF3F36220     :                         !wdfmemory 0x000050750c0c9dd8
+ dt FxTimer 0xFFFFAF8AF391ED30            :                         !wdfhandle 0x000050750c6e12c8
+ dt FxMemoryObject 0xFFFFAF8AF3F11020     :                     !wdfmemory 0x000050750c0eefd8 [DMFMODULE_TYPE, BufferQueue] Context ffffaf8af238a5c0, Context ffffaf8af2389ea0, Context ffffaf8af238a320
+ dt FxMemoryObject 0xFFFFAF8AF23828F0     :                         !wdfmemory 0x000050750dc7d708
+ dt FxMemoryObject 0xFFFFAF8AF237A9D0     :                         !wdfmemory 0x000050750dc85628
+ dt FxCollection 0xFFFFAF8AF23815B0       :                         !wdfcollection 0x000050750dc7ea48
+ dt FxSpinLock 0xFFFFAF8AF39D95E0         :                         !wdfspinlock 0x000050750c626a18
+ dt FxSpinLock 0xFFFFAF8AF39DA620         :                         !wdfspinlock 0x000050750c6259d8
+ dt FxMemoryObject 0xFFFFAF8AF2386160     :                         !wdfmemory 0x000050750dc79e98
+ dt FxMemoryObject 0xFFFFAF8AF3F36060     :                         !wdfmemory 0x000050750c0c9f98
+ dt FxMemoryObject 0xFFFFAF8AF3F10940     :                         !wdfmemory 0x000050750c0ef6b8 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eee250, Context ffffaf8af238a080, Context ffffaf8af2389d20
+ dt FxMemoryObject 0xFFFFAF8AF237B6F0     :                             !wdfmemory 0x000050750dc84908
+ dt FxMemoryObject 0xFFFFAF8AF237A430     :                             !wdfmemory 0x000050750dc85bc8
+ dt FxCollection 0xFFFFAF8AF2382570       :                             !wdfcollection 0x000050750dc7da88
+ dt FxSpinLock 0xFFFFAF8AF39DA070         :                             !wdfspinlock 0x000050750c625f88
+ dt FxSpinLock 0xFFFFAF8AF39D9920         :                             !wdfspinlock 0x000050750c6266d8
+ dt FxMemoryObject 0xFFFFAF8AF2386270     :                             !wdfmemory 0x000050750dc79d88
+ dt FxMemoryObject 0xFFFFAF8AF3F363E0     :                             !wdfmemory 0x000050750c0c9c18
+ dt FxMemoryObject 0xFFFFAF8AF3F104B0     :                         !wdfmemory 0x000050750c0efb48 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eeef40, Context ffffaf8af238a440, Context ffffaf8af2389de0
+ dt FxMemoryObject 0xFFFFAF8AF237C5F0     :                             !wdfmemory 0x000050750dc83a08
+ dt FxMemoryObject 0xFFFFAF8AF237D6D0     :                             !wdfmemory 0x000050750dc82928
+ dt FxCollection 0xFFFFAF8AF2382AB0       :                             !wdfcollection 0x000050750dc7d548
+ dt FxSpinLock 0xFFFFAF8AF39D9100         :                             !wdfspinlock 0x000050750c626ef8
+ dt FxSpinLock 0xFFFFAF8AF39DA7C0         :                             !wdfspinlock 0x000050750c625838
+ dt FxMemoryObject 0xFFFFAF8AF2386C00     :                             !wdfmemory 0x000050750dc793f8
+ dt FxMemoryObject 0xFFFFAF8AF3F36920     :                             !wdfmemory 0x000050750c0c96d8
+ dt FxCollection 0xFFFFAF8AF2381930       :                 !wdfcollection 0x000050750dc7e6c8
+ dt FxCollection 0xFFFFAF8AF23821F0       :                 !wdfcollection 0x000050750dc7de08
+ dt FxCollection 0xFFFFAF8AF2382490       :                 !wdfcollection 0x000050750dc7db68
+ dt FxIoTarget 0xFFFFAF8AF3AA8290         :             !wdfiotarget 0x000050750c557d68 Context ffffaf8af3aa84c0
+ dt FxMemoryObject 0xFFFFAF8AF3F10020     :         !wdfmemory 0x000050750c0effd8 [DMFMODULE_TYPE, GpioTarget] Context ffffaf8af2f6ef10, Context ffffaf8af238a740, Context ffffaf8af238a140
+ dt FxMemoryObject 0xFFFFAF8AF2381A10     :             !wdfmemory 0x000050750dc7e5e8
+ dt FxMemoryObject 0xFFFFAF8AF23866B0     :             !wdfmemory 0x000050750dc79948
+ dt FxCollection 0xFFFFAF8AF2381770       :             !wdfcollection 0x000050750dc7e888
+ dt FxSpinLock 0xFFFFAF8AF39D9510         :             !wdfspinlock 0x000050750c626ae8
+ dt FxWaitLock 0xFFFFAF8AF2382110         :             !wdfhandle 0x000050750dc7dee8
+ dt FxMemoryObject 0xFFFFAF8AF2385390     :             !wdfmemory 0x000050750dc7ac68
+ dt FxMemoryObject 0xFFFFAF8AF3F36AE0     :             !wdfmemory 0x000050750c0c9518
+ dt FxMemoryObject 0xFFFFAF8AF3F0F940     :             !wdfmemory 0x000050750c0f06b8 [DMFMODULE_TYPE, InterruptResource] Context ffffaf8af2eee2e0, Context ffffaf8af238a200, Context ffffaf8af2389f00
+ dt FxMemoryObject 0xFFFFAF8AF237BD80     :                 !wdfmemory 0x000050750dc84278
+ dt FxMemoryObject 0xFFFFAF8AF3805D20     :                 !wdfmemory 0x000050750c7fa2d8
+ dt FxCollection 0xFFFFAF8AF2381230       :                 !wdfcollection 0x000050750dc7edc8
+ dt FxSpinLock 0xFFFFAF8AF39D99F0         :                 !wdfspinlock 0x000050750c626608
+ dt FxWaitLock 0xFFFFAF8AF2382650         :                 !wdfhandle 0x000050750dc7d9a8
+ dt FxMemoryObject 0xFFFFAF8AF23867C0     :                 !wdfmemory 0x000050750dc79838
+ dt FxMemoryObject 0xFFFFAF8AF3F36CA0     :                 !wdfmemory 0x000050750c0c9358
+ dt FxIoTarget 0xFFFFAF8AF3F6E970         :             !wdfiotarget 0x000050750c091688
+ dt FxMemoryObject 0xFFFFAF8AF3F0F4B0     :         !wdfmemory 0x000050750c0f0b48 [DMFMODULE_TYPE, SelfTarget] Context ffffaf8af2389d80, Context ffffaf8af238a0e0, Context ffffaf8af238b0a0
+ dt FxMemoryObject 0xFFFFAF8AF2381AF0     :             !wdfmemory 0x000050750dc7e508
+ dt FxCollection 0xFFFFAF8AF2381690       :             !wdfcollection 0x000050750dc7e968
+ dt FxSpinLock 0xFFFFAF8AF39D91D0         :             !wdfspinlock 0x000050750c626e28
+ dt FxSpinLock 0xFFFFAF8AF39DA3B0         :             !wdfspinlock 0x000050750c625c48
+ dt FxMemoryObject 0xFFFFAF8AF2386050     :             !wdfmemory 0x000050750dc79fa8
+ dt FxMemoryObject 0xFFFFAF8AF3F36E60     :             !wdfmemory 0x000050750c0c9198
+ dt FxMemoryObject 0xFFFFAF8AF3F0F020     :             !wdfmemory 0x000050750c0f0fd8 [DMFMODULE_TYPE, RequestTarget] Context ffffaf8af2374370, Context ffffaf8af238aa40, Context ffffaf8af238ad40
+ dt FxMemoryObject 0xFFFFAF8AF23822D0     :                 !wdfmemory 0x000050750dc7dd28
+ dt FxCollection 0xFFFFAF8AF2382B90       :                 !wdfcollection 0x000050750dc7d468
+ dt FxSpinLock 0xFFFFAF8AF39D92A0         :                 !wdfspinlock 0x000050750c626d58
+ dt FxSpinLock 0xFFFFAF8AF39DA6F0         :                 !wdfspinlock 0x000050750c625908
+ dt FxMemoryObject 0xFFFFAF8AF2385E30     :                 !wdfmemory 0x000050750dc7a1c8
+ dt FxMemoryObject 0xFFFFAF8AF3F36760     :                 !wdfmemory 0x000050750c0c9898
+ dt FxMemoryObject 0xFFFFAF8AF3F0E940     :                 !wdfmemory 0x000050750c0f16b8 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eee370, Context ffffaf8af238ae60, Context ffffaf8af238ab00
+ dt FxMemoryObject 0xFFFFAF8AF237CE60     :                     !wdfmemory 0x000050750dc83198
+ dt FxMemoryObject 0xFFFFAF8AF237C7D0     :                     !wdfmemory 0x000050750dc83828
+ dt FxCollection 0xFFFFAF8AF2382730       :                     !wdfcollection 0x000050750dc7d8c8
+ dt FxSpinLock 0xFFFFAF8AF39D9AC0         :                     !wdfspinlock 0x000050750c626538
+ dt FxSpinLock 0xFFFFAF8AF39D9440         :                     !wdfspinlock 0x000050750c626bb8
+ dt FxMemoryObject 0xFFFFAF8AF2386490     :                     !wdfmemory 0x000050750dc79b68
+ dt FxMemoryObject 0xFFFFAF8AF3F386E0     :                     !wdfmemory 0x000050750c0c7918
+ dt FxMemoryObject 0xFFFFAF8AF3F0E4B0     :                 !wdfmemory 0x000050750c0f1b48 [DMFMODULE_TYPE, QueuedWorkItem] Context ffffaf8af238b460, Context ffffaf8af238b2e0, Context ffffaf8af238ac20
+ dt FxMemoryObject 0xFFFFAF8AF2382810     :                     !wdfmemory 0x000050750dc7d7e8
+ dt FxMemoryObject 0xFFFFAF8AF237D7C0     :                     !wdfmemory 0x000050750dc82838
+ dt FxCollection 0xFFFFAF8AF2381310       :                     !wdfcollection 0x000050750dc7ece8
+ dt FxSpinLock 0xFFFFAF8AF39D8E90         :                     !wdfspinlock 0x000050750c627168
+ dt FxSpinLock 0xFFFFAF8AF39D9B90         :                     !wdfspinlock 0x000050750c626468
+ dt FxMemoryObject 0xFFFFAF8AF23857D0     :                     !wdfmemory 0x000050750dc7a828
+ dt FxMemoryObject 0xFFFFAF8AF3F37020     :                     !wdfmemory 0x000050750c0c8fd8
+ dt FxMemoryObject 0xFFFFAF8AF3F0E020     :                     !wdfmemory 0x000050750c0f1fd8 [DMFMODULE_TYPE, ScheduledTask] Context ffffaf8af2eabfd0, Context ffffaf8af238ace0, Context ffffaf8af238b160
+ dt FxMemoryObject 0xFFFFAF8AF23829D0     :                         !wdfmemory 0x000050750dc7d628
+ dt FxMemoryObject 0xFFFFAF8AF3805E20     :                         !wdfmemory 0x000050750c7fa1d8
+ dt FxCollection 0xFFFFAF8AF2381070       :                         !wdfcollection 0x000050750dc7ef88
+ dt FxSpinLock 0xFFFFAF8AF39D9C60         :                         !wdfspinlock 0x000050750c626398
+ dt FxWaitLock 0xFFFFAF8AF23814D0         :                         !wdfhandle 0x000050750dc7eb28
+ dt FxMemoryObject 0xFFFFAF8AF23868D0     :                         !wdfmemory 0x000050750dc79728
+ dt FxMemoryObject 0xFFFFAF8AF3F371E0     :                         !wdfmemory 0x000050750c0c8e18
+ dt FxTimer 0xFFFFAF8AF3F52070            :                         !wdfhandle 0x000050750c0adf88
+ dt FxMemoryObject 0xFFFFAF8AF3F0D940     :                     !wdfmemory 0x000050750c0f26b8 [DMFMODULE_TYPE, BufferQueue] Context ffffaf8af238af80, Context ffffaf8af238abc0, Context ffffaf8af238aaa0
+ dt FxMemoryObject 0xFFFFAF8AF2383450     :                         !wdfmemory 0x000050750dc7cba8
+ dt FxMemoryObject 0xFFFFAF8AF237D5E0     :                         !wdfmemory 0x000050750dc82a18
+ dt FxCollection 0xFFFFAF8AF2384330       :                         !wdfcollection 0x000050750dc7bcc8
+ dt FxSpinLock 0xFFFFAF8AF39DB590         :                         !wdfspinlock 0x000050750c624a68
+ dt FxSpinLock 0xFFFFAF8AF39DB9A0         :                         !wdfspinlock 0x000050750c624658
+ dt FxMemoryObject 0xFFFFAF8AF2385D20     :                         !wdfmemory 0x000050750dc7a2d8
+ dt FxMemoryObject 0xFFFFAF8AF3F373A0     :                         !wdfmemory 0x000050750c0c8c58
+ dt FxMemoryObject 0xFFFFAF8AF3F0D4B0     :                         !wdfmemory 0x000050750c0f2b48 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eee400, Context ffffaf8af238a980, Context ffffaf8af238aec0
+ dt FxMemoryObject 0xFFFFAF8AF237C8C0     :                             !wdfmemory 0x000050750dc83738
+ dt FxMemoryObject 0xFFFFAF8AF237D4F0     :                             !wdfmemory 0x000050750dc82b08
+ dt FxCollection 0xFFFFAF8AF23831B0       :                             !wdfcollection 0x000050750dc7ce48
+ dt FxSpinLock 0xFFFFAF8AF39DBDB0         :                             !wdfspinlock 0x000050750c624248
+ dt FxSpinLock 0xFFFFAF8AF39DBE80         :                             !wdfspinlock 0x000050750c624178
+ dt FxMemoryObject 0xFFFFAF8AF23858E0     :                             !wdfmemory 0x000050750dc7a718
+ dt FxMemoryObject 0xFFFFAF8AF3F381A0     :                             !wdfmemory 0x000050750c0c7e58
+ dt FxMemoryObject 0xFFFFAF8AF3F0D020     :                         !wdfmemory 0x000050750c0f2fd8 [DMFMODULE_TYPE, BufferPool] Context ffffaf8af2eee5b0, Context ffffaf8af238af20, Context ffffaf8af238a8c0
+ dt FxMemoryObject 0xFFFFAF8AF237D040     :                             !wdfmemory 0x000050750dc82fb8
+ dt FxMemoryObject 0xFFFFAF8AF237D8B0     :                             !wdfmemory 0x000050750dc82748
+ dt FxCollection 0xFFFFAF8AF2384250       :                             !wdfcollection 0x000050750dc7bda8
+ dt FxSpinLock 0xFFFFAF8AF39DBF50         :                             !wdfspinlock 0x000050750c6240a8
+ dt FxSpinLock 0xFFFFAF8AF39DB3F0         :                             !wdfspinlock 0x000050750c624c08
+ dt FxMemoryObject 0xFFFFAF8AF23869E0     :                             !wdfmemory 0x000050750dc79618
+ dt FxMemoryObject 0xFFFFAF8AF3F37560     :                             !wdfmemory 0x000050750c0c8a98
+ dt FxCollection 0xFFFFAF8AF2384410       :                 !wdfcollection 0x000050750dc7bbe8
+ dt FxIoTarget 0xFFFFAF8AF364B930         :             !wdfiotarget 0x000050750c9b46c8
+ dt FxMemoryObject 0xFFFFAF8AF3F0C940     :         !wdfmemory 0x000050750c0f36b8 [DMFMODULE_TYPE, Bridge] Context ffffaf8af3dd29d0, Context ffffaf8af238b340, Context ffffaf8af238afe0
+ dt FxMemoryObject 0xFFFFAF8AF2381E70     :             !wdfmemory 0x000050750dc7e188
+ dt FxMemoryObject 0xFFFFAF8AF3F37720     :             !wdfmemory 0x000050750c0c88d8
+ dt FxCollection 0xFFFFAF8AF2381850       :             !wdfcollection 0x000050750dc7e7a8
+ dt FxSpinLock 0xFFFFAF8AF39DBA70         :             !wdfspinlock 0x000050750c624588
+ dt FxWaitLock 0xFFFFAF8AF2381CB0         :             !wdfhandle 0x000050750dc7e348
+ dt FxMemoryObject 0xFFFFAF8AF2386E20     :             !wdfmemory 0x000050750dc791d8
+ dt FxMemoryObject 0xFFFFAF8AF3F365A0     :             !wdfmemory 0x000050750c0c9a58
+ dt FxLookasideList 0xFFFFAF8AF38DC320    :         !wdfhandle 0x000050750c723cd8
+ dt FxMemoryObject 0xFFFFAF8AF3F12020     :         !wdfmemory 0x000050750c0edfd8
+ dt FxObject 0xFFFFAF8AF39DB250           :             !wdfhandle 0x000050750c624da8
+ dt FxMemoryObject 0xFFFFAF8AF3F123E0     :         !wdfmemory 0x000050750c0edc18
+ dt FxObject 0xFFFFAF8AF39DB8D0           :             !wdfhandle 0x000050750c624728
+ dt FxMemoryObject 0xFFFFAF8AF3F127A0     :         !wdfmemory 0x000050750c0ed858
+ dt FxObject 0xFFFFAF8AF39DABD0           :             !wdfhandle 0x000050750c625428
+ dt FxMemoryObject 0xFFFFAF8AF3F12B60     :         !wdfmemory 0x000050750c0ed498
+ dt FxObject 0xFFFFAF8AF39DB4C0           :             !wdfhandle 0x000050750c624b38
+ dt FxMemoryObject 0xFFFFAF8AF3F20020     :         !wdfmemory 0x000050750c0dffd8
+ dt FxObject 0xFFFFAF8AF39DAD70           :             !wdfhandle 0x000050750c625288
+ dt FxMemoryObject 0xFFFFAF8AF3F203E0     :         !wdfmemory 0x000050750c0dfc18
+ dt FxObject 0xFFFFAF8AF39DB660           :             !wdfhandle 0x000050750c624998
+ dt FxMemoryObject 0xFFFFAF8AF3F207A0     :         !wdfmemory 0x000050750c0df858
+ dt FxObject 0xFFFFAF8AF39DB0B0           :             !wdfhandle 0x000050750c624f48
+ dt FxMemoryObject 0xFFFFAF8AF3F20B60     :         !wdfmemory 0x000050750c0df498
+ dt FxObject 0xFFFFAF8AF39DBC10           :             !wdfhandle 0x000050750c6243e8
+ dt FxMemoryObject 0xFFFFAF8AF3F21020     :         !wdfmemory 0x000050750c0defd8
+ dt FxObject 0xFFFFAF8AF39DAB00           :             !wdfhandle 0x000050750c6254f8
+ dt FxMemoryObject 0xFFFFAF8AF3F213E0     :         !wdfmemory 0x000050750c0dec18
+ dt FxObject 0xFFFFAF8AF39DBB40           :             !wdfhandle 0x000050750c6244b8
+ dt FxLookasideList 0xFFFFAF8AF38DCAF0    :         !wdfhandle 0x000050750c723508
+ dt FxMemoryObject 0xFFFFAF8AF3F217A0     :         !wdfmemory 0x000050750c0de858
+ dt FxTimer 0xFFFFAF8AF3F35CE0            :             !wdfhandle 0x000050750c0ca318 Context ffffaf8af3f35e70
+ dt FxObject 0xFFFFAF8AF39DB730           :             !wdfhandle 0x000050750c6248c8
+ dt FxMemoryObject 0xFFFFAF8AF3F21B60     :         !wdfmemory 0x000050750c0de498
+ dt FxTimer 0xFFFFAF8AF3F378E0            :             !wdfhandle 0x000050750c0c8718 Context ffffaf8af3f37a70
+ dt FxObject 0xFFFFAF8AF39DB320           :             !wdfhandle 0x000050750c624cd8
+ dt FxMemoryObject 0xFFFFAF8AF3F22020     :         !wdfmemory 0x000050750c0ddfd8
+ dt FxTimer 0xFFFFAF8AF3F37AA0            :             !wdfhandle 0x000050750c0c8558 Context ffffaf8af3f37c30
+ dt FxObject 0xFFFFAF8AF39DAE40           :             !wdfhandle 0x000050750c6251b8
+ dt FxMemoryObject 0xFFFFAF8AF3F223E0     :         !wdfmemory 0x000050750c0ddc18
+ dt FxTimer 0xFFFFAF8AF3F38360            :             !wdfhandle 0x000050750c0c7c98 Context ffffaf8af3f384f0
+ dt FxObject 0xFFFFAF8AF39DB800           :             !wdfhandle 0x000050750c6247f8
+ dt FxMemoryObject 0xFFFFAF8AF3F227A0     :         !wdfmemory 0x000050750c0dd858
+ dt FxTimer 0xFFFFAF8AF3F37C60            :             !wdfhandle 0x000050750c0c8398 Context ffffaf8af3f37df0
+ dt FxObject 0xFFFFAF8AF39DA890           :             !wdfhandle 0x000050750c625768
+ dt FxMemoryObject 0xFFFFAF8AF3F22B60     :         !wdfmemory 0x000050750c0dd498
+ dt FxTimer 0xFFFFAF8AF3F37E20            :             !wdfhandle 0x000050750c0c81d8 Context ffffaf8af3f37fb0
+ dt FxObject 0xFFFFAF8AF39DAA30           :             !wdfhandle 0x000050750c6255c8
+ dt FxMemoryObject 0xFFFFAF8AF3F23020     :         !wdfmemory 0x000050750c0dcfd8
+ dt FxTimer 0xFFFFAF8AF3F350A0            :             !wdfhandle 0x000050750c0caf58 Context ffffaf8af3f35230
+ dt FxObject 0xFFFFAF8AF39DBCE0           :             !wdfhandle 0x000050750c624318
+ dt FxMemoryObject 0xFFFFAF8AF3F233E0     :         !wdfmemory 0x000050750c0dcc18
+ dt FxTimer 0xFFFFAF8AF3F38520            :             !wdfhandle 0x000050750c0c7ad8 Context ffffaf8af3f386b0
+ dt FxObject 0xFFFFAF8AF39DA960           :             !wdfhandle 0x000050750c625698
+ dt FxMemoryObject 0xFFFFAF8AF3F237A0     :         !wdfmemory 0x000050750c0dc858
+ dt FxTimer 0xFFFFAF8AF3F35260            :             !wdfhandle 0x000050750c0cad98 Context ffffaf8af3f353f0
+ dt FxObject 0xFFFFAF8AF39DACA0           :             !wdfhandle 0x000050750c625358
+ dt FxMemoryObject 0xFFFFAF8AF3F23B60     :         !wdfmemory 0x000050750c0dc498
+ dt FxTimer 0xFFFFAF8AF3F357A0            :             !wdfhandle 0x000050750c0ca858 Context ffffaf8af3f35930
+ dt FxObject 0xFFFFAF8AF39DAF10           :             !wdfhandle 0x000050750c6250e8
+ dt FxLookasideList 0xFFFFAF8AF38DB9C0    :         !wdfhandle 0x000050750c724638
+ dt FxLookasideList 0xFFFFAF8AF38DB380    :         !wdfhandle 0x000050750c724c78
+ dt FxMemoryObject 0xFFFFAF8AF391EB80     :         !wdfmemory 0x000050750c6e1478
+ dt FxObject 0xFFFFAF8AF3F4A3D0           :             !wdfhandle 0x000050750c0b5c28
+ dt FxWorkItem 0xFFFFAF8AF38BABB0         :         !wdfhandle 0x000050750c745448 Context ffffaf8af38bacb0
+ dt FxLookasideList 0xFFFFAF8AF38DC4B0    :         !wdfhandle 0x000050750c723b48
+ dt FxMemoryObject 0xFFFFAF8AF379C060     :         !wdfmemory 0x000050750c863f98
+ dt FxObject 0xFFFFAF8AF3F4AE60           :             !wdfhandle 0x000050750c0b5198
+ dt FxMemoryObject 0xFFFFAF8AF379C250     :         !wdfmemory 0x000050750c863da8
+ dt FxObject 0xFFFFAF8AF3F4A570           :             !wdfhandle 0x000050750c0b5a88
+ dt FxMemoryObject 0xFFFFAF8AF379CDF0     :         !wdfmemory 0x000050750c863208
+ dt FxObject 0xFFFFAF8AF3F4A160           :             !wdfhandle 0x000050750c0b5e98
+ dt FxMemoryObject 0xFFFFAF8AF379C820     :         !wdfmemory 0x000050750c8637d8
+ dt FxObject 0xFFFFAF8AF3F4AF30           :             !wdfhandle 0x000050750c0b50c8
+ dt FxRequest 0xFFFFAF8AF3F35420          :         !wdfrequest 0x000050750c0cabd8
+ dt FxRequest 0xFFFFAF8AF3F35960          :         !wdfrequest 0x000050750c0ca698
+ dt FxLookasideList 0xFFFFAF8AF38DCC80    :         !wdfhandle 0x000050750c723378
+ dt FxMemoryObject 0xFFFFAF8AF3F52730     :         !wdfmemory 0x000050750c0ad8c8
+ dt FxObject 0xFFFFAF8AF3F4A090           :             !wdfhandle 0x000050750c0b5f68
+ dt FxWorkItem 0xFFFFAF8AF38BA820         :         !wdfhandle 0x000050750c7457d8 Context ffffaf8af38ba920
+ dt FxLookasideList 0xFFFFAF8AF38DC960    :         !wdfhandle 0x000050750c723698
+ dt FxMemoryObject 0xFFFFAF8AF2387820     :         !wdfmemory 0x000050750dc787d8
+ dt FxObject 0xFFFFAF8AF3F4B9C0           :             !wdfhandle 0x000050750c0b4638
+ dt FxMemoryObject 0xFFFFAF8AF2388D70     :         !wdfmemory 0x000050750dc77288
+ dt FxObject 0xFFFFAF8AF3F4B750           :             !wdfhandle 0x000050750c0b48a8
+ dt FxMemoryObject 0xFFFFAF8AF2387DF0     :         !wdfmemory 0x000050750dc78208
+ dt FxObject 0xFFFFAF8AF3F4AB20           :             !wdfhandle 0x000050750c0b54d8
+ dt FxMemoryObject 0xFFFFAF8AF23881D0     :         !wdfmemory 0x000050750dc77e28
+ dt FxObject 0xFFFFAF8AF3F4A230           :             !wdfhandle 0x000050750c0b5dc8
+ dt FxWmiProvider 0xFFFFAF8AF38B9780      :         WDF INTERNAL 
+ dt FxWmiInstanceExternal 0xFFFFAF8AF3F46 :             WDF INTERNAL 
+ dt FxInterrupt 0xFFFFAF8AF3A9E3C0        :         !wdfinterrupt 0x000050750c561c38 Context ffffaf8af3a9e5c0
+ dt FxFileObject 0xFFFFAF8AF5025AB0       :         !wdfhandle 0x000050750afda548
+ dt FxFileObject 0xFFFFAF8AF5025420       :         !wdfhandle 0x000050750afdabd8
+ dt FxWaitLock 0xFFFFAF8AF3FF9570         :         !wdfhandle 0x000050750c006a88
+ dt FxFileObject 0xFFFFAF8AF5024CA0       :         !wdfhandle 0x000050750afdb358
+ dt FxFileObject 0xFFFFAF8AF5025C90       :         !wdfhandle 0x000050750afda368
+ dt FxFileObject 0xFFFFAF8AF5024070       :         !wdfhandle 0x000050750afdbf88
+ dt FxWaitLock 0xFFFFAF8AF3FF83F0         :         !wdfhandle 0x000050750c007c08
+ dt FxWaitLock 0xFFFFAF8AF3FF8770         :         !wdfhandle 0x000050750c007888
+ dt FxFileObject 0xFFFFAF8AF9417B90       :         !wdfhandle 0x0000507506be8468
+ dt FxFileObject 0xFFFFAF8AF8CF28C0       :         !wdfhandle 0x000050750730d738
+ dt FxFileObject 0xFFFFAF8AF94196C0       :         !wdfhandle 0x0000507506be6938
+ dt FxIoQueue 0xFFFFAF8AEFF32C20          :         !wdfqueue 0x00005075100cd3d8
+ dt FxIoQueue 0xFFFFAF8AED3F6C20          :         !wdfqueue 0x0000507512c093d8
+ dt FxIoQueue 0xFFFFAF8AEFF2AC20          :         !wdfqueue 0x00005075100d53d8
+ dt FxMemoryObject 0xFFFFAF8AF3F24020     :         !wdfmemory 0x000050750c0dbfd8
+ dt FxObject 0xFFFFAF8AFAC1D3F0           :             !wdfhandle 0x00005075053e2c08
+ dt FxMemoryObject 0xFFFFAF8AF3F243E0     :         !wdfmemory 0x000050750c0dbc18
+ dt FxObject 0xFFFFAF8AFAC20580           :             !wdfhandle 0x00005075053dfa78
+ dt FxFileObject 0xFFFFAF8AFC8D7E30       :         !wdfhandle 0x00005075037281c8
+ dt FxRegKey 0xFFFFAF8AF39D7970           :     !wdfhandle 0x000050750c628688
+----------------------------------
+Dump leaked handles:  the driver is not tracking handles
+----------------------------------
+
+WDF Verifier settings for SurfaceSerialHubDriver.sys is OFF
+----------------------------------
+
 
 
