@@ -1,14 +1,19 @@
+#!/usr/bin/env python3
+
 import re
 import sys
 
-for line in sys.stdin:
-    #print line
-
-    # FAA39550sinfreq = 7.000000
-    matchObj = re.search( r'FAA(\d+)sinfreq = (\d+\.\d+)', line)
-    if matchObj:
-        print matchObj.group(1), " => ", matchObj.group(2)
-    #else:
-        #print "No match!!"
+regexp = "Pal"
+cnt = 1
+line = sys.stdin.readline()
+while line:
+    cap = re.search(regexp, line)
+    if cap:
+        n = len(cap.groups())
+        print("Line {}: {} {}".format(cnt, n, line.strip()))
+    else:
+        print("Line {}: {}".format(cnt, line.strip()))
+    line = sys.stdin.readline()
+    cnt += 1
 
 
