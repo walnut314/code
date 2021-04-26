@@ -161,6 +161,55 @@ int solve(int x)
     return best;
 }
 
+void subseq(vector<int> array)
+{
+    int n = array.size();
+    int length[n];
+    for (int k = 0; k < n; k++) {
+        length[k] = 1;
+        for (int i = 0; i < k; i++) {
+            if (array[i] < array[k]) {
+                length[k] = max(length[k],length[i]+1);
+            }
+        }
+    }
+    for (int k = 0; k < n; k++) {
+        printf("length(%d) = %d\n", k, length[k]);
+    }
+}
+
+vector<vector<int>> grid
+{
+        {3,7,9,2,7},
+        {9,8,3,5,5},
+        {1,7,9,8,5},
+        {3,8,6,4,10},
+        {6,3,9,7,8}
+};
+vector<vector<int>> sum
+{
+        {0,0,0,0,0},
+        {0,0,0,0,0},
+        {0,0,0,0,0},
+        {0,0,0,0,0},
+        {0,0,0,0,0}
+};
+void grid_path()
+{
+    int n = 5;
+    for (int y = 1; y < n; y++) {
+        for (int x = 1; x < n; x++) {
+            sum[y][x] = max(sum[y][x-1],sum[y-1][x]) + grid[y][x];
+        }
+    }
+    for (int y = 0; y < n; y++) {
+        for (int x = 0; x < n; x++) {
+            printf("%02d ", sum[y][x]);
+        }
+        printf("\n");
+    }
+}
+
 int main()
 {
     //collatz();
@@ -171,7 +220,10 @@ int main()
     //bubble(array);
     //stl_sorts();
     //struct_sort();
-    printf("coins(10) = %d\n", solve(10));
+    //printf("coins(10) = %d\n", solve(10));
+    //vector<int> array{6,2,5,1,7,4,8,3};
+    //subseq(array);
+    grid_path();
     return 0;
 }
 
