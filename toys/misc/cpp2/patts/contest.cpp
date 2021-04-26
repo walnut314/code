@@ -142,16 +142,36 @@ int bits(int x)
     return count;
 }
 
+#define INF 1000000007
+vector<int> coins = {1,3,4};
+#define N 100
+bool ready[N];
+int value[N];
+int solve(int x)
+{
+    if (x < 0) return INF;
+    if (x == 0) return 0;
+    if (ready[x]) return value[x];
+    int best = INF;
+    for (auto c : coins) {
+        best = min(best, solve(x-c)+1);
+    }
+    ready[x] = true;
+    value[x] = best;
+    return best;
+}
+
 int main()
 {
-    //collatz();]
+    //collatz();
     //fsubset(1, 3);
     //chess(0); printf("count: %d\n", counter);
     //printf("bits in: %d\n", bits(5328));
     //vector<int> array{1,3,8,2,9,2,5,6};
     //bubble(array);
     //stl_sorts();
-    struct_sort();
+    //struct_sort();
+    printf("coins(10) = %d\n", solve(10));
     return 0;
 }
 
