@@ -2327,3 +2327,13 @@ HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Class\{4d36e972-e325-11ce-bfc1-0
 
 PDB Dump: cvdump.exe @ https://github.com/Microsoft/microsoft-pdb/blob/master/cvdump/cvdump.exe
 
+Force crash dump:
+
+https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/forcing-a-system-crash-from-the-keyboard
+
+
+With USB keyboards, you must enable the keyboard-initiated crash in the registry. In the registry key HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\kbdhid\Parameters, create a value named CrashOnCtrlScroll, and set it equal to a REG_DWORD value of 0x01.
+
+After this is completed, the keyboard crash can be initiated by using the following hotkey sequence: Hold down the rightmost CTRL key, and press the SCROLL LOCK key twice.
+
+
