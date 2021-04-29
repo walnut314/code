@@ -2336,4 +2336,78 @@ With USB keyboards, you must enable the keyboard-initiated crash in the registry
 
 After this is completed, the keyboard crash can be initiated by using the following hotkey sequence: Hold down the rightmost CTRL key, and press the SCROLL LOCK key twice.
 
+PCI bus:
+kd> !pcitree
+0: kd> !pcitree
+Bus 0x0 (FDO Ext ffff94863e7571d0)
+  (d=0,  f=0) 80868a12 devext 0xffff94863c11b460 devstack 0xffff94863c11b310 0600 Bridge/HOST to PCI
+  (d=2,  f=0) 80868a52 devext 0xffff94863e5cc720 devstack 0xffff94863e5cc5d0 0300 Display Controller/VGA
+  (d=5,  f=0) 80868a19 devext 0xffff94863e6bb4b0 devstack 0xffff94863e6bb360 0480 Multimedia Device/'Other'
+  (d=d,  f=0) 80868a13 devext 0xffff94863e6bd4b0 devstack 0xffff94863e6bd360 0c03 Serial Bus Controller/USB
+  (d=12, f=0) 808634fc devext 0xffff94863e6b34b0 devstack 0xffff94863e6b3360 0700 Simple Serial Communications Controller/Serial Port
+  (d=14, f=0) 808634ed devext 0xffff94863e6b54b0 devstack 0xffff94863e6b5360 0c03 Serial Bus Controller/USB
+  (d=14, f=2) 808634ef devext 0xffff94863e6b74b0 devstack 0xffff94863e6b7360 0500 Memory Controller/RAM
+  (d=14, f=3) 808634f0 devext 0xffff94863e7624b0 devstack 0xffff94863e762360 0280 Network Controller/'Other'
+  (d=15, f=0) 808634e8 devext 0xffff94863e76d4b0 devstack 0xffff94863e76d360 0c80 Serial Bus Controller/Unknown Sub Class
+  (d=15, f=2) 808634ea devext 0xffff94863e76f4b0 devstack 0xffff94863e76f360 0c80 Serial Bus Controller/Unknown Sub Class
+  (d=15, f=3) 808634eb devext 0xffff94863e7714b0 devstack 0xffff94863e771360 0c80 Serial Bus Controller/Unknown Sub Class
+  (d=16, f=0) 808634e0 devext 0xffff94863e7734b0 devstack 0xffff94863e773360 0780 Simple Serial Communications Controller/'Other'
+  (d=16, f=4) 808634e4 devext 0xffff94863e7754b0 devstack 0xffff94863e775360 0780 Simple Serial Communications Controller/'Other'
+  (d=19, f=0) 808634c5 devext 0xffff94863e6c24b0 devstack 0xffff94863e6c2360 0c80 Serial Bus Controller/Unknown Sub Class
+  (d=1d, f=0) 808634b0 devext 0xffff94863e6c44b0 devstack 0xffff94863e6c4360 0604 Bridge/PCI to PCI
+  Bus 0x1 (FDO Ext ffff94863e76b190)
+    (d=0,  f=0) 1e0f0001 devext 0xffff94863e6dd1f0 devstack 0xffff94863e6dd0a0 0108 Mass Storage Controller/Unknown Sub Class
+  (d=1d, f=4) 808634b4 devext 0xffff94863e6c64b0 devstack 0xffff94863e6c6360 0604 Bridge/PCI to PCI
+  Bus 0x2 (FDO Ext ffff94864b39d510)
+    (d=0,  f=0) 10de2191 devext 0xffff94864b419270 devstack 0xffff94864b419120 0302 Display Controller/Unknown Sub Class
+  (d=1e, f=0) 808634a8 devext 0xffff94863e6c84b0 devstack 0xffff94863e6c8360 0780 Simple Serial Communications Controller/'Other'
+  (d=1f, f=0) 80863482 devext 0xffff94863e6ca4b0 devstack 0xffff94863e6ca360 0601 Bridge/PCI to ISA
+  (d=1f, f=3) 808634c8 devext 0xffff94863e6cc4b0 devstack 0xffff94863e6cc360 0403 Multimedia Device/Unknown Sub Class
+  (d=1f, f=5) 808634a4 devext 0xffff94863e6ce4b0 devstack 0xffff94863e6ce360 0c80 Serial Bus Controller/Unknown Sub Class
+Total PCI Root busses processed = 1
+Total PCI Segments processed = 1
+
+0: kd> !devstack 0xffff94864b419120
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffff94864b6a9030  \Driver\nvlddmkm   ffff94864b6a9180  
+  ffff94864b3a3e10  \Driver\ACPI       ffff94863e5e0440  
+> ffff94864b419120  \Driver\pci        ffff94864b419270  NTPNP_PCI0021
+!DevNode ffff94864b3bc340 :
+  DeviceInst is "PCI\VEN_10DE&DEV_2191&SUBSYS_00321414&REV_A1\4&3208d4ed&0&00EC"
+  ServiceName is "nvlddmkm"
+
+0: kd> !devext ffff94864b419270
+PDO Extension, Bus 0x2, Device 0, Function 0.
+  DevObj 0xffff94864b419120  Parent FDO DevExt 0xffff94864b39d510
+  Device State = PciStarted
+  Vendor ID 10de (NVIDIA CORPORATION)  Device ID 2191
+  Subsystem Vendor ID 1414 (MICROSOFT CORPORATION)  Subsystem ID 0032
+  Header Type 0, Class Base/Sub 03/02  (Display Controller/Unknown Sub Class)
+  Programming Interface: 00, Revision: a1, IntPin: 01, RawLine 00
+  Possible Decodes ((cmd & 7) = 7): BMI
+  Capabilities: Ptr=60, power msi express 
+  Express capabilities: (OS controlled) ltr aer 
+  Logical Device Power State: D3
+  Device Wake Level:          D3
+  WaitWakeIrp:                <none>
+  Requirements:     Alignment Length    Minimum          Maximum
+    BAR0    Mem:    01000000  01000000  0000000000000000 00000000ffffffff
+    BAR1    Mem:    10000000  10000000  0000000000000000 ffffffffffffffff
+    BAR3    Mem:    02000000  02000000  0000000000000000 ffffffffffffffff
+    BAR5     Io:    00000080  00000080  0000000000000000 00000000ffffffff
+      ROM BAR:      00080000  00080000  0000000000000000 00000000ffffffff
+    VF BAR0 Mem:    00080000  00080000  0000000000000000 00000000ffffffff
+  Resources:        Start            Length
+    BAR0    Mem:    00000000b5000000 01000000
+    BAR1    Mem:    00000000a0000000 10000000
+    BAR3    Mem:    00000000b0000000 02000000
+  Interrupt Requirement:
+    Line Based - Min Vector = 0x0, Max Vector = 0xffffffff
+    Message Based: Type - Msi, 0x1 messages requested
+  Interrupt Resource:    Type - MSI, 0x1 Messages Granted
+
+  Config space access log: !pcicfglog 0xffff94864b419270
+
+!kext.pci
+!pci 602 ffff ff
 
