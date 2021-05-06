@@ -2,6 +2,7 @@
 
 
 Server build: ProductionSigned
+For attest signed artifacts - go to nuget pkgs DriverPackages..
 
 
 Jupiter Capsule Create:
@@ -249,13 +250,76 @@ Publish-SurfaceDriverPackage -FeedName Haven -OutputDir C:\Staging\Haven\output 
 
 Shared SST Driver - Surface System Telemetry Driver: (to publish add: -WhatIf:$false) (TestSigned build)
 ===================================================
-Publish-SurfaceDriverPackage -FeedName Shared -OutputDir c:\Staging\SurfaceSystemTelemetry\output -inf C:\Staging\SurfaceSystemTelemetry\driver -SignType Test -IgnoreWarnings -Description "SC 1951699 - [Component] SB3 - Oct 2020 - Surface System Telemetry Driver (SurfaceSystemTelemetryDriver.inf) 09/09/2020,2.29.137.0" -Symbols C:\Staging\SurfaceSystemTelemetry\driver\SurfaceSystemTelemetryDriver.pdb -WdkTag "19H1" 
+Publish-SurfaceDriverPackage -FeedName Shared -OutputDir c:\Staging\SurfaceSystemTelemetry\output -inf C:\Staging\SurfaceSystemTelemetry\driver -SignType Test -IgnoreWarnings -Description "SC 1951699 - [Component] SB3 - Oct 2020 - Surface System Telemetry Driver (SurfaceSystemTelemetryDriver.inf) 09/09/2020,2.29.137.0" -Flavor Release -Symbols C:\Staging\SurfaceSystemTelemetry\driver\SurfaceSystemTelemetryDriver.pdb -WdkTag "19H1" 
+
+[f:Shared][p:Devices.Shared.Driver.SurfaceSystemTelemetry.19H1.Test][v:2.29.137.0][a:content\amd64\release\drv\SurfaceSystemTelemetry.inf]
+
 
 Shared SSH Driver - Surface Serial Hub Driver: (to publish add: -WhatIf:$false) (TestSigned build)
 ===================================================
-Publish-SurfaceDriverPackage -FeedName Shared -OutputDir c:\Staging\SurfaceSerialHubDriver\output -inf C:\Staging\SurfaceSerialHubDriver\driver -SignType Test -IgnoreWarnings -Description "SC 1930113 - [Component][CD] SL2 - Nov 2020 - Surface Serial Hub Driver Service [SurfaceSerialHubDriver.inf] 10/06/2020,9.49.139.0" -Symbols C:\Staging\SurfaceSerialHubDriver\driver\SurfaceSerialHubDriver.pdb -WdkTag "19H1" 
+Publish-SurfaceDriverPackage -FeedName Shared -OutputDir c:\Staging\SurfaceSerialHubDriver\output -inf C:\Staging\SurfaceSerialHubDriver\driver -SignType Test -IgnoreWarnings -Description "SC 2209116 - [Component][CP] Surface Serial Hub Driver (SurfaceSerialHubDriver.inf) 01/22/2021,9.54.139.0" -Flavor Release -Symbols C:\Staging\SurfaceSerialHubDriver\driver\SurfaceSerialHubDriver.pdb -WdkTag "19H1" 
 
-[f:Shared][p:Devices.Shared.Driver.SurfaceSerialHub.19H1.Test][v:9.49.139.0][a:content\amd64\release\drv\SurfaceSerialHubDriver.inf]
+[f:Shared][p:Devices.Shared.Driver.SurfaceSerialHub.19H1.Test][v:9.54.139.0][a:content\amd64\release\drv\SurfaceSerialHubDriver.inf]
+
+
+==============================================================================================
+Shared SIS Driver - Surface Service Driver: (to publish add: -WhatIf:$false) (TestSigned build)
+==============================================================================================
+Got the Attestation signed artifacts from DriverPackages feed
+https://dev.azure.com/MSFTDEVICES/Shared/_packaging?_a=package&feed=DriverPackages&package=Devices.DriverPackages.Driver.surfaceservicenulldriver.19H1.Attest.AMD64master&protocolType=NuGet&version=6.119.0
+
+For attest signed artifacts - go to nuget pkgs DriverPackages..
+Publish-SurfaceDriverPackage    `
+    -FeedName Shared            `
+    -SignType Attest            `
+    -OutputDir c:\Staging\SurfaceService\output     `
+    -Inf C:\Staging\SurfaceService\driver           `
+    -IgnoreWarnings             `
+    -Description "SC 2190161 - [Component][CP] Surface Integration Service Device - 2021 - SIS (SurfaceServiceNullDriver.inf) 03/17/2021,6.119.139.0" `
+    -Flavor Release             `
+    -Symbols C:\Staging\SurfaceService\driver\*.pdb `
+    -WdkTag "19H1"              `
+    -WhatIf:$false
+
+@@@ this also works -- using -Path to INF 
+Publish-SurfaceDriverPackage    `
+    -FeedName Shared            `
+    -SignType Attest            `
+    -OutputDir c:\Staging\SurfaceService\output `
+    -Path C:\Staging\SurfaceService\driver\SurfaceServiceNullDriver.inf  `
+    -IgnoreWarnings             `
+    -Description "SC 2190161 - [Component][CP] Surface Integration Service Device - 2021 - SIS (SurfaceServiceNullDriver.inf) 03/17/2021,6.119.139.0" `
+    -Flavor Release             `
+    -Symbols C:\Staging\SurfaceService\driver\*.pdb `
+    -WdkTag "19H1"
+
+[f:Shared][p:Devices.Shared.Driver.SurfaceService.19H1.Attest][v:6.119.139.0][a:content\amd64\release\drv\SurfaceServiceNullDriver.inf]
+
+==============================================================================================
+
+==============================================================================================
+Shared TCON Driver - Surface Tcon Driver: (to publish add: -WhatIf:$false) (TestSigned build)
+==============================================================================================
+Publish-SurfaceDriverPackage -FeedName Shared -OutputDir c:\Staging\SurfaceTconDriver\output -inf C:\Staging\SurfaceTconDriver\driver -SignType Test -IgnoreWarnings -Description "SC 2025878 - [Component] SL3 - Paloma - Jan 2021 - Surface Tcon Device (SurfaceTconDriver.inf) 11/07/2020,4.27.139.0" -Flavor Release -Symbols C:\Staging\SurfaceTconDriver\driver\SurfaceTconDriver.pdb -WdkTag "19H1"
+
+[f:Shared][p:Devices.Shared.Driver.SurfaceTconDriver.19H1.Test][v:4.27.139.0][a:content\amd64\release\drv\SurfaceTconDriver.inf]
+
+
+Shared SBD Driver - Surface Battery Driver: (-WhatIf:$false)
+==========================================
+Publish-SurfaceDriverPackage -FeedName Shared -OutputDir c:\Staging\SurfaceBattery\output -inf C:\Staging\SurfaceBattery\driver -SignType Test -IgnoreWarnings -Description "SC: 1969179 - Shared SBD TestSigned Driver 09/29/2020,2.51.139.0" -Flavor Release -Symbols C:\Staging\SurfaceBattery\driver\SurfaceBattery.pdb -WDKTag 19H1
+
+[f:Shared][p:Devices.Shared.Driver.SurfaceBattery.19H1.Test][v:2.51.139.0][a:content\amd64\release\drv\SurfaceBattery.inf]
+
+
+Shared SAN Driver - Surface ACPI Notify Driver: (to publish add: -WhatIf:$false) (TestSigned build)
+===================================================
+Publish-SurfaceDriverPackage -FeedName Shared -OutputDir c:\Staging\SurfaceAcpiNotifyDriver\output -inf C:\Staging\SurfaceAcpiNotifyDriver\driver -SignType Test -IgnoreWarnings -Description "SC 2057140 - [Component] SB2 - Jan 2021 - Surface ACPI Notify Driver (SurfaceAcpiNotifyDriver.inf) 06/19/2020,8.99.139.0" -Flavor Release -Symbols C:\Staging\SurfaceAcpiNotifyDriver\driver\SurfaceAcpiNotifyDriver.pdb -WdkTag "19H1"
+
+[f:Shared][p:Devices.Shared.Driver.SurfaceAcpiNotify.19H1.Test][v:8.99.139.0][a:content\amd64\release\drv\SurfaceAcpiNotifyDriver.inf]
+
+Verify:
+Install-SurfacePackage -Source Shared -PackageName "Devices.Shared.Driver.SurfaceAcpiNotify.19H1.Test" -dest C:\Staging\SurfaceAcpiNotifyDriver\NuGet
 
 ***************************************************
 **** Product Signed CHAP (not WHQL) END ***********
@@ -283,12 +347,27 @@ Non-WHQL Publishing Steps:
 8. If no rollback, Publish-SurfaceDriverPackage Rollback
 9. Check for package existence on Nuget feed
 10. Fill in the SC milestone=03 Ready for WHQL Entry, 
-    set BuildLocation, 
+    set BuildLocation - check feed first for correct string
     and New SW Version from INF file,
     and Factory Build location for rollback - see train for previous release
+    set WHQL entry calendar to today
 11. Assign SC to Ben Hamilton (not Dwight anymore)
 12. -PubRevision [1..Int32]
 13. -Bin <CFUPath>
+13. Add Log to SC: @Frank, @Ben, @Siva
+Published XXX test signed to Nuget.
+Paste script.
+Assiging to @Ben.
+
+14. Send email: 
+    Subject: Published SurfaceBattery driver to Nuget for WHQL Signing - SC 1969179
+    @frank, @siva, @ben
+    Please smoke test and put this SC on your WHQL entry queue. <XXX priority.>
+    Published test signed bits to Nuget for SC 1969179.
+    [f:Shared][p:Devices.Shared.Driver.SurfaceTconDriver.19H1.Test][v:4.27.139.0][a:content\amd64\release\drv\SurfaceTconDriver.inf]
+    https://dev.azure.com/MSFTDEVICES/PLE/_workitems/edit/2025878
+    Thanks,
+    Bart
 
 Software Components Selection Criteria: 
 •	PLE.BOM: Retired or Rejected is not processed.
@@ -306,7 +385,7 @@ WHQL publishing to Nuget:
     check the feed for collisions
 4.  Install the binary on machine
 5.  Run the Nuget script (see below) test then (to publish add: -WhatIf:$false):
-6.  Update Build location
+6.  Update Build location - check feed first for correct string
 7.  Set milestone to 6 -> assign back to Ben
 8.  Set all bugs in SC to resolved / fixed and assign to DVE for closure
 9.  update OneNote release history
@@ -398,16 +477,61 @@ Publish-SurfaceDriverPackage -Path C:\Staging\SurfaceSystemTelemetry\WHQLSigned\
 
 Shared SID Driver - Surface Integration Driver (to publish add: -WhatIf:$false):
 
-Publish-SurfaceDriverPackage -Path C:\Staging\SurfaceIntegrationDriver\WHQLSigned\drivers\7c70e686-4b71-4bc3-826c-0a4735b0d7c8\SurfaceIntegrationDriver.inf -FeedName Jaz -IgnoreWarnings -OutputDir C:\Staging\SurfaceIntegrationDriver\output -Description "SC 1940519 - [Component] SB3 - Oct 2020 - Surface Integration (SurfaceIntegrationDriver.inf) 09/14/2020,22.27.139.0" -Symbols C:\Staging\SurfaceIntegrationDriver\WHQLSigned\drivers\7c70e686-4b71-4bc3-826c-0a4735b0d7c8\SurfaceIntegrationDriver.pdb -SignType WHQL -Flavor release -WdkTag "19H1"
+Publish-SurfaceDriverPackage    `
+    -Path C:\Staging\SurfaceIntegrationDriver\WHQLSigned\drivers\8526fa18-2506-4656-b70f-63a79e4c0c35\SurfaceIntegrationDriver.inf `
+    -FeedName Orpheus           `
+    -IgnoreWarnings             `
+    -OutputDir C:\Staging\SurfaceIntegrationDriver\output `
+    -Description "SC 2251095 - [Component] SL4 - Orpheus - May 2021 - Surface Integration Driver (SurfaceIntegrationDriver.inf) 04/06/2021,55.45.139.0" `
+    -Symbols C:\Staging\SurfaceIntegrationDriver\WHQLSigned\drivers\8526fa18-2506-4656-b70f-63a79e4c0c35\SurfaceIntegrationDriver.pdb `
+    -SignType WHQL              `
+    -Flavor release             `
+    -WdkTag "20H1"              `
+    -WhatIf:$false
+
+[f:Orpheus][p:Devices.Orpheus.Driver.SurfaceIntegration.20H1.WHQL][v:55.45.139][a:content\amd64\release\drv\SurfaceIntegrationDriver.inf]
 
 ===============================================
 
 Shared SSH Driver - Surface Serial Hub Driver: (to publish add: -WhatIf:$false)
 ===================================================
-Publish-SurfaceDriverPackage -Path C:\Staging\SurfaceSerialHubDriver\WHQLSigned\drivers\2802b8f8-9bcf-45e9-94e8-f58853736ed9\SurfaceSerialHubDriver.inf -FeedName Shared -IgnoreWarnings -OutputDir C:\Staging\SurfaceSerialHubDriver\output -Description "SC 1930113 - [Component][CD] SL2 - Nov 2020 - Surface Serial Hub Driver Service [SurfaceSerialHubDriver.inf] 10/06/2020,9.49.139.0" -Symbols C:\Staging\SurfaceSerialHubDriver\WHQLSigned\drivers\2802b8f8-9bcf-45e9-94e8-f58853736ed9\SurfaceSerialHubDriver.pdb -SignType WHQL -Flavor release -WdkTag "19H1"
+Publish-SurfaceDriverPackage -Path C:\Staging\SurfaceSerialHubDriver\WHQLSigned\drivers\8d006f94-6504-4531-b992-f0a2acccecd3\SurfaceSerialHubDriver.inf -FeedName Shared -IgnoreWarnings -OutputDir C:\Staging\SurfaceSerialHubDriver\output -Description "SC 2209116 - [Component][CP] Surface Serial Hub Driver - April 2021 - 9.54 (SurfaceSerialHubDriver.inf) 01/22/2021,9.54.139.0" -Symbols C:\Staging\SurfaceSerialHubDriver\WHQLSigned\drivers\8d006f94-6504-4531-b992-f0a2acccecd3\SurfaceSerialHubDriver.pdb -SignType WHQL -Flavor release -WdkTag "19H1"
 
-[f:Shared][p:Devices.Shared.Driver.SurfaceSerialHub.19H1.WHQL][v:9.49.139.0][a:content\amd64\release\drv\SurfaceSerialHubDriver.inf]
+[f:Shared][p:Devices.Shared.Driver.SurfaceSerialHub.19H1.WHQL][v:9.54.139.0][a:content\amd64\release\drv\SurfaceSerialHubDriver.inf]
 
+===============================================
+
+Shared SIS Driver - Surface Service Driver: (to publish add: -WhatIf:$false) (WHQL build)
+===================================================
+Publish-SurfaceDriverPackage    `
+    -Path C:\Staging\SurfaceService\WHQLSigned\drivers\424092b3-bd6d-4392-a878-befc21144982\SurfaceServiceNullDriver.inf `
+    -FeedName Shared            `
+    -IgnoreWarnings             `
+    -OutputDir c:\Staging\SurfaceService\output     `
+    -Description "SC 2190161 - [Component][CP] Surface Integration Service Device - 2021 - SIS (SurfaceServiceNullDriver.inf) 03/17/2021,6.119.139.0" `
+    -Symbols C:\Staging\SurfaceService\WHQLSigned\drivers\424092b3-bd6d-4392-a878-befc21144982\*.pdb `
+    -SignType WHQL              `
+    -Flavor Release             `
+    -WdkTag "19H1"              `
+    -WhatIf:$false
+
+[f:Shared][p:Devices.Shared.Driver.SurfaceService.19H1.WHQL][v:6.119.139.0][a:content\amd64\release\drv\SurfaceServiceNullDriver.inf]
+
+
+===============================================
+Shared TCON Driver - Surface Tcon Driver: (to publish add: -WhatIf:$false) (TestSigned build)
+===================================================
+Publish-SurfaceDriverPackage -Path C:\Staging\SurfaceTconDriver\WHQLSigned\drivers\9fa3810e-ffba-4e72-b8bb-f42670f3109a\SurfaceTconDriver.inf -FeedName Shared -IgnoreWarnings -OutputDir C:\Staging\SurfaceTconDriver\output -Description "SC 2025878 - [Component] SL3 - Paloma - Jan 2021 - Surface Tcon Device (SurfaceTconDriver.inf) 11/07/2020,4.27.139.0" -Symbols C:\Staging\SurfaceTconDriver\WHQLSigned\drivers\9fa3810e-ffba-4e72-b8bb-f42670f3109a\SurfaceTconDriver.pdb -SignType WHQL -Flavor release -WdkTag "19H1"
+
+[f:Shared][p:Devices.Shared.Driver.SurfaceTconDriver.19H1.WHQL][v:4.27.139.0][a:content\amd64\release\drv\SurfaceTconDriver.inf]
+
+===============================================
+
+Shared SBD Driver - Surface Battery Driver: (-WhatIf:$false)
+==========================================
+Publish-SurfaceDriverPackage -Path C:\Staging\SurfaceBattery\WHQLSigned\drivers\f308ff61-a6f1-4d93-9128-9573802a091c\SurfaceBattery.inf -FeedName Shared -IgnoreWarnings -OutputDir C:\Staging\SurfaceBattery\output -Description "SC 1969179 - [Component] SLG - Sparti - Jan 2021 - Surface Battery (SurfaceBattery.inf) 09/29/2020,2.51.139.0" -Symbols C:\Staging\SurfaceBattery\WHQLSigned\drivers\f308ff61-a6f1-4d93-9128-9573802a091c\SurfaceBattery.pdb -SignType WHQL -Flavor release -WdkTag "19H1"
+
+[f:Shared][p:Devices.Shared.Driver.SurfaceBattery.19H1.WHQL][v:2.51.139.0][a:content\amd64\release\drv\SurfaceBattery.inf]
 
 ===============================================
 
@@ -416,6 +540,19 @@ Shared - Surface Hid Mini Driver: (to publish add: -WhatIf:$false)
 Publish-SurfaceDriverPackage -Path C:\Staging\SurfaceHidMiniDriver\driver\5a05e739-16ba-4472-8b36-1146ac899a87\SurfaceHidMiniDriver.inf -FeedName Shared -IgnoreWarnings -OutputDir C:\Staging\SurfaceHidMiniDriver\output -Description "SC 2002810 - [Component][CP] Surface Hid Mini Driver - Nov 2020 (CSME Fix) (SurfaceHidMiniDriver.inf) 10/16/2020,3.31.139.0" -Symbols C:\Staging\SurfaceHidMiniDriver\driver\5a05e739-16ba-4472-8b36-1146ac899a87\SurfaceHidMiniDriver.pdb -SignType WHQL -SharedProductId 400430334 -Flavor release -WdkTag "19H1"
 
 [f:Shared][p:Devices.Shared.Driver.SurfaceHidMini.19H1.WHQL][v:3.31.139.0][a:content\amd64\Release\drv\SurfaceHidMiniDriver.inf]
+
+===============================================
+
+Shared SAN Driver - Surface ACPI Notify Driver: (to publish add: -WhatIf:$false)
+===================================================
+Script used:
+Publish-SurfaceDriverPackage -Path C:\Staging\SurfaceAcpiNotifyDriver\driver\c2502520-4e00-4f41-9294-f44e04fdc155\SurfaceAcpiNotifyDriver.inf -FeedName Shared -IgnoreWarnings -OutputDir C:\Staging\SurfaceAcpiNotifyDriver\output -Description "SC 2057140 - [Component] SB2 - Jan 2021 - Surface ACPI Notify Driver (SurfaceAcpiNotifyDriver.inf) 06/19/2020,8.99.139.0" -Symbols C:\Staging\SurfaceAcpiNotifyDriver\driver\c2502520-4e00-4f41-9294-f44e04fdc155\SurfaceAcpiNotifyDriver.pdb -SignType WHQL -Flavor release -WdkTag "19H1"
+
+Build Location:
+[f:Shared][p:Devices.Shared.Driver.SurfaceAcpiNotify.19H1.WHQL][v:8.99.139.0][a:content\amd64\release\drv\SurfaceAcpiNotifyDriver.inf]
+
+Verify:
+Install-SurfacePackage -Source Shared -PackageName "Devices.Shared.Driver.SurfaceAcpiNotify.19H1.WHQL" -dest C:\Staging\SurfaceAcpiNotifyDriver\NuGet
 
 ===============================================
 Paloma - Surface UEFI: (to publish add: -WhatIf:$false)
@@ -431,4 +568,18 @@ Weevil:
     2. test code and check-in
     3. create PR: CI_tools-weevil
     4. output: \\desmo\release\Shared\CI_tools-weevil
+
+
+
+Publish-SurfaceDriverPackage    `
+    -FeedName Shared            `
+    -SignType Attest            `
+    -OutputDir c:\Staging\SurfaceService\output     `
+    -inf C:\Staging\SurfaceService\driver           `
+    -IgnoreWarnings                                 `
+    -Description "SC 2190161 - [Component][CP] Surface Integration Service Device - 2021 - SIS (SurfaceServiceNullDriver.inf) 03/10/2021,6.117.139.0" `
+    -Flavor Release `
+    -Symbols C:\Staging\SurfaceService\driver\*.pdb `
+    -WdkTag "19H1"
+
 

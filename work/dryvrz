@@ -1,0 +1,204 @@
+1/9/2020 9:02:58 AM     C:\sandbox\travel\dryvrz
+
+C:\git\UEFI-Delos\Platform\Surface\SurfRenoir\OrpheusPkg
+Py PlatformBuild.py --clean
+
+
+====================================
+CredScan link to OneNote Web version:
+====================================
+https://microsoft.sharepoint.com/teams/devices_surface_cpm/Projects/MCU/_layouts/15/Doc.aspx?sourcedoc={465e57f6-1cc5-41eb-8b6e-cf6576a5911c}&action=edit&wd=target%28How%20To.one%7C4602975a-6f36-469c-970c-32bc72cbe022%2FExample%20workflow%7C926a8549-4973-41c5-be8c-8019b48c2125%2F%29
+
+Guardian website:
+https://www.1eswiki.com/wiki/Run_CredScan_With_Guardian
+
+Process (CredScan):
+cd c:\git\Zeus-SAM 
+C:\Guardian\guardian.cmd init 
+C:\Guardian\guardian.cmd run -t Credscan 
+
+Look for the "red" lines - these are the problems you'll need to fix 
+
+Note in the above repo, there's an unlock folder with tools - probably shouldn't even be stored in the repo. 
+
+Remove the files that you don't want 
+git rm .\Project\unlock\OEMZE_ECC_FieldServicing_Unlock.pfx 
+git rm .\Project\unlock\OEMZE_ECC_Firmware_Unlock.pfx 
+
+Add the certs you want to keep to suppression file.  Edit CredScanSuppressions.json, at root of repo 
+
+Insert the following lines 
+
+{ 
+    "tool": "Credential Scanner", 
+    "suppressions": [ 
+        { 
+            "file": ["\\Project\\Certs\\OEMZE_FW_SIGNER.pfx"], 
+            "_justification": "Test signing cert file" 
+        }, 
+        { 
+            "file": ["\\Project\\Certs\\OEMZE_OS_DRIVER.pfx"], 
+            "_justification": "Test signing cert file" 
+        }, 
+    ] 
+} 
+ 
+Run Credscan again, the first run stored the errors, so need to clean up first 
+
+rm -r -force .gdn 
+Z:\Guardian\guardian.cmd init 
+Z:\Guardian\guardian.cmd run -t Credscan 
+Should report no "red" lines 
+Check all the changes into the repo 
+Repeat for all product/feature branches, likely all you'll need to do is cherry-pick the branch from master to all these branches, but be sure to run Credscan after the changes to ensure each branch is clean. 
+Finally, after the changes have been pushed and committed, find the Continuous Integration (CI) build for your repo, and make sure the build warning has gone away 
+
+====================================
+CredScan                    END
+====================================
+ 
+
+
+
+Tools
+\\desmo\WDS\Functional Areas\Storage\Tools
+
+see: OneNote: Surface Book 2 (Zap) for Fei's driver update update
+
+1. Clone the Git repo: 
+    https://MSFTDEVICES@dev.azure.com/MSFTDEVICES/Drivers/_git/SurfaceBase2FwUpdate
+2. Checkout the correct branch: 
+  we are using release/rs4/rtm branch, rs2 branch couldn't pass server build.
+3. copy xcopy SKIP-BApp1.bin.zip and SKIP-BApp2.bin.zip into C:\git\SurfaceBase2FwUpdate\packages\MCU_Zap_SKIP-B
+
+4. run Init.cmd
+
+5. Install-SurfacePackage -ConfigPath .\Packages.config
+
+4. build the driver SurfaceBase2FwUpdate.sln for X64
+5. The driver is in:
+C:\git\SurfaceBase2FwUpdate\Release\x64\SurfaceBase2FwUpdatePackage
+ Directory of C:\git\SurfaceBase2FwUpdate\Release\x64\SurfaceBase2FwUpdatePackage
+
+01/08/2020  04:55 PM    <DIR>          .
+01/08/2020  04:55 PM    <DIR>          ..
+01/08/2020  04:55 PM             3,352 surfacebase2fwupdate.cat
+01/08/2020  04:55 PM         1,514,648 SurfaceBase2FwUpdate.dll
+01/08/2020  04:54 PM             2,692 SurfaceBase2FwUpdate.inf
+01/08/2020  04:55 PM         4,583,424 SurfaceBase2FwUpdate.pdb
+               4 File(s)      6,104,116 bytes
+               2 Dir(s)  879,802,445,824 bytes free
+
+
+Publishing:
+PS C:\ZapFWUpdate> Publish-SurfacePackage -PackageName MCU_Zap_SKIP-B -Version 182.1001.239 -FeedName SurfacePackages -Root C:\ZapFWUpdate\ -Description "MCU binaries for Zap SKIP-B"
+
+
+Installing the driver:
+1. xcopy the driver files onto a thumb drive:
+    surfacebase2fwupdate.cat
+    SurfaceBase2FwUpdate.dll
+    SurfaceBase2FwUpdate.inf
+    SurfaceBase2FwUpdate.pdb
+
+2. Bcdedit.exe -set TESTSIGNING ON
+    https://docs.microsoft.com/en-us/windows-hardware/drivers/install/the-testsigning-boot-configuration-option
+    
+3. UEFI disable security bits
+    https://docs.microsoft.com/en-us/windows-hardware/drivers/install/the-testsigning-boot-configuration-option
+
+4. DevMgt (install the driver from thumb drive):
+    System Devices:
+        Surface Base 2 Firmware Update
+        ...
+    Firmware:
+        Surface UEFI
+        ...
+
+5. Detach and reattach the monitor
+
+6. run c:\users\desktop\calvin.exe GetVersion(s)
+    Calvin v1.0.105.0
+    Chip 0x0, Version: 182.2001.137
+    Chip 0x60, Version: 0.7.54
+
+
+OneNote: Surface Book 2 (Zap) for Fei's driver update update
+============================================================
+1. Have a new SKIPB FW payload and need to build a test signed/ engineering build of SurfaceBase2FwUpdate 
+    driver for testing.
+2. Git clone https://MSFTDEVICES@dev.azure.com/MSFTDEVICES/Drivers/_git/SurfaceBase2FwUpdate
+3. Go to your local SurfaceBase2FwUpdate source, run Init.cmd
+4. Run "Install-SurfacePackage -ConfigPath .\Packages.config"
+-> This will create a package folder under SurfaceBaseFwUpdate project, and install tools and related 
+    resources from Nuget server to local, which include the latest published MCU_Zap_SKIP-B packages 
+    on Nuget Server( this should include both SKIPB and LPC payloads:
+4a. LPC payloads -> update C:\TFS\Zap\Packages\LPC\7.36\ZapFWUpdate using Visual Studio Team Explorer/Source Control Explorer
+5. Then you should replace only the SKIPB FW payloads under packages\MCU_Zap_SKIP-B with your engineering 
+    build/test version of SKIPB FW under this folder with same 
+    name(SKIP-BApp1.bin.zip and SKIP-BApp2.bin.zip).
+
+Note: keep the xxx.nuspec file untouched, otherwise when you build from VS, it will redo 
+    the .packages.config that will replace the SKIP-B payload.
+6. Open SurfaceBase2FwUpdate solution in Visual studio as admin ( I used VS2017 with WDK 17134), then build it locally to get your testsigned SurfaceBase2FwUpdate driver.
+-> I got the following error when I tried to build locally in VS2017.
+Error   MSB6004 The specified task executable location 
+    "C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\stampinf.exe" is invalid.
+    Fixed it by changing the project property to point to right WDK 17134
+
+
+Azure Query Telemetry
+// Top 10 Surface KMC
+let Models = pack_array
+(
+    'Surface Book 3',
+    'Surface Book 3 13in',
+    'Surface Book 3 13in with dGPU',
+    'Surface Book 3 15in with dGPU',
+    //    'OEMGR Product Name DV',
+    'Surface Pro 7',
+    'Surface Pro 7+',
+    //    'Surface Pro 7+', 
+    'Surface Pro 7+ with LTE',
+    'Surface Pro X',
+    'Surface Pro X SQ2',
+    'Surface Laptop 3 13in',
+    'Surface Laptop 3 15in',
+    'Surface Laptop 4',
+    'Surface Laptop Go'
+);
+let KMC = KernelModeCrash
+    | where clientIngestTime > ago(90d)
+    | where OEMDerivedModel in (Models)
+    | where (FailureInfo_FailureBucketId contains "C0000001")
+    | project FailureInfo_FailureBucketId, FailureHash, OEMSerialNumber
+    | summarize dcount(OEMSerialNumber) by FailureInfo_FailureBucketId, FailureHash
+    | top 50 by dcount_OEMSerialNumber desc;
+KMC
+| join OSBug on FailureHash
+| summarize dcount(OSBugId) by FailureInfo_FailureBucketId, FailureHash, dcount_OEMSerialNumber, OSBugId
+| project-away dcount_OSBugId
+| extend OSGUrl = strcat('https://microsoft.visualstudio.com/OS/_workitems/edit/', OSBugId)
+| sort by dcount_OEMSerialNumber desc
+
+
+// Orpheus (AMD)
+let Models = pack_array
+(
+    'Surface Laptop 4'
+);
+let KMC = KernelModeCrash
+    | where clientIngestTime > ago(90d)
+    | where OEMDerivedModel in (Models)
+    | where ProcessorMake startswith "AMD"
+    | where (FailureInfo_FailureBucketId contains "Long_Power_Press")
+    | project FailureInfo_FailureBucketId, FailureHash, OEMSerialNumber, OEMDerivedModel
+    | summarize dcount(OEMSerialNumber) by FailureInfo_FailureBucketId, FailureHash
+    | top 50 by dcount_OEMSerialNumber desc;
+KMC
+| join OSBug on FailureHash
+| summarize dcount(OSBugId) by FailureInfo_FailureBucketId, FailureHash, dcount_OEMSerialNumber, OSBugId
+| project-away dcount_OSBugId
+| extend OSGUrl = strcat('https://microsoft.visualstudio.com/OS/_workitems/edit/', OSBugId)
+| sort by dcount_OEMSerialNumber desc
+
