@@ -1146,6 +1146,7 @@ sites:
 https://github.com/reactos/reactos <= mock kernel sources
 https://bsodtutorials.wordpress.com/
 https://stackoverflow.com/questions/4946685/good-tutorial-for-windbg
+https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/debugging-a-stack-overflow
 https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/debug-universal-drivers--kernel-mode-
 http://pciids.sourceforge.net/pci.ids
 -- good talk on power states
