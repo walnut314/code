@@ -2,6 +2,17 @@
 
 latest Windbg: \\dbg\privates\latest
 
+1: kd> !dawg
+-----------------------------------------------------
+         Debug Analysis - Wait Graph
+-----------------------------------------------------
+7: kd> !dawt
+-----------------------------------------------------
+         Debug Analysis - Wait Tree
+-----------------------------------------------------
+
+
+
 !Winde.help
 
 Identify dump or LKD:
@@ -2411,4 +2422,92 @@ PDO Extension, Bus 0x2, Device 0, Function 0.
 
 !kext.pci
 !pci 602 ffff ff
+
+dxgkdx debugger:
+===============
+7: kd> !dxgkdx.help
+!adapters - Display information on all adapters started on the system.
+!bdd - Prints the useful state of the specified BDD adapter.
+!clearoutputduplsdiag - Clears out the DDA diagnostic buffers for the specified OutputDupl managers
+!commitrequest <commit VidPN request> - Display summary of the request to commit a VidPN.
+!deadlocks - Displays each adapter's core eresource (if held) and active dxgkrnl deadlock trackers.
+!devices - Displays a list of VidMm devices on the system
+!diag - Prints the diagnostics buffers present in the global dxgkrnl circular buffers.
+!diagnostics - Prints the diagnostics buffers present in the global dxgkrnl circular buffers.
+!displayconfig <Path Array> <Size of path array> <Mode Info Arrary.
+!dispmodes <adapter object> <VidPN source ID> - Display cached display mode list for the specified adapter.
+!dmabuffer - Display information on a particular DMA buffer.
+!dmmobject <DMM object> - Display summary of the specified DMM object.
+!dmmstatus <VidPN manager> - Display summary of the specified VidPN manager.
+!dxalloc - Display information on a particular allocation.
+!dxcontext - Display information on a particular context.
+!dxdevice - Display information on a particular device.
+!dxgadapters - Displays all the active DXGADAPTERs on the system.
+!dxganalyze - TBD
+
+!dxgkflags options flags      --   Parses a macro'd flag into a decipherable string.
+!dxglog - Dumps display driver model related logs
+!dxgloggo - replaces 'g' command to use with '!dxglog -live'.
+!dxgsession - Prints the contents of the dxgkrnl session manager.
+!dxhandle - Display information on a particular handle.
+!dxhandletable - Display information about a handle table.
+!dxprocess - Display information about a particular process or list existing processes.
+!dxresource - Display information on a particular DXGRESOURCE object.
+!dxsyncobj - Display information on a particular synchronization object.
+!dxvm - Display information about virtual machines.
+!edid - Displays EDID information parsed from the target or from the command-line.
+!fencehistory - Displays fence history for a scheduler node.
+!flipentry- Displays a flip queue entry
+!fliphistory - Displays flip queue history for all planes of a particular VidPnSource.
+!flipstatus - Displays flipstatus for every entry of the flip queue
+!gammaramp <gamma ramp data> - Display summary of the gamma ramp data.
+
+!gpuva- Prints information about a specific virtual address.
+!gpuvapaginghistory- Prints paging history on the given adapter.
+!gpuvasearch - Searches page tables of a process for physical address.
+!help - Display list of command or detailed help on a specific command.
+!interrupthistory - Displays interrupt history for a scheduler node.
+!iodevices - Lists all iommu devices.
+!iofault - Gets fault information from a given IoMmu.
+!iogpa - Decode GPA for a given device.
+!iommus - Lists all iommus.
+!iommusearch - Finds a mapped page.
+!lockorder - Dumps lock acquisition state for DXGTHREAD.
+!mmdevice - Display information on a particular device.
+!mmdevicebudget - Inspect the VidMm device and it's budget history.
+!mmstatus - Display status information on the specified memory manager object.
+!monitor <monitor object> - Display summary of the specified monitor.
+!monitormode <monitor mode object> - Display summary of the specified monitor mode.
+!monitormodeset <monitor mode set object> - Display summary of the specified monitor mode set.
+!outputdupl - Prints the diagnostics buffers present in the given output duplication manager.
+!outputduplsnapshot - Prints the debug snapshot present in the given output duplication manager.
+!pagehistorysearch - Searches the page history in the given VIDMM_GLOBAL for a physical address.
+!paginghistory - Display recent paging history.
+!pagingqueue- Dumps contents of a paging queue.
+!pathsmodality <Address of a D3DKMT_GETPATHSMODALITY structure> - Display summary of the specified VidPN paths modality.
+!penaltybox - Dumps the state of the various penalty box bands and their devices.
+!portstatus - Display status information on the specific device object.
+!powercomponents - Display information about power components for the given adapter.
+!processvads - Prints information about the virtual address space of a process.
+!qdccache
+!rotationhistory - Display recent rotation history.
+!scandmausage - Scans processes and outputs their DMA buffer usage.
+!schstatus - Display status information on the specific scheduler object.
+  sdump                                      - produces hex dump of the TDR related
+                                               data from minidump
+!searchalloc - Search for allocations matching the specified criterias.
+!searchpageshistory - Search through the recent system memory pages history.
+!sharedallocs - Displays all shared allocs and local allocs.
+  simea <expression>                         - sumulates timeout by injecting infinite loop
+!smm - Various commands for inspectign the state of the system memory manager.
+!syncobj - Display information for a scheduler synchronization object.
+                                             - TBD
+                                             - TBD
+!vidpn <VidPN object> - Display summary of the specified VidPN.
+!vidpnpath <VidPN present path object> - Display summary of the specified VidPN present path.
+!vidpnsourcemodeset <VidPN source mode set object> - Display summary of the specified VidPN source mode set.
+!vidpntargetmodeset <VidPN target mode set object> - Display summary of the specified VidPN target mode set.
+!viewheap - Allows inspection of the recycle heap for a process.
+!vsyncstate - Displays VSync state for all VidPnSources of adapter.
+
 
