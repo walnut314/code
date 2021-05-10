@@ -11,26 +11,22 @@ int hcount[9];
 void hindexer()
 {
     std::vector<int> v(a, a+9);
+    std::sort(v.begin(), v.end());
     int max = *std::max_element(v.begin(), v.end());
-    printf("max %d\n", max);
-    for (auto i : v) { cout << i << ", "; }
-    cout << endl;
-
     for (int i = 1; i <= max; ++i) {
-        entries = 0;
         for (int j = 0; j < sz; j++) {
             if (v[j] >= i) {
-                entries++;
                 hcount[i]++;
             }
         }
-        if (entries > i) hindex++;
+        printf("hcount[%d] = %d\n", i, hcount[i]);
+        if (hcount[i] < i) {
+            printf("!!! %d < %d so hindex = count-1 (%d)\n", hcount[i], i, i-1);
+            hindex = i - 1;
+            break;
+        }
     }
-    printf("hindex: ");
-    for (int i = 1; i < max; i++) {
-        printf("%d, ", hcount[i]);
-    }
-    cout << endl;
+    printf("hindex: %d\n", hindex);
 }
 
 int main()
