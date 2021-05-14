@@ -11,6 +11,9 @@ latest Windbg: \\dbg\privates\latest
          Debug Analysis - Wait Tree
 -----------------------------------------------------
 
+4: kd> dx KiBugCheckDriver
+KiBugCheckDriver                 : 0xffffe10585a70668 : "SurfaceSystemManagementFrameworkDriver.sys" [Type: _UNICODE_STRING *]
+    [<Raw View>]     [Type: _UNICODE_STRING]
 
 
 !Winde.help
@@ -64,6 +67,13 @@ file to find the GUID which it needs to look up on Desmo to find the .pdb.
 
 .sypath+ SRV*c:\Symbols*http://symweb;SRV*c:\Symbols*\\desmo\release\Symbols;C:\git\SurfaceTconDriver\Binaries\flush_d0exit_TBQ_count_flush_4.6\bin;
 .srcpath C:\git\SurfaceTconDriver\sys;C:\git\SurfaceLibrary\Kernel\DMF
+
+First get the WDF memory buffer:
+4: kd> !wdfmemory 0x00001efa6c939448
+Treating handle as a KMDF handle!
+WDFMEMORY 0x00001efa6c939448:  Buffer 0xffffe105936c6c30, Length 0x3a0 (928) bytes
+
+
 
 DMFKd info:
 7: kd> !dmfkd.help
