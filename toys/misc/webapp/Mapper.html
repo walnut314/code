@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Mapper </title>
+
+    <!--
+        https://developers.google.com/maps/documentation/javascript/overview?hl=en_US#maps_map_simple-javascript        
+    -->
+    <style>
+      #map {
+        height: 100%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <!--
+    <script>
+        let map;
+        function initMap() {
+          map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: -34.397, lng: 150.644 }, 
+            zoom: 8,
+          });
+        }        
+    </script>
+    -->
+
+</head>
+<body>
+
+    <iframe 
+        width="650px"
+        height="650px"
+        frameborder="0px"
+        style="border: 0px"
+        src="https://www.google.com/maps/embed/v1/directions?origin=GigHarbor,Washington&destination=McMinneville,Oregon&key=AIzaSyBMaZ5USOuk3pKXnn-eU6GtmgYCvHE7dGg">
+    </iframe>
+
+    <!--
+        src="https://www.google.com/maps/embed/v1/search?q=London&key=AIzaSyBMaZ5USOuk3pKXnn-eU6GtmgYCvHE7dGg">
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMaZ5USOuk3pKXnn-eU6GtmgYCvHE7dGg&callback=initMap">
+    </script>
+    -->
+
+    <!--
+    <iframe
+      width="600"
+      height="450"
+      style="border:0"
+      loading="lazy"
+      allowfullscreen
+      src="https://www.google.com/maps/embed/v1/place?key=AAIzaSyBMaZ5USOuk3pKXnn-eU6GtmgYCvHE7dGg&q=Space+Needle,Seattle+WA">
+    </iframe>
+    -->
+
+    <div id="map"></div>
+
+</body>
+</html>
+
