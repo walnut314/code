@@ -536,6 +536,8 @@ UMDF v2.15+:
 
 > lmv <-- dump drivers
 > lmv m igdkmdn64
+0: kd> lmDvmSurfaceSerialHubDriver
+
 1: kd> lmv m igdkmdn64
 start             end                 module name
 fffff807`88f60000 fffff807`8a411000   igdkmdn64   (deferred)             
@@ -1420,7 +1422,7 @@ Blink  ffff8e87b2979708
   Buffer 0000000000000000  Flags 0000000000000000
     Object Data - ffff8e87b297d248 Type - 06 <Device>
 
-2: kd> !acpike.acpiext ffff8e87b1a4f010
+2: kd> !acpikd.acpiext ffff8e87b1a4f010
 ACPI!DEVICE_EXTENSION ffff8e87b1a4f010 - ACPI\MSHW0084
   DevObject  ffff8e87af4b0cd0  PhysObject  ffff8e87af4b0cd0  NextObject   0000000000000000
   AcpiObject SSH_ ffff8e87b297d208 [\_SB.SSH]  ParentExt   ffff8e87af47e0d0
@@ -1434,6 +1436,9 @@ ACPI!DEVICE_EXTENSION ffff8e87b1a4f010 - ACPI\MSHW0084
     Caps     CanWake 
     Props    HasHID RanINI Enabled AcpiPower D3ColdNotEnabled DEP BusDriverSupportsD3Cold DEP_checked LckEnabled DisEnabled PostDisplayD0Succeeded CapSidebandWake CapGpioInterrupt CCA_checked PEP_checked 
 
+0: kd> dt acpi!_device_extension  ffff8e87b1a4f010
+
+
 Shows dependency of SSH on UA00
 2: kd> !nsobj ffff8e87b297d6d8
 nsobj:  dumping object at ffff8e87b297d6d8
@@ -1446,6 +1451,27 @@ Blink  ffff8e87b297d4c8
     Object Data - ffff8e87b297d718 Type - 04 <Package> NumElements=0000000000000001
       Object Data - ffff8e87b297d6a0 Type - 02 <String> String=^PCI0.UA00
 
+0: kd> !devstack ffff8904d9409a00
+  !DevObj           !DrvObj            !DevExt           ObjectName
+> ffff8904d9409a00  \Driver\SurfaceSerialHubDriverffff8904d96132f0  00000065
+  ffff8904d37df3c0  \Driver\ACPI       ffff8904d34977f0  00000024
+!DevNode ffff8904d63198a0 :
+  DeviceInst is "ACPI\MSHW0084\2&daba3ff&0"
+  ServiceName is "SurfaceSerialHubDriver"
+
+0: kd> !acpikd.acpiext ffff8904d34977f0
+ACPI!DEVICE_EXTENSION ffff8904d34977f0 - ACPI\MSHW0084
+  DevObject  ffff8904d37df3c0  PhysObject  ffff8904d37df3c0  NextObject   0000000000000000
+  AcpiObject SSH_ ffff8904d4f27248 [\_SB.SSH]  ParentExt   ffff8904d34d60d0
+  PnpState   ActRunng  OldPnpState Started 
+  Dispatch   fffff8016207d0f0
+  RefCounts  3-Device 1-Irp 0-Hiber 0-Wake
+  State      D0        Sw->S0 Dw->D3     Wake Pin        0
+  SxD Table  S0->D0 S4->D3 S5->D3 
+  Flags      0560200000010a20
+    Types    PDO Enumerated ValidPnP 
+    Caps     CanWake 
+    Props    HasHID RanINI Enabled AcpiPower D3ColdNotEnabled DEP BusDriverSupportsD3Cold DEP_checked LckEnabled PostDisplayD0Succeeded CapSidebandWake CapGpioInterrupt CCA_checked PEP_checked 
 
 Example full round trip:
 1: kd> !wdfkd.wdflogdump WudfRd -d
@@ -2398,6 +2424,10 @@ Total PCI Segments processed = 1
 !DevNode ffff94864b3bc340 :
   DeviceInst is "PCI\VEN_10DE&DEV_2191&SUBSYS_00321414&REV_A1\4&3208d4ed&0&00EC"
   ServiceName is "nvlddmkm"
+
+Note: ACPI !DevExt is the Device is NSTree (Acpi namespace) for example:
+| | SSH_ (ffff8904d4f27248) - Device ffff94863e5e0440
+
 
 0: kd> !devext ffff94864b419270
 PDO Extension, Bus 0x2, Device 0, Function 0.
