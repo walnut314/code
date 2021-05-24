@@ -209,4 +209,24 @@ print(Rx)
 print(Ry)
 print(Rz)
 
+# chess board
+Rook = [[0,0,0,0,0,0,1,0],
+        [0,0,0,0,0,0,0,1],
+        [0,0,0,0,0,1,0,0],
+        [1,0,0,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0],
+        [0,0,1,0,0,0,0,0],
+        [0,0,0,1,0,0,0,0],
+        [0,1,0,0,0,0,0,0]]
+Rook  = matrix(Rook)
+print(Rook)
+print(linalg.det(Rook))
+if (linalg.det(Rook) > 0.0):
+    Rook_inv = linalg.inv(Rook)
+    print(Rook_inv)
+    print()
+    print(Rook_inv*Rook)
+else:
+    print("Rook is singular")
+
 
