@@ -1,0 +1,940 @@
+5/26/2021 7:24:39 AM     D:\dumps\hypervisor_stop\DMP\notes.log
+
+https://docs.microsoft.com/en-us/learn/certifications/mcse-core-infrastructure/
+
+Note 1:
+!thread @#Thread
+THREAD ffffdb091f51d080  Cid 005c.0510  Teb: 000000c067ec2000 Win32Thread: ffffdb091ea09690 WAIT: (WrLpcReply) UserMode Non-Alertable
+    ffffdb091f51d508  Semaphore Limit 0x1
+Waiting for reply to ALPC Message ffff848709de3c60 : queued at port ffffdb091dd435d0 : owned by process ffffdb091f49c080
+Not impersonating
+DeviceMap                 ffff848705835c00
+Owning Process            ffffdb09144a6080       Image:         csrss.exe
+Attached Process          N/A            Image:         N/A
+Wait Start TickCount      1260           Ticks: 4798975 (0:20:49:43.984)
+Context Switch Count      51             IdealProcessor: 0             
+UserTime                  00:00:00.000
+KernelTime                00:00:00.000
+Win32 Start Address 0x00007ffc2cb4bec0
+Stack Init ffff9501f0a42590 Current ffff9501f0a41cf0
+Base ffff9501f0a43000 Limit ffff9501f0a3c000 Call 0000000000000000
+Priority 15 BasePriority 15 PriorityDecrement 0 IoPriority 2 PagePriority 5
+Kernel stack not resident.
+Child-SP          RetAddr               : Args to Child                                                           : Call Site
+ffff9501`f0a41d30 fffff801`71e0c970     : ffff96a7`00000001 ffffdb09`00000000 00000000`0000011c 00000000`00000007 : nt!KiSwapContext+0x76 [minkernel\ntos\ke\amd64\ctxswap.asm @ 138] 
+ffff9501`f0a41e70 fffff801`71e0be9f     : ffffdb09`1f51d080 ffffdb09`1dd43658 ffff9501`f0a42030 00000000`ffff0001 : nt!KiSwapThread+0x500 [minkernel\ntos\ke\thredsup.c @ 11603] 
+ffff9501`f0a41f20 fffff801`71e0b743     : 00000000`00000000 fffff801`00000000 ffffdb09`1dd7e900 ffffdb09`1f51d1c0 : nt!KiCommitThreadWait+0x14f [minkernel\ntos\ke\waitsup.c @ 795] 
+ffff9501`f0a41fc0 fffff801`71f1f6e3     : ffffdb09`1f51d508 00000000`00000011 ffffdb09`1dd43501 00000000`00000000 : nt!KeWaitForSingleObject+0x233 [minkernel\ntos\ke\wait.c @ 861] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!AlpcpWaitForSingleObject+0x2e (Inline Function @ fffff801`71f1f6e3) [minkernel\ntos\lpc\alpc\alpcp.h @ 8335] 
+ffff9501`f0a420b0 fffff801`722f1a96     : 00000000`00000000 ffffdb09`1f51d508 00000000`00000011 00000000`00000000 : nt!AlpcpSignalAndWait+0x143 [minkernel\ntos\lpc\alpc\alpcmsg.c @ 5182] 
+ffff9501`f0a42150 fffff801`722f16fb     : ffff9501`f0a42230 00000000`00000000 00007ffc`2cb5a960 00000000`00000000 : nt!AlpcpReceiveSynchronousReply+0x56 [minkernel\ntos\lpc\alpc\alpcmsg.c @ 5503] 
+ffff9501`f0a421b0 fffff801`722ef7a6     : ffffdb09`1f518a80 ffff9501`00020000 00007ffc`2cb5a960 00000000`00000000 : nt!AlpcpProcessSynchronousRequest+0x37b [minkernel\ntos\lpc\alpc\alpcmsg.c @ 8343] 
+ffff9501`f0a422d0 fffff801`720086b5     : ffffdb09`1f51d080 ffff9501`f0a42480 000000c0`681bfae8 ffff9501`f0a423a8 : nt!NtAlpcSendWaitReceivePort+0x1d6 [minkernel\ntos\lpc\alpc\alpcmsg.c @ 8698] 
+ffff9501`f0a42390 00007ffc`2f52df94     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff9501`f0a42400) [minkernel\ntos\ke\amd64\trap.asm @ 3469] 
+000000c0`681bfac8 00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : 0x00007ffc`2f52df94
+
+Note 2: (audio driver)
+ffff9501`f0115330 fffff801`775c09b9     : 000024f6`e9954578 00000000`00000000 fffff801`77565070 00000000`00000000 : IntcOED+0x46cbc => audio driver
+ffff9501`f0115390 fffff801`739dc6a8     : ffffdb09`166aba80 ffffdb09`166aba80 00000000`00000000 00000000`00000100 : IntcOED+0xe09b9
+
+Note 3:
+3: kd> !prcb 0
+PRCB for Processor 0 at fffff8016c9b1180:
+Current IRQL -- 15
+Threads--  Current fffff80172926a00 Next 0000000000000000 Idle fffff80172926a00
+Processor Index 0 Number (0, 0) GroupSetMember 1
+Interrupt Count -- 01f68337
+Times -- Dpc    00004aa3 Interrupt 00004a3b 
+         Kernel 0047a788 User      00019763 
+3: kd> !prcb 1
+PRCB for Processor 1 at ffffb10101b9a180:
+Current IRQL -- 15
+Threads--  Current ffffb10101ba5240 Next 0000000000000000 Idle ffffb10101ba5240
+Processor Index 1 Number (0, 1) GroupSetMember 2
+Interrupt Count -- 0108df04
+Times -- Dpc    000029f6 Interrupt 000016ee 
+         Kernel 00481c80 User      0001223a 
+3: kd> !prcb 2
+PRCB for Processor 2 at ffffb10101c80180:
+Current IRQL -- 15
+Threads--  Current ffffb10101c8b240 Next ffffdb092c0230c0 Idle ffffb10101c8b240
+Processor Index 2 Number (0, 2) GroupSetMember 4
+Interrupt Count -- 01934d35
+Times -- Dpc    000005c0 Interrupt 0000068c 
+         Kernel 00475209 User      0001ecb1 
+3: kd> !prcb 3
+PRCB for Processor 3 at ffffb10101d80180:
+Current IRQL -- 15
+Threads--  Current ffffb10101d8b240 Next 0000000000000000 Idle ffffb10101d8b240
+Processor Index 3 Number (0, 3) GroupSetMember 8
+Interrupt Count -- 0128ce28
+Times -- Dpc    00000129 Interrupt 0000045d 
+         Kernel 0047ec95 User      00015225 
+3: kd> !prcb 4
+PRCB for Processor 4 at ffffb10101e43180:
+Current IRQL -- 15
+Threads--  Current ffffb10101e4e240 Next ffffdb0923325080 Idle ffffb10101e4e240
+Processor Index 4 Number (0, 4) GroupSetMember 10
+Interrupt Count -- 017b4e73
+Times -- Dpc    00000462 Interrupt 0000052e 
+         Kernel 004788cd User      0001b5ec 
+3: kd> !prcb 5
+PRCB for Processor 5 at ffffb10101f80180:
+Current IRQL -- 15
+Threads--  Current ffffb10101f8b240 Next 0000000000000000 Idle ffffb10101f8b240
+Processor Index 5 Number (0, 5) GroupSetMember 20
+Interrupt Count -- 00f215e3
+Times -- Dpc    00000109 Interrupt 00000346 
+         Kernel 00482918 User      000115a1 
+3: kd> !prcb 6
+PRCB for Processor 6 at ffffb10102080180:
+Current IRQL -- 15
+Threads--  Current ffffb1010208b240 Next ffffdb091b2960c0 Idle ffffb1010208b240
+Processor Index 6 Number (0, 6) GroupSetMember 40
+Interrupt Count -- 0141c352
+Times -- Dpc    0000019c Interrupt 0000045c 
+         Kernel 0047991a User      0001a59f 
+3: kd> !prcb 7
+PRCB for Processor 7 at ffffb10102180180:
+Current IRQL -- 15
+Threads--  Current ffffb1010218b240 Next 0000000000000000 Idle ffffb1010218b240
+Processor Index 7 Number (0, 7) GroupSetMember 80
+Interrupt Count -- 00db1e07
+Times -- Dpc    00000179 Interrupt 000002f8 
+         Kernel 0047e4a2 User      00015a17 
+
+Note 4: prcb threads
+
+!thread fffff80172926a00 
+!thread ffffb10101ba5240 
+!thread ffffb10101c8b240 
+!thread ffffdb092c0230c0 
+!thread ffffb10101d8b240 
+!thread ffffb10101e4e240 
+!thread ffffdb0923325080 
+!thread ffffb10101f8b240 
+!thread ffffb1010208b240 
+!thread ffffdb091b2960c0 
+!thread ffffb1010218b240 
+
+
+Note:
+FAILURE_BUCKET_ID:  NOBLOB_HYPERVISOR_ERROR_Unhandled_PageFault_2a5b8c
+
+HYPERVISOR_ERROR (20001)
+The hypervisor has encountered a fatal error.
+Arguments:
+Arg1: 0000000000000011
+Arg2: 00000000002a5b8c
+Arg3: 0000000000001005
+Arg4: 0000010000405950
+
+3: kd> .frame 0n7;dv /t /v
+07 ffff9501`efe3ef48 fffff801`71ec42d0     nt!HalpApic1WriteIcr+0x39 [minkernel\hals\lib\interrupts\pc\apicreg.c @ 578] 
+@ecx              unsigned long Target = 0x40000000
+@edx              unsigned long Command = 0x82f
+         ba98 7654 3210
+0x82f => 1000-0010-1111
+vector          = 2F
+delivery mode   = 0
+dest mode       = logical
+
+3: kd> .frame 0n1;dv /t /v
+01 ffffb101`01cbcca0 fffff801`7210da38     nt!HvlSkCrashdumpCallbackRoutine+0x6b [minkernel\ntos\hvl\crashdump64.c @ 791] 
+ffffb101`01cbcce0 void * Context = 0x00000000`00000001
+ffffb101`01cbcce8 unsigned char Handled = 0x01 ''
+@rbx              struct _IUM_CRASHDUMP_AREA * Area = 0xffffb101`013de000
+
+3: kd> dx -r3 ((ntkrnlmp!_IUM_CRASHDUMP_AREA *)0xffffb101013de000)
+((ntkrnlmp!_IUM_CRASHDUMP_AREA *)0xffffb101013de000)                 : 0xffffb101013de000 [Type: _IUM_CRASHDUMP_AREA *]
+    [+0x000] Version          : 0x1 [Type: unsigned long]
+    [+0x004] Flags            [Type: <anonymous-tag>]
+        [+0x000 ( 0: 0)] Valid            : 0x1 [Type: unsigned long]
+        [+0x000 (31: 1)] Reserved         : 0x0 [Type: unsigned long]
+    [+0x008] BugCheckCode     : 0x20001 [Type: unsigned long]
+    [+0x010] BugCheckData     [Type: unsigned __int64 [5]]
+        [0]              : 0x11 [Type: unsigned __int64]
+        [1]              : 0x2a5b8c [Type: unsigned __int64]
+        [2]              : 0x1005 [Type: unsigned __int64]
+        [3]              : 0x10000405950 [Type: unsigned __int64]
+        [4]              : 0x10000405840 [Type: unsigned __int64]
+    [+0x038] HvAreaPfn        : 0x101000 [Type: unsigned __int64]
+    [+0x040] HvAreaPageCount  : 0x6 [Type: unsigned long]
+    [+0x044] ImageNameLength  : 0x0 [Type: unsigned short]
+    [+0x046] ImageName        : "" [Type: wchar_t [30]]
+    [+0x088] ImageBase        : 0xfffff8016e0c1000 [Type: unsigned __int64]
+    [+0x090] AddressSpaceRoot : 0x6400000 [Type: unsigned __int64]
+    [+0x098] DebuggerDataBlock : 0x0 [Type: unsigned __int64]
+    [+0x0a0] ContextRecord    : 0xfffff8016e1a47c0 [Type: unsigned __int64]
+    [+0x0a8] ContextRecordSize : 0x4d0 [Type: unsigned long]
+
+3: kd> .frame 0n4;dv /t /v
+04 ffffb101`01cbcce0 fffff801`72002382     nt!KiProcessNMI+0xe8 [minkernel\ntos\ke\amd64\misc.c @ 1122] 
+@r14              struct _KTRAP_FRAME * TrapFrame = 0xffffb101`01cbce70
+@rbp              struct _KEXCEPTION_FRAME * ExceptionFrame = 0xffffb101`01cbcd30
+<unavailable>     unsigned long Number = <value unavailable>
+
+3: kd> dx -r1 (*((ntkrnlmp!unsigned __int64 (*)[5])0xffffb101013de010))
+(*((ntkrnlmp!unsigned __int64 (*)[5])0xffffb101013de010))                 [Type: unsigned __int64 [5]]
+    [0]              : 0x11 [Type: unsigned __int64]
+    [1]              : 0x2a5b8c [Type: unsigned __int64]
+    [2]              : 0x1005 [Type: unsigned __int64]
+    [3]              : 0x10000405950 [Type: unsigned __int64]
+    [4]              : 0x10000405840 [Type: unsigned __int64]
+
+3: kd> .trap 0xffffb101`01cbce70
+NOTE: The trap frame does not contain all registers.
+Some register values may be zeroed or incorrect.
+rax=fffff79080015000 rbx=0000000000000000 rcx=0000000040000000
+rdx=000000000000082f rsi=0000000000000000 rdi=0000000000000000
+rip=fffff80171ec7559 rsp=ffff9501efe3ef48 rbp=ffff9501efe3f040
+ r8=000000000000082f  r9=000000000000002f r10=fffff80171ec7520
+r11=0000000000000000 r12=0000000000000000 r13=0000000000000000
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up di pl zr na po nc
+nt!HalpApic1WriteIcr+0x39:
+fffff801`71ec7559 c3              ret
+
+3: kd> .exr 0xffffb101`01cbcd30
+ExceptionAddress: 0000000000000000
+   ExceptionCode: 40000000
+  ExceptionFlags: 00000000
+NumberParameters: 0
+
+Notes: VM switch on all CPUs
+   4.000f50  ffffdb0920958040 0493b44 Blocked    vmswitch!VmsVrssWorkerThreadCallout+0x10e
+   4.000f54  ffffdb0920957080 0493b44 Blocked    vmswitch!VmsVrssWorkerThreadCallout+0x10e
+   4.000f60  ffffdb0920955040 0493b44 Blocked    vmswitch!VmsVrssWorkerThreadCallout+0x10e
+   4.000f64  ffffdb0920954040 0493b44 Blocked    vmswitch!VmsVrssWorkerThreadCallout+0x10e
+   4.000f7c  ffffdb0920953040 0493b44 Blocked    vmswitch!VmsVrssWorkerThreadCallout+0x10e
+   4.000f8c  ffffdb0920952040 0493b44 Blocked    vmswitch!VmsVrssWorkerThreadCallout+0x10e
+   4.000fd4  ffffdb0920951040 0493b44 Blocked    vmswitch!VmsVrssWorkerThreadCallout+0x10e
+   4.000358  ffffdb0920950040 0493b44 Blocked    vmswitch!VmsVrssWorkerThreadCallout+0x10e
+   4.000354  ffffdb092094f040 0493b43 Blocked    vmswitch!VmsQsMgmtDeferredWorkerThread+0x2e
+
+Notes:
+https://support.microsoft.com/en-us/topic/-0x20001-stop-error-when-you-start-a-linux-vm-in-windows-server-2008-r2-sp1-f04e4fde-c730-13a0-19a3-ca50a6fae76e
+
+During early initialization of a Linux VM, the hypervisor fails while it runs an XRSTOR 
+instruction.  The hypervisor may fail after the virtual processor is created or when a 
+virtual processor is scheduled on a particular logical processor if no other virtual 
+processor runs before the scheduled virtual processor.
+
+This issue is not specific to Linux VMs and may occur on Windows VMs. However, the 0x20001 
+Stop error is not generated when you start the Windows VM. This error is instead randomly 
+generated after several days, weeks, or months of uptime.
+
+3: kd> uf nt!HalpApic1WriteIcr
+nt!HalpApic1WriteIcr [minkernel\hals\lib\interrupts\pc\apicreg.c @ 563]:
+  563 fffff801`71ec7520 6690            xchg    ax,ax
+  565 fffff801`71ec7522 488b0507929800  mov     rax,qword ptr [nt!HalpLocalApic (fffff801`72850730)]
+  565 fffff801`71ec7529 448b8000030000  mov     r8d,dword ptr [rax+300h]
+  565 fffff801`71ec7530 410fbae00c      bt      r8d,0Ch
+  565 fffff801`71ec7535 72eb            jb      nt!HalpApic1WriteIcr+0x2 (fffff801`71ec7522)  Branch
+  571 fffff801`71ec7537 488b05f2919800  mov     rax,qword ptr [nt!HalpLocalApic (fffff801`72850730)]
+  571 fffff801`71ec753e f7c200000c00    test    edx,0C0000h
+  571 fffff801`71ec7544 750d            jne     nt!HalpApic1WriteIcr+0x33 (fffff801`71ec7553)  Branch
+  572 fffff801`71ec7546 898810030000    mov     dword ptr [rax+310h],ecx
+  575 fffff801`71ec754c 488b05dd919800  mov     rax,qword ptr [nt!HalpLocalApic (fffff801`72850730)]
+  578 fffff801`71ec7553 899000030000    mov     dword ptr [rax+300h],edx
+  578 fffff801`71ec7559 c3              ret
+
+3: kd> !thread ffffb10101c8b240 
+THREAD ffffb10101c8b240  Cid 0000.0000  Teb: 0000000000000000 Win32Thread: 0000000000000000 RUNNING on processor 2
+Not impersonating
+DeviceMap                 ffff848705835c00
+Owning Process            fffff80172923a00       Image:         Idle
+Attached Process          ffffdb090f4b3080       Image:         System
+Wait Start TickCount      4800184        Ticks: 51 (0:00:00:00.796)
+Context Switch Count      15420227       IdealProcessor: 2             
+UserTime                  00:00:00.000
+KernelTime                19:59:55.437
+Win32 Start Address nt!KiIdleLoop (0xfffff80171ffa7c0)
+Stack Init ffff9501efe3f590 Current ffff9501efe3f520
+Base ffff9501efe40000 Limit ffff9501efe39000 Call 0000000000000000
+Priority 0 BasePriority 0 PriorityDecrement 0 IoPriority 0 PagePriority 0
+Child-SP          RetAddr               : Args to Child                                                           : Call Site
+ffffb101`01cbcc98 fffff801`720f3f5b     : 00000000`00020001 00000000`00000011 00000000`002a5b8c 00000000`00001005 : nt!KeBugCheckEx [minkernel\ntos\ke\amd64\procstat.asm @ 140] 
+ffffb101`01cbcca0 fffff801`7210da38     : 00000000`00000001 00000000`00000001 ffffb101`01c80180 fffff801`72120330 : nt!HvlSkCrashdumpCallbackRoutine+0x6b [minkernel\ntos\hvl\crashdump64.c @ 791] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!KiHandleNmiSx+0x1f (Inline Function @ fffff801`7210da38) [minkernel\ntos\ke\miscc.c @ 3002] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!KiHandleNmi+0x1f (Inline Function @ fffff801`7210da38) [minkernel\ntos\ke\miscc.c @ 2630] 
+ffffb101`01cbcce0 fffff801`72002382     : 00000000`40000000 ffffb101`01cbcef0 00000000`00000000 00000000`00000000 : nt!KiProcessNMI+0xe8 [minkernel\ntos\ke\amd64\misc.c @ 1122] 
+ffffb101`01cbcd30 fffff801`72002152     : 00000000`40000000 00000000`00000000 7475df96`c43ca2e4 0a58c79b`90c97ebb : nt!KxNmiInterrupt+0x82 [minkernel\ntos\ke\amd64\trap.asm @ 821] 
+ffffb101`01cbce70 fffff801`71ec7559     : fffff801`71ec42d0 00000000`000000ff ffffb101`02080180 00000000`00000000 : nt!KiNmiInterrupt+0x212 (TrapFrame @ ffffb101`01cbce70) [minkernel\ntos\ke\amd64\trap.asm @ 781] 
+ffff9501`efe3ef48 fffff801`71ec42d0     : 00000000`000000ff ffffb101`02080180 00000000`00000000 00000001`00000000 : nt!HalpApic1WriteIcr+0x39 [minkernel\hals\lib\interrupts\pc\apicreg.c @ 578] 
+ffff9501`efe3ef50 fffff801`71f106d0     : ffffdb09`00000000 ffffdb09`1b2960c0 00000000`0000000f ffff9501`efe3effc : nt!HalpApicRequestInterrupt+0x90 [minkernel\hals\lib\interrupts\pc\apic.c @ 1552] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!HalpInterruptSendIpiToTarget+0x6d (Inline Function @ fffff801`71f106d0) [minkernel\hals\lib\interrupts\common\ipi.c @ 1608] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!HalpInterruptSendIpi+0xd6 (Inline Function @ fffff801`71f106d0) [minkernel\hals\lib\interrupts\common\ipi.c @ 1087] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!HalSendSoftwareInterrupt+0xd6 (Inline Function @ fffff801`71f106d0) [minkernel\hals\lib\interrupts\common\amd64\swint.c @ 118] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!KiSendSoftwareInterrupt+0xdf (Inline Function @ fffff801`71f106d0) [minkernel\ntos\ke\mp\objfre\amd64\ki.h @ 4719] 
+ffff9501`efe3efc0 fffff801`71f0a30d     : 00000000`002ba883 ffff9501`efe3f410 00000000`00000080 ffffb101`01c80180 : nt!KiDeferredReadySingleThread+0x500 [minkernel\ntos\ke\thredsup.c @ 4253] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!KiReadyDeferredReadyList+0x19 (Inline Function @ fffff801`71f0a30d) [minkernel\ntos\ke\thredsup.c @ 6398] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!KiDeferredReadyThread+0x25 (Inline Function @ fffff801`71f0a30d) [minkernel\ntos\ke\thredsup.c @ 3959] 
+ffff9501`efe3f1b0 fffff801`71f0a6f0     : ffffb101`01c80180 00000000`00000000 ffffdb09`1b296230 ffffdb09`1b296200 : nt!KiReadyThread+0x4d [minkernel\ntos\ke\thredsup.c @ 7108] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!KiProcessThreadWaitList+0xa3 (Inline Function @ fffff801`71f0a6f0) [minkernel\ntos\ke\waitsup.c @ 1433] 
+ffff9501`efe3f1e0 fffff801`71f2279d     : 00000000`00000000 00000000`00000000 00000000`00140001 00000000`002ba883 : nt!KiProcessExpiredTimerList+0x290 [minkernel\ntos\ke\dpcsup.c @ 3191] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!KiExpireTimerTable+0x79 (Inline Function @ fffff801`71f2279d) [minkernel\ntos\ke\dpcsup.c @ 3463] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!KiTimerExpiration+0x1fa (Inline Function @ fffff801`71f2279d) [minkernel\ntos\ke\dpcsup.c @ 3637] 
+ffff9501`efe3f2d0 fffff801`71ffa85e     : ffffffff`00000000 ffffb101`01c80180 ffffb101`01c8b240 ffffdb09`1d49c080 : nt!KiRetireDpcList+0x5dd [minkernel\ntos\ke\dpcsup.c @ 2413] 
+ffff9501`efe3f560 00000000`00000000     : ffff9501`efe40000 ffff9501`efe39000 00000000`00000000 00000000`00000000 : nt!KiIdleLoop+0x9e [minkernel\ntos\ke\amd64\idle.asm @ 173] 
+
+3: kd> .frame 0n8;dv /t /v
+08 ffff9501`efe3ef50 fffff801`71f106d0     nt!HalpApicRequestInterrupt+0x90 [minkernel\hals\lib\interrupts\pc\apic.c @ 1552] 
+<unavailable>     void * ControllerData = <value unavailable>
+<unavailable>     struct _INTERRUPT_LINE * Line = <value unavailable>
+@rsi              struct _INTERRUPT_TARGET * Target = 0xffff9501`efe3f088
+@r14d             unsigned long Vector = 0x2f
+ffff9501`efe3efe0 struct _INTERRUPT_LINE * OutputLine = 0xffff9501`efe3f040
+@r12d             unsigned long IrrBit = 1
+<unavailable>     unsigned long SelfId = <value unavailable>
+ffff9501`efe3ef70 struct _INTERRUPT_TARGET SingleTarget = struct _INTERRUPT_TARGET
+<unavailable>     unsigned long IrrRegister = <value unavailable>
+@r15b             unsigned char ValidateSelf = 0x00 ''
+ffff9501`efe3efc0 unsigned long BitIndex = 0
+@edi              unsigned long IpiLow = 0x82f
+@ebx              unsigned long IpiHigh = 0x40000000
+
+3: kd> dx -r1 ((ntkrnlmp!_INTERRUPT_TARGET *)0xffff9501efe3f088)
+((ntkrnlmp!_INTERRUPT_TARGET *)0xffff9501efe3f088)                 : 0xffff9501efe3f088 [Type: _INTERRUPT_TARGET *]
+    [+0x000] Target           : InterruptTargetLogicalFlat (5) [Type: _INTERRUPT_TARGET_TYPE]
+    [+0x008] PhysicalTarget   : 0x40 [Type: unsigned long]
+    [+0x008] LogicalFlatTarget : 0x40 [Type: unsigned long]
+    [+0x008] RemapIndex       : 0x40 [Type: unsigned long]
+    [+0x008] ClusterId        : 0x40 [Type: unsigned long]
+    [+0x00c] ClusterMask      : 0x0 [Type: unsigned long]
+    [+0x008] HypervisorTarget [Type: <anonymous-tag>]
+
+3: kd> dx -r1 (*((ntkrnlmp!_INTERRUPT_TARGET *)0xffff9501efe3f088)).HypervisorTarget
+(*((ntkrnlmp!_INTERRUPT_TARGET *)0xffff9501efe3f088)).HypervisorTarget                 [Type: <anonymous-tag>]
+    [+0x000] Low32            : 0x40 [Type: unsigned long]
+    [+0x004] High32           : 0x0 [Type: unsigned long]
+    [+0x008] InterruptData    : 0x0 [Type: unsigned __int64]
+
+3: kd> dx -r1 ((ntkrnlmp!_INTERRUPT_LINE *)0xffff9501efe3f040)
+((ntkrnlmp!_INTERRUPT_LINE *)0xffff9501efe3f040)                 : 0xffff9501efe3f040 [Type: _INTERRUPT_LINE *]
+    [+0x000] UnitId           : 0xffffffff [Type: unsigned long]
+    [+0x004] Line             : 1 [Type: long]
+
+
+Notes: APIC
+3: kd> !mapic
+MAPIC - HEADER - fffff79080011018
+  Signature:               APIC
+  Length:                  0x0000009e
+  Revision:                0x05
+  Checksum:                0xcb
+  OEMID:                   MSFT  
+  OEMTableID:              MSFT    
+  OEMRevision:             0x00000000
+  CreatorID:               MSFT
+  CreatorRev:              0x20191121
+MAPIC - BODY - fffff7908001103c
+  Local APIC Address:      0xfee00000
+  Flags:                   0x000001
+    PC-AT dual 8259 compatible setup
+  Processor Local Apic
+    ACPI Processor ID:     0x00
+    APIC ID:               0x00
+    Flags:                 0x00000001
+      Processor is Enabled
+  Processor Local Apic
+    ACPI Processor ID:     0x02
+    APIC ID:               0x02
+    Flags:                 0x00000001
+      Processor is Enabled
+  Processor Local Apic
+    ACPI Processor ID:     0x04
+    APIC ID:               0x04
+    Flags:                 0x00000001
+      Processor is Enabled
+  Processor Local Apic
+    ACPI Processor ID:     0x06
+    APIC ID:               0x06
+    Flags:                 0x00000001
+      Processor is Enabled
+  Processor Local Apic
+    ACPI Processor ID:     0x01
+    APIC ID:               0x01
+    Flags:                 0x00000001
+      Processor is Enabled
+  Processor Local Apic
+    ACPI Processor ID:     0x03
+    APIC ID:               0x03
+    Flags:                 0x00000001
+      Processor is Enabled
+  Processor Local Apic
+    ACPI Processor ID:     0x05
+    APIC ID:               0x05
+    Flags:                 0x00000001
+      Processor is Enabled
+  Processor Local Apic
+    ACPI Processor ID:     0x07
+    APIC ID:               0x07
+    Flags:                 0x00000001
+      Processor is Enabled
+  IO Apic
+    IO APIC ID:            0x02
+    IO APIC ADDRESS:       0xfec00000
+    System Vector Base:    0x00000000
+  Interrupt Source Override
+    Bus:                   0x00
+    Source:                0x00
+    Global Interrupt:      0x00000002
+    Flags:                 0x0000
+      POLARITY_CONFORMS_WITH_BUS
+      EL_CONFORMS_WITH_BUS
+  Interrupt Source Override
+    Bus:                   0x00
+    Source:                0x09
+    Global Interrupt:      0x00000009
+    Flags:                 0x000d
+      POLARITY_HIGH
+      EL_LEVEL_TRIGGERED
+  Non Maskable Interrupt Source - local to processor
+    Flags:                 0x000d
+    Processor:             0xff (all)
+    LINTIN:                0x01
+      POLARITY_HIGH
+      EL_LEVEL_TRIGGERED
+  x2APIC Non Maskable Interrupt Source - local to processor
+    Flags:                 0x000d
+    Processor:             0xffffffff (all)
+    LINTIN:                0x01
+      POLARITY_HIGH
+      EL_LEVEL_TRIGGERED
+End of MAPIC.
+
+3: kd> !prcb 6
+PRCB for Processor 6 at ffffb10102080180:
+Current IRQL -- 15
+Threads--  Current ffffb1010208b240 Next ffffdb091b2960c0 Idle ffffb1010208b240
+Processor Index 6 Number (0, 6) GroupSetMember 40
+Interrupt Count -- 0141c352
+Times -- Dpc    0000019c Interrupt 0000045c 
+         Kernel 0047991a User      0001a59f 
+
+3: kd> !pcr 2
+KPCR for Processor 2 at ffffb10101c80000:
+    Major 1 Minor 1
+    NtTib.ExceptionList: ffffb10101c8ffb0
+        NtTib.StackBase: ffffb10101c8e000
+       NtTib.StackLimit: 00000031c89ff658
+     NtTib.SubSystemTib: ffffb10101c80000
+          NtTib.Version: 0000000001c80180
+      NtTib.UserPointer: ffffb10101c80870
+          NtTib.SelfTib: 00000031c4102000
+
+                SelfPcr: 0000000000000000
+                   Prcb: ffffb10101c80180
+                   Irql: 0000000000000000
+                    IRR: 0000000000000000
+                    IDR: 0000000000000000
+          InterruptMode: 0000000000000000
+                    IDT: 0000000000000000
+                    GDT: 0000000000000000
+                    TSS: 0000000000000000
+
+          CurrentThread: ffffb10101c8b240
+             NextThread: ffffdb092c0230c0
+             IdleThread: ffffb10101c8b240
+
+              DpcQueue: Unable to read nt!_KDPC_DATA.DpcListHead.Flink @ ffffb10101c83240
+
+
+Notes:
+emulating MSR=400000F0 doing a RDMSR
+
+3: kd> uf nt!PpmIdleGuestExecute
+nt!PpmIdleGuestExecute [minkernel\ntos\po\ppmhv.c @ 611]:
+  611 fffff801`71f8d950 4883ec38        sub     rsp,38h
+  630 fffff801`71f8d954 4585c0          test    r8d,r8d
+  630 fffff801`71f8d957 750d            jne     nt!PpmIdleGuestExecute+0x16 (fffff801`71f8d966)  Branch
+  637 fffff801`71f8d959 e882510600      call    nt!HalProcessorIdle (fffff801`71ff2ae0)
+  653 fffff801`71f8d95e 33c0            xor     eax,eax
+  653 fffff801`71f8d960 4883c438        add     rsp,38h
+  653 fffff801`71f8d964 c3              ret
+  649 fffff801`71f8d966 b9f0000040      mov     ecx,400000F0h
+  649 fffff801`71f8d96b 0f32            rdmsr
+  649 fffff801`71f8d96d 48c1e220        shl     rdx,20h
+  649 fffff801`71f8d971 480bc2          or      rax,rdx
+  649 fffff801`71f8d974 4889442420      mov     qword ptr [rsp+20h],rax
+  649 fffff801`71f8d979 ebe3            jmp     nt!PpmIdleGuestExecute+0xe (fffff801`71f8d95e)  Branch
+
+CPU: - all at IRQL 15
+CPU 0 STANDBY !thread fffff80172926a00 ??                       => ??
+CPU 1 RUNNING !thread ffffb10101ba5240 nt!PpmIdleGuestExecute   => nt!KiNmiInterrupt
+CPU 2 RUNNING !thread ffffb10101c8b240 nt!HalpApic1WriteIcr     => broadcasting IPI NMI interrupt
+CPU 3 RUNNING !thread ffffb10101d8b240 nt!PpmIdleGuestExecute   => nt!KiNmiInterrupt
+CPU 4 STANDBY !thread ffffb10101e4e240 nt!KiIdleLoop            => IDLE
+CPU 5 RUNNING !thread ffffb10101f8b240 nt!PpmIdleGuestExecute   => nt!KiNmiInterrupt
+CPU 6 RUNNING !thread ffffb1010208b240 nt!PpmIdleGuestExecute   => nt!KiNmiInterrupt
+CPU 7 RUNNING !thread ffffb1010218b240 nt!PpmIdleGuestExecute   => nt!KiNmiInterrupt
+
+NMI interrupt handler on all CPUs:
+0: ffffb101`01c14e70 fffff801`71f8d96d : fffff801`6dfff560 00000000`00000000                                     : 00000000`00000000 fffff801`72926a00 00000000`00001460 fffff801`74daa090 : 0x18
+1: ffffb101`01c14e70 fffff801`71f8d96d : 000000ae`a1af94c9 ffffb101`01b9a180 00000000`00000000 0000cc55`c86f3610 : nt!KiNmiInterrupt+0x212 (TrapFrame @ ffffb101`01c14e70)
+2: ffffb101`01dbce70 fffff801`71f8d96d : 000000ae`a1af8d5b ffffb101`01d80180 00000000`00000000 0000cc55`c86620d9 : nt!KiNmiInterrupt+0x212 (TrapFrame @ ffffb101`01dbce70)
+3: ffffb101`01dbce70 fffff801`71f8d96d : 000000ae`a1af8d5b ffffb101`01d80180 00000000`00000000 0000cc55`c86620d9 : nt!KiNmiInterrupt+0x212 (TrapFrame @ ffffb101`01dbce70)
+4: ffffb101`01fbce70 fffff801`71f8d96d : ffff9501`efe5f560 00000000`00000000                                     : ffff9501`efe60000 ffff9501`efe59000 00000000`00000000 00000000`00000000 : nt!KiIdleLoop+0x54
+5: ffffb101`020bce70 fffff801`71f8d96d : 000000ae`a1af6175 ffffb101`02080180 00000000`00000000 0000cc55`c832e5df : nt!KiNmiInterrupt+0x212 (TrapFrame @ ffffb101`020bce70)
+6: ffffb101`021bce70 fffff801`71f8d96d : 000000ae`a1af90f8 ffffb101`02180180 00000000`00000000 0000cc55`c86aa0ba : nt!KiNmiInterrupt+0x212 (TrapFrame @ ffffb101`021bce70)
+7: ffffb101`021bce70 fffff801`71f8d96d : 000000ae`a1af90f8 ffffb101`02180180 00000000`00000000 0000cc55`c86aa0ba : nt!KiNmiInterrupt+0x212 (TrapFrame @ ffffb101`021bce70)
+
+All CPUs processing NMI have .TRAP and .EXR frames and nt!HvlSkCrashdumpCallbackRoutine
+
+CPU 2 Broadcasting NMI
+3: kd> uf nt!HalpApic1WriteIcr
+nt!HalpApic1WriteIcr [minkernel\hals\lib\interrupts\pc\apicreg.c @ 563]:
+  563 fffff801`71ec7520 6690            xchg    ax,ax
+  565 fffff801`71ec7522 488b0507929800  mov     rax,qword ptr [nt!HalpLocalApic (fffff801`72850730)]
+  565 fffff801`71ec7529 448b8000030000  mov     r8d,dword ptr [rax+300h]
+  565 fffff801`71ec7530 410fbae00c      bt      r8d,0Ch
+  565 fffff801`71ec7535 72eb            jb      nt!HalpApic1WriteIcr+0x2 (fffff801`71ec7522)  Branch
+  571 fffff801`71ec7537 488b05f2919800  mov     rax,qword ptr [nt!HalpLocalApic (fffff801`72850730)]
+  571 fffff801`71ec753e f7c200000c00    test    edx,0C0000h
+  571 fffff801`71ec7544 750d            jne     nt!HalpApic1WriteIcr+0x33 (fffff801`71ec7553)  Branch
+  572 fffff801`71ec7546 898810030000    mov     dword ptr [rax+310h],ecx
+  575 fffff801`71ec754c 488b05dd919800  mov     rax,qword ptr [nt!HalpLocalApic (fffff801`72850730)]
+  578 fffff801`71ec7553 899000030000    mov     dword ptr [rax+300h],edx
+  578 fffff801`71ec7559 c3              ret
+
+@ecx              unsigned long Target  = 0x40000000
+@edx              unsigned long Command = 0x82f
+@ebx              unsigned long IpiHigh = 0x40000000
+@edi              unsigned long IpiLow  = 0x82f
+
+https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/virtual-interrupts
+
+
+2.4.3 Interrupt Command Register
+In x2APIC mode, the layout of the Interrupt Command Register is shown in Figure 2-
+5. The lower 32 bits of ICR in x2APIC mode is identical to the lower half of the ICR in
+xAPIC mode, except the Delivery Status bit is removed since it is not needed in
+X2APIC mode. The destination ID field is expanded to 32 bits in x2APIC mode. 
+
+A single MSR write to the Interrupt Command Register is required for dispatching an
+interrupt in x2APIC mode. With the removal of the Delivery Status bit, system software 
+no longer has a reason to read the ICR. It remains readable only to aid in
+debugging.
+
+A destination ID value of FFFF_FFFFH is used for broadcast of interrupts in both
+logical destination and physical destination modes.
+
+register address: 0300H-0310H
+030H3 Interrupt Command Register (ICR); bits 0-63
+
+
+Hypervisor should be emulating the APIC interrupt handlers to update their local APIC's.
+
+
+Local APIC is in Flat Mode
+3: kd> x nt!PopApicMode => flat mode not supported by x2APIC mode
+fffff801`728fa1f8 nt!PopApicMode = ApicDestinationModeLogicalFlat (0n2)
+
+It looks like the APIC is in the incorrect mode - should be in ApicDestinationModeLogicalClustered (0n3) for Hypervisor
+
+
+nt!HalpLocalApic (fffff801`72850730)
+3: kd> dt nt!HalpLocalApic
+--- memory read error at address 0xfffff790`80015000 ---"
+3: kd> dd fffff801`72850730
+fffff801`72850730  80015000 fffff790 00000000 00000000
+
+
+!sysinfo registers
+It looks like the CPU is configured for hypervisor via DISM?:
+MSR   c0000080h -      d01h'       0h
+                -      d01h'       0h
+
+
+Hypervisor review:
+fffff801`728fb40a nt!HvlHypervisorConnected = 0x01 ''
+fffff801`728f9cb8 nt!KiHypervisorInitiatedCrashDump = 0x01 ''
+fffff801`728fb5fb nt!HvlHyperVRootPartition = 0x01 ''
+fffff801`728fb698 nt!KeHypervisorNumprocSpecified = 0
+fffff801`7284be28 nt!HalpHypervisorHpet = 0x00000000`00000000 [High Precision Event Timer]
+
+3: kd> dt nt!HvlpHypervisorVersion 
+   +0x000 BuildNumber      : 0x4a61
+   +0x004 MinorVersion     : 0y0000000000000000 (0)
+   +0x004 MajorVersion     : 0y0000000000001010 (0xa)
+   +0x008 ServicePack      : 0
+   +0x00c ServiceNumber    : 0y000000000000001111011001 (0x3d9)
+   +0x00c ServiceBranch    : 0y00000000 (0)
+
+Notes:
+All CPUs have done a vmswitch!VmsVrssWorkerThread and are not RUNNING.
+
+
+
+Stack problem with Thread:
+
+3: kd> !thread ffffdb091f4df040
+THREAD ffffdb091f4df040  Cid 04c8.04e4  Teb: 0000000000000000 Win32Thread: 0000000000000000 TERMINATED
+Not impersonating
+DeviceMap                 ffff848705835c00
+Owning Process            ffffdb091f49c080       Image:         svchost.exe
+Attached Process          N/A            Image:         N/A
+Wait Start TickCount      13661          Ticks: 4786574 (0:20:46:30.218)
+Context Switch Count      1836           IdealProcessor: 5             
+UserTime                  00:00:00.031
+KernelTime                00:00:00.093
+Win32 Start Address 0x00007ffc2f4e2ad0
+Stack Init 0000000000000000 Current ffff9501f0b8ffb0
+Base ffff9501f0b91000 Limit ffff9501f0b8a000 Call 0000000000000000
+Priority 9 BasePriority 8 PriorityDecrement 0 IoPriority 2 PagePriority 5
+
+!thread @#Thread
+THREAD ffffdb091f51d080  Cid 005c.0510  Teb: 000000c067ec2000 Win32Thread: ffffdb091ea09690 WAIT: (WrLpcReply) UserMode Non-Alertable
+    ffffdb091f51d508  Semaphore Limit 0x1
+Waiting for reply to ALPC Message ffff848709de3c60 : queued at port ffffdb091dd435d0 : owned by process ffffdb091f49c080
+Not impersonating
+DeviceMap                 ffff848705835c00
+Owning Process            ffffdb09144a6080       Image:         csrss.exe
+Attached Process          N/A            Image:         N/A
+Wait Start TickCount      1260           Ticks: 4798975 (0:20:49:43.984)
+Context Switch Count      51             IdealProcessor: 0             
+UserTime                  00:00:00.000
+KernelTime                00:00:00.000
+Win32 Start Address 0x00007ffc2cb4bec0
+Stack Init ffff9501f0a42590 Current ffff9501f0a41cf0
+Base ffff9501f0a43000 Limit ffff9501f0a3c000 Call 0000000000000000
+Priority 15 BasePriority 15 PriorityDecrement 0 IoPriority 2 PagePriority 5
+Kernel stack not resident.
+Child-SP          RetAddr               : Args to Child                                                           : Call Site
+ffff9501`f0a41d30 fffff801`71e0c970     : ffff96a7`00000001 ffffdb09`00000000 00000000`0000011c 00000000`00000007 : nt!KiSwapContext+0x76 [minkernel\ntos\ke\amd64\ctxswap.asm @ 138] 
+ffff9501`f0a41e70 fffff801`71e0be9f     : ffffdb09`1f51d080 ffffdb09`1dd43658 ffff9501`f0a42030 00000000`ffff0001 : nt!KiSwapThread+0x500 [minkernel\ntos\ke\thredsup.c @ 11603] 
+ffff9501`f0a41f20 fffff801`71e0b743     : 00000000`00000000 fffff801`00000000 ffffdb09`1dd7e900 ffffdb09`1f51d1c0 : nt!KiCommitThreadWait+0x14f [minkernel\ntos\ke\waitsup.c @ 795] 
+ffff9501`f0a41fc0 fffff801`71f1f6e3     : ffffdb09`1f51d508 00000000`00000011 ffffdb09`1dd43501 00000000`00000000 : nt!KeWaitForSingleObject+0x233 [minkernel\ntos\ke\wait.c @ 861] 
+(Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : nt!AlpcpWaitForSingleObject+0x2e (Inline Function @ fffff801`71f1f6e3) [minkernel\ntos\lpc\alpc\alpcp.h @ 8335] 
+ffff9501`f0a420b0 fffff801`722f1a96     : 00000000`00000000 ffffdb09`1f51d508 00000000`00000011 00000000`00000000 : nt!AlpcpSignalAndWait+0x143 [minkernel\ntos\lpc\alpc\alpcmsg.c @ 5182] 
+ffff9501`f0a42150 fffff801`722f16fb     : ffff9501`f0a42230 00000000`00000000 00007ffc`2cb5a960 00000000`00000000 : nt!AlpcpReceiveSynchronousReply+0x56 [minkernel\ntos\lpc\alpc\alpcmsg.c @ 5503] 
+ffff9501`f0a421b0 fffff801`722ef7a6     : ffffdb09`1f518a80 ffff9501`00020000 00007ffc`2cb5a960 00000000`00000000 : nt!AlpcpProcessSynchronousRequest+0x37b [minkernel\ntos\lpc\alpc\alpcmsg.c @ 8343] 
+ffff9501`f0a422d0 fffff801`720086b5     : ffffdb09`1f51d080 ffff9501`f0a42480 000000c0`681bfae8 ffff9501`f0a423a8 : nt!NtAlpcSendWaitReceivePort+0x1d6 [minkernel\ntos\lpc\alpc\alpcmsg.c @ 8698] 
+ffff9501`f0a42390 00007ffc`2f52df94     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff9501`f0a42400) [minkernel\ntos\ke\amd64\trap.asm @ 3469] 
+000000c0`681bfac8 00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : 0x00007ffc`2f52df94
+
+3: kd> !alpc /m ffff848709de3c60
+Message ffff848709de3c60
+  MessageID             : 0x011C (284)
+  CallbackID            : 0x0342 (834)
+  SequenceNumber        : 0x00000007 (7)
+  Type                  : LPC_REQUEST
+  DataLength            : 0x4048 (16456)
+  TotalLength           : 0x4070 (16496)
+  Canceled              : No
+  Release               : No
+  ReplyWaitReply        : No
+  Continuation          : Yes
+  OwnerPort             : ffffdb091f518a80 [ALPC_CLIENT_COMMUNICATION_PORT]
+  WaitingThread         : ffffdb091f51d080
+  QueueType             : ALPC_MSGQUEUE_PENDING
+  QueuePort             : ffffdb091dd435d0 [ALPC_CONNECTION_PORT]
+  QueuePortOwnerProcess : ffffdb091f49c080 (svchost.exe)
+  ServerThread          : ffffdb091f4df040
+  QuotaCharged          : Yes
+  CancelQueuePort       : 0000000000000000
+  CancelSequencePort    : 0000000000000000
+  CancelSequenceNumber  : 0x00000000 (0)
+  ClientContext         : 0000000000000000
+  ServerContext         : 0000000000000000
+  PortContext           : 000002a060e13760
+  CancelPortContext     : 0000000000000000
+  SecurityData          : 0000000000000000
+  View                  : 0000000000000000
+  HandleData            : 0000000000000000
+
+3: kd> !alpc /p ffffdb091dd435d0
+Port ffffdb091dd435d0
+  Type                      : ALPC_CONNECTION_PORT
+  CommunicationInfo         : ffff848709d16950
+    ConnectionPort          : ffffdb091dd435d0 (SmSsWinStationApiPort), Connections
+    ClientCommunicationPort : 0000000000000000
+    ServerCommunicationPort : 0000000000000000
+  OwnerProcess              : ffffdb091f49c080 (svchost.exe), Connections
+  SequenceNo                : 0x00000002 (2)
+  CompletionPort            : ffffdb091f4a7b40
+  CompletionList            : 0000000000000000
+  ConnectionPending         : No
+  ConnectionRefused         : No
+  Disconnected              : No
+  Closed                    : No
+  FlushOnClose              : Yes
+  ReturnExtendedInfo        : No
+  Waitable                  : No
+  Security                  : Static
+  Wow64CompletionList       : No
+  4 thread(s) are registered with port IO completion object:
+    THREAD ffffdb091ec81040  Cid 04c8.0540  Teb: 000000ac7f8fd000 Win32Thread: 0000000000000000 WAIT
+    THREAD ffffdb0929de3040  Cid 04c8.3b2c  Teb: 000000ac7f874000 Win32Thread: 0000000000000000 WAIT
+    THREAD ffffdb0926152040  Cid 04c8.2434  Teb: 000000ac7f87c000 Win32Thread: 0000000000000000 WAIT
+    THREAD ffffdb09256e8040  Cid 04c8.4f84  Teb: 000000ac7f87e000 Win32Thread: 0000000000000000 WAIT
+  Main queue is empty.
+  Direct message queue is empty.
+  Large message queue is empty.
+  Pending queue has 2 message(s)
+    ffff848709de3c60 0000011c 000000000000005c:0000000000000510 ffffdb091f51d080 ffffdb091f4df040 LPC_REQUEST
+    ffff848709d90be0 000000ec 0000000000000360:00000000000003d0 ffffdb091ec75080 ffffdb0921b6f040 LPC_REQUEST
+  Canceled queue is empty.
+
+3: kd> !alpc /lpp ffffdb091f49c080
+Ports created by the process ffffdb091f49c080:
+    ffffdb091dd435d0('SmSsWinStationApiPort') 2, 2 connections
+        ffffdb091f519a80 0 ->ffffdb091f518a80 0 ffffdb09144a6080('csrss.exe')
+        ffffdb091f527ce0 0 ->ffffdb091f519ce0 0 ffffdb091de1c140('csrss.exe')
+    ffffdb091f4d7590('LRPC-648f57acbc0effbe5f') 0, 1 connections
+        ffffdb091f804a80 0 ->ffffdb091f804ce0 0 ffffdb091f530080('winlogon.exe')
+    ffffdb091f4d7310('LSMApi') 20, 23 connections
+        ffffdb0920a11a80 0 ->ffffdb0920a11ce0 0 ffffdb0920a28080('svchost.exe')
+        ffffdb09212c4ce0 0 ->ffffdb09212e6a80 0 ffffdb09210d6080('svchost.exe')
+        ffffdb0921cabce0 0 ->ffffdb0921caca80 0 ffffdb0921ba6080('svchost.exe')
+        ffffdb0921d45320 0 ->ffffdb0921d45580 0 ffffdb0921ba5080('igfxEMN.exe')
+        ffffdb09215a4ce0 0 ->ffffdb0921530a80 0 ffffdb0921d690c0('explorer.exe')
+        ffffdb09230f4ce0 0 ->ffffdb09230f4a80 0 ffffdb09210a0080('svchost.exe')
+        ffffdb0920cb72d0 0 ->ffffdb0920cb6070 0 ffffdb0923c1d0c0('TabTip.exe')
+        ffffdb0923dedce0 0 ->ffffdb09237b7cc0 0 ffffdb09236f1080('RuntimeBroker.')
+        ffffdb0924df1a80 0 ->ffffdb0924df0ce0 0 ffffdb0924d3f080('RtkAudUService')
+        ffffdb092408b510 0 ->ffffdb092408b770 0 ffffdb09251e90c0('Teams.exe')
+        ffffdb0921bb7ce0 0 ->ffffdb0921bb7a80 0 ffffdb0926c951c0('Teams.exe')
+        ffffdb0926de2070 0 ->ffffdb0926f5bd80 0 ffffdb0926f5b080('OUTLOOK.EXE')
+        ffffdb0924debce0 0 ->ffffdb092405a800 0 ffffdb09237c9080('msedge.exe')
+        ffffdb09244edce0 0 ->ffffdb09244eda80 0 ffffdb0927104340('Microsoft.Mana')
+        ffffdb09238d24d0 0 ->ffffdb09242d5a80 0 ffffdb092109f080('MsMpEng.exe')
+        ffffdb09265c4d80 0 ->ffffdb0924377d80 0 ffffdb091dd62080('SystemSettings')
+        ffffdb09286c59e0 0 ->ffffdb092345a070 0 ffffdb0921caf080('svchost.exe')
+        ffffdb0926f81070 0 ->ffffdb091642fa00 0 ffffdb09219d1080('WmiPrvSE.exe')
+        ffffdb0923819070 0 ->ffffdb092ab53dd0 0 ffffdb0920f1a080('svchost.exe')
+        ffffdb091d1a1070 0 ->ffffdb0923432070 0 ffffdb091f833380('svchost.exe')
+        ffffdb09254c0ab0 0 ->ffffdb091d1382c0 0 ffffdb091edbb080('svchost.exe')
+        ffffdb091f4e2070 0 ->ffffdb0923ccf070 0 ffffdb09234ed080('SearchProtocol')
+        ffffdb0929febdd0 0 ->ffffdb0923adb740 0 ffffdb0921bc1080('CcmExec.exe')
+Ports the process ffffdb091f49c080 is connected to:
+    ffffdb091edc0b60 0 -> ffffdb091de08590 ('ApiPort') 0 ffffdb091de1c140 ('csrss.exe')
+    ffffdb091edc1dc0 0 -> ffffdb091ddeaa60 ('ntsvcs') 116 ffffdb091ed52180 ('services.exe')
+    ffffdb091edd7dc0 0 -> ffffdb09143c3310 ('SmApiPort') 0 ffffdb0914406040 ('smss.exe')
+    ffffdb091dd8aa80 0 -> ffffdb091ddeccc0 ('epmapper') 0 ffffdb091f491240 ('svchost.exe')
+    ffffdb091ed4aa80 0 -> ffffdb091dde6ce0 ('lsasspirpc') 0 ffffdb091ece2140 ('lsass.exe')
+    ffffdb09217a8a80 0 -> ffffdb091fc3b090 ('LRPC-8b0f2753fe02dfd924') 0 ffffdb091f556080 ('svchost.exe')
+    ffffdb0926abadd0 0 -> ffffdb091dda2ce0 ('LSARPC_ENDPOINT') 0 ffffdb091ece2140 ('lsass.exe')
+
+3: kd> !alpc /lpc ffffdb091dd435d0
+ffffdb091dd435d0('SmSsWinStationApiPort') 2, 2 connections
+    ffffdb091f519a80 0 ->ffffdb091f518a80 0 ffffdb09144a6080('csrss.exe')
+    ffffdb091f527ce0 0 ->ffffdb091f519ce0 0 ffffdb091de1c140('csrss.exe')
+
+
+3: kd> !process ffffdb091f49c080
+PROCESS ffffdb091f49c080
+    SessionId: 0  Cid: 04c8    Peb: ac7f8f0000  ParentCid: 0248
+    DirBase: 14a8e3000  ObjectTable: ffff848709b44b40  HandleCount: 319.
+    Image: svchost.exe
+    VadRoot ffffdb091f4a25b0 Vads 75 Clone 0 Private 699. Modified 35. Locked 1.
+    DeviceMap ffff848705835c00
+    Token                             ffff84870a4ee7b0
+    ElapsedTime                       20:49:51.243
+    UserTime                          00:00:02.281
+    KernelTime                        00:00:10.921
+    QuotaPoolUsage[PagedPool]         120560
+    QuotaPoolUsage[NonPagedPool]      13264
+    Working Set Sizes (now,min,max)  (2361, 50, 345) (9444KB, 200KB, 1380KB)
+    PeakWorkingSetSize                2329
+    VirtualSize                       2101329 Mb
+    PeakVirtualSize                   2101342 Mb
+    PageFaultCount                    4049
+    MemoryPriority                    BACKGROUND
+    BasePriority                      8
+    CommitCharge                      764
+    Job                               ffffdb0914393080
+
+        THREAD ffffdb091f49b380  Cid 04c8.04cc  Teb: 000000ac7f8f1000 Win32Thread: 0000000000000000 WAIT: (UserRequest) UserMode Non-Alertable
+            ffffdb091edcb4e0  SynchronizationEvent
+        Not impersonating
+        DeviceMap                 ffff848705835c00
+        Owning Process            ffffdb091f49c080       Image:         svchost.exe
+        Attached Process          N/A            Image:         N/A
+        Wait Start TickCount      4797949        Ticks: 2286 (0:00:00:35.718)
+        Context Switch Count      652            IdealProcessor: 2             
+        UserTime                  00:00:00.015
+        KernelTime                00:00:00.000
+        Win32 Start Address 0x00007ff7cad14e80
+        Stack Init ffff9501f0b60590 Current ffff9501f0b5ffa0
+        Base ffff9501f0b61000 Limit ffff9501f0b5a000 Call 0000000000000000
+        Priority 8 BasePriority 8 PriorityDecrement 0 IoPriority 2 PagePriority 5
+        Child-SP          RetAddr               Call Site
+        ffff9501`f0b5ffe0 fffff801`71e0c970     nt!KiSwapContext+0x76 [minkernel\ntos\ke\amd64\ctxswap.asm @ 138] 
+        ffff9501`f0b60120 fffff801`71e0be9f     nt!KiSwapThread+0x500 [minkernel\ntos\ke\thredsup.c @ 11603] 
+        ffff9501`f0b601d0 fffff801`71e0b743     nt!KiCommitThreadWait+0x14f [minkernel\ntos\ke\waitsup.c @ 795] 
+        ffff9501`f0b60270 fffff801`721f7551     nt!KeWaitForSingleObject+0x233 [minkernel\ntos\ke\wait.c @ 861] 
+        ffff9501`f0b60360 fffff801`721f75fa     nt!ObWaitForSingleObject+0x91 [minkernel\ntos\ob\obwait.c @ 797] 
+        ffff9501`f0b603c0 fffff801`720086b5     nt!NtWaitForSingleObject+0x6a [minkernel\ntos\ob\obwait.c @ 103] 
+        ffff9501`f0b60400 00007ffc`2f52cea4     nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff9501`f0b60400) [minkernel\ntos\ke\amd64\trap.asm @ 3469] 
+        000000ac`7f6af9c8 00000000`00000000     0x00007ffc`2f52cea4
+
+        THREAD ffffdb091ec81040  Cid 04c8.0540  Teb: 000000ac7f8fd000 Win32Thread: 0000000000000000 WAIT: (UserRequest) UserMode Alertable
+            ffffdb091f5a93e0  SynchronizationEvent
+            ffffdb091f5b0de0  SynchronizationEvent
+            ffffdb091f5b06e0  SynchronizationEvent
+            ffffdb091f5b01e0  SynchronizationEvent
+            ffffdb091f5b0260  SynchronizationEvent
+            ffffdb091f5b0760  SynchronizationEvent
+            ffffdb091f5b0c60  SynchronizationEvent
+            ffffdb091f5b0ce0  NotificationEvent
+        Not impersonating
+        DeviceMap                 ffff848705835c00
+        Owning Process            ffffdb091f49c080       Image:         svchost.exe
+        Attached Process          N/A            Image:         N/A
+        Wait Start TickCount      4483684        Ticks: 316551 (0:01:22:26.109)
+        Context Switch Count      164            IdealProcessor: 7             
+        UserTime                  00:00:00.000
+        KernelTime                00:00:00.031
+        Win32 Start Address 0x00007ffc2f4e2ad0
+        Stack Init ffff9501f09af590 Current ffff9501f09ae820
+        Base ffff9501f09b0000 Limit ffff9501f09a9000 Call 0000000000000000
+        Priority 9 BasePriority 8 PriorityDecrement 0 IoPriority 2 PagePriority 5
+        Kernel stack not resident.
+        Child-SP          RetAddr               Call Site
+        ffff9501`f09ae860 fffff801`71e0c970     nt!KiSwapContext+0x76 [minkernel\ntos\ke\amd64\ctxswap.asm @ 138] 
+        ffff9501`f09ae9a0 fffff801`71e0be9f     nt!KiSwapThread+0x500 [minkernel\ntos\ke\thredsup.c @ 11603] 
+        ffff9501`f09aea50 fffff801`71f0941e     nt!KiCommitThreadWait+0x14f [minkernel\ntos\ke\waitsup.c @ 795] 
+        ffff9501`f09aeaf0 fffff801`722dc940     nt!KeWaitForMultipleObjects+0x2be [minkernel\ntos\ke\wait.c @ 577] 
+        ffff9501`f09aec00 fffff801`722dc619     nt!ObWaitForMultipleObjects+0x2f0 [minkernel\ntos\ob\obwait.c @ 436] 
+        ffff9501`f09af100 fffff801`720086b5     nt!NtWaitForMultipleObjects+0x119 [minkernel\ntos\ob\obwait.c @ 594] 
+        ffff9501`f09af390 00007ffc`2f52d974     nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff9501`f09af400) [minkernel\ntos\ke\amd64\trap.asm @ 3469] 
+        000000ac`001ff568 00000000`00000000     0x00007ffc`2f52d974
+
+        THREAD ffffdb0929de3040  Cid 04c8.3b2c  Teb: 000000ac7f874000 Win32Thread: 0000000000000000 WAIT: (WrQueue) UserMode Alertable
+            ffffdb091f4a7b40  QueueObject
+        Not impersonating
+        DeviceMap                 ffff848705835c00
+        Owning Process            ffffdb091f49c080       Image:         svchost.exe
+        Attached Process          N/A            Image:         N/A
+        Wait Start TickCount      4800226        Ticks: 9 (0:00:00:00.140)
+        Context Switch Count      1382           IdealProcessor: 4             
+        UserTime                  00:00:00.031
+        KernelTime                00:00:00.203
+        Win32 Start Address 0x00007ffc2f4e2ad0
+        Stack Init ffff9501f4a02590 Current ffff9501f4a01cc0
+        Base ffff9501f4a03000 Limit ffff9501f49fc000 Call 0000000000000000
+        Priority 8 BasePriority 8 PriorityDecrement 0 IoPriority 2 PagePriority 5
+        Child-SP          RetAddr               Call Site
+        ffff9501`f4a01d00 fffff801`71e0c970     nt!KiSwapContext+0x76 [minkernel\ntos\ke\amd64\ctxswap.asm @ 138] 
+        ffff9501`f4a01e40 fffff801`71e0be9f     nt!KiSwapThread+0x500 [minkernel\ntos\ke\thredsup.c @ 11603] 
+        ffff9501`f4a01ef0 fffff801`71e0f7d3     nt!KiCommitThreadWait+0x14f [minkernel\ntos\ke\waitsup.c @ 795] 
+        ffff9501`f4a01f90 fffff801`71e0f208     nt!KeRemoveQueueEx+0x263 [minkernel\ntos\ke\queueobj.c @ 1147] 
+        ffff9501`f4a02030 fffff801`71e1029e     nt!IoRemoveIoCompletion+0x98 [minkernel\ntos\io\iomgr\complete.c @ 1461] 
+        ffff9501`f4a02160 fffff801`720086b5     nt!NtWaitForWorkViaWorkerFactory+0x38e [minkernel\ntos\ex\workfac.c @ 2788] 
+        ffff9501`f4a02390 00007ffc`2f530874     nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff9501`f4a02400) [minkernel\ntos\ke\amd64\trap.asm @ 3469] 
+        000000ac`000ffaa8 00000000`00000000     0x00007ffc`2f530874
+
+        THREAD ffffdb0926152040  Cid 04c8.2434  Teb: 000000ac7f87c000 Win32Thread: 0000000000000000 WAIT: (WrQueue) UserMode Alertable
+            ffffdb091f4a7b40  QueueObject
+        Not impersonating
+        DeviceMap                 ffff848705835c00
+        Owning Process            ffffdb091f49c080       Image:         svchost.exe
+        Attached Process          N/A            Image:         N/A
+        Wait Start TickCount      4798840        Ticks: 1395 (0:00:00:21.796)
+        Context Switch Count      460            IdealProcessor: 5             
+        UserTime                  00:00:00.000
+        KernelTime                00:00:00.031
+        Win32 Start Address 0x00007ffc2f4e2ad0
+        Stack Init ffff9501f100f590 Current ffff9501f100ecc0
+        Base ffff9501f1010000 Limit ffff9501f1009000 Call 0000000000000000
+        Priority 8 BasePriority 8 PriorityDecrement 0 IoPriority 2 PagePriority 5
+        Child-SP          RetAddr               Call Site
+        ffff9501`f100ed00 fffff801`71e0c970     nt!KiSwapContext+0x76 [minkernel\ntos\ke\amd64\ctxswap.asm @ 138] 
+        ffff9501`f100ee40 fffff801`71e0be9f     nt!KiSwapThread+0x500 [minkernel\ntos\ke\thredsup.c @ 11603] 
+        ffff9501`f100eef0 fffff801`71e0f7d3     nt!KiCommitThreadWait+0x14f [minkernel\ntos\ke\waitsup.c @ 795] 
+        ffff9501`f100ef90 fffff801`71e0f208     nt!KeRemoveQueueEx+0x263 [minkernel\ntos\ke\queueobj.c @ 1147] 
+        ffff9501`f100f030 fffff801`71e1029e     nt!IoRemoveIoCompletion+0x98 [minkernel\ntos\io\iomgr\complete.c @ 1461] 
+        ffff9501`f100f160 fffff801`720086b5     nt!NtWaitForWorkViaWorkerFactory+0x38e [minkernel\ntos\ex\workfac.c @ 2788] 
+        ffff9501`f100f390 00007ffc`2f530874     nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff9501`f100f400) [minkernel\ntos\ke\amd64\trap.asm @ 3469] 
+        000000ac`004ff748 00000000`00000000     0x00007ffc`2f530874
+
+        THREAD ffffdb09256e8040  Cid 04c8.4f84  Teb: 000000ac7f87e000 Win32Thread: 0000000000000000 WAIT: (WrQueue) UserMode Alertable
+            ffffdb091f4a7b40  QueueObject
+        Not impersonating
+        DeviceMap                 ffff848705835c00
+        Owning Process            ffffdb091f49c080       Image:         svchost.exe
+        Attached Process          N/A            Image:         N/A
+        Wait Start TickCount      4798860        Ticks: 1375 (0:00:00:21.484)
+        Context Switch Count      96             IdealProcessor: 7             
+        UserTime                  00:00:00.000
+        KernelTime                00:00:00.015
+        Win32 Start Address 0x00007ffc2f4e2ad0
+        Stack Init ffff9501f115f590 Current ffff9501f115ecc0
+        Base ffff9501f1160000 Limit ffff9501f1159000 Call 0000000000000000
+        Priority 8 BasePriority 8 PriorityDecrement 0 IoPriority 2 PagePriority 5
+        Child-SP          RetAddr               Call Site
+        ffff9501`f115ed00 fffff801`71e0c970     nt!KiSwapContext+0x76 [minkernel\ntos\ke\amd64\ctxswap.asm @ 138] 
+        ffff9501`f115ee40 fffff801`71e0be9f     nt!KiSwapThread+0x500 [minkernel\ntos\ke\thredsup.c @ 11603] 
+        ffff9501`f115eef0 fffff801`71e0f7d3     nt!KiCommitThreadWait+0x14f [minkernel\ntos\ke\waitsup.c @ 795] 
+        ffff9501`f115ef90 fffff801`71e0f208     nt!KeRemoveQueueEx+0x263 [minkernel\ntos\ke\queueobj.c @ 1147] 
+        ffff9501`f115f030 fffff801`71e1029e     nt!IoRemoveIoCompletion+0x98 [minkernel\ntos\io\iomgr\complete.c @ 1461] 
+        ffff9501`f115f160 fffff801`720086b5     nt!NtWaitForWorkViaWorkerFactory+0x38e [minkernel\ntos\ex\workfac.c @ 2788] 
+        ffff9501`f115f390 00007ffc`2f530874     nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff9501`f115f400) [minkernel\ntos\ke\amd64\trap.asm @ 3469] 
+        000000ac`006ff938 00000000`00000000     0x00007ffc`2f530874
+
+3: kd> !irp ffffdb091ed78d10
+Irp is active with 4 stacks 4 is current (= 0xffffdb091ed78eb8)
+ Mdl=ffffdb091dd1d650: No System Buffer: Thread ffffdb091f4df040:  Irp stack trace.  
+     cmd  flg cl Device   File     Completion-Context
+>[IRP_MJ_DEVICE_CONTROL(e), N/A(20)]
+            5  1 ffffdb0913f6bdc0 ffffdb091f4f7df0 00000000-00000000    pending
+           \Driver\AFD
+            Args: 00000000 00000090 0x90 ffffdb091f4f8130
+
+3: kd> dt -r _IO_STACK_LOCATION 0xffffdb091ed78eb8
+win32kbase!_IO_STACK_LOCATION
+   +0x000 MajorFunction    : 0xe ''
+   +0x001 MinorFunction    : 0x20 ' '
+   +0x002 Flags            : 0x5 ''
+   +0x003 Control          : 0x1 ''
+   +0x008 Parameters       : _IO_STACK_LOCATION::<unnamed-type-Parameters>
+      +0x000 DeviceIoControl  : _IO_STACK_LOCATION::<unnamed-type-Parameters>::<unnamed-type-DeviceIoControl>
+         +0x000 OutputBufferLength : 0
+         +0x008 InputBufferLength : 0x90
+         +0x010 IoControlCode    : 0x90
+         +0x018 Type3InputBuffer : 0xffffdb091f4f8130 Void
+   +0x028 DeviceObject     : 0xffffdb0913f6bdc0 _DEVICE_OBJECT
+      +0x000 Type             : 0n3
+      +0x002 Size             : 0x150
+      +0x004 ReferenceCount   : 0n184
+      +0x008 DriverObject     : 0xffffdb09`13f6fdc0 _DRIVER_OBJECT
+         +0x000 Type             : 0n4
+         +0x002 Size             : 0n336
+         +0x008 DeviceObject     : 0xffffdb09`13f708f0 _DEVICE_OBJECT
+         +0x010 Flags            : 0x12
+         +0x018 DriverStart      : 0xfffff801`75e00000 Void
+         +0x020 DriverSize       : 0xa3000
+         +0x028 DriverSection    : 0xffffdb09`0fc3c060 Void
+         +0x030 DriverExtension  : 0xffffdb09`13f6ff10 _DRIVER_EXTENSION
+         +0x038 DriverName       : _UNICODE_STRING "\Driver\AFD"
+         +0x048 HardwareDatabase : 0xfffff801`7292d988 _UNICODE_STRING "\REGISTRY\MACHINE\HARDWARE\DESCRIPTION\SYSTEM"
+         +0x050 FastIoDispatch   : 0xfffff801`75e27160 _FAST_IO_DISPATCH
+         +0x058 DriverInit       : 0xfffff801`75e84010           long  afd!GsDriverEntry+0
+         +0x060 DriverStartIo    : (null) 
+         +0x068 DriverUnload     : 0xfffff801`75e3d270           void  afd!AfdUnload+0
+         +0x070 MajorFunction    : [28] 0xfffff801`75e4fb80           long  afd!AfdDispatch+0
+   +0x038 CompletionRoutine : (null) 
+   +0x040 Context          : (null) 
+
+3: kd> !devstack 0xffffdb0913f6bdc0
+  !DevObj           !DrvObj            !DevExt           ObjectName
+> ffffdb0913f6bdc0  \Driver\AFD        00000000  Afd
+
+3: kd> !fileobj ffffdb091f4f7df0
+\Endpoint
+Device Object: 0xffffdb0913f6bdc0   \Driver\AFD
+Vpb is NULL
+Flags:  0x4040080
+	Named Pipe
+	Handle Created
+	Skip Set Of File Object Event On Completion
+IRPs queued to File Object:
+	ffffdb091ed78d10   \Driver\AFD
+1 queued.
+FsContext: 0xffffdb091f4d9400	FsContext2: 0x00000000
+Private Cache Map: 0xffffffffffffffff
+CurrentByteOffset: 0
+
+
