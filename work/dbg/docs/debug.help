@@ -137,8 +137,7 @@ Below are the JavaScript command descriptions:
   !surfacedriver                  - Displays details of a specific Surface Driver
   !surfacedrivers                 - Displays Surface Drivers
   !surfaceserialhubdriver         - Displays SurfaceSerialHub Driver Details
-!helpex <cmd> will give more information for a particular command
-
+  !helpex <cmd> will give more information for a particular command
 
 dump all threads and issue !thread on each:
 kd> !for_each_thread "!thread @#Thread"
@@ -1176,6 +1175,8 @@ http://pciids.sourceforge.net/pci.ids
 -- good talk on power states
 https://www.kernel.org/doc/html/v4.14/driver-api/pm/devices.html
 https://docs.microsoft.com/en-us/windows-hardware/drivers/storage/life-cycle-of-a-storport-driver
+
+https://bsodtutorials.wordpress.com/2014/08/09/windows-access-tokens-token-and-_token
 
 References:
 http://www.brandonfa.lk/win8/index.html

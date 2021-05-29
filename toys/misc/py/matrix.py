@@ -2,6 +2,8 @@
 
 from numpy import *
 from numpy import linalg
+import numpy as np
+import matplotlib.pyplot as plt
 
 # http://scipy.github.io/old-wiki/pages/Numpy_Example_List
 # http://docs.scipy.org/doc/numpy/reference/generated/numpy.cross.html
@@ -208,5 +210,45 @@ Zn = 0.5 * (3 - transpose(Rz) * Rz) * transpose(Rz)
 print(Rx)
 print(Ry)
 print(Rz)
+
+# chess board
+Rook = [[0,0,0,0,0,0,1,0],
+        [0,0,0,0,0,0,0,1],
+        [0,0,0,0,0,1,0,0],
+        [1,0,0,0,0,0,0,0],
+        [0,0,0,0,1,0,0,0],
+        [0,0,1,0,0,0,0,0],
+        [0,0,0,1,0,0,0,0],
+        [0,1,0,0,0,0,0,0]]
+Rook  = matrix(Rook)
+Rook_inv = None
+print(Rook)
+print(linalg.det(Rook))
+if (linalg.det(Rook) > 0.0):
+    Rook_inv = linalg.inv(Rook)
+    print(Rook_inv)
+    print()
+    print(Rook_inv*Rook)
+else:
+    print("Rook is singular")
+
+#plt.figure(1)
+#plt.plot(xx, y.T, color='r')
+#plt.show()
+#plt.matshow(np.random.random((50,50)));
+
+#plt.matshow(Rook);
+#plt.matshow(Rook_inv);
+#plt.colorbar()
+#plt.show()
+
+GR     = [[1,2,3],
+          [3,1,2],
+          [1,1,1]]
+GR_inv = linalg.inv(GR)
+plt.matshow(GR);
+plt.matshow(GR_inv);
+plt.colorbar()
+plt.show()
 
 
