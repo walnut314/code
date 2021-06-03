@@ -671,6 +671,17 @@ fffff78000000000: Unable to get shared data
 
         *** Error in reading nt!_ETHREAD @ ffffa78f4606b040
 
+1: kd> dt nt!_MMVAD ffffa78f508d1c70
+   +0x000 Core             : _MMVAD_SHORT
+   +0x040 u2               : <anonymous-tag>
+   +0x048 Subsection       : ???? 
+   +0x050 FirstPrototypePte : ???? 
+   +0x058 LastContiguousPte : ???? 
+   +0x060 ViewLinks        : _LIST_ENTRY
+   +0x070 VadsProcess      : ???? 
+   +0x078 u4               : <anonymous-tag>
+   +0x080 FileObject       : ???? 
+
 
 0: kd> .asm no_code_bytes Assembly options: no_code_bytes
 0: kd> ub nt!KiTrap00+0x88 nt!KiTrap00+0x74: 8083483b test
