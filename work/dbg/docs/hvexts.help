@@ -1,0 +1,106 @@
+
+0: kd> !hvexts.help
+Commands for C:\Users\dah\AppData\Local\DBG\ExtRepository\EG\cache2\Packages\ext\10.0.22378.1000\amd64fre\winext\hvexts.dll:
+  !assert            - Display the assert text associated with a given address.
+  !cap               - Modify or dump the CPU cap for a specific partition.
+  !connections       - Enumerate a partition's connections.
+  !dcgpa             - Dump 32-bit ints with chars by guest physical address.
+  !dcgva             - Dump 32-bit ints with chars by guest virtual address.
+  !ddgpa             - Dump 32-bit ints by guest physical address.
+  !ddgva             - Dump 32-bit ints by guest virtual address.
+  !dpgpa             - Dump pointer-size ints by guest physical address.
+  !dpgva             - Dump pointer-size ints by guest virtual address.
+  !dqgpa             - Dump 64-bit ints by guest physical address.
+  !dqgva             - Dump 64-bit ints by guest virtual address.
+  !event             - Print out information about an event.
+  !gicc              - Display physical APIC state
+  !gicd              - Display physical GICD state
+  !gk                - Walk a guest stack
+  !glm               - List loaded guest symbols
+  !gln               - Lookup a guest symbol by address
+  !gpt               - Dump a guest page table tree for the specified range. 
+                       See also: !spt, !pt3, !pt4.
+  !gpt3              - Dump a 3 level (long mode) guest page table tree.  If a
+                       range is specified, dump only for the virtual address
+                       range provided.  See also: !gpt4.
+  !gpt4              - Dump a 4 level (long mode) guest page table tree.  If a
+                       range is specified, dump only for the virtual address
+                       range provided.  See also: !gpt3.
+  !greload           - Reload guest symbols
+  !gsym              - Lookup a guest symbol by name
+  !gsympath          - Print out or manipulate the guest symbol path
+  !gunload           - Unload guest symbols
+  !gva               - Display information about a given gva.
+  !help              - Displays information on available extension commands
+  !hvad              - Print out information about a specific virtual address
+                       domain, or list all virtual address domains.
+  !hvaddress         - Dump the current memory map, or supply an virtual
+                       address to find what memory region it is in.
+  !hvads             - Enumerates the virtual address domains
+  !hvpfn             - Dump a hypervisor PFN entry.
+  !hvprocess         - Print out information about a process.
+  !hvprocesses       - Enumerates the active processes
+  !hvpte             - Dump a hypervisor PTE.
+                       P = Present
+                       W = ReadWrite
+                       U = Usermode
+                       T = WriteThrough
+                       C = CachedDisable
+                       A = Accessed
+                       D = Dirty
+                       P = Pat
+                       G = Global
+                       X = NoExecute
+                       
+  !hvrunning         - Print out information about a all running threads on
+                       each processor.
+  !hvstatus          - Dumps an HV_STATUS value
+  !hvthread          - Print out information about a thread.
+  !hvtimer           - Print out information about the local and global
+                       processor timer queue.
+  !iommu             - Print out information about all IOMMU units.
+  !iommu_device      - Print out information about an IOMMU device.
+  !iommu_intel       - Print out INTEL specific information about an IOMMU
+                       device.
+  !iommu_intel_slpd  - Dumps a second level page directory.
+  !iommu_intel_slpdp - Dumps a second level page directory pointer table.
+  !iommu_intel_slpt  - Dumps a second level page table.
+  !iommu_intel_slpt4 - Dumps the second level paging structures (4-level
+                       translation).
+  !ioxapic           - Print out information about all IOxAPIC units.
+  !lapic             - Display physical APIC state
+  !memusage          - Dump the memory usage for the hypervisor by category.
+  !monitor           - Dump a monitor page.
+  !numa              - Display identified numa distances between available numa
+                       nodes
+  !parsedump         - Analyze a dumpfile
+  !pcisegment        - Print out information about all PCI segments.
+  !port              - Dump a port.
+  !ports             - Enumerate a partition's ports.
+  !rbtree            - Dump an arbitrary red-black tree.
+  !reserve           - Modify or dump the CPU reserve for a specific partition.
+  !runaway           - Print out information about the time threads have run on
+                       each processor.
+  !runlist           - Display a scheduler runlist.
+  !showhvstack       - Display hypervisor stack from crashdump area
+  !splitva           - Split a va into its component parts
+  !spt               - Dump a shadow page table tree for the specified range. 
+                       See also: !gpt, !pt3, !pt4.
+  !spt3              - Dump a 3 level (long mode) shadow page table tree.  If a
+                       range is specified, dump only for the virtual address
+                       range provided.  See also: !spt4.
+  !spt4              - Dump a 4 level (long mode) shadow page table tree.  If a
+                       range is specified, dump only for the virtual address
+                       range provided.  See also: !spt3.
+  !stats             - Print out HV statistics / performance counters.
+  !synic             - Print out information about a synic.
+  !trace             - Print out information about the Hypervisor trace.
+  !trace2file        - Dumps in-memory trace buffers to an etl file
+  !ugpa              - Disassemble by guest physical address.
+  !ugva              - Disassemble by guest virtual address.
+  !vapic             - Get virtual APIC state (emulated and non emulated)
+  !vgicc             - Get virtual gic state (emulated and non emulated)
+  !weight            - Modify or dump the CPU weight for a specific partition.
+!help <cmd> will give more information for a particular command
+
+
