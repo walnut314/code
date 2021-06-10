@@ -1195,6 +1195,7 @@ http://www.brandonfa.lk/win8/win8_devrel_head_x64/
 http://www.brandonfa.lk/win8/win8_devrel_head_x86/usbhub3.h
 https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/using-umdf-debugger-extensions
 https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/debugging-umdf-2-0-drivers
+https://www.geoffchappell.com/index.htm <-- nt structures
 https://theartofdev.com/windbg-cheat-sheet/
 https://www.vergiliusproject.com/kernels/x86/Windows%2010/1507%20Threshold%201
 Power problems:

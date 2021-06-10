@@ -8,3 +8,13 @@ The following ports are open on 184.168.131.241 between port 1 and 1024
 
 The following ports are open on localhost between port 1 and 1024
 
+The following ports are open on localhost between port 1 and 1024
+
+The following ports are open on 10.0.0.1 between port 1 and 1024
+
+The following ports are open on 10.0.0.224 between port 1 and 1024
+
+80
+135
+139
+445
