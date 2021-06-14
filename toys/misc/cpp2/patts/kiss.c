@@ -9,6 +9,18 @@ typedef struct _List {
     void *ctx;
 } List;
 
+typedef struct _Tree {
+    struct _Tree *left;
+    struct _Tree *right;
+    int key;
+} Tree, *pTree;
+
+typedef struct _Vertex {
+    struct _Vertex *next;
+    int v;
+} Vertex;
+enum {DIRECTED, UNDIRECTED};
+
 int list_empty(List *head)
 {
     return head->next == NULL ? 1 : 0;
@@ -79,11 +91,6 @@ List *list_find(List *head, int key, char *value)
     return NULL;
 }
 
-typedef struct _Tree {
-    struct _Tree *left;
-    struct _Tree *right;
-    int key;
-} Tree, *pTree;
 
 void list_test()
 {
@@ -196,9 +203,9 @@ int hash(char *str)
     return hash % HASH_SZ;
 }
 
-void hash_init()
+void hash_init(List **table, int sz)
 {
-    for (int i = 0; i < HASH_SZ; i++) {
+    for (int i = 0; i < sz; i++) {
         table[i] = list_create(-1, NULL, NULL);
     }
 }
@@ -231,7 +238,7 @@ void hash_dump()
 
 void hash_test()
 {
-    hash_init();
+    hash_init(table, HASH_SZ);
     hash_insert("dude", 42);
     hash_insert("dude", 43);
     hash_insert("homi", 43);
@@ -242,10 +249,73 @@ void hash_test()
     //hash_dump();
 }
 
+Vertex *graph_vertex_create(int v)
+{
+    Vertex *vtx = (Vertex *) malloc(sizeof(Vertex));
+    vtx->next = NULL;
+    vtx->v = v;
+    return vtx;
+}
+
+void graph_init(Vertex **graph, int nverts)
+{
+    for (int i = 0; i < nverts; i++) {
+        graph[i] = graph_vertex_create(i);
+    }
+}
+
+void graph_insert_edge(Vertex **graph, Vertex *x, Vertex *y, int directed)
+{
+    Vertex *tmp;
+
+    printf("insert: (%d, %d)\n", x->v, y->v);
+    tmp = graph[x->v]->next;
+    graph[x->v]->next = y;
+    x->next = tmp;
+
+    if (directed == UNDIRECTED) {
+        tmp = graph[y->v]->next;
+        graph[y->v]->next = x;
+        y->next = tmp;
+    }
+}
+
+void graph_add_edge(Vertex **graph, int x, int y, int directed)
+{
+    Vertex *v_x = graph_vertex_create(x);
+    Vertex *v_y = graph_vertex_create(y);
+    graph_insert_edge(graph, v_x, v_y, directed);
+}
+
+void graph_dump(Vertex **graph, int nverts)
+{
+    for (int i = 0; i < nverts; i++) {
+        Vertex *v = graph[i];
+        v = v->next;
+        printf("vtx: %d: ", i);
+        while (v) {
+            printf("%d, ", v->v);
+            v = v->next;
+        }
+        printf("\n");
+    }
+}
+
+#define NUM_VERTS 8
+
+void graph_test()
+{
+    Vertex *graph[NUM_VERTS];
+    graph_init(graph, NUM_VERTS);
+    graph_add_edge(graph, 1, 2, UNDIRECTED);
+    graph_dump(graph, NUM_VERTS);
+}
+
 int main()
 {
     //list_test();
     //tree_test();
     //hash_test();
+    graph_test();
 }
 
