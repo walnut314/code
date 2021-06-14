@@ -6,7 +6,7 @@ vector<int> subset;
 void fsubset(int k, int n)
 // k is an element, n is the # of elements in subset
 {
-    if (k == n+1) {
+    if (k == n) {
         printf("{");
         for (auto v : subset) {
             printf("%d, ", v);
@@ -18,6 +18,62 @@ void fsubset(int k, int n)
         subset.pop_back();
         // don't include k in the subset
         fsubset(k+1, n);
+    }
+}
+
+vector<int> permutation;
+vector<bool> chosen(256);
+void fpermutations(int n)
+{
+    if (permutation.size() == n) {
+        printf("{");
+        for (auto v : permutation) {
+            printf("%d, ", v);
+        }
+        printf("}\n");
+    } else {
+        for (int i = 0; i < n; i++) {
+            if (chosen[i]) continue;
+            chosen[i] = true;
+            permutation.push_back(i);
+            fpermutations(n);
+            chosen[i] = false;
+            permutation.pop_back();
+        }
+    }
+}
+
+void fpermutations2(int n)
+{
+    for (int i = 0; i < n; i++) {
+        permutation.push_back(i);
+    }
+    do {
+        printf("{");
+        for (auto v : permutation) {
+            printf("%d, ", v);
+        }
+        printf("}\n");
+    } while (next_permutation(permutation.begin(),permutation.end()));
+}
+
+// y = row, n = number of queens, ie grid size
+int queen_count = 0;
+void queens(int y, int n)
+{
+    static int count = 0;
+    static int column[64];
+    static int diag1[64];
+    static int diag2[64];
+    if (y == n) {
+        queen_count++;
+        return;
+    }
+    for (int x = 0; x < n; x++) {
+        if (column[x] || diag1[x+y] || diag2[x-y+n-1]) continue;
+        column[x] = diag1[x+y] = diag2[x-y+n-1] = 1;
+        queens(y+1, n);
+        column[x] = diag1[x+y] = diag2[x-y+n-1] = 0;
     }
 }
 
@@ -213,8 +269,9 @@ void grid_path()
 int main()
 {
     //collatz();
-    //fsubset(1, 3);
-    //chess(0); printf("count: %d\n", counter);
+    //fsubset(0, 3);
+    //fpermutations2(3);
+    chess(0); printf("count: %d\n", counter);
     //printf("bits in: %d\n", bits(5328));
     //vector<int> array{1,3,8,2,9,2,5,6};
     //bubble(array);
@@ -223,7 +280,9 @@ int main()
     //printf("coins(10) = %d\n", solve(10));
     //vector<int> array{6,2,5,1,7,4,8,3};
     //subseq(array);
-    grid_path();
+    //grid_path();
+    //queens(0, 4);
+    //printf("queen count: %d\n", queen_count);
     return 0;
 }
 
