@@ -2990,4 +2990,8 @@ dump k = rsp rip 40 to walk past the trap frame.
 ======================================================================
 
 
+Truncate memory:
+https://www.geoffchappell.com/notes/windows/boot/bcd/library/truncatememory.htm
+> bcdedit /set truncatememory 0x400000000
+
 
