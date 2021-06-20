@@ -61,7 +61,7 @@ List *list_create(int key, const char *value, void *ctx)
     List *n = (List *) malloc(sizeof(List));
     n->next = NULL;
     n->key = key;
-    n->value = _strdup(value);
+    n->value = strdup(value);
     n->ctx = ctx;
     return n;
 }
@@ -207,7 +207,7 @@ int _hash(const char *str)
 {
     int hash = 5381;
     int c;
-    while (c = *str++)
+    while ((c = *str++))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
     return hash % HASH_SZ;
 }
