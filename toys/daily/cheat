@@ -1,0 +1,179 @@
+5/14/2019 9:52:28 AM     C:\code\toys\cbox\algo\random_c\cheat
+
+0. Arrays
+=========
+Fifo
+Stack
+
+1. List (kr)
+============
+typedef struct _link {
+    struct _link *next, *tail;
+    int value;
+} link, list;
+
+#define LIST_EMPTY(list) (list->tail == NULL)
+link *list_new()
+void list_push_back(list *head, int value)
+int list_push_front(list *head, int value)
+link *list_pop_front(list *head)
+void list_show(list *head)
+
+::=> reverse
+::=> cycles
+
+2. Tree (kr)
+============
+#define MAX(a,b) ( ((a) > (b)) ? (a) : (b) )
+typedef struct _tree {
+    struct _tree *left, *right;
+    int value;
+    int height;
+} tree;
+
+int tree_height(tree *root){
+tree *tree_insert(tree *root, int data)
+tree *tree_findmax(tree *T) {
+tree *tree_delete(tree *root, int value)
+tree *tree_find(tree *T, int value)
+void tree_show(tree *T)
+
+::=> traverse: pre/in/post/dfs/bfs
+::=> balance
+
+3. Ring Buffer (??)
+===================
+#define RING_SIZE 10
+int ring_buffer[RING_SIZE];
+int ring_read, ring_write, ring_size;
+
+int ring_full()
+int ring_empty()
+void ring_put(int elem)
+int ring_get()
+
+4. Heap (jb)
+============
+#define LT(x, y) ((x) <  (y))
+#define GE(x, y) ((x) >= (y))
+int a[13] = {0,1,5,3,4,8,2,7,6,9,11,10,33};
+int n_elems = 12;
+
+void insert(int current, int low, int high, int *entry);
+void build(int *entry, int count);
+void sort(int *entry, int count);
+int delete(int *a, int count);
+void show(int *a, int count);
+
+5. Trie
+=======
+#define TRIE_MAXLENGTH 10
+#define TRIE_LETTERS   26
+
+typedef struct _trie_pair {
+    char key[TRIE_MAXLENGTH];
+    int value;
+} trie_pair;
+typedef struct _trie_node {
+    struct _trie_node *branch[TRIE_LETTERS];
+    trie_pair *ref; // holds the string, also acts as the terminal sentinal
+} trie_node;
+
+trie_node *trie_new()
+trie_node *trie_delete(trie_node *root, char *target)
+trie_node *trie_search(trie_node *root, char *target)
+trie_node *trie_insert(trie_node *root, trie_pair *entry)
+void trie_show(trie_node *T, int d)
+
+6. Hash (kr)
+============
+enum { HASH_MULTIPLIER = 31, HASH_NBUCKETS = 255 };
+typedef struct _hash_pair {
+    struct _hash_pair *next;
+    char  *key;
+    int value;
+} hash_pair;
+typedef struct _hashtable {
+    unsigned int buckets;
+    unsigned int multiplier;
+    struct _hash_pair **prtab;
+} hashtable;
+
+hashtable *hash_new(unsigned int buckets, unsigned int multiplier)
+static unsigned int hash(char *str, unsigned int buckets, unsigned int multiplier)
+static hash_pair* hash_lookup(hashtable *hashtab, char *key, int create, int value)
+int hash_find(hashtable *hashtab, char *key)
+hash_pair *hash_get(hashtable *hashtab, char *key)
+void hash_set(hashtable *hashtab, char *key, int value)
+
+7. Merge Sort (??)
+==================
+void msort_merge(list *first, list *second, list *out)
+void msort_divide(list *l, list *secondhalf)
+void msort_sort(list *l)
+void msort_dump(void *l)
+
+8. Binsearch (kr)
+=================
+int a[] = {...};
+int binarysearch(int x, int v[], int n);
+
+
+9. Graph (??)
+=============
+typedef struct {
+    int v;
+    int weight;
+} edge;
+
+typedef struct {
+    edge edges[MAXV+1][MAXDEGREE];
+    int degree[MAXV+1];
+    int nvertices;
+    int nedges;
+} graph;
+
+typedef struct {
+    int row, col;
+} cell;
+
+typedef struct {
+    int nr;
+    char val;
+    int row, col;
+} vertex_t;
+
+typedef struct {
+    int nrows, ncols, nverts;
+    int **A;
+    vertex_t *v;
+    graph *grph;
+} grid_t;
+
+// grid
+grid_t *create_grid(int rows, int cols);
+int get_vertex(grid_t *g, int row, int col);
+int get_row_col(grid_t *g, int vertex, cell *cell);
+void show_grid(grid_t *g);
+void grid_to_vertices(grid_t *g) {;
+void show_vertices2(grid_t *g);
+void add_edge(grid_t *g, int v1, int v2);
+void grid_to_graph(grid_t *g);
+int getlines(grid_t *g);
+// graph
+void initialize_graph(graph *g)
+void initialize_search(graph *g)
+void insert_edge(graph *g, int x, int y, int directed)
+void print_graph(graph *g)
+void read_graph(graph *g, int directed)
+void find_path(int start, int end, int parents[])
+int valid_edge(int v)
+void process_vertex(int v)
+void process_edge_bfs(int v, int w)
+void process_edge_cycle(int x, int y)
+void bfs(graph *g, int start)
+void dfs(graph *g, int v)
+graph *graph_create()
+
+::=> maze / epi\19.01.c < maze
+
