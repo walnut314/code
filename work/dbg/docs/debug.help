@@ -1195,6 +1195,7 @@ http://www.brandonfa.lk/win8/win8_devrel_head_x64/
 http://www.brandonfa.lk/win8/win8_devrel_head_x86/usbhub3.h
 https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/using-umdf-debugger-extensions
 https://docs.microsoft.com/en-us/windows-hardware/drivers/wdf/debugging-umdf-2-0-drivers
+https://www.geoffchappell.com/index.htm <-- nt structures
 https://theartofdev.com/windbg-cheat-sheet/
 https://www.vergiliusproject.com/kernels/x86/Windows%2010/1507%20Threshold%201
 Power problems:
@@ -2970,5 +2971,27 @@ CPU #1 DPC Watchdog History Stack #1 (of 641) - Time: 21597 Min 15 Sec 171.88 mS
 =========================================================================================
 
 
+
+Hypervisor:
+==========
+http://hvinternals.blogspot.com/2021/01/hyper-v-debugging-for-beginners-2nd.html
+
+The decrypted dump with hypervisor state is at \\dazhan-dew\in\hypervisor\decrypted.dmp. 
+From there, .load hvexts.dll (grab it from bin\dbg\files\bin\winext\hvexts.dll) and 
+do !parsedump to switch to the hypervisor view.
+Processor 2 is the one that hit the page fault, and you'll have to do
+?? KdDummyProcess.DirectoryTableBase[0] = KepProcessorRegions[2]->PageTableRoot
+.process @@(&KdDummyProcess)
+That shows a partial stack up to the first trap. From there, look at the trap frame and 
+dump k = rsp rip 40 to walk past the trap frame.
+
+
+
+======================================================================
+
+
+Truncate memory:
+https://www.geoffchappell.com/notes/windows/boot/bcd/library/truncatememory.htm
+> bcdedit /set truncatememory 0x400000000
 
 
