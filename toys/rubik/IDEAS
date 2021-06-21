@@ -8,4 +8,9 @@ graph   - SP
 trie    - 
 heap    - PQ
 
+pearls:
+    kiss.c
+    isort.c
+    qsort.c
+
 
