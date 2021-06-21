@@ -1,11 +1,11 @@
+6/21/2021 7:49:48 AM     C:\sandbox\code\toys\rubik\IDEAS
 
-list
-hash
-tree
-graph
-trie
+array   - strings, intervals
+list    - 
+hash    - 
+tree    - AVL, BFS
+graph   - SP
+trie    - 
+heap    - PQ
 
-
-1. graph -> colored connect types (postscript)
-2. trie  -> spell checker
 
