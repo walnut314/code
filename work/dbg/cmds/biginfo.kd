@@ -1,0 +1,14 @@
+.logappend dude0.log
+||
+!sysinfo smbios
+!analyze -v
+!memusage
+!for_each_thread "!thread @#Thread"
+!irpfind
+!stacks
+!powertriage
+!poaction
+!pnptriage
+!amli lc
+.logclose
+q
