@@ -2995,3 +2995,6 @@ https://www.geoffchappell.com/notes/windows/boot/bcd/library/truncatememory.htm
 > bcdedit /set truncatememory 0x400000000
 
 
+FDO_DATA:
+dt 0xffffc60706116f40 SurfaceSystemTelemetryDriver!_FDO_DATA
+
