@@ -12,5 +12,6 @@ pearls:
     kiss.c
     isort.c
     qsort.c
+    shuffle.c
 
 
