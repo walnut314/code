@@ -44,10 +44,50 @@ public:
     }
 };
 
+class IntSetList {
+private:
+    int n;
+    struct node {
+        int val;
+        node *next;
+        node(int v, node *p) { val = v; next = p; }
+    };
+    node *head;
+public:
+    IntSetList(int maxelements, int maxval) {
+        head = new node(maxval, NULL);
+        n = 0;
+    }
+    void insert(int t) { // insert sorted
+        node *prev = head;
+        node *curr = head->next;
+        while (curr) {
+            if (t == curr->val) return;
+            if (t < curr->val) break;
+            prev = curr;
+            curr = curr->next;
+        }
+        if (prev) {
+            node *tmp = prev->next;
+            node *p = new node(t, prev->next);
+            prev->next = p;
+            p->next = tmp;
+        }
+        n++;
+    }
+    int size() { return n; }
+    void report(int *v) {
+        int j = 0;
+        for (node *p = head->next; p != NULL; p = p->next) {
+            v[j++] = p->val;
+        }
+    }
+};
+
 void gensets(int m, int maxval)
 {
     int *v = new int[m];
-    IntSetArray S(m, maxval);
+    IntSetList S(m, maxval);
     while (S.size() < m) {
         S.insert(rand() % maxval);
     }
