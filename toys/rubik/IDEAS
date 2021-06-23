@@ -13,5 +13,6 @@ pearls:
     isort.c
     qsort.c
     shuffle.c
+    sets.c <== current IntSetList
 
 
