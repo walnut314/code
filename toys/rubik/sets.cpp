@@ -3,11 +3,21 @@
 
 #include "bits.hpp"
 
-class IntSetInt {
+// create a virtual class
+class IntSetV {
+private:
+public:
+    enum {SET, ARRAY, BST, LIST};
+    virtual void insert(int t) = 0;
+    virtual int size() = 0;
+    virtual void report(int *x) = 0;
+};
+
+class IntSetSet: public IntSetV {
 private:
     set<int> S;
 public:
-    IntSetInt(int maxelements, int maxval) {}
+    IntSetSet(int& maxelements, int& maxval) { printf("SET\n"); }
     int size() { return S.size(); }
     void insert(int t) { S.insert(t); }
     void report(int *v) {
@@ -19,11 +29,12 @@ public:
     }
 };
 
-class IntSetArray {
+class IntSetArray: public IntSetV {
 private:
     int n, *x;
 public:
     IntSetArray(int maxelements, int maxval) {
+        printf("ARRAY\n");
         x = new int[1 + maxelements];
         n = 0;
         x[0] = maxval;
@@ -46,7 +57,7 @@ public:
     }
 };
 
-class IntSetList {
+class IntSetList: public IntSetV {
 private:
     int n;
     struct node {
@@ -57,6 +68,7 @@ private:
     node *head;
 public:
     IntSetList(int maxelements, int maxval) {
+        printf("LIST\n"); 
         head = new node(maxval, NULL);
         n = 0;
     }
@@ -86,17 +98,102 @@ public:
     }
 };
 
+class IntSetBST: public IntSetV {
+private:
+    int n, *v, vn;
+    struct node {
+        int val;
+        node *left, *right;
+        node(int i) { val = i; left = right = NULL; }
+    };
+    node *root;
+    node *rinsert(node *p, int t) {
+        if (p == NULL) {
+            p = new node(t);
+            n++;
+        } else if (t < p->val) {
+            p->left = rinsert(p->left, t);
+        } else if (t > p->val) {
+            p->right = rinsert(p->right, t);
+        }
+        return p;
+    }
+    void traverse(node *p) {
+        if (p == NULL) return;
+        traverse(p->left);
+        v[vn++] = p->val;
+        traverse(p->right);
+    }
+public:
+    IntSetBST(int maxelements, int maxval) { printf("BST\n"); root = NULL; n = 0; }
+    void insert(int t) { root = rinsert(root, t);}
+    void report (int *x) { 
+        v = x; 
+        vn = 0; 
+        traverse(root); 
+    }
+    int size() { return n; }
+};
+
+class IntSetBitVec {
+};
+
+class IntSetBins {
+};
+
+class IntSetFactory {
+private:
+    shared_ptr<IntSetV> si = nullptr;
+public:
+    IntSetFactory(int type, int maxelements, int maxval) {
+        switch (type) {
+            case IntSetV::SET:   si = make_shared<IntSetSet>(maxelements, maxval); break;
+            case IntSetV::BST:   si = make_shared<IntSetBST>(maxelements, maxval); break;
+            case IntSetV::LIST:  si = make_shared<IntSetList>(maxelements, maxval); break;
+            case IntSetV::ARRAY: si = make_shared<IntSetArray>(maxelements, maxval); break;
+        }
+    }
+    void insert(int t) { si->insert(t); }
+    int size() { return si->size(); }
+    void report(int *x) { si->report(x); }
+};
+
+template <typename T>
+class IntSetFactory2 {
+private:
+    shared_ptr<IntSetV> si = nullptr;
+public:
+    IntSetFactory2(int maxelements, int maxval) {
+        si = make_shared<T>(maxelements, maxval);
+    }
+    void insert(int t) { si->insert(t); }
+    int size() { return si->size(); }
+    void report(int *x) { si->report(x); }
+};
+
+// this is the best/simplest
+template <typename T>
+shared_ptr<T> factory2(int maxelements, int maxval) { return make_shared<T>(maxelements, maxval); }
+
 void gensets(int m, int maxval)
 {
     int *v = new int[m];
-    IntSetList S(m, maxval);
-    while (S.size() < m) {
-        S.insert(rand() % maxval);
-    }
-    S.report(v);
-    for (int i = 0; i < m; i++) {
-        cout << v[i] << "\n";
-    }
+
+    // all these are good
+    shared_ptr<IntSetV> s = factory2<IntSetSet>(m, maxval); // the simplest
+    //IntSetFactory *s = new IntSetFactory(IntSetV::LIST, m, maxval);
+
+    //shared_ptr<IntSetFactory> s = make_shared<IntSetFactory>(IntSetV::LIST, m, maxval);
+    //shared_ptr<IntSetV> s = make_shared<IntSetSet>(m, maxval);
+    //shared_ptr<IntSetFactory2<IntSetSet>> s = make_shared<IntSetFactory2<IntSetSet>>(m, maxval);
+    //shared_ptr<IntSetFactory2<IntSetBST>> s = make_shared<IntSetFactory2<IntSetBST>>(m, maxval);
+    
+    // this one is broken
+    //shared_ptr<IntSetFactory2> s = make_shared<IntSetFactory2<IntSetSet>>(m, maxval);
+
+    while (s->size() < m) { s->insert(rand() % maxval); }
+    s->report(v);
+    for (int i = 0; i < m; i++) { cout << v[i] << "\n"; }
 }
 
 int main()
