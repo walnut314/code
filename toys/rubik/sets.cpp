@@ -7,7 +7,7 @@
 class IntSetV {
 private:
 public:
-    enum {SET, ARRAY, BST, LIST};
+    enum {SET, ARRAY, BST, LIST, BITVEC, BINS};
     virtual void insert(int t) = 0;
     virtual int size() = 0;
     virtual void report(int *x) = 0;
@@ -135,9 +135,11 @@ public:
     int size() { return n; }
 };
 
+// TODO:
 class IntSetBitVec {
 };
 
+// TODO:
 class IntSetBins {
 };
 
@@ -182,7 +184,6 @@ void gensets(int m, int maxval)
     // all these are good
     shared_ptr<IntSetV> s = factory2<IntSetSet>(m, maxval); // the simplest
     //IntSetFactory *s = new IntSetFactory(IntSetV::LIST, m, maxval);
-
     //shared_ptr<IntSetFactory> s = make_shared<IntSetFactory>(IntSetV::LIST, m, maxval);
     //shared_ptr<IntSetV> s = make_shared<IntSetSet>(m, maxval);
     //shared_ptr<IntSetFactory2<IntSetSet>> s = make_shared<IntSetFactory2<IntSetSet>>(m, maxval);
