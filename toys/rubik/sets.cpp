@@ -135,12 +135,72 @@ public:
     int size() { return n; }
 };
 
-// TODO:
-class IntSetBitVec {
+class IntSetBitVec: public IntSetV {
+private:
+    enum { BITSPERWORD = 32, SHIFT = 5, MASK = 0x1F };
+    int n, hi, *x;
+    void set(int i)  {        x[i>>SHIFT] |=  (1 << (i & MASK)); }
+    void clr(int i)  {        x[i>>SHIFT] &= ~(1 << (i & MASK)); }
+    int  test(int i) { return x[i>>SHIFT] &   (1 << (i & MASK)); }
+public:
+    IntSetBitVec(int maxelements, int maxval) { 
+        printf("BitVec\n"); 
+        hi = maxval;
+        x = new int[1 + hi/BITSPERWORD];
+        for (int i = 0; i < hi; i++) clr(i);
+        n = 0;
+    }
+    void insert(int t) {
+        if (test(t)) return;
+        set(t);
+        n++; 
+    }
+    void report (int *v) {
+        int j = 0;
+        for (int i = 0; i < hi; i++) {
+            if (test(i)) v[j++] = i;
+        }
+    }
+    int size() { return n; }
 };
 
-// TODO:
-class IntSetBins {
+class IntSetBins: public IntSetV {
+private:
+    int n, bins, maxval;
+    struct node {
+        int val;
+        node *next;
+        node(int v, node *p) { val = v; next = p; }
+    };
+    node **bin, *sentinel;
+    node *rinsert(node *p, int t) {
+        if (p->val < t) p->next = rinsert(p->next, t);
+        else if (p->val > t) p = new node(t, p);
+        n++;
+        return p;
+    }
+public:
+    IntSetBins(int maxelements, int pmaxval) {
+        bins = maxelements;
+        maxval = pmaxval;
+        bin = new node*[bins];
+        sentinel = new node(maxval, 0);
+        for (int i = 0; i < bins; i++) bin[i] = sentinel;
+        n = 0;
+    }
+    void insert(int t) {
+        int i = t / (1 + maxval/bins);
+        bin[i] = rinsert(bin[i], t);
+    }
+    void report (int *v) {
+        int j = 0;
+        for (int i = 0; i < bins; i++) {
+            for (node *p = bin[i]; p != sentinel; p = p->next) {
+                v[j++] = p->val;
+            }
+        }
+    }
+    int size() { return n; }
 };
 
 class IntSetFactory {
@@ -182,7 +242,8 @@ void gensets(int m, int maxval)
     int *v = new int[m];
 
     // all these are good
-    shared_ptr<IntSetV> s = factory2<IntSetSet>(m, maxval); // the simplest
+    //shared_ptr<IntSetV> s = factory2<IntSetSet>(m, maxval); // the simplest
+
     //IntSetFactory *s = new IntSetFactory(IntSetV::LIST, m, maxval);
     //shared_ptr<IntSetFactory> s = make_shared<IntSetFactory>(IntSetV::LIST, m, maxval);
     //shared_ptr<IntSetV> s = make_shared<IntSetSet>(m, maxval);
@@ -191,6 +252,10 @@ void gensets(int m, int maxval)
     
     // this one is broken
     //shared_ptr<IntSetFactory2> s = make_shared<IntSetFactory2<IntSetSet>>(m, maxval);
+    
+    
+    //shared_ptr<IntSetV> s = factory2<IntSetBitVec>(m, maxval); // the simplest
+    shared_ptr<IntSetV> s = factory2<IntSetBins>(m, maxval); // the simplest
 
     while (s->size() < m) { s->insert(rand() % maxval); }
     s->report(v);
