@@ -640,6 +640,7 @@ int main()
         root = insert_bal_rec(root, a[i]);
     }
     print_t(root);
+    return 0;
     //printf("pre order\n");
     //pre_order(root);
     //printf("in order\n");

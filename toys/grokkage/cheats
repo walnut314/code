@@ -1,11 +1,12 @@
 5/14/2019 9:51:27 AM     C:\code\toys\cbox\algo\grokkage\cheats
 
 ------------------list------------------------------------------------------
-reversal: 
-p=list,q,r=null         q = p->next
-                        p->next = r
-                        r = p
-                        p = q
+reversal:               while (p)
+p=list,q,r=null             q = p->next
+                            p->next = r
+                            r = p
+                            p = q
+                        return r
 ------------------heap------------------------------------------------------
 up:                         down:
     k = size                    k = 1, top = [1]
