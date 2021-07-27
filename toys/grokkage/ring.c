@@ -67,7 +67,7 @@ static int r_mask(ring_ptr r, uint32_t index)
     return (index & (r->capacity - 1));
 }
 
-#if 0
+#if 1
 void ring_test()
 {
     int i;
