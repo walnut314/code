@@ -1,4 +1,4 @@
-5/14/2019 9:51:27 AM     C:\code\toys\cbox\algo\grokkage\cheats
+7/28/2021 7:09:54 AM     C:\sandbox\code\toys\grokkage\cheats
 
 ------------------list------------------------------------------------------
 reversal:               while (p)
@@ -7,17 +7,20 @@ p=list,q,r=null             q = p->next
                             r = p
                             p = q
                         return r
-------------------heap------------------------------------------------------
-up:                         down:
-    k = size                    k = 1, top = [1]
-    v = [size]                  while k <= size/2:
-    while k/2 <= v:                 child = 2k
+------------------max heap---------------------------------------------------
+heap[256]; heap[0] = INT_MAX; size=0; ins: loop(a): heap[++size] = a[i]; up(size);
+pop: while(size): max = heap[1]; heap[1] = heap[size--]; down(1); print(max);
+                           down(k):
+up(k):                          last = [k]
+    v = [k]                     while k <= size/2:
+    while [k/2] <= v:               child = 2k
         [k] = [k/2]                 if child < size && 
         k = k/2                       [child] < [child+1]:
-    [k[] = v                             child++
-                                    if top >= [child] break
+    [k] = v                             child++
+                                    if last >= [child] break
                                     [k] = [child]
-                                [k] top
+                                    k = child
+                                [k] = last
 ------------------trie------------------------------------------------------
 void insert(ROOT R, KEY)              bool find(ROOT R, KEY)
     foreach k in KEY:                   foreach k in KEY:
