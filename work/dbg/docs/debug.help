@@ -1765,6 +1765,8 @@ Dump Lists:
 !list "-t nt!_LIST_ENTRY.Flink -e -x \"dt nt!_IRP\" 0xffffac8a8fec58f0"
 !list "-t nt!_LIST_ENTRY.Flink -e -x \"dt nt!_ETHREAD\" 0xffff98851c21bba8"
 !list "-t nt!_LIST_ENTRY.Flink -e -x \"!thread\" 0xffff98851c21bba8"
+!list "-t nt!_LIST_ENTRY.Flink -e -x \"!thread\" 0xffff98851c21bba8"
+!list "-t nt!_LIST_ENTRY.Flink 0xffff98851c21bba8"
 
 WinDe.help
 !winde.activity
@@ -3000,4 +3002,141 @@ dt 0xffffc60706116f40 SurfaceSystemTelemetryDriver!_FDO_DATA
 
 Break on Driver Load:
 0: kd> bu SurfaceBattery!DriverEntry "gu; !drvobj \Driver\SurfaceBattery 2"
+
+0: kd> !drvobj SurfaceBattery
+Driver object (ffff9b0e6a80ae10) is for:
+Loading symbols for fffff800`477b0000     Wdf01000.sys ->   Wdf01000.sys
+ \Driver\SurfaceBattery
+Driver Extension List: (id , addr)
+(fffff80047805620 ffff9b0e6721aa40)  
+Device Object list:
+ffff9b0e673319a0  
+
+0: kd> !devobj ffff9b0e673319a0
+Device object (ffff9b0e673319a0) is for:
+  \Driver\SurfaceBattery DriverObject ffff9b0e6a80ae10
+Current Irp 00000000 RefCount 0 Type 00000022 Flags 00002004
+SecurityDescriptor ffff898bb30573e0 DevExt ffff9b0e6a727350 DevObjExt ffff9b0e67331b18 
+ExtensionFlags (0x00000800)  DOE_DEFAULT_SD_PRESENT
+Characteristics (0x00000100)  FILE_DEVICE_SECURE_OPEN
+AttachedTo (Lower) ffff9b0e6734b840Loading symbols for fffff800`4de30000 SurfaceIntegrationDriver.sys ->   SurfaceIntegrationDriver.sys
+ \Driver\SurfaceIntegrationDriver
+Device queue is not busy.
+
+0: kd> dt SurfaceBattery!_FDO_DATA ffff9b0e6a727350
+   +0x000 WdfDevice        : 0x000064f1`958d8f98 WDFDEVICE__
+   +0x008 ClassHandle      : 0xffff9b0e`6ad76d30 Void
+   +0x010 ClassInitLock    : 0x000064f1`98d15b48 WDFWAITLOCK__
+   +0x018 WmiLibContext    : _WMILIB_CONTEXT
+   +0x058 StateLock        : 0x000064f1`98d14728 WDFWAITLOCK__
+   +0x060 NotificationsLock : 0x000064f1`98d34338 WDFSPINLOCK__
+'ist' is not recognized as an internal or external command,
+operable program or batch file.
+
+
+3: kd> !winde.help
+
+==================
+Help for WinDE.dll
+==================
+
+!WinDE.<command> -?  - Detailed help for the command
+
+Alphabetical list of Kernel-Mode WinDE commands:
+
+!WinDE.activity      =  Check the System activity for numerous common hang symptoms
+!WinDE.afdendp       =  List AFD endpoints
+!WinDE.blocks        =  Dump ERESOURCE locks with waiters, and waiter/owner threads
+!WinDE.bits          -  Displays the potential values of a single bit flip for an address
+!WinDE.calls         =  Search call stacks for string(s)
+!WinDE.clusdsks      -  Enumerates the Cluster disks on a node
+!WinDE.critlist      =  List Critical Sections, owners, and threads waiting on them
+!WinDE.cx            =  Dump CRITICAL_SECTION lock, and its waiter/owner threads
+!WinDE.debug         =  display current WinDE debug settings, and optionally set debug flags
+!WinDE.diskq         =  list DISK devices with queued IO, or one device's IO queue
+!WinDE.dtpool        -  Reads pool allocation and attempts to determine type
+!WinDE.eflags        -  Displays flags from the eflags register
+!WinDE.er            =  Dump ERESOURCE lock, and its waiter/owner threads
+!WinDE.evtlog        =  Locate event log file data in memory
+!WinDE.exe           =  Find processes with EXE names containing the given string
+!WinDE.exq           =  Scan Executive Work Queues for active threads and queued work items
+!WinDE.exqi          =  List Executive Work Queue queued work items for the given queue
+!WinDE.filedevice    -  more details about handles
+!WinDE.findfile      -  Searches Nonpaged pool for File objects matching search string
+!WinDE.findhandle    -  Searches for open handles to a given object
+!WinDE.findsvc       =  Find services with names containing the given string
+!WinDE.fm            =  Dump FAST_MUTEX lock, and its waiter/owner threads
+!WinDE.gdihandle     -  Dumps GDIHandleCount and UserHandleCount for each process
+!WinDE.gettickcount  -  Get elapsed time since last input (keyboard/mouse)
+!WinDE.gm            =  Dump KGUARDED_MUTEX lock, and its waiter/owner threads
+!WinDE.go            =  Dump KGATE lock, and its waiter/owner threads
+!WinDE.handles       =  Statistical analysis of handles in a process
+!WinDE.handletype    -  more details about handles
+!WinDE.hang          -  Hang analysis for the system
+!WinDE.idle          =  Dump the Idle process (/D=more detail, /V=verbose)
+!WinDE.info          =  display general information about the current debug session
+!WinDE.io            =  Dump an IRP, and its associated event and file object
+!WinDE.ioe           =  Shortcut for "!irpfind 0 0 userevent args"
+!WinDE.ioq           =  List disk-related devices with stuck IO
+!WinDE.ipconfig      -  Display Information for TCPIP Interfaces on the system
+!WinDE.irps          =  Find all active IRPs, and display IRP count statistics
+!WinDE.k             =  Dump and analyze a thread's stack
+!WinDE.kp            =  Dump and analyze a thread's stack, with Parameters in DML
+!WinDE.kpu           =  Dump and analyze a thread's stack, with Parameters in DML, and user symbols reload
+!WinDE.ku            =  Dump and analyze a thread's stack, with user symbols reload
+!WinDE.leak          =  Check the System for numerous common leak symptoms
+!WinDE.lm            =  Dump LPC message, waiter thread, LPC process/thread, etc
+!WinDE.lp            =  List process/thread times and handle counts, etc
+!WinDE.lpcwait       =  List LPC server threads and connections waiting
+!WinDE.lswn          -  Show information about the SRV Work Queues and allocated work items
+!WinDE.mem           =  Display the top memory consumers
+!WinDE.mod           =  Show module information
+!WinDE.modref        =  Scan Modules for references to an address
+!WinDE.mpioq         =  (beta) list MPIO devices with queued IO, or one device's IO queue
+!WinDE.mu            =  Dump KMUTANT lock, and its waiter/owner threads
+!WinDE.netstat       -  Display the valid endpoints on the system
+!WinDE.objects       =  Show system Objects object and handle counts
+!WinDE.objdir        =  Browse the Object Manager's Object Directory
+!WinDE.pcrs          =  Dump all PCRs, and all Running and Standby threads
+!WinDE.pl            =  Dump EX_PUSH_LOCK lock
+!WinDE.poolfailures  =  Displays pool allocation failure statistics and reasons
+!WinDE.poolref       =  Scan NonPaged pool for references to an address
+!WinDE.pooltag       =  Show the pooltag for the pool block containing an address
+!WinDE.pup           =  Shortcut for .Process adr;.reload /User;!Process adr 7
+!WinDE.rdq           =  Scan Remote Desktop Work Queues for active threads and queued work items
+!WinDE.rdy           =  List Ready threads
+!WinDE.re            =  Dump RTL_RESOURCE lock, and its waiter/owner threads
+!WinDE.regref        =  Show Registry key Reference counts
+!WinDE.rootkit       =  Check for RootKit-style hooked system services
+!WinDE.rpc           =  Show client information for an RPC message
+!WinDE.rw            =  Dump RTL_SRWLOCK lock, and its waiter/owner threads
+!WinDE.sessionview   -  Dumps Session View Space for the current session
+!WinDE.shutdown      =  List shutdown-related data in WINLOGON
+!WinDE.sl            =  Dump Kernel SpinLock
+!WinDE.spl           =  List SPOOLSV Spooler/Printer/Driver/Port/Monitor/Job status
+!WinDE.spltype       =  Dump a Spooler structure based on its embedded signature
+!WinDE.srvendp       =  List Server service Endpoints
+!WinDE.srvfiles      =  List Server service Files
+!WinDE.srvsess       =  List Server service Sessions
+!WinDE.srvshare      =  List Server service Shares
+!WinDE.srvtrees      =  List Server service Tree connections
+!WinDE.stax          =  Scan processes for thread stacks relevant to hung systems
+!WinDE.svc           =  List SERVICES Service records
+!WinDE.svq           =  Scan Server Work Queues for active threads and queued work items
+!WinDE.t             =  Dump and analyze a thread
+!WinDE.tcpip         =  Analyze TCPIP Port Pool usage
+!WinDE.tu            =  Dump and analyze a thread, with user symbols reload
+!WinDE.tag           =  Find pool tag string in loaded modules
+!WinDE.ticks         =  Convert a decimal Elapsed Ticks value (e.g. from !thread) to HH:MM:SS.mmm
+!WinDE.tix           =  Convert an Elapsed Ticks value in the current radix (usually hex) to HH:MM:SS.mmm
+!WinDE.update        -  Check for (and update to) the latest version
+!WinDE.vss           -  Display volume shadow copy information
+!WinDE.waittime      -  Display wait times for all threads in all processes
+!WinDE.watson        =  Find AeDebug Debugger process, and debug its parent
+!WinDE.wsq           =  Scan Workstation Work Queues for active threads and queued work items
+!WinDE.zp            =  List Zombie Processes - Process objects not in the active process list
+!WinDE.zt            =  List Zombie Threads - Thread objects no longer in the active process thread lists
+View help on WinDE commands relevant to:
+     Strategy  Settings  Hangs  Leaks  Processes  Threads  IRPs  Services : EventLog  Spooler  Server  WinLogon  
+
 
