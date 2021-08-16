@@ -2998,3 +2998,6 @@ https://www.geoffchappell.com/notes/windows/boot/bcd/library/truncatememory.htm
 FDO_DATA:
 dt 0xffffc60706116f40 SurfaceSystemTelemetryDriver!_FDO_DATA
 
+Break on Driver Load:
+0: kd> bu SurfaceBattery!DriverEntry "gu; !drvobj \Driver\SurfaceBattery 2"
+
