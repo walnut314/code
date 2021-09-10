@@ -28,7 +28,7 @@ OSNexus, Inc, Software Engr                             Jul 2015 to Dec 2015
     failover code, and developed mapper-based driver to evaluate perf of 
     CEPH/RBDs and crush map zone distribution.
 
-Western Digital, Sr. Principal SDE, Lead                Aug 2012 to Jul 2015
+Western Digital, Sr. Principal SDE, Lead                Sept 2012 to Jul 2015
     Developed Linux kernel framework for plugging multiple storage transports: 
     NVMe, AHCI/SATAe, SOP/PQI for FPGA and ASIC bring-up, device and firmware 
     virtualization. Framework allowed kernel execution of compiled scripts. 
