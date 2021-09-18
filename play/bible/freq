@@ -2,4 +2,5 @@
 
 #cat 2peter.txt | tr -d '[:punct:]' | tr ' ' '\n' | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn
 #cat daniel.txt | tr -d '[:punct:]' | tr ' ' '\n' | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn
-cat bible.txt | tr -d '[:punct:]' | tr ' ' '\n' | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn
+#cat bible.txt | tr -d '[:punct:]' | tr ' ' '\n' | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn
+cat philippians.txt | tr -d '[:punct:]' | tr ' ' '\n' | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn
