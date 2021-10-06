@@ -1,6 +1,0 @@
-
-
-https://bugzilla.readthedocs.io/en/5.0/installing/quick-start.html#quick-start
-http://archive.ubuntu.com/ubuntu/dists/trusty-updates/main/installer-amd64/current/images/netboot/
-https://help.ubuntu.com/community/Installation/FromWindows
-http://www.howtogeek.com/128347/5-ways-to-try-out-and-install-ubuntu-on-your-computer/

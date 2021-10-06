@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleLoggerHelper", "ConsoleLoggerHelper\ConsoleLoggerHelper.vcproj", "{00BA212F-103D-4CCA-A108-1F0AE42FC169}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleLoggerLib", "ConsoleLoggerLib.vcproj", "{6301B748-34F3-41BF-A931-D9EB541834C6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_console", "ConsoleLogger_DEMO\ConsoleLogger_DEMO.vcproj", "{037DF4AD-2F8B-458E-8C02-42C100F4DFFB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00BA212F-103D-4CCA-A108-1F0AE42FC169}.Debug|Win32.ActiveCfg = Debug|Win32
+		{00BA212F-103D-4CCA-A108-1F0AE42FC169}.Debug|Win32.Build.0 = Debug|Win32
+		{00BA212F-103D-4CCA-A108-1F0AE42FC169}.Release|Win32.ActiveCfg = Release|Win32
+		{00BA212F-103D-4CCA-A108-1F0AE42FC169}.Release|Win32.Build.0 = Release|Win32
+		{6301B748-34F3-41BF-A931-D9EB541834C6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6301B748-34F3-41BF-A931-D9EB541834C6}.Debug|Win32.Build.0 = Debug|Win32
+		{6301B748-34F3-41BF-A931-D9EB541834C6}.Release|Win32.ActiveCfg = Release|Win32
+		{6301B748-34F3-41BF-A931-D9EB541834C6}.Release|Win32.Build.0 = Release|Win32
+		{037DF4AD-2F8B-458E-8C02-42C100F4DFFB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{037DF4AD-2F8B-458E-8C02-42C100F4DFFB}.Debug|Win32.Build.0 = Debug|Win32
+		{037DF4AD-2F8B-458E-8C02-42C100F4DFFB}.Release|Win32.ActiveCfg = Release|Win32
+		{037DF4AD-2F8B-458E-8C02-42C100F4DFFB}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

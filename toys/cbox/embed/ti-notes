@@ -1,0 +1,38 @@
+
+https://ti-84-plus.com/blog/ti-84-plus-compile-and-run-an-hello-world-c-program/
+
+http://tibasicdev.wikidot.com/
+https://tiplanet.org/
+https://tedium.co/2015/09/24/graphing-calculators-gaming-popularity/
+https://codewalr.us/index.php?topic=1234.0
+https://www.ticalc.org/programming/resources/
+
+https://ez80.readthedocs.io/en/latest/tutorial/intro.html
+
+
+https://ti-84-plus.com/blog/ti-84-plus-compile-and-run-an-hello-world-c-program/
+
+http://tibasicdev.wikidot.com/
+https://tiplanet.org/
+https://tedium.co/2015/09/24/graphing-calculators-gaming-popularity/
+https://codewalr.us/index.php?topic=1234.0
+https://www.ticalc.org/programming/resources/
+
+https://ez80.readthedocs.io/en/latest/tutorial/intro.html
+
+https://www.dosbox.com/wiki/DOSBox_and_Mac_OS_X
+
+file:///Users/bartbartel/dev/repo/code/toys/misc/ti/z80tut
+https://en.wikibooks.org/wiki/TI_83_Plus_Assembly/Hello_World
+http://www.philbywhizz.com/2017/07/27/z80-development-workflow/
+
+http://naviapple.blogspot.com/2011/04/how-to-run-tasm-on-mac-os-x-using.html
+
+$ dosbox &
+Z:\> MOUNT C ~/dev/dosgames
+Z:\> C:
+Z:\> cd SRC\BOUNCE
+Z:\> tasm -80 hello.z80
+
+
+

@@ -1,0 +1,30 @@
+mysql> 1/27/2017 1:52:59 PM     C:\code\toys\embed\lamp
+
+bugzilla_test / h@7
+/boot    10 GB
+/swap     2 GB
+/        50 GB
+/home   100 GB
+
+https://bugzilla.org
+    => docs => 5.0.3 [HTML] => Installation & Mtc => Quick Start Ubu
+
+sudo apt-get update
+sudo apt-get install build-essential
+sudo apt-get install openbox
+
+usb mount /dev/sdb1 /media/usb
+
+mysql -u root -p <ENTER>
+    => password
+
+mysql> use bugs;
+mysql> show tables from bugs;
+mysql> source /path/to/sql/file.sql
+
+mount.cifs //server/share /mnt/path -o user=.,pass=.
+
+users: root
+       bart - h7
+$ startx
+

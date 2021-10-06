@@ -1,5 +1,11 @@
 7/28/2021 7:09:54 AM     C:\sandbox\code\toys\grokkage\cheats
 
+------------------count bits------------------------------------------------
+    int count = 0; while (x) { count++; x &= (x-1); }
+------------------insert sort-----------------------------------------------
+    for (c = 1 ; c <= n - 1; c++)
+        d = c;
+        while (d > 0 && a[d] < a[d-1]) { exchg(a[d], a[d-1]); d--; }
 ------------------list------------------------------------------------------
 reversal:               while (p)
 p=list,q,r=null             q = p->next

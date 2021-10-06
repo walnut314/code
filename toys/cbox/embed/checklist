@@ -1,0 +1,74 @@
+
+Date: ___________________________
+
+Checklist:
+
+
+[ ] CCB Approval
+[ ] Tag
+[ ] Revision
+    
+[ ] Configuration
+    [ ] Debug
+    [ ] Release
+    [ ] Other _____
+
+[ ] Type of Test: __________________
+
+[ ] Laptop loaded with Tagged Software
+    [ ] verify non IDEAL calibrations
+    [ ] Clean build of binary
+    [ ] Build tools
+    [ ] Build coeffs
+
+[ ] Load:
+    [ ] MCPs
+    [ ] ADP
+    [ ] Coeffs
+
+[ ] CRCs
+    [ ] Binary
+    [ ] Mfg
+    [ ] Coeff
+    [ ] Inst
+    
+[ ] Run CAN_DEMUX
+    [ ] Verify logs
+
+[ ] Laptop computer battery charged
+
+[ ] iPad battery charged
+
+[ ] USB connect to CAN not touching walls
+
+[ ] Engage on ground w/ only known errors
+
+    Known Errors: ___________________________
+
+[ ] Nanowifi
+
+[ ] Startup iPAD and verify terminal connection
+
+[ ] Adjust laptop windows and fonts for visibility on iPad
+
+[ ] Verify cameras, batteries and memory
+
+[ ] Verify controls: cyclic, rotor pedals, collective
+
+[ ] Ping pong bass for cyclic tracking
+
+[ ] Sync LED functional
+
+[ ] Flight test cards
+
+[ ] Weight and balance
+
+[ ] Weather briefing
+
+[ ] Fuel
+
+[ ] Future:
+    [ ] Sensors w/calibrations installed
+    [ ] Serial numbers w/calibration data
+
+
