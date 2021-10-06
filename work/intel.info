@@ -1,0 +1,56 @@
+10/5/2021 3:25:08 PM     C:\dev\code\work\intel.info
+
+People to connect with:
+Patrick - Chang, Sung <Sung.Chang@intel.com>
+
+Michael Relf's team <Michael.Relf@intel.com>
+McKee, Kenneth G <Kenneth.G.McKee@intel.com> - Ken is Mike's boss
+
+Graphics team:
+Nandan, Anshika - <anshika.nandan@intel.com>
+
+Thunderbolt team:
+Bardewa, Saroj <Saroj.Bardewa@intel.com>
+
+Surface PDT list - see meeting for list of people
+
+
+
+IT 800-356-3510
+Symserver 
+amr\bbartel
+
+0: kd> .sympath
+Symbol search path is: cache*;srv*https://msdl.microsoft.com/download/symbols;srv*http://symbols.intel.com;\\symbols.intel.com\symstore
+Expanded Symbol search path is: cache*;srv*https://msdl.microsoft.com/download/symbols;srv*http://symbols.intel.com;\\symbols.intel.com\symstore
+
+.sympath \\symbols.intel.com\symstore
+.sympath srv*http://symbols.intel.com
+*
+
+cache*;srv*https://msdl.microsoft.com/download/symbols;srv*http://symbols.intel.com
+
+
+
+goto/workday
+goto/newtointel
+goto/acronyms
+goto/integrationacademy
+goto/learningatIntel
+
+COVID-19 Information: https://goto.intel.com/coronavirus
+Intel Foundation: https://intel.com/foundation
+Corporate Responsibility: https://intel.com/responsibility
+Benevity page: https://intel.benevity.org
+Acronyms @ Intel: https://intelpedia.intel.com
+Emergency Notifications at Intel: https://goto.intel.com/corporatesecurity
+IT Information and Resources: https://goto.intel.com/remotework
+- Build Your Network: o https://goto.intel.com/careerconnections o https://pops.intel.com/intel-communities
+Performance and Rewards at Intel: https://goto.intel.com/insights
+Here's the correct page for Intel Communities: https://intel.sharepoint.com/sites/intel-communities
+Rewards Conversations: https://goto.intel.com/rewards
+Your Pay: https://goto.intel.com/keydates
+For tax related questions, please go here: https://circuit.intel.com/content/entrypage/7d07be76-8df4-4bda-bf7f-b78072f1b6c2.html
+HR Help: https://circuit.intel.com/content/entrypage/619c77cd-b4d0-4788-9c64-d9897fd45751.html
+A to Z: Benefits and Services: https://circuit.intel.com/content/hr/data-mgmt/general/a-to-z-directory/a-to-z.html
+
