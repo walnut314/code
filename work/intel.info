@@ -1,4 +1,4 @@
-10/5/2021 3:25:08 PM     C:\dev\code\work\intel.info
+10/13/2021 8:21:04 AM     C:\dev\code\work\intel.info
 
 People to connect with:
 Patrick - Chang, Sung <Sung.Chang@intel.com>
@@ -31,7 +31,6 @@ Expanded Symbol search path is: cache*;srv*https://msdl.microsoft.com/download/s
 cache*;srv*https://msdl.microsoft.com/download/symbols;srv*http://symbols.intel.com
 
 
-
 goto/workday
 goto/newtointel
 goto/acronyms
@@ -58,5 +57,25 @@ Drivers and scripts (TBT)
 \\Vmspfsfsfm02\release_mgmt\WIP\TBT\TBT_DCH_SW\TBT_DCH_SW_Rev81\TBT_DCH_SW_Rev81\TBT_DCH_SW_Rev81\Drivers\Debug
 
 \\Vmspfsfsfm02\release_mgmt\WIP\TBT\TBT_DCH_SW\TBT_DCH_SW_Rev84\TBT_DCH_SW_Rev84.zip
+
+
+Queries:
+================================================================
+TigerLake (TGL) -> Zeus / Lucca (PLE)
+Alderlake Platform Bugs (ADL)
+    State: implemented, verified, rejected, complete
+    Surface SysDevice
+    ext_<fields> -> MSFT
+    Layouts: PBS. zzz_All_Most
+    Partner Bug ID: Universal ID
+    bug_origination: microsoft
+    ext_cust_blog: visible by MSFT
+    sys_debug_forum
+
+Links:  Zeus/Lucca: https://hsdes.intel.com/appstore/community/#/1208529755?queryId=22012823627    
+        ADL:        https://hsdes.intel.com/appstore/community/#/1208529755?queryId=22013647960
+
+
+
 
 
