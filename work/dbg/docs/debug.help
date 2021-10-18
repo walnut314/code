@@ -176,6 +176,11 @@ Register based stack dump:
 
 > !rcdrkd.rcdrlogdump <driver_name.sys>
 
+0: kd> !wmitrace.strdump <-- list running loggers
+0: kd> !wmitrace.logger 0x1d <-- MpWppTracing
+0: kd> !wmitrace.logger 0x02 <-- Circular Kernel Context Logger
+0: kd> !wmitrace.logdump *   <-- dump all logs
+
 ==== WDF debugging ====
 
 Look at all WDF100 on stacks:
