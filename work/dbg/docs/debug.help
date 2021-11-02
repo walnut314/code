@@ -2,6 +2,8 @@
 
 latest Windbg: \\dbg\privates\latest
 
+!winde.activity
+
 1: kd> !dawg
 -----------------------------------------------------
          Debug Analysis - Wait Graph
@@ -3183,4 +3185,21 @@ SetupApi Log levels:
 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup
 most verbose: 0x2000FFFF
 
+
+Memory Triage:
+!lookaside ffffcbbf421b6040
+4: kd> !pool ffffcbbf421b6050 1
+4: kd> !pte ffffcbbf421b6050
+4: kd> !pplookaside 
+4: kd> !poolval ffffcbbf421b6050 3
+4: kd> !poolused Gla1
+4: kd> !memusage
+ loading PFN database
+  Usage Summary (in Kb):
+Control       Valid Standby Dirty Shared Locked PageTables  name
+3ffffffffe 453468      0     0     0 453468     0    AWE
+ffffb9041a2784a0   492      0     0     0   492     0  mapped_file( wbiosrvc.dll )
+4: kd> !ca ffffb9041a2784a0   
+
+    
 
