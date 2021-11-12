@@ -15,7 +15,7 @@ func main() {
 
     for i := 0; i < 4; i++ {
         id := i+42
-        name := "the dude "+string(i)
+        name := "the dude "+string('0'+i)
         recs = append(recs, Record{Id: id, Name: name})
         hash[name] = Record{Id: id, Name: name}
     }
@@ -26,8 +26,8 @@ func main() {
     }
 
     fmt.Println("hash");
-    for _,r := range hash {
-        fmt.Printf("%d => %s\n", r.Id, r.Name)
+    for key,val := range hash {
+        fmt.Printf("[%s]: %d => %s\n", key, val.Id, val.Name)
     }
 }
 
