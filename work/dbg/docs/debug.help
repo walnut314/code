@@ -47,6 +47,7 @@ OneNote WinDbg: search PLE-SW-DEV for:
 
 .symopt+ 0x40
 .symopt- 100
+.reload /f
 
 .cxr <addr>; kv
 
@@ -3202,4 +3203,14 @@ ffffb9041a2784a0   492      0     0     0   492     0  mapped_file( wbiosrvc.dll
 4: kd> !ca ffffb9041a2784a0   
 
     
+Summary:
+!running -i -t
+!sysinfo machineid
+!exploitable -m
+!deadlock
+!heap -stat -h 0
+!vm
+!kah
+!ocafences
+
 
