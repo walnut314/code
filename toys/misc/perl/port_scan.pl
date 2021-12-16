@@ -15,7 +15,8 @@ if ($ip eq "-h") {
     &usage();
 }
  
-$ip = "localhost" if not $ip;
+#$ip = "localhost" if not $ip;
+$ip = "10.0.0.152" if not $ip;
 $port = 1 if not $port;
 $port_stop = 1024 if not $port_stop;
 $log = "qsopenports.txt" if not $log;

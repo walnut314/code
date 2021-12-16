@@ -1,0 +1,319 @@
+# Wed, 02 Feb 2011 2:12:23 PM Pacific Standard Time
+Turning on NTFS exception logging on-the-fly:
+============================================
+Enable NTFS status debugging and set the status check to STATUS_ACCESS_DENIED:
+
+eb Ntfs!NtfsStatusDebugEnabled 1
+ed ntfs!NtfsStatusBreakOnStatus 0xc0000022
+
+The default values of these two entries are zero.
+
+This will break into the debugger whenever NTFS returns STATUS_ACCESS_DENIED in any thread context. (system will bug-check if no debugger is connected)
+
+Once NtfsStatusDebugEnabled has been enabled, the following ndiskd extension will dump recent NTFS error status logs:
+
+!ntfskdvis.status
+
+BaseEntry|| Thread Status File Line
+
+8cc64740 || 892a5d48 c0000011 FsCtrl.c @ 24004
+
+8cc64750 || 892a5d48 c0000011 FsCtrl.c @ 24004
+
+8cc64760 || 892a5d48 c0000011 FsCtrl.c @ 24004
+
+8cc64770 || 892a5d48 c0000011 FsCtrl.c @ 24004
+
+8cc64780 || 892a5d48 c0000011 FsCtrl.c @ 24004
+
+8cc64790 || 892a5d48 c0000011 FsCtrl.c @ 24004
+
+....
+
+Enable NTFS status checking for only a particular thread:
+ed ntfs!NtfsStatusBreakForThread 88b0d020 (this example is for a 32-bit thread address as the actual type is PETHREAD)
+Enable NTFS status debugging using DbgPrintEx(): 
+ed ntfs! NtfsStatusDisplayStatus 0xc0000022
+
+
+
+
+1. dump vcbs
+kd> !ntfskd.ntfsdata
+
+2. dump fcbs for vcb
+kd> !ntfskd.fcbtable <vcb addr>
+
+3. dump vcb structure
+kd> !ntfskd.vcb <vcb addr>
+
+4. dump fcb structure
+kd> !ntfskd.fcb fffff880076b8010
+
+5. get scb <- FsContext
+kd> !fileobj <file object>
+
+6. dump scb
+kd> !ntfskd.scb <scb addr>
+
+7. get ccb <- FsContext2
+kd> !ntfskd.ccb 0xfffff880077a8e00
+
+9. get oplock
+kd> dt ntfs!_SCB ScbType.Data.Oplock 0xfffff880076b8140 -> <scb addr>
+   +0x1b8 ScbType             : 
+      +0x000 Data                : 
+         +0x008 Oplock              : 0xfffff880`07782800 Void
+
+10. dump oplock info
+kd> !fltkd.oplock fffffa8005aa3a70 -> <file object>
+
+NTFS Data SCB: fffff880076b8140 
+
+Oplock: fffff88007782800 Filter Breaking to None
+   State Flags              : [00000248] FilterOplock Exclusive BreakToNone
+   Excl. Oplock Request Irp : 0000000000000000 
+   Excl. Oplock File Object : fffffa8005aa3a70 
+Could not read offset of field "IrpOplocksR" from type nt!_NONOPAQUE_OPLOCK
+
+11. dump oplock structure
+kd> dt nt!_nonopaque_oplock 0xfffff880`07782800 <== <oplock addr from SCB>
+   +0x000 IrpExclusiveOplock : (null) 
+   +0x008 FileObject       : 0xfffffa80`05aa3a70 _FILE_OBJECT
+   +0x010 IrpOplocksII     : _LIST_ENTRY [ 0xfffff880`07782810 - 0xfffff880`07782810 ]
+   +0x020 WaitingIrps      : _LIST_ENTRY [ 0xfffff880`07db34f0 - 0xfffff880`07d856f0 ]
+   +0x030 OplockState      : 0x248
+   +0x038 FastMutex        : 0xfffffa80`0492ccb0 _FAST_MUTEX
+
+Note: On Windows 7 the oplock structure is enhanced:
+2: kd> dt nt!_NONOPAQUE_OPLOCK
+   +0x000 IrpExclusiveOplock : Ptr64 _IRP
+   +0x008 FileObject       : Ptr64 _FILE_OBJECT
+   +0x010 ExclusiveOplockOwner : Ptr64 _EPROCESS
+   +0x018 IrpOplocksR      : _LIST_ENTRY
+   +0x028 IrpOplocksRH     : _LIST_ENTRY
+   +0x038 RHBreakQueue     : _LIST_ENTRY
+   +0x048 WaitingIrps      : _LIST_ENTRY
+   +0x058 DelayAckFileObjectQueue : _LIST_ENTRY
+   +0x068 OplockState      : Uint4B
+   +0x070 FastMutex        : Ptr64 _FAST_MUTEX
+
+12. dump waiting IRPS
+kd> dt nt!_WAITING_IRP -l Links.Flink 0xfffff880`07db34f0 <== <addr of WaitingIrps list entry>
+Links.Flink at 0xfffff88007db34f0
+---------------------------------------------
+   +0x000 Links            :  [ 0xfffff880`07d856f0 - 0xfffff880`07782820 ]
+      +0x000 Flink            : 0xfffff880`07d856f0 _LIST_ENTRY [ 0xfffff880`07782820 - 0xfffff880`07db34f0 ]
+      +0x008 Blink            : 0xfffff880`07782820 _LIST_ENTRY [ 0xfffff880`07db34f0 - 0xfffff880`07d856f0 ]
+   +0x010 Irp              : 0xfffffa80`0589f010 _IRP
+   +0x018 CompletionRoutine : 0xfffffa60`0131f060     void  Ntfs!NtfsOplockComplete+0
+   +0x020 Context          : 0xfffffa80`059a4790 Void
+   +0x028 Event            : 0x00740066`006f0073 _KEVENT
+   +0x030 Information      : 9
+
+Links.Flink at 0xfffff88007d856f0
+---------------------------------------------
+   +0x000 Links            :  [ 0xfffff880`07782820 - 0xfffff880`07db34f0 ]
+      +0x000 Flink            : 0xfffff880`07782820 _LIST_ENTRY [ 0xfffff880`07db34f0 - 0xfffff880`07d856f0 ]
+      +0x008 Blink            : 0xfffff880`07db34f0 _LIST_ENTRY [ 0xfffff880`07d856f0 - 0xfffff880`07782820 ]
+   +0x010 Irp              : 0xfffffa80`05683010 _IRP
+   +0x018 CompletionRoutine : 0xfffffa60`0131f060     void  Ntfs!NtfsOplockComplete+0
+   +0x020 Context          : 0xfffffa80`051256d0 Void
+   +0x028 Event            : 0x00140000`00000012 _KEVENT
+   +0x030 Information      : 9
+
+13. Find IRPS w/specific file object
+kd> !irpfind 2 0 FileObject <file obj addr>
+
+14. Get SectionObjectPointers
+kd> !fileobj <file obj>
+
+15. dump section object pointer
+kd> dt ntfs!_SECTION_OBJECT_POINTERS fffffa80059c9130
+   +0x000 DataSectionObject : 0xfffffa80`04df6560 Void
+   +0x008 SharedCacheMap   : 0xfffffa80`058719a0 Void
+   +0x010 ImageSectionObject : (null) 
+
+16. dump section
+kd> !ca 0xfffffa80`04df6560
+
+ControlArea  @ fffffa8004df6560
+  Segment      fffff88009be99a0  Flink      0000000000000000  Blink        0000000000000000
+  Section Ref                 1  Pfn Ref                   1  Mapped Views                1
+  User Ref                    0  WaitForDel                0  Flush Count                 0
+  File Object  fffffa8005aa2160  ModWriteCount             0  System Views                1
+  WritableRefs                0  
+  Flags (c080) File WasPurged Accessed 
+
+      \Program Files\Microsoft\Exchange Server\TransportRoles\Pickup\Test9.eml
+
+Segment @ fffff88009be99a0
+  ControlArea     fffffa8004df6560  ExtendInfo    0000000000000000
+  Total Ptes                   100
+  Segment Size              100000  Committed                    0
+  Flags (c0000) ProtectionMask 
+
+Subsection 1 @ fffffa8004df65d0
+  ControlArea  fffffa8004df6560  Starting Sector        0  Number Of Sectors  100
+  Base Pte     fffff88007dc7010  Ptes In Subsect      100  Unused Ptes          0
+  Flags                       d  Sector Offset          0  Protection           6
+  Accessed 
+  Flink        0000000000000000  Blink   0000000000000000  MappedViews          1
+
+17. find all file objects for "filename"
+kd> !winde.findfile <filename>
+
+18. finding IRPs queued to completion port
+0: kd> !fileobj fffffa8002999670
+
+Device Object: 0xfffffa80033eb060   \Driver\usbhub
+Vpb is NULL
+Event signalled
+
+Flags:  0x40000
+        Handle Created
+
+IRPs queued to File Object:
+
+        fffffa80032b0c60   \Driver\ATSwpWDF
+        fffffa8003be8410  *Completed*
+        fffffa80036b97e0  *Completed*
+        fffffa8003ab51b0  *Completed*
+        fffffa8003ac44e0  *Completed*
+        fffffa80036f2710  *Completed*
+        fffffa8003d03260  *Completed*
+        fffffa8003d26260  *Completed*
+        fffffa80036f1c60  *Completed*
+        fffffa8003e434d0  *Completed*
+        fffffa8003adfc60  *Completed*
+        fffffa8003cf8c60  *Completed*
+        fffffa8003a79520  *Completed*
+        fffffa800381eae0  *Completed*
+        fffffa8003e8ac60  *Completed*
+        fffffa800390d9c0  *Completed*
+        fffffa8003a43010  *Completed*
+        fffffa8003dd4650  *Completed*
+        fffffa8003dd27b0  *Completed*
+        fffffa80019fbc60  *Completed*
+        fffffa8003d50c60  *Completed*
+        fffffa80036f5010  *Completed*
+        fffffa80028cc7c0  *Completed*
+        fffffa800375ac60  *Completed*
+        fffffa8003d5fc60  *Completed*
+        fffffa80038f4010  *Completed*
+        fffffa80032b23c0  *Completed*
+        fffffa8003b56560  *Completed*
+        fffffa800370a8c0  *Completed*
+        fffffa80019f9820  *Completed*
+        fffffa8003b19440  *Completed*
+        fffffa8003ef99f0   \Driver\ATSwpWDF
+
+32 queued.
+
+
+0: kd> dt nt!_FILE_OBJECT CompletionContext IrpList fffffa8002999670
+   +0x0b0 CompletionContext  : 0xfffffa80`02f0ee40 _IO_COMPLETION_CONTEXT
+   +0x0c0 IrpList            : _LIST_ENTRY [ 0xfffffa80`032b0c80 - 0xfffffa80`03ef9a10 ]
+
+
+0: kd> dt nt!_IO_COMPLETION_CONTEXT  0xfffffa80`02f0ee40
+   +0x000 Port             : 0xfffffa80`036eb590 Void        ? Completion Port
+   +0x008 Key              : 0x00000000`00000208 Void        ? Completion Port Key
+
+
+0: kd>* Find the Completion Port in the process handle table for verification
+
+0: kd> !handle 0 3 fffffa8003382060 IoCompletion
+
+Searching for handles of type IoCompletion
+
+PROCESS fffffa8003382060
+    SessionId: 0  Cid: 02a8    Peb: 7fffffdc000  ParentCid: 01d0
+    DirBase: 1b6b1000  ObjectTable: fffff8a000d13930  HandleCount: 192.
+    Image: ATService.exe
+
+Handle table at fffff8a000d13930 with 192 entries in use
+  .
+  .
+  .
+0220: Object: fffffa80036eb590  GrantedAccess: 001f0003 Entry: fffff8a000d35880
+Object: fffffa80036eb590  Type: (fffffa8001839de0) IoCompletion
+    ObjectHeader: fffffa80036eb560 (new version)
+        HandleCount: 1  PointerCount: 2
+
+
+0: kd>* This is the IO_COMPLETION_OBJECT with linked IRPs and associated Thread
+
+0: kd> dt nt!_IOP_COMPLETION_OBJECT IoCompletionQueue.EntryListHead IoCompletionQueue.ThreadListHead  0xfffffa80`036eb590
+   +0x000 IoCompletionQueue                : 
+      +0x018 EntryListHead                    : _LIST_ENTRY [ 0xfffffa80`03b194e8 - 0xfffffa80`03be84b8 ] Irp->Tail.Overlay.ListEntry (offset a8h)
+     +0x030 ThreadListHead                   : _LIST_ENTRY [ 0xfffffa80`037007b8 - 0xfffffa80`037007b8 ] Thread fffffa80037005f0
+
+
+0: kd>* This is the linked IRP list from the IO_COMPLETION_OBJECT which matches FILE_OBJECT fffffa8002999670 IrpList
+
+0: kd> dt nt!_IRP -l Tail.Overlay.ListEntry.Flink (0xfffffa80`03b194e8 - a8)
+Tail.Overlay.ListEntry.Flink at 0xfffffa8003b19440
+Tail.Overlay.ListEntry.Flink at 0xfffffa80019f9820
+Tail.Overlay.ListEntry.Flink at 0xfffffa800370a8c0
+Tail.Overlay.ListEntry.Flink at 0xfffffa8003b56560
+Tail.Overlay.ListEntry.Flink at 0xfffffa80032b23c0
+Tail.Overlay.ListEntry.Flink at 0xfffffa80038f4010
+Tail.Overlay.ListEntry.Flink at 0xfffffa8003d5fc60
+Tail.Overlay.ListEntry.Flink at 0xfffffa800375ac60
+Tail.Overlay.ListEntry.Flink at 0xfffffa80028cc7c0
+  .
+  .
+  .
+Tail.Overlay.ListEntry.Flink at 0xfffffa8003be8410
+
+19. finding all handles for a process
+kd> !handle 0 3 fffffa8003382060 file
+
+kd> !ntfskd.help
+
+   NTFS Debugger Extensions:
+
+   bdir       [FCB|FO|IRP|SCB|VCB] [[1|2]|FileId] Dumps a directory from mft records
+   cachedrecords               Dump all threads with cached filerecord bcbs
+   cachedruns [addr]           Dump the given cached run array 
+   ccb        [addr]           Dump Cache Control Block
+   dir        [SCB|VCB]        Dump a directory from memory
+   dirtypagetable [addr]       Dump a dirty page restart table
+   dsc        [scb]            Dump private syscache log from SCB
+   dumpchain  [fcb]            Dump a fcb - lcb - chain to find the bottom
+   extents    [AttrRecordHdr]  Dump the extents for a file
+   fcb        [addr] [1|2|...] Dump File Control Block
+   fcbtable   [vcb|fcbtable] [1|2|...] Dump File Control Block Table
+   file       [addr] [1|2|...] Dump File Object
+   filerecord [FO|FCB|SCB|VCB FileID]     Dump the on-disk file record if cached
+   findfcb    [FCB|SCB] [[1|2|4] [processid]]  Find all file and mapped views : SLOW!
+                for FindFcb Flags =  0:all   1:file   2:views   4:directory
+   foirp      [addr] [1|2|...] Dump File Object by IRP address
+   hashtable  [addr]           Dump an lcb hashtable
+   icthread   [addr] [1|2|...] Dump IrpContext by thread address
+   irpcontext [addr] [1|2|...] Dump IrpContext structure
+   lcb        [addr]           Dump Link Control Block
+   logfile    [lsn]            Dump a given lsn or last restart
+                               area if no options are given
+   isotable   [TXF_SCB|table addr]  Dump TxF name isolation table
+   mcb        [mcbaddress|scb] Dump Map Control Block 
+   mft        [FCB|FO|IRP|SCB|VCB] [[1|2|3]|FileId]  Dumps FileRecord if cached.
+                               1=Attribute Header 2=Expand Attribute Lists
+   ntfsdata          [1|2|...] Dump NtfsData structure
+   ntfshelp                    Dump this display
+   overflow   [vcb]            Dump the overflow queue
+   scanlog    [FCB|FO|IRP|SCB|VCB|LogPage]  Scan the log for the record of the given value.
+                                             Or dumps the log entirely.
+   scb        [addr] [1|2|...] Dump Stream Control Block
+   size       Type             Prints the sizeof(type)
+   status     [addr] [1]       Dump recent status returns for status or thread
+                no addr=all 1-thread 0-status
+   transaction [irpcontext|fcb|vcb filerecord]  Dump the transaction
+                                                attached to the given structure
+   transactiontable [RESTART_POINTERS]  Dump a transaction table
+   txfscb     [addr]           Dump TXF_SCB and linked TXF_VSCB list
+   usn        [FCB|FO|IRP|SCB|VCB|UsnPage] -[p|f|n] [Variant]  Dump UsnJournal with Filters
+                                            -p: Parent, -f: FileId, -n FileName
+   vcb        [addr] [0|1|2]   Dump Volume Control Block
+ 
