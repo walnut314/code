@@ -8,6 +8,7 @@
 // https://docs.microsoft.com/en-us/windows/win32/projfs/file-system-operation-notifications
 // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstchangenotificationa
 // https://docs.microsoft.com/en-us/windows/win32/fileio/obtaining-directory-change-notifications
+// https://www.codeproject.com/Articles/4997/Spying-a-file-system
 //
 
 void RefreshDirectory(LPTSTR);
@@ -30,9 +31,24 @@ void WatchDirectory(LPTSTR lpDir)
 // Watch the directory for file creation and deletion. 
    dwChangeHandles[0] = FindFirstChangeNotification( 
       lpDir,                         // directory to watch 
-      TRUE, //FALSE,                 // do not watch subtree 
-      FILE_NOTIFY_CHANGE_FILE_NAME); // watch file name changes 
+      TRUE, //FALSE,                 // watch subtree 
+      FILE_NOTIFY_CHANGE_FILE_NAME    |
+      FILE_NOTIFY_CHANGE_DIR_NAME     |
+      FILE_NOTIFY_CHANGE_ATTRIBUTES   |
+      FILE_NOTIFY_CHANGE_SIZE         |
+      FILE_NOTIFY_CHANGE_LAST_WRITE   |
+      FILE_NOTIFY_CHANGE_SECURITY);
  
+
+/*
+FILE_NOTIFY_CHANGE_FILE_NAME    |
+FILE_NOTIFY_CHANGE_DIR_NAME     |
+FILE_NOTIFY_CHANGE_ATTRIBUTES   |
+FILE_NOTIFY_CHANGE_SIZE         |
+FILE_NOTIFY_CHANGE_LAST_WRITE   |
+FILE_NOTIFY_CHANGE_SECURITY 
+*/
+   
    if (dwChangeHandles[0] == INVALID_HANDLE_VALUE) 
    {
      printf("\n ERROR: FindFirstChangeNotification function failed.\n");
@@ -43,7 +59,12 @@ void WatchDirectory(LPTSTR lpDir)
    dwChangeHandles[1] = FindFirstChangeNotification( 
       lpDrive,                       // directory to watch 
       TRUE,                          // watch the subtree 
-      FILE_NOTIFY_CHANGE_DIR_NAME);  // watch dir name changes 
+      FILE_NOTIFY_CHANGE_FILE_NAME    |
+      FILE_NOTIFY_CHANGE_DIR_NAME     |
+      FILE_NOTIFY_CHANGE_ATTRIBUTES   |
+      FILE_NOTIFY_CHANGE_SIZE         |
+      FILE_NOTIFY_CHANGE_LAST_WRITE   |
+      FILE_NOTIFY_CHANGE_SECURITY);
  
    if (dwChangeHandles[1] == INVALID_HANDLE_VALUE) 
    {
