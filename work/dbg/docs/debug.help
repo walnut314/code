@@ -3216,3 +3216,8 @@ Summary:
 !ocafences
 
 
+Hardware Breakpoints:
+https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/ba--break-on-access-
+> ba e1 MyAddress
+
+
