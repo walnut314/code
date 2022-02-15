@@ -10,6 +10,8 @@ let dumpargs = function(Args) { for(let i = 0; i < Args.length; i++) { logln('ar
 var DumpIndex = -1;
 function initializeScript() {}
 
+var dumps2 = new Map();
+
 function DumpFactory(signature, code, handler) { // creates a struct
     this.signature = signature; // string
     this.code = code;           // hex
@@ -18,6 +20,9 @@ function DumpFactory(signature, code, handler) { // creates a struct
 
 var dumps = [new DumpFactory("(3D)", 0x3d, INTERRUPT_EXCEPTION_NOT_HANDLED),
              new DumpFactory("(101)", 0x101, CLOCK_WATCHDOG_TIMEOUT) ];
+
+dumps2.set("(3D)", new DumpFactory("(3D)", 0x3d, INTERRUPT_EXCEPTION_NOT_HANDLED));
+dumps2.set("(101)", new DumpFactory("(101)", 0x101, CLOCK_WATCHDOG_TIMEOUT));
 
 function Classify(sline) {
     for (let i = 0; i < dumps.length; i++) {
@@ -29,11 +34,22 @@ function Classify(sline) {
     return -1;
 }
 
+function testout()
+{
+    var Args = ["dude", "wus", "upio", "homi"];
+    var dumper = dumps2.get("(101)");
+    dumper.handler(Args);
+}
+
 // 2: kd> dx Debugger.State.Scripts.eval.Contents.EvalDump()
 function EvalDump() {
     var Args = [];
     let Control = host.namespace.Debugger.Utility.Control;
     logln("***> Hello Dump Analyzer! \n");
+
+    testout();
+    return;
+
     for(let Line of Control.ExecuteCommand('!analyze -v')) {
         var sline = new String(Line);
         var index = Classify(sline);
@@ -52,6 +68,9 @@ function EvalDump() {
 
 function CLOCK_WATCHDOG_TIMEOUT(Args) {
     // https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/bug-check-0x101---clock-watchdog-timeout
+    dumpargs(Args);
+    return;
+
     var regex = /([a-zA-Z0-9]{16})/;
     var clock_interrupt_timeout_interval_ticks = Args[0].match(regex)[0];
     var addr_of_prcb = Args[2].match(regex)[0];
