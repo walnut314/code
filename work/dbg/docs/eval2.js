@@ -7,7 +7,7 @@
 
 let logln = function (e) { host.diagnostics.debugLog(e + '\n'); }
 let dumpargs = function(Args) { for(let i = 0; i < Args.length; i++) { logln('arg: ' + Args[i]); } }
-var DumpIndex = -1;
+var regex = /Arg(\d): ([a-zA-Z0-9]{16})/;
 function initializeScript() {}
 
 function DumpFactory(signature, code, handler) { // creates a struct
@@ -16,17 +16,17 @@ function DumpFactory(signature, code, handler) { // creates a struct
     this.handler = handler;     // dump parser
 }
 
-var dumps = [new DumpFactory("(3D)", 0x3d, INTERRUPT_EXCEPTION_NOT_HANDLED),
-             new DumpFactory("(101)", 0x101, CLOCK_WATCHDOG_TIMEOUT) ];
+var DumpIndex = -1;
+var dumps2 = new Map();
+dumps2.set("(3D)", new DumpFactory("(3D)", 0x3d, INTERRUPT_EXCEPTION_NOT_HANDLED));
+dumps2.set("(101)", new DumpFactory("(101)", 0x101, CLOCK_WATCHDOG_TIMEOUT));
 
 function Classify(sline) {
-    for (let i = 0; i < dumps.length; i++) {
-        if (sline.includes(dumps[i].signature)) {
-            DumpIndex = i;
-            return i;
+    for (let [key, dumper] of dumps2) {
+        if (sline.includes(dumper.signature)) {
+            DumpIndex = dumper.signature;
         }
     }
-    return -1;
 }
 
 // 2: kd> dx Debugger.State.Scripts.eval.Contents.EvalDump()
@@ -34,18 +34,19 @@ function EvalDump() {
     var Args = [];
     let Control = host.namespace.Debugger.Utility.Control;
     logln("***> Hello Dump Analyzer! \n");
-
     for(let Line of Control.ExecuteCommand('!analyze -v')) {
         var sline = new String(Line);
         var index = Classify(sline);
-        if      (sline.includes('Arg1')) { Args[0] = sline; }
-        else if (sline.includes('Arg2')) { Args[1] = sline; }
-        else if (sline.includes('Arg3')) { Args[2] = sline; }
-        else if (sline.includes('Arg4')) { Args[3] = sline; }
+        if (sline.match(/Arg\d:/)) { 
+            var matches = sline.match(regex);
+            var idx = parseInt(matches[1]);
+            Args[idx-1] = matches[2];
+        }
     }
-    if (DumpIndex >= 0) {
+    if (DumpIndex.length > 0) {
+        var dumper = dumps2.get(DumpIndex);
         dumpargs(Args);
-        dumps[DumpIndex].handler(Args);
+        dumper.handler(Args);
     } else {
         logln("dump type not supported: " + String(DumpIndex));
     }
@@ -54,11 +55,10 @@ function EvalDump() {
 function CLOCK_WATCHDOG_TIMEOUT(Args) {
     // https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/bug-check-0x101---clock-watchdog-timeout
 
-    var regex = /([a-zA-Z0-9]{16})/;
-    var clock_interrupt_timeout_interval_ticks = Args[0].match(regex)[0];
-    var addr_of_prcb = Args[2].match(regex)[0];
-    var processor = Args[3].match(regex)[0];;
-
+    var clock_interrupt_timeout_interval_ticks = Args[0];
+    var addr_of_prcb = Args[2];
+    var processor = Args[3];
+    
     logln("***> CLOCK_WATCHDOG_TIMEOUT <***");
     logln("clock interval: " + clock_interrupt_timeout_interval_ticks);
     logln("prcb:           " + addr_of_prcb);
