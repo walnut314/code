@@ -15,7 +15,6 @@ from pykd import *
 import re
 
 
-print("triage")
 #print(pykd.dbgCommand("r"))
 #line = print(pykd.dbgCommand("!analyze -v"))
 #def EvalDump():
@@ -65,8 +64,11 @@ def which_group(match):
 
 grp = None
 Args = [1,2,3,4]
-blob = pykd.dbgCommand("!analyze -v")
-lines = blob.splitlines()
+pykd.dbgCommand(".logopen /d")
+print("triage")
+pykd.dbgCommand("||")
+
+lines = pykd.dbgCommand("!analyze -v").splitlines()
 for line in lines:
     if grp == None:
         typ = re.search(regex2, line)
@@ -79,4 +81,6 @@ for line in lines:
 dumpargs(Args)
 dump_maps[grp][2](Args)
 
+pykd.dbgCommand(".logclose")
+pykd.dbgCommand("$")
 
