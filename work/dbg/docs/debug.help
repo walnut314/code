@@ -175,6 +175,12 @@ Object: ffff888ab0d923e0  Type: (ffff888aa3ad0bc0) Event
 5: kd> dt nt!_DISPATCHER_HEADER ffff888ab0d923e0
    +0x004 SignalState      : 0n1
 
+3: kd> dt nt!_kevent ffff800f2cc43670
+   +0x000 Header           : _DISPATCHER_HEADER
+
+Ticks:
+Wait Start TickCount 2658271 Ticks: 2649851 (0:11:28:57.940)
+    => (0:11:28:57.940) => 11hrs 28 minute and 57 seconds
 
 Register based stack dump:
 > dps esp-100 esp+100
