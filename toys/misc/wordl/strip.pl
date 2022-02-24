@@ -10,7 +10,7 @@
 # q w y u o s f j k l z x c v
 # s . i l l 
 #
-# History: other, thorn, trove
+# History: other, thorn, trove, bloke
 
 while (<>) {
     chomp;
