@@ -1817,6 +1817,9 @@ CPU Type      KDPC       Function
 dpcs: no pending DPCs found
 
 
+List processes:
+kd> !dml_proc
+
 !list "-e -x \"dt nt!_EPROCESS @$extret-@@(#FIELD_OFFSET(nt!_EPROCESS, TimerResolutionLink)) ImageFileName SmallestTimerResolution RequestedTimerResolution\" nt!ExpTimerResolutionListHead"
 
 DevCon:
