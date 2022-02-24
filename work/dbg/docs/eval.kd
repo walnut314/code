@@ -36,7 +36,13 @@ r? @$t0= (nt!_LIST_ENTRY*) @@(nt!PsActiveProcessHead)
     r? @$t2=#CONTAINING_RECORD(@$t1, nt!_EPROCESS, ActiveProcessLinks)
     as /ma $ProcName @@(@$t2->ImageFileName)
     as /x $CritProc @@(@$t2->BreakOnTermination)
+    $$ .if ($spat("@@(@$t2->ImageFileName)","*csrss*") == 0)
+    $$ .if ($spat(@"${ProcName}","csrss.exe") == 0)
     .block { .echo ${$ProcName} ${$CritProc} }
+    .if ($scmp(@"${ProcName}", "csrss") == 0) {
+    {
+        .block { .echo setting process ${$ProcName} }
+    }
     ad $ProcName
     ad $CritProc
 }
@@ -53,6 +59,7 @@ r? @$t1= (int *) @@(nt!KiServiceTable)
 .printf "dump service table - end\n";
 
 .printf "dump load order module list - start\n";
+$$ make sure !peb is loaded, if not, do a .process <proc_address>
 r? @$t0 = (nt!_LIST_ENTRY *) (&@$peb->Ldr->InLoadOrderModuleList)
 $$ Traverse the list by following Flink field and get FullDllName
 .for (r? @$t1=@$t0->Flink; @$t0 != @$t1; r? @$t1=@$t1->Flink)
