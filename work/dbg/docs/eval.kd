@@ -1,0 +1,114 @@
+$$ dude - this is a cheat sheet
+$$ kd> $$><c:\sandbox\test.kd
+$$ TODO j command flaky
+$$ next script errors: pg 231
+
+$$ https://fishilico.github.io/generic-config/windows/windbg-kd.html
+$$ https://github.com/microsoft/WinDbg-Samples
+$$ http://windbg.info/doc/1-common-cmds.html
+$$ https://github.com/hugsy/defcon_27_windbg_workshop/blob/master/windbg_cheatsheet.md
+$$ https://www.virusbulletin.com/uploads/pdf/conference_slides/2018/Svajcer-VB2018-KernelModeAnalysis.pdf
+$$ https://blog.talosintelligence.com/2019/02/windbg-malware-analysis-with-javascript.html
+$$ .cmdtree <-- help file
+
+
+.block {
+    .echo "sup"
+    .block {
+        .echo "dawg"
+    }
+}
+r $t0 = 42;
+.if (@$t0 == 1) {
+    .printf "One\n";
+} .elsif (@$t0 == 2) {
+    .printf "Two\n";
+} .elsif (@$t0 == 3) {
+    .printf "Three\n";
+} .else {
+    .printf "unknown %x\n", @$t0;
+}
+
+.printf "dump processes - start\n";
+r? @$t0= (nt!_LIST_ENTRY*) @@(nt!PsActiveProcessHead)
+.for (r? @$t1= @$t0->Flink; (@$t1 != @$t0); r? @$t1 = @$t1->Flink)
+{
+    r? @$t2=#CONTAINING_RECORD(@$t1, nt!_EPROCESS, ActiveProcessLinks)
+    as /ma $ProcName @@(@$t2->ImageFileName)
+    as /x $CritProc @@(@$t2->BreakOnTermination)
+    .block { .echo ${$ProcName} ${$CritProc} }
+    ad $ProcName
+    ad $CritProc
+}
+.printf "dump processes - end\n";
+
+.printf "dump service table - start\n";
+dps nt!KiServiceTable L50
+r? @$t3= *(unsigned int *) @@(nt!KiServiceLimit)
+r? @$t1= (int *) @@(nt!KiServiceTable)
+.for (r? @$t2=0; @$t2 < @$t3 ; r? @$t2=@$t2 + 1) {
+    r? @$t4 = @$t1[@$t2] >> 4
+    .printf "%y\n", @$t4 +@$t1
+}
+.printf "dump service table - end\n";
+
+.printf "dump load order module list - start\n";
+r? @$t0 = (nt!_LIST_ENTRY *) (&@$peb->Ldr->InLoadOrderModuleList)
+$$ Traverse the list by following Flink field and get FullDllName
+.for (r? @$t1=@$t0->Flink; @$t0 != @$t1; r? @$t1=@$t1->Flink)
+{
+    $$ Cast list entry to _LDR_DATA_TABLE_ENTRY (Offset 0)
+    $$ to get to the name
+    r? @$t2 = (nt!_LDR_DATA_TABLE_ENTRY *) @@(@$t1)
+    .printf "%msu\n", @@c++(&@$t2->FullDllName)
+}
+.printf "dump load order module list - end\n";
+
+$$ aliases
+$$ al -- lists aliases
+$$ ad * -- deletes all aliases
+aS NewAliasName "dude"
+.printf "name: ${NewAliasName}\n";
+$$ use sicmp for ignore case, otherwise scmp
+.if ($scmp(@"${NewAliasName}", "DuDe") == 0) {
+    .printf "match\n";
+} .else {
+    .printf "no match\n";
+}
+
+aS FileAliasName "c:\dir\name.txt";
+.if ($spat(@"${FileAliasName}", "*abc*")) {
+    .printf "patt match\n";
+} .else {
+    .printf "no patt match\n";
+}
+
+$$ j command - like C's ternary command
+r $t0 = 0n42;
+j (@$t0 < 0) '.echo negative t0' ; '.echo positive t0'
+
+.printf "hello\n";
+
+$$ TODO this command is not executing ???
+r $t1 = 42;
+j (@$t1 < 0) '.echo negative t1' ; '.echo positive t1'
+
+$$ !dml_proc -- dump processes
+$$ .printf "start process walk 1\n";
+$$ r? @$t0= (nt!_LIST_ENTRY*) @@(nt!PsActiveProcessHead)
+$$ .for (r? @$t1= @$t0->Flink; (@$t1 != @$t0); r? @$t1 = @$t1->Flink)
+$$ {
+$$     r? @$t2=#CONTAINING_RECORD(@$t1, nt!_EPROCESS, ActiveProcessLinks)
+$$     .if (@@(@$t2->BreakOnTermination) == 1)
+$$     {
+$$         as /ma $ProcName @@(@$t2->ImageFileName)
+$$         as /x $CritProc @@(@$t2->BreakOnTermination)
+$$         .block { 
+$$             .echo ${$ProcName} has BreakOnTermination ${$CritProc} 
+$$         }
+$$         ad $ProcName
+$$         ad $CritProc
+$$     }
+$$ }
+$$ .printf "end process walk 1\n";
+
