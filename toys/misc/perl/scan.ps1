@@ -1,11 +1,11 @@
-# https://docs.microsoft.com/en-us/powershell/scripting/samples/sample-scripts-for-administration?view=powershell-7.2
-# https://www.improvescripting.com/powershell-function-begin-process-end-blocks-explained-with-examples/
-# https://stackoverflow.com/questions/885349/how-do-i-write-a-powershell-script-that-accepts-pipeline-input
+#!\usr\bin\env powershell
 
 # cat .\app.log | .\scan.ps1
 # 1..20 | .\scan.ps1
-#Write-Host "hello, world!"
-Function dude($line) {
+
+Set-Alias -Name printf -Value Write-Host
+
+function dude($line) {
     begin { # runs once at each invocation
         $a = 42
     }
@@ -13,10 +13,10 @@ Function dude($line) {
         if ($line -match '.*iter (\d{2})') {
         #if ($line -match '.*iter(.*)') {
         #if ($line -match '.*net stop.*(Sur.*)') {
-            $m = $Matches.Item(1)
-            Write-Host "iter:  $m"
+            $m = $matches.Item(1);
+            printf("iter:  $m");
         } else {
-            Write-Host "iter not found $line"
+            printf("iter not found $line");
         }
     }
     end {
@@ -24,10 +24,32 @@ Function dude($line) {
     }
 }
 
+function stuff($msg) {
+    printf("$msg");
+
+    $hash = @{} # empty hash
+    $hash = @{ Number = 1; Shape = "Square"; Color = "Blue"}
+    $hash.Add("Dude", 42)
+    $hash.Add("Sup", 17)
+    $keys = $hash.keys;
+    printf("dude: $keys");
+    foreach ($k in $hash.keys) { $v = $hash[$k]; printf("$k => $v"); }
+
+    # arrays (lists)
+    $list = @(); # empty list
+    $list = @('Zero', 'One', 'Two', 'Three');
+    $list = $list + 'Four'; # adding to list
+    $c = $list.count;
+    $item = $list[$c-1]
+    printf("list count: $c => $item");
+    foreach ($i in $list) { printf("item: $i"); }
+}
+
 foreach ($i in $input) {
     #$runs = (0,1,2,3,$i)
-    $n = dude($i)
-    echo "homi: $n"
+    $n = dude($i);
+    printf("homi: $n");
 }
+stuff("dude stuff");
 
 
