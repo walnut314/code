@@ -7,3 +7,7 @@ $debugcommands = "`$`$< thrd.kd"
 $logfile = "dump.log”
 kd -c $debugcommands -noshell -logo $logfile -z $DumpFile
 
+<#
+#Get-ChildItem -Path C:\dev\Dumps -Filter *.dmp -Recurse
+#>
+

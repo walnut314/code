@@ -10,6 +10,8 @@
 
 # 1: kd> .load C:\dev\Dumps\pykd\pykd.dll
 # 1: kd> !py C:\dev\Dumps\eval.py
+# 0: kd> .load c:\sandbox\Tools\pykd\pykd.dll
+# 0: kd> !py C:\dev\Bugs\Largo\HDCP_Gfx\Src\Tools\Display\DebugTools\pyKd\scripts\main.py
 
 from pykd import *
 import re
