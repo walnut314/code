@@ -197,6 +197,8 @@ Submodules:
     git submodule foreach "git diff --stat"
 
 
+Interactive Adds:
+git add -i
 
 References
 008 Introduction to Git Submodules - YouTube
