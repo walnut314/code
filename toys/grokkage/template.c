@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
+// templates in C
 // http://blog.pkh.me/p/20-templating-in-c.html
 
 #define INT8     (8)
