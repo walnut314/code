@@ -1,0 +1,5 @@
+Status:
+Make utility of:
+def GetType(addr, ptype, subtype, offset):
+
+
