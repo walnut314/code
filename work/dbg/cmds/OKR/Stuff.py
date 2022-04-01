@@ -1,3 +1,38 @@
+
+
+def Get_Irp_Info (
+    addr : str,     # str hex address of ptype
+    ptype : str,    # str struct typedef
+    subtype : str,  # str struct typedef
+    output: STRUCT_IRP_DATA
+):
+    status : KD_STATUS = {}
+    ptr = pykd.ptrPtr(int(addr, 16)) # convert str hex address to pointer
+    typeobject = pykd.typedVar(ptype, ptr) # get object for type = nt!_TRIAGE_POP_FX_DEVICE at address ptr
+    output['Irp'] = pykd.typedVar(subtype, typeobject.Irp) # subtype = nt!_IRP
+    output['Stack'] = pykd.typedVar('nt!_IO_STACK_LOCATION', typeobject.Irp.Tail.Overlay.CurrentStackLocation)
+    status = {'Status': 0, 'Reason': 'success', 'Function' : inspect.stack()[0][3]}
+    return status
+
+
+
+    dprintln("arg1: " + Args[1])
+    status = Get_Irp_Info(Args[1], 'nt!_TRIAGE_POP_FX_DEVICE', 'nt!_IRP', irpst)
+    if (status['Status'] == 0):
+        dprintln('new irp:  {}'.format(irpst['Irp']))
+        dprintln('new stk:  {}'.format(irpst['Stack']))
+    else:
+        dprintln('error: {} in:  {}'.format(status['Reason'], status['Function']))
+    #triage = pykd.dbgCommand("dt nt!_TRIAGE_POP_FX_DEVICE " + Args[1])
+    #dprintln(triage)
+    #ptr = pykd.ptrPtr(int(Args[1], 16))
+    #typeobject = pykd.typedVar('nt!_TRIAGE_POP_FX_DEVICE', ptr) 
+    #Irp = pykd.typedVar('nt!_IRP', typeobject.Irp)
+    #devnode = pykd.dbgCommand("dt nt!_TRIAGE_DEVICE_NODE " + Args[3])
+    #dprintln('devnode: {}' .format(devnode))
+    return
+
+
 # https://www.stl-tec.de/tutorials/WinReverseEng/pyKD/
 def firstNumberInString(string):
     # meant to get the middle number out of Windbgs: "Evaluate expression: 1104 = 0000000000000450"
