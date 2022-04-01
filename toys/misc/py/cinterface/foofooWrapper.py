@@ -6,8 +6,8 @@
 from ctypes import *
 #from ctypes import cdll
 
-lib = cdll.LoadLibrary('./foofoo.so')
-#lib = cdll.LoadLibrary('./foofoo.dll')
+#lib = cdll.LoadLibrary('./foofoo.so')
+lib = cdll.LoadLibrary('./foofoo.dll')
 
 foofoo = getattr(lib, 'foofoo')
 foobar = getattr(lib, 'foobar')
@@ -19,7 +19,7 @@ bar    = getattr(lib, 'bar')
 
 foofoo()
 x = foobar("dude")
-print x
+print(x)
 
 # http://www.ifnamemain.com/posts/2013/Dec/10/c_structs_python/
 class POINT(Structure):
@@ -31,8 +31,8 @@ foo.restype = POINTER(POINT)
 p = foo(2,4)
 
 ptr = p.contents
-print "dude: {}".format(ptr.x)
-print "dude: {}".format(ptr.y)
+print("dude: {}".format(ptr.x))
+print("dude: {}".format(ptr.y))
 
 pp = pointer(ptr)
 
