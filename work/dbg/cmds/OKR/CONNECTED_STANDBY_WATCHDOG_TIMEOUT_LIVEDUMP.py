@@ -17,6 +17,7 @@ class CON_STANDBY():
         self.arg4 = Args[3]
         self.triage_ptr = pykd.ptrPtr(int(self.arg2, 16))
         self.triage_obj = pykd.typedVar('nt!_TRIAGE_POP_FX_DEVICE', self.triage_ptr)
+        self.irp_obj    = pykd.typedVar('nt!_IRP', self.triage_obj.Irp)
         self.output : STRUCT_IRP_DATA = {}
 
     def parse(self):
@@ -29,6 +30,9 @@ class CON_STANDBY():
     def show(self):
         dprintln('new irp:  {}'.format(self.output['Irp']))
         dprintln('new stk:  {}'.format(self.output['Stack']))
+        pend    = int(self.irp_obj.PendingReturned)
+        stk_cnt = int(self.irp_obj.StackCount)
+        dprintln('is pending? {}, stk cnt {}'.format(pend, stk_cnt))
 
 def CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args):
     status : KD_STATUS = {}

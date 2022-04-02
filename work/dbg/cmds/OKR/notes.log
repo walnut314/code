@@ -8,4 +8,5 @@ def GetType(addr, ptype, subtype, offset):
 
 connect with buddy
 
+https://labs.f-secure.com/archive/heap-tracing-with-windbg-and-python/
 
