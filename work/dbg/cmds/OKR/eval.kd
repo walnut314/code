@@ -1,7 +1,4 @@
-.logappend dude.log
-||
 .load c:\sandbox\dump\pykd.dll
 $$ loading eval python file
 !py C:\sandbox\dump\eval.py
-.logclose
 q

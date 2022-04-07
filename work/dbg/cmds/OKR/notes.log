@@ -2,11 +2,27 @@
 
 Scratch area: c:\sandbox\dump
 
+1: kd> .load pykd.dll
+1: kd> !py eval.py
+
+# https://rayanfam.com/topics/pykd-tutorial-part1/
+# https://githomelab.ru/pykd/pykd
+# https://www.zerodayinitiative.com/blog/2018/7/19/mindshare-an-introduction-to-pykd
+# https://python.hotexamples.com/examples/pykd/-/typedVar/python-typedvar-function-examples.html
+# D:\Intel_Dev\Bugs\Largo\Take_Home\src\Tools\Display\DebugTools\pyKd\scripts\main.py
+
 Status:
 Make utility of:
 def GetType(addr, ptype, subtype, offset):
 
 connect with buddy
 
+https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/kd-command-line-options
 https://labs.f-secure.com/archive/heap-tracing-with-windbg-and-python/
+# https://www.ervik.as/automating-dump-file-analysis-via-powershell-for-citrix-xenapp/
+
+<#
+#Get-ChildItem -Path C:\dev\Dumps -Filter *.dmp -Recurse
+#>
+
 

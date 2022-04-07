@@ -3,13 +3,6 @@
 #
 # File: eval.py
 #
-
-# https://rayanfam.com/topics/pykd-tutorial-part1/
-# https://githomelab.ru/pykd/pykd
-# https://www.zerodayinitiative.com/blog/2018/7/19/mindshare-an-introduction-to-pykd
-# https://python.hotexamples.com/examples/pykd/-/typedVar/python-typedvar-function-examples.html
-# D:\Intel_Dev\Bugs\Largo\Take_Home\src\Tools\Display\DebugTools\pyKd\scripts\main.py
-
 # 1: kd> .load pykd.dll
 # 1: kd> !py eval.py
 
@@ -23,7 +16,7 @@ import NOT_IMPLEMENTED as NOT_IMPL
 num_types   = 8 # number of supported bugcheck types
 args_regex  = "Arg(\d): ([a-zA-Z0-9]{16})"
 type_regex  = "(3D)|(9F)|(A0)|(D1)|(101)|(139)|(1D4)|(15F)|(133)"
-grp         = None # this is the dump signature/type, e.g. (9F)
+grp         = None # this is the dump signature/type, e.g. 9F
 Args        = [0] * 4 # declare 4-element array for bugcheck arguments
 
 def dumpargs(Args):
@@ -55,9 +48,11 @@ def get_dump_type(match):
 def main():
     global grp
 
-    dprint(': {}' .format(float(0.27)) + ' Gbps\n')
+    pykd.dbgCommand(".logappend analysis.log")
+    pykd.dbgCommand("||")
     dprint("Intel dump analysis\n")
     lines = pykd.dbgCommand("!analyze -v").splitlines()
+    grp = None
     for line in lines:
         if grp == None:
             typ = re.search(type_regex, line, re.IGNORECASE)

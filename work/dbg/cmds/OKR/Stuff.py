@@ -1,4 +1,6 @@
 
+    dprint(': {}' .format(float(0.27)) + ' Gbps\n')
+
 
 def Get_Irp_Info (
     addr : str,     # str hex address of ptype
