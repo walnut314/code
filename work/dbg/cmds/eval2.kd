@@ -1,0 +1,23 @@
+$$ kd> $$><c:\sandbox\test.kd
+$$ TODO j command flaky
+$$ next script errors: pg 231
+
+
+.block {
+    .echo "sup"
+    .block {
+        .echo "dawg"
+    }
+}
+r $t0 = 42;
+.if (@$t0 == 1) {
+    .printf "One\n";
+} .elsif (@$t0 == 2) {
+    .printf "Two\n";
+} .elsif (@$t0 == 3) {
+    .printf "Three\n";
+} .else {
+    .printf "unknown %x\n", @$t0;
+}
+
+
