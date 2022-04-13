@@ -8,6 +8,8 @@
 let logln = function (e) { host.diagnostics.debugLog(e + '\n'); }
 let dumpargs = function(Args) { for(let i = 0; i < Args.length; i++) { logln('arg: ' + Args[i]); } }
 let regex = /Arg(\d): ([a-zA-Z0-9]{16})/;
+let bufex = /(\".*\")/;
+let irpex = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
 function initializeScript() {}
 
 function DumpFactory(signature, handler) { // creates a struct
@@ -28,9 +30,7 @@ dump_maps.set("(15F)", new DumpFactory("(15F)", CONNECTED_STANDBY_WATCHDOG_TIMEO
 
 function Classify(line) {
     for (let [key, dumper] of dump_maps) {
-        logln("dumper: " + dumper.signature + " -> line: " + line);
         if (line.includes(dumper.signature.toLowerCase())) {
-            logln("signature: " + dumper.signature + " -> line: " + line);
             return dumper.signature;
         }
     }
@@ -46,7 +46,6 @@ function EvalDump() {
     Exec(".logappend analysis.log")
     Exec("||")
     for(let Line of Exec('!analyze -v')) {
-        //logln(Line);
         if (index == null) index = Classify(Line);
         if (Line.match(/Arg\d:/)) { 
             var matches = Line.match(regex);
@@ -80,20 +79,47 @@ function CLOCK_WATCHDOG_TIMEOUT(Args) {
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){ 
     logln(this.signature + " ***> CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP <***");
     dumpargs(Args);
+    var pending = false;
+    var driver_name;
+    var irp;
     var watchdog_subcode = parseInt(Args[0]);
-    logln("subcode: " + String(watchdog_subcode));
+    //logln("subcode: " + String(watchdog_subcode));
     let Exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
     if (watchdog_subcode == 2) {
         Exec("r $t0 = " + Args[1]);
         Exec("r $t0 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0))");
         Exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->Irp)");
-        for(let Line of Exec("!irp @$t1")) {
-            logln(Line)
+        Exec("r $t7 = $t1"); // save Irp in $t7
+        for (let Line of Exec("? @$t1")) {
+            irp = Line.match(irpex)[1];
         }
+        logln(irp);
+        Exec("r $t2 = @@c++(((nt!_IRP *)@$t1)->PendingReturned)");
+        for(let Line of Exec("? @$t2")) {
+            if (Line.includes("00000001")) {
+                pending = true;
+            }
+        }
+        //if (Exec("? @$t2") 
         //fx_dev = host.createPointerObject(Args[1], "ntoskrnl.exe", "nt!_TRIAGE_POP_FX_DEVICE");
-        //for(let Line of Exec('dt _TRIAGE_POP_FX_DEVICE ' + Args[1])) {
-        //    logln(Line);
+        //for(let Line of Exec('dt _TRIAGE_POP_FX_DEVICE @$t0')) {
+            //logln("triage: " + Line);
         //}
+        Exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->DeviceNode)");
+        Exec("r $t2 = @@c++(@$t1+@@c++(#FIELD_OFFSET(_TRIAGE_DEVICE_NODE, ServiceName)))");
+        for(let Line of Exec('dt _UNICODE_STRING @$t2')) {
+            if (Line.includes("Buffer")) {
+                driver_name = Line.match(bufex)[1];
+            }
+        }
+        if (pending == true) {
+            logln("pending returned for irp: " + irp + " on driver: " + driver_name);
+            for(let Line of Exec("!irp @$t7")) {
+                logln(Line)
+            }
+        } else {
+            logln("unknown reason for bugcheck -- needs manual analysis");
+        }
     }
 }
 

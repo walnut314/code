@@ -6,7 +6,7 @@ $$ load and run eval2 javascript file
 .load jsprovider.dll
 .scriptload C:\sandbox\dump\eval2.js
 dx Debugger.State.Scripts.eval2.Contents.EvalDump()
-$$ .scriptunload eval2.js
+.scriptunload eval2.js
 
 $$ load eval2 kd file
 $$ $$>a<C:\sandbox\dump\eval2.kd
