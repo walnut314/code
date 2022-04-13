@@ -1,12 +1,12 @@
 .load c:\sandbox\dump\pykd.dll
 $$ loading eval python file
-!py C:\sandbox\dump\eval.py
+$$ !py C:\sandbox\dump\eval.py
 
 $$ load and run eval2 javascript file
-$$ .load jsprovider.dll
-$$ .scriptload C:\sandbox\dump\eval2.js
+.load jsprovider.dll
+.scriptload C:\sandbox\dump\eval2.js
+dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 $$ .scriptunload eval2.js
-$$ dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 
 $$ load eval2 kd file
 $$ $$>a<C:\sandbox\dump\eval2.kd
