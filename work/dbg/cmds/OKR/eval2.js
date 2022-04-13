@@ -86,6 +86,15 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
     //logln("subcode: " + String(watchdog_subcode));
     let Exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
     if (watchdog_subcode == 2) {
+
+        logln('Arg1: ' + Args[0]);
+        logln("the resiliency phase of connected standby for too long without");
+        logln("entering DRIPS (deepest runtime idle platform state) due to an");
+        logln("unsatisfied device constraint with no activators active.");
+        logln('Arg2: ' + Args[1] + ', nt!TRIAGE_POP_FX_DEVICE Device');
+        logln('Arg3: ' + Args[2] + ', Component index');
+        logln('Arg4: ' + Args[3] + ', Reserved => _TRIAGE_DEVICE_NODE');
+
         Exec("r $t0 = " + Args[1]);
         Exec("r $t0 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0))");
         Exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->Irp)");
@@ -102,9 +111,9 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
         }
         //if (Exec("? @$t2") 
         //fx_dev = host.createPointerObject(Args[1], "ntoskrnl.exe", "nt!_TRIAGE_POP_FX_DEVICE");
-        //for(let Line of Exec('dt _TRIAGE_POP_FX_DEVICE @$t0')) {
-            //logln("triage: " + Line);
-        //}
+        for(let Line of Exec('dt _TRIAGE_POP_FX_DEVICE @$t0')) {
+            logln("triage: " + Line);
+        }
         Exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->DeviceNode)");
         Exec("r $t2 = @@c++(@$t1+@@c++(#FIELD_OFFSET(_TRIAGE_DEVICE_NODE, ServiceName)))");
         for(let Line of Exec('dt _UNICODE_STRING @$t2')) {
