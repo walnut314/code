@@ -5,13 +5,27 @@
 // .scriptunload eval2.js
 // kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 
-let logln = function (e) { host.diagnostics.debugLog(e + '\n'); }
-let dumpargs = function(Args) { for(let i = 0; i < Args.length; i++) { logln('arg: ' + Args[i]); } }
 let regex = /Arg(\d): ([a-zA-Z0-9]{16})/;
-let bufex = /(\".*\")/;
 let irpex = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
-function initializeScript() {}
+let bufex = undefined; ///(\".*\")/;
 
+let exec = undefined
+let logln = undefined
+let spew = undefined
+let grep = undefined
+let find = undefined
+let dumpargs = undefined
+
+function initializeScript(){}
+function init() {
+    host.namespace.Debugger.State.Scripts.utils.Contents.utils_init();
+    logln    = host.namespace.Debugger.State.Scripts.utils.Contents.logln;
+    spew     = host.namespace.Debugger.State.Scripts.utils.Contents.spew;
+    dumpargs = host.namespace.Debugger.State.Scripts.utils.Contents.dumpargs;
+    find     = host.namespace.Debugger.State.Scripts.utils.Contents.find;
+    grep     = host.namespace.Debugger.State.Scripts.utils.Contents.grep;
+    bufex    = new RegExp('(\".*\")');
+}
 function DumpFactory(signature, handler) { // creates a struct
     this.signature = signature; // string
     this.handler = handler;     // dump parser
@@ -41,11 +55,14 @@ function Classify(line) {
 function EvalDump() {
     var Args = [];
     var index = null;
-    let Exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
+    exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
+    exec(".logopen report.log")
+    //exec('.scriptload C:\\sandbox\\dump\\utils.js');
+    init();
     logln("***> Intel Dump Analyzer! \n");
-    Exec(".logappend analysis.log")
-    Exec("||")
-    for(let Line of Exec('!analyze -v')) {
+
+    spew("||")
+    for(let Line of exec('!analyze -v')) {
         if (index == null) index = Classify(Line);
         if (Line.match(/Arg\d:/)) { 
             var matches = Line.match(regex);
@@ -58,7 +75,7 @@ function EvalDump() {
     } else {
         logln("dump type not supported: " + index);
     }
-    Exec(".logclose")
+    exec(".logclose")
 }
 
 function CLOCK_WATCHDOG_TIMEOUT(Args) {
@@ -70,10 +87,7 @@ function CLOCK_WATCHDOG_TIMEOUT(Args) {
     logln("clock interval: " + clock_interrupt_timeout_interval_ticks);
     logln("prcb:           " + addr_of_prcb);
     logln("cpu:            " + processor);
-    let Exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
-    for(let Line of Exec('!prcb ' + processor)) {
-        logln(Line);
-    }
+    spew('!prcb ' + processor);
 }
 
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){ 
@@ -84,59 +98,57 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
     var irp;
     var watchdog_subcode = parseInt(Args[0]);
     //logln("subcode: " + String(watchdog_subcode));
-    let Exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
     if (watchdog_subcode == 2) {
 
         logln('Arg1: ' + Args[0]);
         logln("the resiliency phase of connected standby for too long without");
         logln("entering DRIPS (deepest runtime idle platform state) due to an");
         logln("unsatisfied device constraint with no activators active.");
-        logln('Arg2: ' + Args[1] + ', nt!TRIAGE_POP_FX_DEVICE Device');
+        logln('Arg2: ' + Args[1] + ', nt!_TRIAGE_POP_FX_DEVICE Device');
         logln('Arg3: ' + Args[2] + ', Component index');
         logln('Arg4: ' + Args[3] + ', Reserved => _TRIAGE_DEVICE_NODE');
 
-        Exec("r $t0 = " + Args[1]);
-        Exec("r $t0 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0))");
-        Exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->Irp)");
-        Exec("r $t7 = $t1"); // save Irp in $t7
-        for (let Line of Exec("? @$t1")) {
+        exec("r $t0 = " + Args[1]);
+        exec("r $t0 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0))");
+        exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->Irp)");
+        exec("r $t7 = $t1"); // save Irp in $t7
+        for (let Line of exec("? @$t1")) {
             irp = Line.match(irpex)[1];
         }
         logln(irp);
-        Exec("r $t2 = @@c++(((nt!_IRP *)@$t1)->PendingReturned)");
-        for(let Line of Exec("? @$t2")) {
-            if (Line.includes("00000001")) {
-                pending = true;
-            }
+        exec("r $t2 = @@c++(((nt!_IRP *)@$t1)->PendingReturned)");
+        if (find("? @$t2", "00000001")) {
+            pending = true;
         }
-        //if (Exec("? @$t2") 
+        //if (exec("? @$t2") 
         //fx_dev = host.createPointerObject(Args[1], "ntoskrnl.exe", "nt!_TRIAGE_POP_FX_DEVICE");
-        for(let Line of Exec('dt _TRIAGE_POP_FX_DEVICE @$t0')) {
-            logln("triage: " + Line);
-        }
-        Exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->DeviceNode)");
-        Exec("r $t2 = @@c++(@$t1+@@c++(#FIELD_OFFSET(_TRIAGE_DEVICE_NODE, ServiceName)))");
-        for(let Line of Exec('dt _UNICODE_STRING @$t2')) {
-            if (Line.includes("Buffer")) {
-                driver_name = Line.match(bufex)[1];
-            }
-        }
+        //
+        spew('dt _TRIAGE_POP_FX_DEVICE @$t0');
+        exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->DeviceNode)");
+        exec("r $t2 = @@c++(@$t1+@@c++(#FIELD_OFFSET(_TRIAGE_DEVICE_NODE, ServiceName)))");
+        driver_name = grep("dt _UNICODE_STRING @$t2", "Buffer", bufex);
+        // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject
+        exec("r $t0 = " + Args[3]);
+        exec("r $t0 = @@c++(((nt!_TRIAGE_DEVICE_NODE *)@$t0))");
+        exec("r $t1 = @@c++(((nt!_TRIAGE_DEVICE_NODE *)@$t0)->PhysicalDeviceObject)");
         if (pending == true) {
+            logln("*** START REPORT ***");
             logln("pending returned for irp: " + irp + " on driver: " + driver_name);
-            for(let Line of Exec("!irp @$t7")) {
-                logln(Line)
-            }
+            spew("!irp @$t7")
+            logln("get the PDO stack");
+            spew("!devstack @$t1");
+            logln("*** END REPORT ***");
         } else {
             logln("unknown reason for bugcheck -- needs manual analysis");
         }
     }
 }
 
-function INTERRUPT_EXCEPTION_NOT_HANDLED(Args){             logln(this.signature + " not implemented"); }
-function DRIVER_POWER_STATE_FAILURE(Args){                  logln(this.signature + " not implemented"); }
-function INTERNAL_POWER_ERROR(Args){                        logln(this.signature + " not implemented"); }
-function DRIVER_IRQL_NOT_LESS_OR_EQUAL(Args){               logln(this.signature + " not implemented"); }
-function DPC_WATCHDOG_VIOLATION(Args){                      logln(this.signature + " not implemented"); }
-function KERNEL_SECURITY_CHECK_FAILURE(Args){               logln(this.signature + " not implemented"); }
-function UCMUCSI_LIVEDUMP(Args){                            logln(this.signature + " not implemented"); }
+function INTERRUPT_EXCEPTION_NOT_HANDLED(Args){ logln(this.signature + " not implemented"); }
+function DRIVER_POWER_STATE_FAILURE(Args){      logln(this.signature + " not implemented"); }
+function INTERNAL_POWER_ERROR(Args){            logln(this.signature + " not implemented"); }
+function DRIVER_IRQL_NOT_LESS_OR_EQUAL(Args){   logln(this.signature + " not implemented"); }
+function DPC_WATCHDOG_VIOLATION(Args){          logln(this.signature + " not implemented"); }
+function KERNEL_SECURITY_CHECK_FAILURE(Args){   logln(this.signature + " not implemented"); }
+function UCMUCSI_LIVEDUMP(Args){                logln(this.signature + " not implemented"); }
 

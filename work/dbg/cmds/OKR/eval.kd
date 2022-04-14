@@ -5,6 +5,7 @@ $$ !py C:\sandbox\dump\eval.py
 $$ load and run eval2 javascript file
 .load jsprovider.dll
 .scriptload C:\sandbox\dump\eval2.js
+.scriptload C:\sandbox\dump\utils.js
 dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 .scriptunload eval2.js
 
