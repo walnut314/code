@@ -61,7 +61,6 @@ function EvalDump() {
     var index = null;
     exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
     exec(".logopen report.log")
-    //exec('.scriptload C:\\sandbox\\dump\\utils.js');
     init();
     logln("***> Intel Dump Analyzer! \n");
 
@@ -110,18 +109,15 @@ function Get_Value(addr, struct, member) {
     exec("r $t1 = @@c++(((" + struct + " *)@$t0)->" + member + ")");
     for (let Line of exec("? @$t1")) { 
         val = Line.match(addrex)[1]; 
-        logln("val: " + val);
     }
     return val;
 }
 
 function Get_Field_Offset(addr, struct, member) {
     var field_ptr = undefined;
-    var cmd = "r $t2 = @@c++(" + addr + "+@@c++(#FIELD_OFFSET(" + struct + ", " + member + ")))";
-    exec(cmd);
+    exec("r $t2 = @@c++(" + addr + "+@@c++(#FIELD_OFFSET(" + struct + ", " + member + ")))");
     for (let Line of exec("? @$t2")) { 
         field_ptr = Line.match(addrex)[1]; 
-        //logln("field: " + field_ptr);
     }
     return field_ptr;
 }
