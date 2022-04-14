@@ -7,11 +7,13 @@
 
 let regex = /Arg(\d): ([a-zA-Z0-9]{16})/;
 let irpex = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
+let addrex = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
 let bufex = undefined; ///(\".*\")/;
 
 let exec = undefined
 let logln = undefined
 let spew = undefined
+let spew2 = undefined
 let grep = undefined
 let find = undefined
 let dumpargs = undefined
@@ -21,6 +23,7 @@ function init() {
     host.namespace.Debugger.State.Scripts.utils.Contents.utils_init();
     logln    = host.namespace.Debugger.State.Scripts.utils.Contents.logln;
     spew     = host.namespace.Debugger.State.Scripts.utils.Contents.spew;
+    spew2    = host.namespace.Debugger.State.Scripts.utils.Contents.spew2;
     dumpargs = host.namespace.Debugger.State.Scripts.utils.Contents.dumpargs;
     find     = host.namespace.Debugger.State.Scripts.utils.Contents.find;
     grep     = host.namespace.Debugger.State.Scripts.utils.Contents.grep;
@@ -90,6 +93,38 @@ function CLOCK_WATCHDOG_TIMEOUT(Args) {
     spew('!prcb ' + processor);
 }
 
+function Get_Pointer(addr, struct, member) {
+    var ptr = undefined;
+    exec("r $t0 = " + addr);
+    exec("r $t0 = @@c++(((" + struct + " *)@$t0))");
+    exec("r $t1 = @@c++(((" + struct + " *)@$t0)->" + member + ")");
+    for (let Line of exec("? @$t1")) { ptr = Line.match(addrex)[1]; }
+    return ptr;
+}
+
+function Get_Value(addr, struct, member) {
+    var val = undefined;
+    exec("r $t0 = " + addr);
+    exec("r $t0 = @@c++(((" + struct + " *)@$t0))");
+    exec("r $t1 = @@c++(((" + struct + " *)@$t0)->" + member + ")");
+    for (let Line of exec("? @$t1")) { 
+        val = Line.match(addrex)[1]; 
+        logln("val: " + val);
+    }
+    return val;
+}
+
+function Get_Field_Offset(addr, struct, member) {
+    var field_ptr = undefined;
+    var cmd = "r $t2 = @@c++(" + addr + "+@@c++(#FIELD_OFFSET(" + struct + ", " + member + ")))";
+    exec(cmd);
+    for (let Line of exec("? @$t2")) { 
+        field_ptr = Line.match(addrex)[1]; 
+        //logln("field: " + field_ptr);
+    }
+    return field_ptr;
+}
+
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){ 
     logln(this.signature + " ***> CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP <***");
     dumpargs(Args);
@@ -99,7 +134,6 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
     var watchdog_subcode = parseInt(Args[0]);
     //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 2) {
-
         logln('Arg1: ' + Args[0]);
         logln("the resiliency phase of connected standby for too long without");
         logln("entering DRIPS (deepest runtime idle platform state) due to an");
@@ -108,35 +142,30 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
         logln('Arg3: ' + Args[2] + ', Component index');
         logln('Arg4: ' + Args[3] + ', Reserved => _TRIAGE_DEVICE_NODE');
 
-        exec("r $t0 = " + Args[1]);
-        exec("r $t0 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0))");
-        exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->Irp)");
-        exec("r $t7 = $t1"); // save Irp in $t7
-        for (let Line of exec("? @$t1")) {
-            irp = Line.match(irpex)[1];
-        }
-        logln(irp);
-        exec("r $t2 = @@c++(((nt!_IRP *)@$t1)->PendingReturned)");
-        if (find("? @$t2", "00000001")) {
-            pending = true;
-        }
-        //if (exec("? @$t2") 
-        //fx_dev = host.createPointerObject(Args[1], "ntoskrnl.exe", "nt!_TRIAGE_POP_FX_DEVICE");
-        //
-        spew('dt _TRIAGE_POP_FX_DEVICE @$t0');
-        exec("r $t1 = @@c++(((nt!_TRIAGE_POP_FX_DEVICE *)@$t0)->DeviceNode)");
-        exec("r $t2 = @@c++(@$t1+@@c++(#FIELD_OFFSET(_TRIAGE_DEVICE_NODE, ServiceName)))");
-        driver_name = grep("dt _UNICODE_STRING @$t2", "Buffer", bufex);
+        irp = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "Irp");
+        logln("irp: " + irp);
+
+        var is_pending = Get_Value(irp, "nt!_IRP", "PendingReturned");
+        logln("pending: " + is_pending);
+
+        // Get the ServiceName -- this one is a bit odd
+        var devnode = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "DeviceNode");
+        spew2('nt!_TRIAGE_POP_FX_DEVICE', devnode);
+        
+        // make this into a function
+        var field = Get_Field_Offset('0x'+devnode, 'nt!_TRIAGE_DEVICE_NODE', 'ServiceName');
+        driver_name = grep('dt _UNICODE_STRING ' + field, "Buffer", bufex);
+        logln('name: ' + driver_name);
+
         // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject
-        exec("r $t0 = " + Args[3]);
-        exec("r $t0 = @@c++(((nt!_TRIAGE_DEVICE_NODE *)@$t0))");
-        exec("r $t1 = @@c++(((nt!_TRIAGE_DEVICE_NODE *)@$t0)->PhysicalDeviceObject)");
-        if (pending == true) {
+        var pdo = Get_Pointer(Args[3], "nt!_TRIAGE_DEVICE_NODE", "PhysicalDeviceObject");
+
+        if (is_pending.includes("01")) { // == true) {
             logln("*** START REPORT ***");
             logln("pending returned for irp: " + irp + " on driver: " + driver_name);
-            spew("!irp @$t7")
+            spew('!irp ' + irp);
             logln("get the PDO stack");
-            spew("!devstack @$t1");
+            spew2('nt!_DEVICE_OBJECT', pdo);
             logln("*** END REPORT ***");
         } else {
             logln("unknown reason for bugcheck -- needs manual analysis");
