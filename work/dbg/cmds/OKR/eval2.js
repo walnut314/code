@@ -29,8 +29,8 @@ dump_maps.set("(1D4)", new DumpFactory("(1D4)", UCMUCSI_LIVEDUMP));
 dump_maps.set("(15F)", new DumpFactory("(15F)", CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP));
 
 function Classify(line) {
-    for (let [key, dumper] of dump_maps) {
-        if (line.includes(dumper.signature.toLowerCase())) {
+    for (let [key, dumper] of dump_maps) { // makes case insensitive
+        if (line.toLowerCase().includes(dumper.signature.toLowerCase())) {
             return dumper.signature;
         }
     }
