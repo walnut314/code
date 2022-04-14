@@ -5,20 +5,20 @@
 // .scriptunload eval2.js
 // kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 
-let regex = /Arg(\d): ([a-zA-Z0-9]{16})/;
-let irpex = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
-let addrex = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
-let bufex = undefined; ///(\".*\")/;
-
-let exec = undefined
-let logln = undefined
-let spew = undefined
-let spew2 = undefined
-let grep = undefined
-let find = undefined
-let dumpargs = undefined
+let regex       = /Arg(\d): ([a-zA-Z0-9]{16})/;
+let irpex       = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
+let addrex      = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
+let bufex       = undefined; ///(\".*\")/;
+let exec        = undefined;
+let logln       = undefined;
+let spew        = undefined;
+let spew2       = undefined;
+let grep        = undefined;
+let find        = undefined;
+let dumpargs    = undefined;
 
 function initializeScript(){}
+
 function init() {
     host.namespace.Debugger.State.Scripts.utils.Contents.utils_init();
     logln    = host.namespace.Debugger.State.Scripts.utils.Contents.logln;
@@ -29,6 +29,7 @@ function init() {
     grep     = host.namespace.Debugger.State.Scripts.utils.Contents.grep;
     bufex    = new RegExp('(\".*\")');
 }
+
 function DumpFactory(signature, handler) { // creates a struct
     this.signature = signature; // string
     this.handler = handler;     // dump parser
@@ -128,9 +129,6 @@ function Get_Field_Offset(addr, struct, member) {
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){ 
     logln(this.signature + " ***> CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP <***");
     dumpargs(Args);
-    var pending = false;
-    var driver_name;
-    var irp;
     var watchdog_subcode = parseInt(Args[0]);
     //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 2) {
@@ -142,7 +140,7 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
         logln('Arg3: ' + Args[2] + ', Component index');
         logln('Arg4: ' + Args[3] + ', Reserved => _TRIAGE_DEVICE_NODE');
 
-        irp = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "Irp");
+        var irp = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "Irp");
         logln("irp: " + irp);
 
         var is_pending = Get_Value(irp, "nt!_IRP", "PendingReturned");
@@ -154,7 +152,7 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
         
         // make this into a function
         var field = Get_Field_Offset('0x'+devnode, 'nt!_TRIAGE_DEVICE_NODE', 'ServiceName');
-        driver_name = grep('dt _UNICODE_STRING ' + field, "Buffer", bufex);
+        var driver_name = grep('dt _UNICODE_STRING ' + field, "Buffer", bufex);
         logln('name: ' + driver_name);
 
         // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject

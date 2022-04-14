@@ -14,17 +14,11 @@ function utils_init() {
 }
  
 function logln (e) { host.diagnostics.debugLog(e + '\n'); }
-function spew (e) { 
-    for(let Line of exec(e)) { 
-        logln(Line) 
-    } 
-}
+function spew (e) { for(let Line of exec(e)) { logln(Line) } }
 
 function spew2 (a, b) { 
     logln("spew2: " + a + ' ' + b);
-    for(let Line of exec('dt ' + a + ' ' + b)) { 
-        logln(Line) 
-    } 
+    for(let Line of exec('dt ' + a + ' ' + b)) { logln(Line) } 
 }
 
 function dumpargs (Args) { for(let i = 0; i < Args.length; i++) { logln('arg: ' + Args[i]); } }
