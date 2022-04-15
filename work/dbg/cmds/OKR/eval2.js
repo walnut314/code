@@ -42,6 +42,7 @@ dump_maps.set("(9F)",  new DumpFactory("(9F)",  DRIVER_POWER_STATE_FAILURE));
 dump_maps.set("(A0)",  new DumpFactory("(A0)",  INTERNAL_POWER_ERROR));
 dump_maps.set("(D1)",  new DumpFactory("(D1)",  DRIVER_IRQL_NOT_LESS_OR_EQUAL));
 dump_maps.set("(101)", new DumpFactory("(101)", CLOCK_WATCHDOG_TIMEOUT));
+dump_maps.set("(119)", new DumpFactory("(119)", VIDEO_SCHEDULER_INTERNAL_ERROR));
 dump_maps.set("(133)", new DumpFactory("(133)", DPC_WATCHDOG_VIOLATION));
 dump_maps.set("(139)", new DumpFactory("(139)", KERNEL_SECURITY_CHECK_FAILURE));
 dump_maps.set("(1D4)", new DumpFactory("(1D4)", UCMUCSI_LIVEDUMP));
@@ -89,18 +90,6 @@ function EvalDump() {
     exec(".logclose")
 }
 
-function CLOCK_WATCHDOG_TIMEOUT(Args) {
-    logln(this.signature + " ***> CLOCK_WATCHDOG_TIMEOUT <***");
-    dumpargs(Args);
-    var clock_interrupt_timeout_interval_ticks = Args[0];
-    var addr_of_prcb = Args[2];
-    var processor = Args[1];
-    logln("clock interval: " + clock_interrupt_timeout_interval_ticks);
-    logln("prcb:           " + addr_of_prcb);
-    logln("cpu:            " + processor);
-    spew('!prcb ' + processor);
-}
-
 function Get_Pointer(addr, struct, member) {
     var ptr = undefined;
     exec("r $t0 = " + addr);
@@ -130,9 +119,52 @@ function Get_Field_Offset(addr, struct, member) {
     return field_ptr;
 }
 
+function VIDEO_SCHEDULER_INTERNAL_ERROR(Args){
+    logln(this.signature + " ***> VIDEO_SCHEDULER_INTERNAL_ERROR <***");
+    logln("bucket: " + this.bucket);
+    logln("The video scheduler has detected that fatal violation has occurred. This resulted");
+    logln("in a condition that video scheduler can no longer progress. Any other values after");
+    logln("parameter 1 must be individually examined according to the subtype.");
+    logln("Arguments:");
+    var watchdog_subcode = parseInt(Args[0]);
+    //logln("subcode: " + String(watchdog_subcode));
+    if (watchdog_subcode == 2) {
+        logln('Arg1: ' + Args[0] + ', The driver failed upon the submission of a command.');
+        logln('Arg2: ' + Args[1] + ', Error status');
+        logln('Arg3: ' + Args[2] + ', ???');
+        logln('Arg4: ' + Args[3] + ', memory causing the error');
+
+        var error_status = Args[1];
+        var mem          = Args[3];
+
+        var non_paged = false;
+        for (let Line of exec("!pool " + mem + " 1")) {
+            if (Line.includes('Nonpaged pool')) {
+                non_paged = true;
+            }
+        }
+
+        for (let Line of exec("!pte " + mem)) {
+            if (Line.includes('contains')) {
+                var matches = Line.match(/contains .* contains .* contains .* contains (.*)/);
+                var pte = matches[1];
+                if ((pte === "0000000000000000") && (non_paged == true)){
+                    logln('');
+                    logln("memory " + mem + " is corrupt - marked as non_paged and pte = " + pte);
+                    logln('');
+                    spew("!pool " + mem + " 1");
+                    spew("!pte " + mem);
+                    logln('');
+                }
+            }
+        }
+
+    }
+}
+
 function DRIVER_POWER_STATE_FAILURE(Args){
-    // get the bucket_id: FAILURE_BUCKET_ID:  0x9F_3_Usb4HostRouter_IMAGE_pci.sys
     logln(this.signature + " ***> DRIVER_POWER_STATE_FAILURE <***");
+    logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
     //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 3) {
@@ -157,6 +189,7 @@ function DRIVER_POWER_STATE_FAILURE(Args){
 
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){ 
     logln(this.signature + " ***> CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP <***");
+    logln("bucket: " + this.bucket);
     dumpargs(Args);
     var watchdog_subcode = parseInt(Args[0]);
     //logln("subcode: " + String(watchdog_subcode));
@@ -200,10 +233,44 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
     }
 }
 
+function DPC_WATCHDOG_VIOLATION(Args){
+    logln(this.signature + " ***> DPC_WATCHDOG_VIOLATION <***");
+    logln("The DPC watchdog detected a prolonged run time at an IRQL of DISPATCH_LEVEL or above.");
+    logln("bucket: " + this.bucket);
+    var watchdog_subcode = parseInt(Args[0]);
+    //logln("subcode: " + String(watchdog_subcode));
+    if (watchdog_subcode == 1) {
+        logln('Arg1: ' + Args[0] + ', The system cumulatively spent an extended period of time at');
+        logln('DISPATCH_LEVEL or above. The offending component can usually be');
+        logln('identified with a stack trace.');
+        logln('Arg2: ' + Args[1] + ', The watchdog period.');
+        logln('Arg3: ' + Args[2] + ', cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, more info');
+        logln('Arg4: ' + Args[3] + ', ???');
+
+        var watchdog_triage = Args[2];
+
+        for (let Line of exec("dt " + watchdog_triage + " nt!_DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK")) {
+            logln(Line);
+        }
+
+    }
+}
+
+function CLOCK_WATCHDOG_TIMEOUT(Args) {
+    logln(this.signature + " ***> CLOCK_WATCHDOG_TIMEOUT <***");
+    dumpargs(Args);
+    var clock_interrupt_timeout_interval_ticks = Args[0];
+    var addr_of_prcb = Args[2];
+    var processor = Args[1];
+    logln("clock interval: " + clock_interrupt_timeout_interval_ticks);
+    logln("prcb:           " + addr_of_prcb);
+    logln("cpu:            " + processor);
+    spew('!prcb ' + processor);
+}
+
 function INTERRUPT_EXCEPTION_NOT_HANDLED(Args){ logln(this.signature + " not implemented"); }
 function INTERNAL_POWER_ERROR(Args){            logln(this.signature + " not implemented"); }
 function DRIVER_IRQL_NOT_LESS_OR_EQUAL(Args){   logln(this.signature + " not implemented"); }
-function DPC_WATCHDOG_VIOLATION(Args){          logln(this.signature + " not implemented"); }
 function KERNEL_SECURITY_CHECK_FAILURE(Args){   logln(this.signature + " not implemented"); }
 function UCMUCSI_LIVEDUMP(Args){                logln(this.signature + " not implemented"); }
 

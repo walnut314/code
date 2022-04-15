@@ -12,11 +12,10 @@ if ($env:_NT_KD_PATH) {
 #} 
 
 if ($args.count -eq 0) {
-#$DumpFile = "dump\IND220201EV1DK_DripsWatchdog-20220309-0400.dmp"
-#$DumpFile = "D:\Intel_Dev\Dumps\BC_133\MEMORY_CHE221105EV2DK_2022-04-06_00-58-44.DMP"
+#$DumpFile = "D:\Intel_Dev\Dumps\BC_119\MEMORY_CHE221107EV2DK_2022-04-04_04-25-11.DMP"
+$DumpFile = "D:\Intel_Dev\Dumps\BC_133\MEMORY_CHE221105EV2DK_2022-04-06_00-58-44.DMP"
 #$DumpFile = "D:\Intel_Dev\Dumps\BC_15F\IND220201EV1DK_DripsWatchdog-20220309-0400\IND220201EV1DK_DripsWatchdog-20220309-0400.dmp"
-#$DumpFile = "D:\Intel_Dev\Dumps\BC_15F\IND220201EV1DK_DripsWatchdog-20220309-0400\IND220201EV1DK_DripsWatchdog-20220309-0400.dmp"
-    $DumpFile = "D:\Intel_Dev\Dumps\BC_9F\MEMORY_DMP\dump\MEMORY.DMP"
+#$DumpFile = "D:\Intel_Dev\Dumps\BC_9F\MEMORY_DMP\dump\MEMORY.DMP"
     Write-Host "you didn't provide a dump, so I'm using: $($DumpFile)"
     #Exit
 } else {
