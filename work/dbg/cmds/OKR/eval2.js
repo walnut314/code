@@ -7,11 +7,11 @@
 
 // TODO: function IRP analysis
 
-let regex       = /Arg(\d): ([a-zA-Z0-9]{16})/;
-let irpex       = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
-let addrex      = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
-let addrex2     = /([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
-let addrex3     = /([a-zA-Z0-9]{16})/;
+let regex       = /Arg(\d): ([a-fA-F0-9]{16})/;
+let irpex       = /.* = ([a-fA-F0-9]{8}`[a-fA-F0-9]{8})/;
+let addrex      = /.* = ([a-fA-F0-9]{8}`[a-fA-F0-9]{8})/;
+let addrex2     = /([a-fA-F0-9]{8}`[a-fA-F0-9]{8})/;
+let addrex3     = /([a-fA-F0-9]{16})/;
 let bufex       = undefined; ///(\".*\")/;
 let exec        = undefined;
 let logln       = undefined;
@@ -37,11 +37,44 @@ function init() {
 function IRP(irp_addr) {
     // add analysis of IRP and stack
     //    device, current stack, thread, system buffer, IRP_MJ_XXX (IOCTL)
-    this.addr   = irp_addr;
-    this.stack  = null;
-    this.irp_mj = null;
-    this.thread = null;
-    this.buffer = null;
+    //
+    // 0: kd> !irp 0xffff9488cecfa080 7
+    // Irp is active with 1 stacks 1 is current (= 0xffff9488cecfa150)
+    //  No Mdl: System buffer=ffff9488d1cd8000: Thread ffff9488d18a7080:  Irp stack trace.  
+    // Flags = 00060030
+    // ThreadListEntry.Flink = ffff9488d18a7580
+    //      cmd  flg cl Device   File     Completion-Context
+    // >[IRP_MJ_DEVICE_CONTROL(e), N/A(0)]
+    //            5  0 ffff9488c3bd6930 ffff9488d53a2100 00000000-00000000    
+    //           \Driver\Tcpip
+    //            Args: 00000000 000039f8 0x128018 00000000
+    // IO verifier information:
+    // No information available - the verifier is probably disabled
+    //    
+    for(let Line of exec('!irp ' + irp_addr)) {
+        logln("irp: " + Line);
+        if (Line.includes("current (=")) { 
+            var matches = Line.match(addrex3);
+            var current = matches[1];
+            //logln("current: " + current);
+        }
+        if (Line.includes("buffer=")) { 
+            var matches = Line.match(/buffer=([a-fA-F0-9]{16}):/);
+            var buffer = matches[1];
+            //logln("buffer: " + buffer);
+        }
+        if (Line.includes(": Thread ")) { 
+            var matches = Line.match(/: Thread ([a-fA-F0-9]{16}):/);
+            var thread = matches[1];
+            //logln("thread: " + thread);
+        }
+    }
+    this.addr    = irp_addr;
+    this.current = current;
+    this.irp_mj  = null;
+    this.thread  = thread;
+    this.buffer  = buffer;
+    this.pending = null;
 }
 
 function DumpFactory(signature, handler) { // creates a struct
@@ -308,6 +341,9 @@ function DPC_WATCHDOG_VIOLATION(Args){
         }
         for (var irp_entry of irp_array) {
             for (let Line of exec("!irp " + irp_entry.addr)) { 
+                logln(Line);
+            }
+            for (let Line of exec("dt nt!_IO_STACK_LOCATION " + irp_entry.current)) { 
                 logln(Line);
             }
         }
