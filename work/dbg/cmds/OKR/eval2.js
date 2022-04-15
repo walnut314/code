@@ -5,9 +5,13 @@
 // .scriptunload eval2.js
 // kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 
+// TODO: function IRP analysis
+
 let regex       = /Arg(\d): ([a-zA-Z0-9]{16})/;
 let irpex       = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
 let addrex      = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
+let addrex2     = /([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
+let addrex3     = /([a-zA-Z0-9]{16})/;
 let bufex       = undefined; ///(\".*\")/;
 let exec        = undefined;
 let logln       = undefined;
@@ -30,10 +34,21 @@ function init() {
     bufex    = new RegExp('(\".*\")');
 }
 
+function IRP(irp_addr) {
+    // add analysis of IRP and stack
+    //    device, current stack, thread, system buffer, IRP_MJ_XXX (IOCTL)
+    this.addr   = irp_addr;
+    this.stack  = null;
+    this.irp_mj = null;
+    this.thread = null;
+    this.buffer = null;
+}
+
 function DumpFactory(signature, handler) { // creates a struct
     this.signature = signature; // string
     this.handler = handler;     // dump parser
     this.bucket = null;
+    this.module = null;
 }
 
 var dump_maps = new Map();
@@ -57,17 +72,24 @@ function Classify(line) {
     return null;
 }
 
+function Dispatch(idx, args) {
+    exec(".logopen report.log")
+    logln("***> Intel Dump Analyzer <***\n");
+    spew("||")
+    logln("");
+    dump_maps.get(idx).handler(args);
+    exec(".logclose")
+}
+
 // 2: kd> dx Debugger.State.Scripts.eval.Contents.EvalDump()
 function EvalDump() {
     var Args = [];
     var index = null;
     exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
-    exec(".logopen report.log")
     init();
-    logln("***> Intel Dump Analyzer! \n");
 
-    spew("||")
     var bucket = null;
+    var module = null;
     for(let Line of exec('!analyze -v')) {
         if (index == null) index = Classify(Line);
         if (Line.match(/Arg\d:/)) { 
@@ -80,14 +102,19 @@ function EvalDump() {
             bucket = matches[1];
             logln("bucket: " + bucket);
         }
+        if (Line.match(/MODULE_NAME: (.*)/)) {
+            var matches = Line.match(/MODULE_NAME: (.*)/);
+            module = matches[1];
+            logln("module: " + module);
+        }
     }
     if (index.length > 0) {
         dump_maps.get(index).bucket = bucket;
-        dump_maps.get(index).handler(Args);
+        dump_maps.get(index).module = module;
+        Dispatch(index, Args);
     } else {
         logln("dump type not supported: " + index);
     }
-    exec(".logclose")
 }
 
 function Get_Pointer(addr, struct, member) {
@@ -203,7 +230,6 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
         logln('Arg4: ' + Args[3] + ', Reserved => _TRIAGE_DEVICE_NODE');
 
         var irp = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "Irp");
-        logln("irp: " + irp);
 
         var is_pending = Get_Value(irp, "nt!_IRP", "PendingReturned");
         logln("pending: " + is_pending);
@@ -241,18 +267,57 @@ function DPC_WATCHDOG_VIOLATION(Args){
     //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 1) {
         logln('Arg1: ' + Args[0] + ', The system cumulatively spent an extended period of time at');
-        logln('DISPATCH_LEVEL or above. The offending component can usually be');
-        logln('identified with a stack trace.');
+        logln('                        DISPATCH_LEVEL or above. The offending component can usually be');
+        logln('                        identified with a stack trace.');
         logln('Arg2: ' + Args[1] + ', The watchdog period.');
         logln('Arg3: ' + Args[2] + ', cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, more info');
         logln('Arg4: ' + Args[3] + ', ???');
 
         var watchdog_triage = Args[2];
 
-        for (let Line of exec("dt " + watchdog_triage + " nt!_DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK")) {
-            logln(Line);
+        //for (let Line of exec("dt " + watchdog_triage + " nt!_DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK")) {
+        //    logln(Line);
+        //}
+        
+        // get the main thread
+        var thread;
+        for (let Line of exec(".thread")) { 
+            thread = Line.match(addrex2)[1]; 
         }
-
+        // Look at thread and find any IRPs and module matches
+        var has_irps = false;
+        var irp_array = new Array(); // array of IRP structs
+        for (let Line of exec("!thread " + thread)) {
+            if (has_irps == true) {
+                if (Line.includes("Mdl:")) {
+                    var irp_addr = Line.match(addrex3)[1];
+                    var irp = new IRP(irp_addr);
+                    irp_array.push(irp); //(irp_addr);
+                    continue;
+                } else {
+                    has_irps = false;
+                }
+            }
+            if (Line.includes("IRP List:")) {
+                has_irps = true;
+                continue;
+            }
+            if (Line.includes(this.module)) {
+                logln("(kv) line of interest" + Line);
+            }
+        }
+        for (var irp_entry of irp_array) {
+            for (let Line of exec("!irp " + irp_entry.addr)) { 
+                logln(Line);
+            }
+        }
+        logln("");
+        // dump out and identify DPCs of interest
+        for (let Line of exec("!dpcs")) {
+            if (Line.includes(this.module)) { 
+                logln("(!dpcs) DPC of interest: " + Line);
+            }
+        }
     }
 }
 

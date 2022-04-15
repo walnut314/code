@@ -8,7 +8,6 @@ let irpex = /.* = ([a-zA-Z0-9]{8}`[a-zA-Z0-9]{8})/;
 let re    = undefined;
 
 function utils_init() {
-    host.diagnostics.debugLog('dude wusup\n');
     exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
     re = new RegExp('(\".*\")');
 }
