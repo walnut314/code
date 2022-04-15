@@ -33,6 +33,7 @@ function init() {
 function DumpFactory(signature, handler) { // creates a struct
     this.signature = signature; // string
     this.handler = handler;     // dump parser
+    this.bucket = null;
 }
 
 var dump_maps = new Map();
@@ -65,6 +66,7 @@ function EvalDump() {
     logln("***> Intel Dump Analyzer! \n");
 
     spew("||")
+    var bucket = null;
     for(let Line of exec('!analyze -v')) {
         if (index == null) index = Classify(Line);
         if (Line.match(/Arg\d:/)) { 
@@ -72,8 +74,14 @@ function EvalDump() {
             var idx = parseInt(matches[1]) - 1;
             Args[idx] = matches[2];
         }
+        if (Line.match(/FAILURE_BUCKET_ID: (.*)/)) {
+            var matches = Line.match(/FAILURE_BUCKET_ID: (.*)/);
+            bucket = matches[1];
+            logln("bucket: " + bucket);
+        }
     }
     if (index.length > 0) {
+        dump_maps.get(index).bucket = bucket;
         dump_maps.get(index).handler(Args);
     } else {
         logln("dump type not supported: " + index);
@@ -122,6 +130,31 @@ function Get_Field_Offset(addr, struct, member) {
     return field_ptr;
 }
 
+function DRIVER_POWER_STATE_FAILURE(Args){
+    // get the bucket_id: FAILURE_BUCKET_ID:  0x9F_3_Usb4HostRouter_IMAGE_pci.sys
+    logln(this.signature + " ***> DRIVER_POWER_STATE_FAILURE <***");
+    var watchdog_subcode = parseInt(Args[0]);
+    //logln("subcode: " + String(watchdog_subcode));
+    if (watchdog_subcode == 3) {
+        logln('Arg1: ' + Args[0] + ', A device object has been blocking an Irp for too long a time');
+        logln('Arg2: ' + Args[1] + ', Physical Device Object of the stack');
+        logln('Arg3: ' + Args[2] + ', nt!TRIAGE_9F_POWER on Win7 and higher, otherwise the Functional Device Object of the stack');
+        logln('Arg4: ' + Args[3] + ', The blocked IRP');
+
+        var pdo         = Args[1];
+        var triage_9f   = Args[2];
+        var irp         = Args[3];
+
+        var is_pending = Get_Value(irp, "nt!_IRP", "PendingReturned");
+        //logln("pending: " + is_pending);
+        if (is_pending.includes("01")) {
+            logln("the power IRP for device is pending - bucket: " + this.bucket);
+            spew('!irp ' + irp);
+            spew('!devstack ' + pdo);
+        }
+    }
+}
+
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){ 
     logln(this.signature + " ***> CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP <***");
     dumpargs(Args);
@@ -168,7 +201,6 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
 }
 
 function INTERRUPT_EXCEPTION_NOT_HANDLED(Args){ logln(this.signature + " not implemented"); }
-function DRIVER_POWER_STATE_FAILURE(Args){      logln(this.signature + " not implemented"); }
 function INTERNAL_POWER_ERROR(Args){            logln(this.signature + " not implemented"); }
 function DRIVER_IRQL_NOT_LESS_OR_EQUAL(Args){   logln(this.signature + " not implemented"); }
 function DPC_WATCHDOG_VIOLATION(Args){          logln(this.signature + " not implemented"); }
