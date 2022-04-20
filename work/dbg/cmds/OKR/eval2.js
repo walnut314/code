@@ -6,13 +6,16 @@
 // kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 
 // TODO: function IRP analysis
-// have each analyzer return bool success or not-implemented
+// 22ww2.4_Zaca_21ww50_SAM_Fail_to_resume_from_CS <-- needs digging into, manually dumped with power button
+// cleanup regex's
 
 let regex       = /Arg(\d): ([a-fA-F0-9]{16})/;
 let irpex       = /.* = ([a-fA-F0-9]{8}`[a-fA-F0-9]{8})/;
 let addrex      = /.* = ([a-fA-F0-9]{8}`[a-fA-F0-9]{8})/;
 let addrex2     = /([a-fA-F0-9]{8}`[a-fA-F0-9]{8})/;
 let addrex3     = /([a-fA-F0-9]{16})/;
+let hex8ex3     = /([a-fA-F0-9]{8})/;
+let addrex4     = /([a-fA-F0-9]{8})`([a-fA-F0-9]{8})/;
 let bufex       = undefined; ///(\".*\")/;
 let exec        = undefined;
 let logln       = undefined;
@@ -35,9 +38,32 @@ function init() {
     bufex    = new RegExp('(\".*\")');
 }
 
+function EXR(exr_addr) {
+    for (let Line of exec('.exr ' + exr_addr)) {
+        logln("exr: " + Line);
+        // ExceptionAddress: fffff80670be5cab (intelppm!HwpInterruptService+0x000000000000001b)
+        if (Line.includes("ExceptionAddress: ")) { 
+            var matches = Line.match(addrex3);
+            var addr = matches[1];
+            var matches = Line.match(/ \((.*)\+/);
+            var module = matches[1];
+        }
+        if (Line.includes("ExceptionCode: ")) { 
+            var matches = Line.match(hex8ex3);
+            var code = matches[1];
+        }
+    }
+    this.code = code;
+    this.addr = addr;
+    this.module = module;
+    //logln("exr code:   " + this.code);
+    //logln("exr addr:   " + this.addr);
+    //logln("exr module: " + this.module);
+}
+
 function IRP(irp_addr) {
     for(let Line of exec('!irp ' + irp_addr)) {
-        logln("irp: " + Line);
+        //logln("irp: " + Line);
         if (Line.includes("current (=")) { 
             var matches = Line.match(addrex3);
             var current = matches[1];
@@ -60,12 +86,12 @@ function IRP(irp_addr) {
     this.thread  = thread;
     this.buffer  = buffer;
     this.pending = Get_Value(irp_addr, "nt!_IRP", "PendingReturned");
-    logln("irp.addr:    " + this.addr);
-    logln("irp.current: " + this.current);
-    logln("irp.irp_mj:  " + this.irp_mj);
-    logln("irp.thread:  " + this.thread);
-    logln("irp.buffer:  " + this.buffer);
-    logln("irp.pending: " + this.pending);
+    //logln("irp.addr:    " + this.addr);
+    //logln("irp.current: " + this.current);
+    //logln("irp.irp_mj:  " + this.irp_mj);
+    //logln("irp.thread:  " + this.thread);
+    //logln("irp.buffer:  " + this.buffer);
+    //logln("irp.pending: " + this.pending);
 }
 
 function DumpFactory(signature, handler) { // creates a struct
@@ -101,7 +127,9 @@ function Dispatch(idx, args) {
     logln("***> Intel Dump Analyzer <***\n");
     spew("||")
     logln("");
-    dump_maps.get(idx).handler(args);
+    if (!dump_maps.get(idx).handler(args)) {
+        logln(this.bucket + " bucket handler NOT IMPLEMENTED");
+    }
     exec(".logclose")
 }
 
@@ -155,6 +183,10 @@ function Get_Pointer(addr, struct, member) {
     exec("r $t0 = @@c++(((" + struct + " *)@$t0))");
     exec("r $t1 = @@c++(((" + struct + " *)@$t0)->" + member + ")");
     for (let Line of exec("? @$t1")) { ptr = Line.match(addrex)[1]; }
+    var matches = ptr.match(addrex4); // normalize pointer - remove `
+    if (matches) {
+        ptr = matches[1] + matches[2];
+    }
     return ptr;
 }
 
@@ -185,9 +217,12 @@ function VIDEO_SCHEDULER_INTERNAL_ERROR(Args){
     logln("in a condition that video scheduler can no longer progress. Any other values after");
     logln("parameter 1 must be individually examined according to the subtype.");
     logln("Arguments:");
+    var retval = false;
     var watchdog_subcode = parseInt(Args[0]);
     //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 2) {
+        retval = true;
+
         logln('Arg1: ' + Args[0] + ', The driver failed upon the submission of a command.');
         logln('Arg2: ' + Args[1] + ', Error status');
         logln('Arg3: ' + Args[2] + ', ???');
@@ -217,16 +252,18 @@ function VIDEO_SCHEDULER_INTERNAL_ERROR(Args){
                 }
             }
         }
-
     }
+    return retval;
 }
 
 function DRIVER_POWER_STATE_FAILURE(Args){
     logln(this.signature + " ***> DRIVER_POWER_STATE_FAILURE <***");
     logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
+    var retval = false;
     //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 3) {
+        retval = true;
         logln('Arg1: ' + Args[0] + ', A device object has been blocking an Irp for too long a time');
         logln('Arg2: ' + Args[1] + ', Physical Device Object of the stack');
         logln('Arg3: ' + Args[2] + ', nt!TRIAGE_9F_POWER on Win7 and higher, otherwise the Functional Device Object of the stack');
@@ -242,6 +279,7 @@ function DRIVER_POWER_STATE_FAILURE(Args){
             spew('!devstack ' + pdo);
         }
     }
+    return retval;
 }
 
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){ 
@@ -249,8 +287,10 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
     logln("bucket: " + this.bucket);
     dumpargs(Args);
     var watchdog_subcode = parseInt(Args[0]);
+    var retval = false;
     //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 2) {
+        retval = true;
         logln('Arg1: ' + Args[0]);
         logln("the resiliency phase of connected standby for too long without");
         logln("entering DRIPS (deepest runtime idle platform state) due to an");
@@ -268,22 +308,22 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
         // make this into a function
         var field = Get_Field_Offset('0x'+devnode, 'nt!_TRIAGE_DEVICE_NODE', 'ServiceName');
         var driver_name = grep('dt _UNICODE_STRING ' + field, "Buffer", bufex);
-        logln('name: ' + driver_name);
+        //logln('name: ' + driver_name);
 
         // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject
         var pdo = Get_Pointer(Args[3], "nt!_TRIAGE_DEVICE_NODE", "PhysicalDeviceObject");
 
         if (irp.pending.includes("01")) { // == true) {
-            logln("*** START REPORT ***");
-            logln("pending returned for irp: " + irp.addr + " on driver: " + driver_name);
+            logln("pending returned for irp: " + irp.addr + " on driver: " + driver_name + ", pdo: " + pdo);
             spew('!irp ' + irp.addr);
             logln("get the PDO stack");
+            spew('!devstack ' + pdo);
             spew2('nt!_DEVICE_OBJECT', pdo);
-            logln("*** END REPORT ***");
         } else {
             logln("unknown reason for bugcheck -- needs manual analysis");
         }
     }
+    return retval;
 }
 
 function DPC_WATCHDOG_VIOLATION(Args){
@@ -291,8 +331,10 @@ function DPC_WATCHDOG_VIOLATION(Args){
     logln("The DPC watchdog detected a prolonged run time at an IRQL of DISPATCH_LEVEL or above.");
     logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
+    var retval = false;
     //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 1) {
+        retval = true;
         logln('Arg1: ' + Args[0] + ', The system cumulatively spent an extended period of time at');
         logln('                        DISPATCH_LEVEL or above. The offending component can usually be');
         logln('                        identified with a stack trace.');
@@ -349,146 +391,31 @@ function DPC_WATCHDOG_VIOLATION(Args){
             }
         }
     }
+    return retval;
 }
 
 // $DumpFile = "D:\Intel_Dev\Dumps\BC_101\MEMORY_ZAC214703EV1_2022-01-31_12-33-21\MEMORY_ZAC214703EV1_2022-01-31_12-33-21.DMP"
-// 004   !t ffffd086`c6c93040     0000    0    0     922917      1:01:56.062                0           12.218  R------ RUNNING  Exec                  (SpinLock)            nt!KeBugCheckEx+0x0
+// PROCESS_NAME:  SgrmBroker.exe
+// System Guard Runtime Monitor Broker (SgrmBroker) is a Windows Service running and part of the Windows Defender System Guard.
+// FAULTING_THREAD:  ffffd086d97f3080
+// 
+// STACK_TEXT:  
+// ffff8089`7e36f598 fffff803`3a0207db     : ffffd086`c6d83000 ffff8089`7e36f830 00000000`00000000 fffff803`3a868b40 : 0xfffff803`357b001c
+// ffff8089`7e36f5a0 fffff803`39f3734c     : 00000000`00000001 ffff8089`7e36f830 ffffd086`d97f3080 ffffd086`d97f4080 : nt!HvlSwitchToVsmVtl1+0xab
+// ffff8089`7e36f6e0 fffff803`3a487472     : ffff8089`7e36f970 ffffd086`d97f3080 ffff8089`7e36f940 00000000`00000000 : nt!VslpEnterIumSecureMode+0x168
+// ffff8089`7e36f7b0 fffff803`3a5d1f8a     : ffffffff`ffffffff 00000000`00000000 ffff8089`7e36faa0 ffffffff`ffffffff : nt!VslCallEnclave+0x168
+// ffff8089`7e36f8f0 fffff803`3a02dac8     : 00000000`00000000 00000000`00000001 00000000`00000000 00000094`020ff5f0 : nt!PsCallEnclave+0x48a
+// ffff8089`7e36f9f0 fffff803`3a036e65     : 0000022c`083536c0 ffffd086`c6d25400 0000022c`0835b110 ffffd086`00000000 : nt!NtCallEnclave+0x38
+// ffff8089`7e36fa20 00007ffd`96266a91     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KiSystemServiceCopyEnd+0x25
+// 00000094`020ff5c0 00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : 0x00007ffd`96266a91
+// 
+// STACK_COMMAND:  .thread 0xffffd086d97f3080 ; kb
+// SYMBOL_NAME:  nt!HvlSwitchToVsmVtl1+ab
 //
-// 2: kd> !thread ffffd086`c6c93040
-// THREAD ffffd086c6c93040  Cid 0000.0000  Teb: 0000000000000000 Win32Thread: 0000000000000000 RUNNING on processor 2
-// Not impersonating
-// DeviceMap                 ffffbf01b5a67c30
-// Owning Process            fffff8033a947f40       Image:         Idle
-// Attached Process          ffffd086c6ce8040       Image:         System
-// Wait Start TickCount      309971         Ticks: 782 (0:00:00:12.218)
-// Context Switch Count      922917         IdealProcessor: 2             
-// UserTime                  00:00:00.000
-// KernelTime                01:01:56.062
-// Win32 Start Address nt!KiIdleLoop (0xfffff8033a0284b0)
-// Stack Init ffff808978457bb0 Current ffff808978457b40
-// Base ffff808978458000 Limit ffff808978451000 Call 0000000000000000
-// Priority 0 BasePriority 0 PriorityDecrement 0 IoPriority 0 PagePriority 0
-// Child-SP          RetAddr               : Args to Child                                                           : Call Site
-// ffff8380`3abdac08 fffff803`3a080620     : 00000000`00000101 00000000`0000000c 00000000`00000000 ffff8380`3b458180 : nt!KeBugCheckEx
-// ffff8380`3abdac10 fffff803`39e31ff6     : 00000000`00000000 00000000`00000000 ffff8380`3abc0180 00000000`00000000 : nt!KeAccumulateTicks+0x24cb90
-// ffff8380`3abdac80 fffff803`39e6fd8b     : fffff780`00000000 fffff803`3a80b7c0 fffff7c6`0001ed00 00000000`00000010 : nt!KiUpdateRunTime+0x66
-// ffff8380`3abdace0 fffff803`39e31da5     : fffff803`3a8408a8 00000000`00000000 ffff8380`3abc0180 00000000`00000000 : nt!KiUpdateTime+0x60b
-// ffff8380`3abdaea0 fffff803`39e2842a     : fffff803`3a85f6f0 ffffd086`c6d23f50 ffffd086`c6d23f50 00000000`00000000 : nt!KeClockInterruptNotify+0x235
-// ffff8380`3abdaf40 fffff803`39f2212b     : 0000000b`4f6fdfe6 ffffd086`c6d23ea0 00000000`00000001 00000000`00000000 : nt!HalpTimerClockInterrupt+0x10a
-// ffff8380`3abdaf70 fffff803`3a0261ea     : ffff8089`784574d0 ffffd086`c6d23ea0 ffffd086`c6c93040 00000000`00000000 : nt!KiCallInterruptServiceRoutine+0x18b
-// ffff8380`3abdafb0 fffff803`3a0267b7     : 00000000`00000000 00000000`00000000 ffff8089`78457650 fffff803`3a0267c4 : nt!KiInterruptSubDispatchNoLockNoEtw+0xfa (TrapFrame @ ffff8380`3abdae70)
-// ffff8089`78457450 fffff803`39e795ac     : 00000000`00000010 00000000`00000286 ffff8089`78457600 00000000`00000018 : nt!KiInterruptDispatchNoLockNoEtw+0x37 (TrapFrame @ ffff8089`78457450)
-// ffff8089`784575e0 fffff803`3a063228     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KeYieldProcessorEx+0x1c
-// ffff8089`78457610 fffff803`3a063110     : 00000009`52d98539 fffff803`39fadb19 ffff8089`09576147 00000000`00000000 : nt!KxWaitForLockOwnerShipWithIrql+0x24
-// ffff8089`78457640 fffff803`3a046d5d     : ffffd086`d1d99000 ffff8089`784577b9 fffff803`37e0df70 ffff8089`78457b00 : nt!KiAcquireQueuedSpinLockInstrumented+0x66
-// ffff8089`78457680 fffff803`37e0dfc5     : fffff803`37e0df70 ffff8089`78457b00 ffffd086`c6c93040 ffffd086`c6c93040 : nt!KeAcquireInStackQueuedSpinLockAtDpcLevel+0x21ad9d
-// ffff8089`784576b0 fffff803`39e6aada     : ffffd086`d15ac560 fffff803`00000001 00000000`00989680 ffff8089`784577b9 : dxgmms2!VidSchiWorkerThreadTimerCallback+0x55
-// ffff8089`78457710 fffff803`39e6a504     : 00000000`00000003 ffffd086`d15a6ab8 ffffd086`d15ac560 ffffd086`c6c93040 : nt!KiExpireTimer2+0x42a
-// ffff8089`78457820 fffff803`39e7b036     : 00000000`00000008 ffff8089`784579e0 00000000`00000021 ffff8380`3abc0180 : nt!KiTimer2Expiration+0x164
-// ffff8089`784578e0 fffff803`3a02854e     : 00000000`00000000 ffff8380`3abc0180 ffffd086`c6c93040 ffffd086`d86e60c0 : nt!KiRetireDpcList+0xa76
-// ffff8089`78457b80 00000000`00000000     : ffff8089`78458000 ffff8089`78451000 00000000`00000000 00000000`00000000 : nt!KiIdleLoop+0x9e
+// Check out: vsm_communication_signed.pdf
+// MSR?? = KiSystemCall64
+// Dump MSRS? -> rMFF dumps all registers
 //
-//     Active Threads on each processor:
-//                                                              Cur  Bas   zContext      Kernel Time        User Time    Elapsed Ticks   Q-TSA   Thread    Wait                                      Waiting  | Overview | Start     
-// PROC  Image Name        No.   Thread                    Id   Pri  Pri   Switches   d:hh:mm:ss.ttt   d:hh:mm:ss.ttt   d:hh:mm:ss.ttt  RrBLsrl   State  Reason  Notes        Waiting On             Function | Function | Function  
-// 
-// 0000  Idle              000   !t fffff8033a94b040     0000    0    0     920414      1:02:25.546                0         7:23.078  R------ RUNNING  Exec                  (CPU)                 nt!PpmIdleGuestExecute+0x1d
-// 0000  Idle              001   !t ffffd086c6ca8040     0000    0    0     437982      1:04:30.421                0         9:34.468  R------ RUNNING  Exec                  (CPU)                 nt!PpmIdleGuestExecute+0x1d
-// 0000  Idle              002   !t ffffd086c6c93040     0000    0    0     922917      1:01:56.062                0           12.218  R------ RUNNING  Exec                  (SpinLock)            nt!KeBugCheckEx+0x0
-// 0000  Idle              003   !t ffffd086c6d1b040     0000    0    0     362866      1:04:27.140                0         9:31.765  R------ RUNNING  Exec                  (CPU)                 nt!PpmIdleGuestExecute+0x1d
-// 0000  Idle              004   !t ffffd086c6d20040     0000    0    0     824559      1:02:21.718                0         7:17.375  R------ RUNNING  Exec                  (CPU)                 nt!PpmIdleGuestExecute+0x1d
-// 0000  Idle              005   !t ffffd086c6d47080     0000    0    0     444634      1:04:16.515                0        14:12.625  R------ RUNNING  Exec                  (CPU)                 nt!PpmIdleGuestExecute+0x1d
-// 0000  Idle              006   !t ffffd086c6d21040     0000    0    0     957990      1:01:32.890                0         9:40.796  R------ RUNNING  Exec                  (CPU)                 nt!PpmIdleGuestExecute+0x1d
-// 0000  Idle              007   !t ffffd086c6d54040     0000    0    0     403097      1:04:49.375                0        13:12.343  R------ RUNNING  Exec                  (CPU)                 nt!PpmIdleGuestExecute+0x1d
-// 1130  MsMpEng.exe         8   !t ffffd086d6248100     2ed0    9    8      14875             .843            1.515           12.359  R----r- RUNNING  PageIn.               (CPU)                 igdkmdn64+0x2513e9
-// 10A0  svchost.exe         9   !t ffffd086d4e27080     3450    8    8       5958             .625             .906            4.562  R------ RUNNING  Exec                  (CPU)                 IntcAudioBus+0xf054
-// 10E0  SurfaceMLServi     10   !t ffffd086d7e97080     3460    8    8        429            7.765             .250            5.812  R----r- RUNNING  Yield                 (CPU)                 nt!KeFlushProcessWriteBuffers+0xdc
-// 0000  Idle              011   !t ffffd086c6d69080     0000    0    0     130545      1:05:51.140                0        13:04.125  R------ RUNNING  Exec                  (CPU)                 nt!PpmIdleGuestExecute+0x1d
-// Unable to load image c:\windows\system32\driverstore\filerepository\surfaceoempanel.inf_amd64_a8a57c8e12e207d2\surfaceoempanel.dll, Win32 error 0n2
-// 1570  WUDFHost.exe       12   !t ffffd086d63020c0     15b4    8    8       1142           12.359             .015            5.609  R----r- RUNNING  Quantum               (CPU)                 igdkmdn64+0x37368e
-// 2ACC  SgrmBroker.exe     13   !t ffffd086d97f3080     3b64    8    8        798            6.531                0            6.125  R----r- RUNNING  Quantum               (CPU)                     0xfffff803357b001c
-// 0004  System             14   !t ffffd086d1d9c100     0360   16   16     364275           21.171                0           12.359  R------ RUNNING  Exec                  (SpinLock)            nt!KxWaitForSpinLockAndAcquire+0x1c
-// 10E0  SurfaceMLServi     15   !t ffffd086d48ce080     26c0    8    8        516            5.875             .093            5.812  R----r- RUNNING  Yield                 (CPU)                 nt!MiLockPageTableInternal+0x270
-// 
-//
-// \\\   
-//  >>>  Activity Analysis B - Blocking Locks Summary
-// ///   
-// An unexpected circular linked list was detected on the shared waiters list for lock 0xffffd086d1972010.
-// An unexpected circular linked list was detected on the exclusive waiters list for lock 0xffffd086d1972010.
-// Invalid Thread(2) 00060001 Type = 0, should be 6.
-// 
-//
-// Resource @ 0xffffd086d1972010    Shared 1 owning threads
-//     Contention Count = 2285996
-//     NumberOfSharedWaiters = 1
-//     NumberOfExclusiveWaiters = 8
-//      Threads: ffffd086d74d5080-01<*> 
-// 
-//      THREAD ffffd086d74d5080  Cid 23e4.2280  Teb: 000000ae78b79000 Win32Thread: ffffd086d70dd5b0 STANDBY
-//      Not impersonating
-//      DeviceMap                 ffffbf01bc9ec220
-//      Owning Process            ffffd086d6809080       Image:         StartMenuExperienceHost.exe
-//      Attached Process          N/A            Image:         N/A
-//      Wait Start TickCount      310361         Ticks: 392 (0:00:00:06.125)
-//      Context Switch Count      5707           IdealProcessor: 12             
-//      UserTime                  00:00:00.593
-//      KernelTime                00:00:00.343
-//      Win32 Start Address 0x00007ffd94497480
-//      Stack Init ffff80897ce37bb0 Current ffff80897ce372f0
-//      Base ffff80897ce38000 Limit ffff80897ce31000 Call 0000000000000000
-//      Priority 13 BasePriority 8 PriorityDecrement 80 IoPriority 2 PagePriority 5
-//      Scheduling Group: ffffd086d76e7080
-//      Child-SP          RetAddr               Call Site
-//      ffff8089`7ce37330 fffff803`39e83255     nt!KiSwapContext+0x76
-//      ffff8089`7ce37470 fffff803`39e813df     nt!KiSwapThread+0xa65
-//      ffff8089`7ce375c0 fffff803`39e86e9d     nt!KiCommitThreadWait+0x11f
-//      ffff8089`7ce37660 fffff803`39f35530     nt!KeWaitForSingleObject+0x1fd
-//      ffff8089`7ce37760 fffff803`39e85f90     nt!ExpWaitForResource+0x60
-//      ffff8089`7ce377e0 fffff803`39f2aee9     nt!ExpAcquireResourceSharedLite+0x590
-//      ffff8089`7ce37880 ffffe0d5`be65970b     nt!ExEnterCriticalRegionAndAcquireResourceShared+0x39
-//      ffff8089`7ce378c0 ffffe0d5`bf7ffe16     win32kbase!EnterSharedCrit+0xab
-//      ffff8089`7ce37960 ffffe0d5`bebd49ea     win32kfull!NtUserGetQueueStatus+0x36
-//      ffff8089`7ce379f0 fffff803`3a036e65     win32k!NtUserGetQueueStatus+0x16
-//      ffff8089`7ce37a20 00007ffd`93a3a054     nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff8089`7ce37a20)
-//      000000ae`793ff458 00000000`00000000     0x00007ffd`93a3a054
-// 
-// ffffd086d7031080-01    
-// 
-//      THREAD ffffd086d7031080  Cid 20c4.2184  Teb: 0000000000f18000 Win32Thread: ffffd086d70aa2b0 WAIT: (WrResource) KernelMode Non-Alertable
-//          ffff80897eb77ba0  SynchronizationEvent
-//      Not impersonating
-//      DeviceMap                 ffffbf01bc9ec220
-//      Owning Process            ffffd086d6ecd080       Image:         explorer.exe
-//      Attached Process          N/A            Image:         N/A
-//      Wait Start TickCount      310365         Ticks: 388 (0:00:00:06.062)
-//      Context Switch Count      47515          IdealProcessor: 6             
-//      UserTime                  00:00:01.453
-//      KernelTime                00:00:01.984
-//      Win32 Start Address 0x00007ffd94497480
-//      Stack Init ffff80897eb77fb0 Current ffff80897eb77660
-//      Base ffff80897eb78000 Limit ffff80897eb71000 Call 0000000000000000
-//      Priority 12 BasePriority 9 PriorityDecrement 2 IoPriority 2 PagePriority 5
-//      Child-SP          RetAddr               Call Site
-//      ffff8089`7eb776a0 fffff803`39e83255     nt!KiSwapContext+0x76
-//      ffff8089`7eb777e0 fffff803`39e813df     nt!KiSwapThread+0xa65
-//      ffff8089`7eb77930 fffff803`39e86e9d     nt!KiCommitThreadWait+0x11f
-//      ffff8089`7eb779d0 fffff803`39f35530     nt!KeWaitForSingleObject+0x1fd
-//      ffff8089`7eb77ad0 fffff803`39e85f90     nt!ExpWaitForResource+0x60
-//      ffff8089`7eb77b50 fffff803`39f2aee9     nt!ExpAcquireResourceSharedLite+0x590
-//      ffff8089`7eb77bf0 ffffe0d5`be65970b     nt!ExEnterCriticalRegionAndAcquireResourceShared+0x39
-//      ffff8089`7eb77c30 ffffe0d5`bf7ffc7f     win32kbase!EnterSharedCrit+0xab
-//      ffff8089`7eb77cd0 ffffe0d5`bebd73f9     win32kfull!NtUserMessageCall+0x22f
-//      ffff8089`7eb77d60 fffff803`3a036e65     win32k!NtUserMessageCall+0x3d
-//      ffff8089`7eb77db0 00007ffd`93a31554     nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff8089`7eb77e20)
-//      00000000`0410e308 00000000`00000000     0x00007ffd`93a31554
-// 
-// 
-//      Threads Waiting On Exclusive Access:
-//               ffffd086d7059080       ffffd086d721d080       ffffd086d7e6d080       ffffd086d4ecf0c0       
-//               ffffd086d75664c0       ffffd086d86df080       ffffd086d496b080       ffffd086d83020c0       
-// 
-// 
 
 function CLOCK_WATCHDOG_TIMEOUT(Args) {
     logln(this.signature + " ***> CLOCK_WATCHDOG_TIMEOUT <***");
@@ -503,6 +430,7 @@ function CLOCK_WATCHDOG_TIMEOUT(Args) {
     logln('Arg3: ' + Args[2] + ', The address of the processor control block (PRCB) for the unresponsive processor');
     logln('Arg4: ' + Args[3] + ', faulting processor');
 
+    var retval = true;
     var clock_ticks = Args[0];
     var prcb        = Args[2];
     var cpu         = Args[3];
@@ -518,12 +446,53 @@ function CLOCK_WATCHDOG_TIMEOUT(Args) {
     for (let Line of exec("!thread " + this.thread)) {
         logln("thread: " + Line);
     }
-
+    return retval;
 }
 
-function INTERRUPT_EXCEPTION_NOT_HANDLED(Args){ logln(this.signature + " not implemented"); }
-function INTERNAL_POWER_ERROR(Args){            logln(this.signature + " not implemented"); }
-function DRIVER_IRQL_NOT_LESS_OR_EQUAL(Args){   logln(this.signature + " not implemented"); }
-function KERNEL_SECURITY_CHECK_FAILURE(Args){   logln(this.signature + " not implemented"); }
-function UCMUCSI_LIVEDUMP(Args){                logln(this.signature + " not implemented"); }
+function INTERRUPT_EXCEPTION_NOT_HANDLED(Args){ 
+    logln(this.signature + " ***> INTERRUPT_EXCEPTION_NOT_HANDLED <***");
+    logln("bucket: " + this.bucket);
+
+    logln("The INTERRUPT_EXCEPTION_NOT_HANDLED bug check has a value of 0x0000003D.");
+    logln("This indicates that the exception handler for the kernel interrupt object");
+    logln("interrupt management was not able to handle the generated exception.");
+
+    logln('Arg1: ' + Args[0] + ', Exception Record (When Available)');
+    logln('Arg2: ' + Args[1] + ', Context Record (When Available)');
+    logln('Arg3: ' + Args[2] + ', 0');
+    logln('Arg4: ' + Args[3] + ', 0');
+
+    var retval = false;
+    var exr = new EXR(Args[0]);
+    var cxr = Args[1];
+    var thread = null;
+    var ExceptionCode = null;
+    var ExceptionAddress = null;
+
+    retval = true;
+    for (let Line of exec("u " + exr.addr)) { 
+        logln("u: " + Line);
+    }
+
+    for (let Line of exec(".thread")) { 
+        thread = Line.match(addrex2)[1]; 
+    }
+
+    for (let Line of exec('.cxr ' + cxr)) {
+        logln("cxr: " + Line);
+    }
+
+    for (let Line of exec('!thread ' + thread)) {
+        logln("thread: " + Line);
+        if (Line.includes(exr.module)) {
+            logln("(kv) line of interest" + Line);
+        }
+    }
+    return retval;
+}
+
+function INTERNAL_POWER_ERROR(Args){            logln(this.signature + " not implemented"); return false; }
+function DRIVER_IRQL_NOT_LESS_OR_EQUAL(Args){   logln(this.signature + " not implemented"); return false; }
+function KERNEL_SECURITY_CHECK_FAILURE(Args){   logln(this.signature + " not implemented"); return false; }
+function UCMUCSI_LIVEDUMP(Args){                logln(this.signature + " not implemented"); return false; }
 
