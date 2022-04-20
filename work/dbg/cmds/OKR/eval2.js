@@ -5,7 +5,7 @@
 // .scriptunload eval2.js
 // kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 
-// TODO: function IRP analysis
+// TODO: CXR analysis
 // 22ww2.4_Zaca_21ww50_SAM_Fail_to_resume_from_CS <-- needs digging into, manually dumped with power button
 // cleanup regex's
 
@@ -102,16 +102,31 @@ function DumpFactory(signature, handler) { // creates a struct
 }
 
 var dump_maps = new Map();
-dump_maps.set("(3D)",  new DumpFactory("(3D)",  INTERRUPT_EXCEPTION_NOT_HANDLED));
-dump_maps.set("(9F)",  new DumpFactory("(9F)",  DRIVER_POWER_STATE_FAILURE));
-dump_maps.set("(A0)",  new DumpFactory("(A0)",  INTERNAL_POWER_ERROR));
-dump_maps.set("(D1)",  new DumpFactory("(D1)",  DRIVER_IRQL_NOT_LESS_OR_EQUAL));
-dump_maps.set("(101)", new DumpFactory("(101)", CLOCK_WATCHDOG_TIMEOUT));
-dump_maps.set("(119)", new DumpFactory("(119)", VIDEO_SCHEDULER_INTERNAL_ERROR));
-dump_maps.set("(133)", new DumpFactory("(133)", DPC_WATCHDOG_VIOLATION));
-dump_maps.set("(139)", new DumpFactory("(139)", KERNEL_SECURITY_CHECK_FAILURE));
-dump_maps.set("(1D4)", new DumpFactory("(1D4)", UCMUCSI_LIVEDUMP));
-dump_maps.set("(15F)", new DumpFactory("(15F)", CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP));
+dump_maps.set("(A)",   new DumpFactory("(A)",   IRQL_NOT_LESS_OR_EQUAL_A));
+dump_maps.set("(3B)",  new DumpFactory("(3B)",  SYSTEM_SERVICE_EXCEPTION_3B));
+dump_maps.set("(3D)",  new DumpFactory("(3D)",  INTERRUPT_EXCEPTION_NOT_HANDLED_3D));
+dump_maps.set("(50)",  new DumpFactory("(50)",  PAGE_FAULT_IN_NONPAGED_AREA_50));
+dump_maps.set("(7E)",  new DumpFactory("(7E)",  SYSTEM_THREAD_EXCEPTION_NOT_HANDLED_7E));
+dump_maps.set("(9F)",  new DumpFactory("(9F)",  DRIVER_POWER_STATE_FAILURE_9F));
+dump_maps.set("(A0)",  new DumpFactory("(A0)",  INTERNAL_POWER_ERROR_A0));
+dump_maps.set("(D1)",  new DumpFactory("(D1)",  DRIVER_IRQL_NOT_LESS_OR_EQUAL_D1));
+dump_maps.set("(101)", new DumpFactory("(101)", CLOCK_WATCHDOG_TIMEOUT_101));
+dump_maps.set("(116)", new DumpFactory("(116)", VIDEO_TDR_FAILURE_116));
+dump_maps.set("(117)", new DumpFactory("(117)", VIDEO_TDR_TIMEOUT_DETECTED_117));
+dump_maps.set("(119)", new DumpFactory("(119)", VIDEO_SCHEDULER_INTERNAL_ERROR_119));
+dump_maps.set("(124)", new DumpFactory("(124)", LKR_WHEA_UNCORRECTABLE_ERROR_124));
+dump_maps.set("(133)", new DumpFactory("(133)", DPC_WATCHDOG_VIOLATION_133));
+dump_maps.set("(139)", new DumpFactory("(139)", KERNEL_SECURITY_CHECK_FAILURE_139));
+dump_maps.set("(13A)", new DumpFactory("(13A)", KERNEL_MODE_HEAP_CORRUPTION_13A));
+dump_maps.set("(141)", new DumpFactory("(141)", VIDEO_ENGINE_TIMEOUT_DETECTED_141));
+dump_maps.set("(15E)", new DumpFactory("(15E)", LKR_BUGCODE_NDIS_DRIVER_LIVE_DUMP_15E));
+dump_maps.set("(15F)", new DumpFactory("(15F)", CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F));
+dump_maps.set("(164)", new DumpFactory("(164)", LKR_WIN32K_CRITICAL_FAILURE_164));
+dump_maps.set("(1A1)", new DumpFactory("(1A1)", LKR_WIN32K_CALLOUT_WATCHDOG_LIVEDUMP_1A1));
+dump_maps.set("(1C8)", new DumpFactory("(1C8)", MANUALLY_INITIATED_POWER_BUTTON_HOLD_1C8));
+dump_maps.set("(1CC)", new DumpFactory("(1CC)", LKR_EXRESOURCE_TIMEOUT_LIVEDUMP_1CC));
+dump_maps.set("(1D4)", new DumpFactory("(1D4)", UCMUCSI_LIVEDUMP_1D4));
+
 
 function Classify(line) {
     for (let [key, dumper] of dump_maps) { // makes case insensitive
@@ -210,7 +225,7 @@ function Get_Field_Offset(addr, struct, member) {
     return field_ptr;
 }
 
-function VIDEO_SCHEDULER_INTERNAL_ERROR(Args){
+function VIDEO_SCHEDULER_INTERNAL_ERROR_119(Args){
     logln(this.signature + " ***> VIDEO_SCHEDULER_INTERNAL_ERROR <***");
     logln("bucket: " + this.bucket);
     logln("The video scheduler has detected that fatal violation has occurred. This resulted");
@@ -256,7 +271,7 @@ function VIDEO_SCHEDULER_INTERNAL_ERROR(Args){
     return retval;
 }
 
-function DRIVER_POWER_STATE_FAILURE(Args){
+function DRIVER_POWER_STATE_FAILURE_9F(Args){
     logln(this.signature + " ***> DRIVER_POWER_STATE_FAILURE <***");
     logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
@@ -282,7 +297,7 @@ function DRIVER_POWER_STATE_FAILURE(Args){
     return retval;
 }
 
-function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){ 
+function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){ 
     logln(this.signature + " ***> CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP <***");
     logln("bucket: " + this.bucket);
     dumpargs(Args);
@@ -326,7 +341,7 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP(Args){
     return retval;
 }
 
-function DPC_WATCHDOG_VIOLATION(Args){
+function DPC_WATCHDOG_VIOLATION_133(Args){
     logln(this.signature + " ***> DPC_WATCHDOG_VIOLATION <***");
     logln("The DPC watchdog detected a prolonged run time at an IRQL of DISPATCH_LEVEL or above.");
     logln("bucket: " + this.bucket);
@@ -417,7 +432,7 @@ function DPC_WATCHDOG_VIOLATION(Args){
 // Dump MSRS? -> rMFF dumps all registers
 //
 
-function CLOCK_WATCHDOG_TIMEOUT(Args) {
+function CLOCK_WATCHDOG_TIMEOUT_101(Args) {
     logln(this.signature + " ***> CLOCK_WATCHDOG_TIMEOUT <***");
     logln("bucket: " + this.bucket);
 
@@ -449,7 +464,7 @@ function CLOCK_WATCHDOG_TIMEOUT(Args) {
     return retval;
 }
 
-function INTERRUPT_EXCEPTION_NOT_HANDLED(Args){ 
+function INTERRUPT_EXCEPTION_NOT_HANDLED_3D(Args){ 
     logln(this.signature + " ***> INTERRUPT_EXCEPTION_NOT_HANDLED <***");
     logln("bucket: " + this.bucket);
 
@@ -491,8 +506,24 @@ function INTERRUPT_EXCEPTION_NOT_HANDLED(Args){
     return retval;
 }
 
-function INTERNAL_POWER_ERROR(Args){            logln(this.signature + " not implemented"); return false; }
-function DRIVER_IRQL_NOT_LESS_OR_EQUAL(Args){   logln(this.signature + " not implemented"); return false; }
-function KERNEL_SECURITY_CHECK_FAILURE(Args){   logln(this.signature + " not implemented"); return false; }
-function UCMUCSI_LIVEDUMP(Args){                logln(this.signature + " not implemented"); return false; }
+
+function IRQL_NOT_LESS_OR_EQUAL_A(Args){                 logln(this.signature + " not implemented"); return false; }
+function SYSTEM_SERVICE_EXCEPTION_3B(Args){              logln(this.signature + " not implemented"); return false; }
+function PAGE_FAULT_IN_NONPAGED_AREA_50(Args){           logln(this.signature + " not implemented"); return false; }
+function SYSTEM_THREAD_EXCEPTION_NOT_HANDLED_7E(Args){   logln(this.signature + " not implemented"); return false; }
+function INTERNAL_POWER_ERROR_A0(Args){                  logln(this.signature + " not implemented"); return false; }
+function DRIVER_IRQL_NOT_LESS_OR_EQUAL_D1(Args){         logln(this.signature + " not implemented"); return false; }
+function VIDEO_TDR_FAILURE_116(Args){                    logln(this.signature + " not implemented"); return false; }
+function VIDEO_TDR_TIMEOUT_DETECTED_117(Args){           logln(this.signature + " not implemented"); return false; }
+function LKR_WHEA_UNCORRECTABLE_ERROR_124(Args){         logln(this.signature + " not implemented"); return false; }
+function KERNEL_SECURITY_CHECK_FAILURE_139(Args){        logln(this.signature + " not implemented"); return false; }
+function KERNEL_MODE_HEAP_CORRUPTION_13A(Args){          logln(this.signature + " not implemented"); return false; }
+function VIDEO_ENGINE_TIMEOUT_DETECTED_141(Args){        logln(this.signature + " not implemented"); return false; }
+function LKR_BUGCODE_NDIS_DRIVER_LIVE_DUMP_15E(Args){    logln(this.signature + " not implemented"); return false; }
+function LKR_WIN32K_CRITICAL_FAILURE_164(Args){          logln(this.signature + " not implemented"); return false; }
+function LKR_WIN32K_CALLOUT_WATCHDOG_LIVEDUMP_1A1(Args){ logln(this.signature + " not implemented"); return false; }
+function MANUALLY_INITIATED_POWER_BUTTON_HOLD_1C8(Args){ logln(this.signature + " not implemented"); return false; }
+function LKR_EXRESOURCE_TIMEOUT_LIVEDUMP_1CC(Args){      logln(this.signature + " not implemented"); return false; }
+function UCMUCSI_LIVEDUMP_1D4(Args){                     logln(this.signature + " not implemented"); return false; }
+
 
