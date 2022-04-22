@@ -6,7 +6,13 @@
 // kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 
 // TODO: CXR analysis
+// create DebugStack.txt with: "!sym prompts;.reload;!analyze -v;.ecxr;!for_each_frame dv /t;q"
+//      apply to each bugcheck type, even unrecognized ones
+//      for now just logappend to single file
+//      iterate over small set
 // 22ww2.4_Zaca_21ww50_SAM_Fail_to_resume_from_CS <-- needs digging into, manually dumped with power button
+// create baseline preamble for dump types
+// create database of analyses
 // cleanup regex's
 
 let regex       = /Arg(\d): ([a-fA-F0-9]{16})/;
@@ -24,6 +30,7 @@ let spew2       = undefined;
 let grep        = undefined;
 let find        = undefined;
 let dumpargs    = undefined;
+let logpath     = "C:\\sandbox\\dump\\dogfood\\";
 
 function initializeScript(){}
 
@@ -99,10 +106,13 @@ function DumpFactory(signature, handler) { // creates a struct
     this.handler = handler;     // dump parser
     this.bucket = null;
     this.module = null;
+    this.trap = null;
+    this.file = null;
 }
 
 var dump_maps = new Map();
 dump_maps.set("(A)",   new DumpFactory("(A)",   IRQL_NOT_LESS_OR_EQUAL_A));
+dump_maps.set("(1A)",  new DumpFactory("(1A)",  MEMORY_MANAGEMENT_1A));
 dump_maps.set("(3B)",  new DumpFactory("(3B)",  SYSTEM_SERVICE_EXCEPTION_3B));
 dump_maps.set("(3D)",  new DumpFactory("(3D)",  INTERRUPT_EXCEPTION_NOT_HANDLED_3D));
 dump_maps.set("(50)",  new DumpFactory("(50)",  PAGE_FAULT_IN_NONPAGED_AREA_50));
@@ -137,13 +147,26 @@ function Classify(line) {
     return null;
 }
 
+function CreateDebugStack() {
+    exec(".logappend " + logpath + "DebugStack.txt")
+    // create DebugStack.txt with: "!sym prompts;.reload;!analyze -v;.ecxr;!for_each_frame dv /t;q"
+    spew("||");
+    spew("!sym prompts");
+    spew(".reload");
+    spew("!analyze -v");
+    spew(".ecxr");
+    spew("!for_each_frame dv /t");
+    exec(".logclose")
+}
+
 function Dispatch(idx, args) {
-    exec(".logopen report.log")
+    CreateDebugStack();
+    exec(".logappend " + logpath + "DrillDown.txt")
     logln("***> Intel Dump Analyzer <***\n");
     spew("||")
     logln("");
     if (!dump_maps.get(idx).handler(args)) {
-        logln(this.bucket + " bucket handler NOT IMPLEMENTED");
+        logln(dump_maps.get(idx).bucket + " bucket handler NOT IMPLEMENTED");
     }
     exec(".logclose")
 }
@@ -180,12 +203,27 @@ function EvalDump() {
             thread = matches[1];
             logln("thread: " + thread);
         }
+        if (Line.includes("TRAP_FRAME: ")) {
+            var matches = Line.match(/TRAP_FRAME:.*([a-fA-F0-9]{16}) /);
+            var trap = matches[1];
+            logln("trap: " + trap);
+        }
+        //if (Line.includes("Loading Dump File")) {
+        //    //Loading Dump File [D:\Intel_Dev\Dumps\BC_A\MEMORY_TIN194703ES277_2020-02-03_17-41-15.DMP]
+        //    var matches = Line.match(/Loading Dump File [(.*)]/);
+        //    var file = matches[1];
+        //    logln("dump file: " + file);
+        //    var logfile = path + file;
+        //    logln("log file: " logfile);
+        //}
+        
         
     }
-    if (index.length > 0) {
+    if (index != null && index.length > 0) {
         dump_maps.get(index).bucket = bucket;
         dump_maps.get(index).module = module;
         dump_maps.get(index).thread = thread;
+        dump_maps.get(index).trap   = trap;
         Dispatch(index, Args);
     } else {
         logln("dump type not supported: " + index);
@@ -290,9 +328,9 @@ function DRIVER_POWER_STATE_FAILURE_9F(Args){
 
         if (irp.pending.includes("01")) {
             logln("the power IRP for device is pending - bucket: " + this.bucket);
-            spew('!irp ' + irp.addr);
-            spew('!devstack ' + pdo);
         }
+        spew('!irp ' + irp.addr);
+        spew('!devstack ' + pdo);
     }
     return retval;
 }
@@ -330,13 +368,11 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){
 
         if (irp.pending.includes("01")) { // == true) {
             logln("pending returned for irp: " + irp.addr + " on driver: " + driver_name + ", pdo: " + pdo);
-            spew('!irp ' + irp.addr);
-            logln("get the PDO stack");
-            spew('!devstack ' + pdo);
-            spew2('nt!_DEVICE_OBJECT', pdo);
-        } else {
-            logln("unknown reason for bugcheck -- needs manual analysis");
         }
+        spew('!irp ' + irp.addr);
+        logln("get the PDO stack");
+        spew('!devstack ' + pdo);
+        spew2('nt!_DEVICE_OBJECT', pdo);
     }
     return retval;
 }
@@ -506,8 +542,45 @@ function INTERRUPT_EXCEPTION_NOT_HANDLED_3D(Args){
     return retval;
 }
 
+function IRQL_NOT_LESS_OR_EQUAL_A(Args){
+    logln(this.signature + " ***> IRQL_NOT_LESS_OR_EQUAL <***");
+    logln("bucket: " + this.bucket);
+    logln("trap frame: " + this.trap);
 
-function IRQL_NOT_LESS_OR_EQUAL_A(Args){                 logln(this.signature + " not implemented"); return false; }
+    logln("An attempt was made to access a pageable (or completely invalid) address at an");
+    logln("interrupt request level (IRQL) that is too high.  This is usually");
+    logln("caused by drivers using improper addresses.");
+    logln("If a kernel debugger is available get the stack backtrace");
+
+    logln('Arg1: ' + Args[0] + ', memory referenced');
+    logln('Arg2: ' + Args[1] + ', IRQL');
+    logln('Arg3: ' + Args[2] + ', bitfield :');
+	logln("    bit 0 : value 0 = read operation, 1 = write operation");
+	logln("    bit 3 : value 0 = not an execute operation, 1 = execute operation (only on chips which support this level of status)");
+    logln('Arg4: ' + Args[3] + ', address which referenced memory');
+
+    for (let Line of exec('.trap ' + this.trap)) {
+        logln("trap: " + Line);
+    }
+
+    var thread;
+    for (let Line of exec(".thread")) { 
+        thread = Line.match(addrex2)[1]; 
+    }
+
+    // look at the handle of the invalid memory
+    for (let Line of exec('!handle ' + Args[0])) {
+        logln("handle: " + Line);
+    }
+    
+    for (let Line of exec('!thread ' + thread)) {
+        logln("thread: " + Line);
+    }
+
+    return true;
+}
+
+function MEMORY_MANAGEMENT_1A(Args){                     logln(this.signature + " not implemented"); return false; }
 function SYSTEM_SERVICE_EXCEPTION_3B(Args){              logln(this.signature + " not implemented"); return false; }
 function PAGE_FAULT_IN_NONPAGED_AREA_50(Args){           logln(this.signature + " not implemented"); return false; }
 function SYSTEM_THREAD_EXCEPTION_NOT_HANDLED_7E(Args){   logln(this.signature + " not implemented"); return false; }

@@ -13,9 +13,10 @@ if ($env:_NT_KD_PATH) {
 
 if ($args.count -eq 0) {
 #$DumpFile = "C:\sandbox\dump\dogfood\IND220201EV1DK_DripsWatchdog-20220309-0400.dmp" # LKD_0x15F
-$DumpFile = "C:\sandbox\dump\dogfood\MEMORY_CHE221107EV2DK_2022-04-04_04-25-11.DMP" # 0x119
+#$DumpFile = "C:\sandbox\dump\dogfood\MEMORY_CHE221107EV2DK_2022-04-04_04-25-11.DMP" # 0x119
+#$DumpFile = "D:\Intel_Dev\Dumps\BC_A\MEMORY_TIN194703ES277_2020-02-03_17-41-15.DMP" # 0xA
 #$DumpFile = "D:\Intel_Dev\Dumps\BC_3D_2\MEMORY_ZAC214711EV1_2022-01-05_09-21-12\MEMORY_ZAC214711EV1_2022-01-05_09-21-12.DMP"
-#$DumpFile = "D:\Intel_Dev\Dumps\BC_9F\MEMORY_DMP\dump\MEMORY.DMP"
+$DumpFile = "D:\Intel_Dev\Dumps\BC_9F\MEMORY_DMP\dump\MEMORY.DMP"
 #$DumpFile = "D:\Intel_Dev\Dumps\BC_101\MEMORY_ZAC214703EV1_2022-01-31_12-33-21\MEMORY_ZAC214703EV1_2022-01-31_12-33-21.DMP"
 #$DumpFile = "D:\Intel_Dev\Dumps\BC_119\MEMORY_CHE221107EV2DK_2022-04-04_04-25-11.DMP"
 #$DumpFile = "D:\Intel_Dev\Dumps\BC_133\MEMORY_CHE221105EV2DK_2022-04-06_00-58-44.DMP"
