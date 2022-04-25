@@ -6,12 +6,8 @@
 // kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
 
 // TODO: CXR analysis
-// create DebugStack.txt with: "!sym prompts;.reload;!analyze -v;.ecxr;!for_each_frame dv /t;q"
-//      apply to each bugcheck type, even unrecognized ones
-//      for now just logappend to single file
-//      iterate over small set
+//   replace all let line(s) with spew(s)
 // 22ww2.4_Zaca_21ww50_SAM_Fail_to_resume_from_CS <-- needs digging into, manually dumped with power button
-// create baseline preamble for dump types
 // create database of analyses
 // cleanup regex's
 
@@ -22,27 +18,34 @@ let addrex2     = /([a-fA-F0-9]{8}`[a-fA-F0-9]{8})/;
 let addrex3     = /([a-fA-F0-9]{16})/;
 let hex8ex3     = /([a-fA-F0-9]{8})/;
 let addrex4     = /([a-fA-F0-9]{8})`([a-fA-F0-9]{8})/;
-let bufex       = undefined; ///(\".*\")/;
+let bufex       = /(\".*\")/;
 let exec        = undefined;
-let logln       = undefined;
-let spew        = undefined;
-let spew2       = undefined;
-let grep        = undefined;
-let find        = undefined;
-let dumpargs    = undefined;
+//let logln       = undefined;
+//let spew        = undefined;
+//let spew2       = undefined;
+//let grep        = undefined;
+//let find        = undefined;
+//let dumpargs    = undefined;
 let logpath     = "C:\\sandbox\\dump\\dogfood\\";
 
 function initializeScript(){}
 
 function init() {
-    host.namespace.Debugger.State.Scripts.utils.Contents.utils_init();
-    logln    = host.namespace.Debugger.State.Scripts.utils.Contents.logln;
-    spew     = host.namespace.Debugger.State.Scripts.utils.Contents.spew;
-    spew2    = host.namespace.Debugger.State.Scripts.utils.Contents.spew2;
-    dumpargs = host.namespace.Debugger.State.Scripts.utils.Contents.dumpargs;
-    find     = host.namespace.Debugger.State.Scripts.utils.Contents.find;
-    grep     = host.namespace.Debugger.State.Scripts.utils.Contents.grep;
-    bufex    = new RegExp('(\".*\")');
+    utils_init();
+//    host.namespace.Debugger.State.Scripts.utils.Contents.utils_init();
+//    logln    = host.namespace.Debugger.State.Scripts.utils.Contents.logln;
+//    spew     = host.namespace.Debugger.State.Scripts.utils.Contents.spew;
+//    spew2    = host.namespace.Debugger.State.Scripts.utils.Contents.spew2;
+//    dumpargs = host.namespace.Debugger.State.Scripts.utils.Contents.dumpargs;
+//    find     = host.namespace.Debugger.State.Scripts.utils.Contents.find;
+//    grep     = host.namespace.Debugger.State.Scripts.utils.Contents.grep;
+//    bufex    = new RegExp('(\".*\")');
+}
+
+function CXR(cxr_addr) {
+    for (let Line of exec('.cxr ' + cxr_addr)) {
+        logln("cxr: " + Line);
+    }
 }
 
 function EXR(exr_addr) {
@@ -106,8 +109,11 @@ function DumpFactory(signature, handler) { // creates a struct
     this.handler = handler;     // dump parser
     this.bucket = null;
     this.module = null;
+    this.thread = null;
     this.trap = null;
     this.file = null;
+    this.cxr = null;
+    this.lock = null;
 }
 
 var dump_maps = new Map();
@@ -175,7 +181,7 @@ function Dispatch(idx, args) {
 function EvalDump() {
     var Args = [];
     var index = null;
-    exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
+    //exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
     init();
 
     var bucket = null;
@@ -208,6 +214,18 @@ function EvalDump() {
             var trap = matches[1];
             logln("trap: " + trap);
         }
+        if (Line.includes("CONTEXT: ")) {
+            var matches = Line.match(/CONTEXT:.*([a-fA-F0-9]{16}) /);
+            var cxr = matches[1];
+            logln("cxr: " + cxr);
+        }
+        if (Line.includes("LOCK_ADDRESS: ")) {
+            var matches = Line.match(/LOCK_ADDRESS:.*([a-fA-F0-9]{16}) /);
+            var lock = matches[1];
+            logln("lock: " + lock);
+        }
+
+        
         //if (Line.includes("Loading Dump File")) {
         //    //Loading Dump File [D:\Intel_Dev\Dumps\BC_A\MEMORY_TIN194703ES277_2020-02-03_17-41-15.DMP]
         //    var matches = Line.match(/Loading Dump File [(.*)]/);
@@ -224,6 +242,8 @@ function EvalDump() {
         dump_maps.get(index).module = module;
         dump_maps.get(index).thread = thread;
         dump_maps.get(index).trap   = trap;
+        dump_maps.get(index).cxr    = cxr;
+        dump_maps.get(index).lock   = lock;
         Dispatch(index, Args);
     } else {
         logln("dump type not supported: " + index);
@@ -555,8 +575,8 @@ function IRQL_NOT_LESS_OR_EQUAL_A(Args){
     logln('Arg1: ' + Args[0] + ', memory referenced');
     logln('Arg2: ' + Args[1] + ', IRQL');
     logln('Arg3: ' + Args[2] + ', bitfield :');
-	logln("    bit 0 : value 0 = read operation, 1 = write operation");
-	logln("    bit 3 : value 0 = not an execute operation, 1 = execute operation (only on chips which support this level of status)");
+    logln("    bit 0 : value 0 = read operation, 1 = write operation");
+    logln("    bit 3 : value 0 = not an execute operation, 1 = execute operation (only on chips which support this level of status)");
     logln('Arg4: ' + Args[3] + ', address which referenced memory');
 
     for (let Line of exec('.trap ' + this.trap)) {
@@ -580,10 +600,98 @@ function IRQL_NOT_LESS_OR_EQUAL_A(Args){
     return true;
 }
 
-function MEMORY_MANAGEMENT_1A(Args){                     logln(this.signature + " not implemented"); return false; }
-function SYSTEM_SERVICE_EXCEPTION_3B(Args){              logln(this.signature + " not implemented"); return false; }
-function PAGE_FAULT_IN_NONPAGED_AREA_50(Args){           logln(this.signature + " not implemented"); return false; }
-function SYSTEM_THREAD_EXCEPTION_NOT_HANDLED_7E(Args){   logln(this.signature + " not implemented"); return false; }
+function MEMORY_MANAGEMENT_1A(Args){
+    logln(this.signature + " ***> MEMORY_MANAGEMENT <***");
+    logln("bucket: " + this.bucket);
+
+    logln("The MEMORY_MANAGEMENT bug check has a value of 0x0000001A. This indicates that");
+    logln("a severe memory management error occurred.");
+
+    logln('Arg1: ' + Args[0] + ', Subtype of bugcheck.');
+    logln(" refer to: https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/bug-check-0x1a--memory-management");
+    logln('Arg2: ' + Args[1] + ', ');
+    logln('Arg3: ' + Args[2] + ', ');
+    logln('Arg4: ' + Args[3] + ', ');
+
+    return true;
+}
+
+function SYSTEM_SERVICE_EXCEPTION_3B(Args){              
+    logln(this.signature + " ***> SYSTEM_SERVICE_EXCEPTION <***");
+    logln("bucket: " + this.bucket);
+    logln("context record: " + this.cxr);
+
+    logln("The SYSTEM_SERVICE_EXCEPTION bug check has a value of 0x0000003B. This indicates");
+    logln("that an exception happened while executing a routine that transitions from");
+    logln("non-privileged code to privileged code.");
+
+    logln('Arg1: ' + Args[0] + ', The exception that caused the bug check.');
+    logln('Arg2: ' + Args[1] + ', The address of the instruction that caused the bug check');
+    logln('Arg3: ' + Args[2] + ', The address of the context record for the exception that caused the bug check');
+    logln('Arg4: ' + Args[3] + ', 0');
+
+    var cxr = new CXR(this.cxr);
+    var thread;
+    for (let Line of exec(".thread")) { 
+        thread = Line.match(addrex2)[1]; 
+    }
+    spew('!thread ' + thread);
+
+    return true;
+}
+
+function PAGE_FAULT_IN_NONPAGED_AREA_50(Args){
+    logln(this.signature + " ***> PAGE_FAULT_IN_NONPAGED_AREA <***");
+    logln("bucket: " + this.bucket);
+    logln("trap: " + this.trap);
+    logln("lock: " + this.lock);
+
+    logln("The PAGE_FAULT_IN_NONPAGED_AREA bug check has a value of 0x00000050. This indicates");
+    logln("that invalid system memory has been referenced. Typically the memory address is");
+    logln("wrong or the memory address is pointing at freed memory.");
+
+    logln('Arg1: ' + Args[0] + ', Memory address referenced');
+    logln('Arg2: ' + Args[1] + ', Operation');
+    logln('Arg3: ' + Args[2] + ', Address that referenced the memory (if known)');
+    logln('Arg4: ' + Args[3] + ', Type of fault');
+
+    if (this.trap) { spew('.trap ' + this.trap); }
+    if (this.lock) { spew('!locks ' + this.lock); }
+    var thread;
+    for (let Line of exec(".thread")) {
+        thread = Line.match(addrex2)[1]; 
+    }
+    spew('!thread ' + thread);
+    spew('!address ' + Args[2]);
+
+    return true;
+}
+
+function SYSTEM_THREAD_EXCEPTION_NOT_HANDLED_7E(Args){   
+    logln(this.signature + " ***> SYSTEM_THREAD_EXCEPTION_NOT_HANDLED <***");
+    logln("bucket: " + this.bucket);
+
+    logln("This is a very common bugcheck.  Usually the exception address pinpoints");
+    logln("the driver/function that caused the problem.  Always note this address");
+    logln("as well as the link date of the driver/image that contains this address.");
+
+    logln('Arg1: ' + Args[0] + ', The exception code that was not handled');
+    logln('Arg2: ' + Args[1] + ', The address that the exception occurred at');
+    logln('Arg3: ' + Args[2] + ', Exception Record Address');
+    logln('Arg4: ' + Args[3] + ', Context Record Address');
+    
+    var exr = new EXR(Args[2]);
+    var cxr = new CXR(Args[3]);
+
+    var thread;
+    for (let Line of exec(".thread")) { 
+        thread = Line.match(addrex2)[1]; 
+    }
+    spew('!thread ' + thread);
+
+    return true;
+}
+
 function INTERNAL_POWER_ERROR_A0(Args){                  logln(this.signature + " not implemented"); return false; }
 function DRIVER_IRQL_NOT_LESS_OR_EQUAL_D1(Args){         logln(this.signature + " not implemented"); return false; }
 function VIDEO_TDR_FAILURE_116(Args){                    logln(this.signature + " not implemented"); return false; }
@@ -599,4 +707,39 @@ function MANUALLY_INITIATED_POWER_BUTTON_HOLD_1C8(Args){ logln(this.signature + 
 function LKR_EXRESOURCE_TIMEOUT_LIVEDUMP_1CC(Args){      logln(this.signature + " not implemented"); return false; }
 function UCMUCSI_LIVEDUMP_1D4(Args){                     logln(this.signature + " not implemented"); return false; }
 
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~ utilities ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+
+function utils_init() {
+    exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
+}
+ 
+function logln (e) { host.diagnostics.debugLog(e + '\n'); }
+function spew (e) { for(let Line of exec(e)) { logln(Line) } }
+
+function spew2 (a, b) { 
+    logln("spew2: " + a + ' ' + b);
+    for(let Line of exec('dt ' + a + ' ' + b)) { logln(Line) } 
+}
+
+function dumpargs (Args) { for(let i = 0; i < Args.length; i++) { logln('arg: ' + Args[i]); } }
+
+function find(cmd, pat) { 
+    for(let Line of exec(cmd)) { 
+        if (Line.includes(pat)) { 
+            return true; 
+        } 
+    } return false; 
+}
+
+function grep(cmd, pat, rex) {
+    for(let Line of exec(cmd)) {
+        if (Line.includes(pat)) { 
+            var found = Line.match(bufex)[1];
+            return found;
+        }
+    }
+    return undefined; 
+}
 
