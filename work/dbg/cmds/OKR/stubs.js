@@ -1,9 +1,9 @@
 "use strict";
 
-// File: eval2.js
-// .scriptload C:\dev\Dumps\eval2.js
-// .scriptunload eval2.js
-// kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
+// File: eval.js
+// .scriptload C:\dev\Dumps\eval.js
+// .scriptunload eval.js
+// kd> dx Debugger.State.Scripts.eval.Contents.EvalDump()
 
 // TODO: CXR analysis
 //   replace all let line(s) with spew(s)
@@ -20,26 +20,12 @@ let hex8ex3     = /([a-fA-F0-9]{8})/;
 let addrex4     = /([a-fA-F0-9]{8})`([a-fA-F0-9]{8})/;
 let bufex       = /(\".*\")/;
 let exec        = undefined;
-//let logln       = undefined;
-//let spew        = undefined;
-//let spew2       = undefined;
-//let grep        = undefined;
-//let find        = undefined;
-//let dumpargs    = undefined;
 let logpath     = "C:\\sandbox\\dump\\dogfood\\";
 
 function initializeScript(){}
 
 function init() {
     utils_init();
-//    host.namespace.Debugger.State.Scripts.utils.Contents.utils_init();
-//    logln    = host.namespace.Debugger.State.Scripts.utils.Contents.logln;
-//    spew     = host.namespace.Debugger.State.Scripts.utils.Contents.spew;
-//    spew2    = host.namespace.Debugger.State.Scripts.utils.Contents.spew2;
-//    dumpargs = host.namespace.Debugger.State.Scripts.utils.Contents.dumpargs;
-//    find     = host.namespace.Debugger.State.Scripts.utils.Contents.find;
-//    grep     = host.namespace.Debugger.State.Scripts.utils.Contents.grep;
-//    bufex    = new RegExp('(\".*\")');
 }
 
 function CXR(cxr_addr) {
@@ -66,14 +52,10 @@ function EXR(exr_addr) {
     this.code = code;
     this.addr = addr;
     this.module = module;
-    //logln("exr code:   " + this.code);
-    //logln("exr addr:   " + this.addr);
-    //logln("exr module: " + this.module);
 }
 
 function IRP(irp_addr) {
     for(let Line of exec('!irp ' + irp_addr)) {
-        //logln("irp: " + Line);
         if (Line.includes("current (=")) { 
             var matches = Line.match(addrex3);
             var current = matches[1];
@@ -96,12 +78,6 @@ function IRP(irp_addr) {
     this.thread  = thread;
     this.buffer  = buffer;
     this.pending = Get_Value(irp_addr, "nt!_IRP", "PendingReturned");
-    //logln("irp.addr:    " + this.addr);
-    //logln("irp.current: " + this.current);
-    //logln("irp.irp_mj:  " + this.irp_mj);
-    //logln("irp.thread:  " + this.thread);
-    //logln("irp.buffer:  " + this.buffer);
-    //logln("irp.pending: " + this.pending);
 }
 
 function DumpFactory(signature, handler) { // creates a struct
@@ -158,7 +134,6 @@ function Classify(line) {
 }
 
 function CreateDebugStack() {
-    exec(".logappend " + logpath + "DebugStack.txt")
     // create DebugStack.txt with: "!sym prompts;.reload;!analyze -v;.ecxr;!for_each_frame dv /t;q"
     spew("||");
     spew("!sym prompts");
@@ -166,26 +141,22 @@ function CreateDebugStack() {
     spew("!analyze -v");
     spew(".ecxr");
     spew("!for_each_frame dv /t");
-    exec(".logclose")
 }
 
 function Dispatch(idx, args) {
     CreateDebugStack();
-    exec(".logappend " + logpath + "DrillDown.txt")
     logln("***> Intel Dump Analyzer <***\n");
     spew("||")
     logln("");
     if (!dump_maps.get(idx).handler(args)) {
         logln(dump_maps.get(idx).bucket + " bucket handler NOT IMPLEMENTED");
     }
-    exec(".logclose")
 }
 
 // 2: kd> dx Debugger.State.Scripts.eval.Contents.EvalDump()
 function EvalDump() {
     var Args = [];
     var index = null;
-    //exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
     init();
 
     var bucket = null;
@@ -293,222 +264,89 @@ function Get_Field_Offset(addr, struct, member) {
     return field_ptr;
 }
 
+function KMODE_EXCEPTION_NOT_HANDLED_1E(Args){
+    logln(this.signature + " ***> KMODE_EXCEPTION_NOT_HANDLED <***");
+    logln("bucket: " + this.bucket);
+    logln("");
+    logln("The KMODE_EXCEPTION_NOT_HANDLED bug check has a value of 0x0000001E. This indicates");
+    logln("that a kernel-mode program generated an exception that the error handler did not catch.");
+    logln("");
+    logln('Arg1: ' + Args[0] + ', ');
+    logln('Arg2: ' + Args[1] + ', ');
+    logln('Arg3: ' + Args[2] + ', ');
+    logln('Arg4: ' + Args[3] + ', ');
+    logln("");
+
+    return true;
+}
 function VIDEO_SCHEDULER_INTERNAL_ERROR_119(Args){
     logln(this.signature + " ***> VIDEO_SCHEDULER_INTERNAL_ERROR <***");
     logln("bucket:      " + this.bucket);
-    logln("symbol name: " + "\'" + this.symbol_name + "\'");
+    logln("");
     logln("The video scheduler has detected that fatal violation has occurred. This resulted");
     logln("in a condition that video scheduler can no longer progress. Any other values after");
     logln("parameter 1 must be individually examined according to the subtype.");
-    logln("Arguments:");
-    var retval = false;
-    var watchdog_subcode = parseInt(Args[0]);
-    //logln("subcode: " + String(watchdog_subcode));
-    if (watchdog_subcode == 2) {
-        retval = true;
+    logln("");
+    logln('Arg1: ' + Args[0] + ', ');
+    logln('Arg2: ' + Args[1] + ', ');
+    logln('Arg3: ' + Args[2] + ', ');
+    logln('Arg4: ' + Args[3] + ', ');
+    logln("");
 
-        logln('Arg1: ' + Args[0] + ', The driver failed upon the submission of a command.');
-        logln('Arg2: ' + Args[1] + ', Error status');
-        logln('Arg3: ' + Args[2] + ', ???');
-        logln('Arg4: ' + Args[3] + ', memory causing the error');
-
-        var error_status = Args[1];
-        var mem          = Args[3];
-
-        var non_paged = false;
-        for (let Line of exec("!pool " + mem + " 1")) {
-            if (Line.includes('Nonpaged pool')) {
-                non_paged = true;
-            }
-        }
-
-        for (let Line of exec("!pte " + mem)) {
-            if (Line.includes('contains')) {
-                var matches = Line.match(/contains .* contains .* contains .* contains (.*)/);
-                var pte = matches[1];
-                if ((pte === "0000000000000000") && (non_paged == true)){
-                    logln('');
-                    logln("memory " + mem + " is corrupt - marked as non_paged and pte = " + pte);
-                    logln('');
-                    spew("!pool " + mem + " 1");
-                    spew("!pte " + mem);
-                    logln('');
-                }
-            }
-        }
-
-        spew("r");
-        spew("u " + this.symbol_name);
-        spew("ub " + this.symbol_name);
-
-        var thread;
-        for (let Line of exec(".thread")) { 
-            thread = Line.match(addrex2)[1]; 
-        }
-        spew("!thread " + thread);
-    }
-    return retval;
+    return true;
 }
-
 function DRIVER_POWER_STATE_FAILURE_9F(Args){
     logln(this.signature + " ***> DRIVER_POWER_STATE_FAILURE <***");
     logln("bucket: " + this.bucket);
-    var watchdog_subcode = parseInt(Args[0]);
-    var retval = false;
-    //logln("subcode: " + String(watchdog_subcode));
-    if (watchdog_subcode == 3) {
-        retval = true;
-        logln('Arg1: ' + Args[0] + ', A device object has been blocking an Irp for too long a time');
-        logln('Arg2: ' + Args[1] + ', Physical Device Object of the stack');
-        logln('Arg3: ' + Args[2] + ', nt!TRIAGE_9F_POWER on Win7 and higher, otherwise the Functional Device Object of the stack');
-        logln('Arg4: ' + Args[3] + ', The blocked IRP');
+    logln("");
+    logln("The DRIVER_POWER_STATE_FAILURE bug check has a value of 0x0000009F. This bug check");
+    logln("indicates that the driver is in an inconsistent or invalid power state.");
+    logln("");
+    logln('Arg1: ' + Args[0] + ', ');
+    logln('Arg2: ' + Args[1] + ', ');
+    logln('Arg3: ' + Args[2] + ', ');
+    logln('Arg4: ' + Args[3] + ', ');
+    logln("");
 
-        var pdo         = Args[1];
-        var triage_9f   = Args[2];
-        var irp         = new IRP(Args[3]);
-
-        if (irp.pending.includes("01")) {
-            logln("the power IRP for device is pending - bucket: " + this.bucket);
-        }
-        spew('!irp ' + irp.addr);
-        spew('!devstack ' + pdo);
-    }
-    return retval;
+    return true;
 }
-
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){ 
     logln(this.signature + " ***> CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP <***");
     logln("bucket: " + this.bucket);
-    dumpargs(Args);
-    var watchdog_subcode = parseInt(Args[0]);
-    var retval = false;
-    //logln("subcode: " + String(watchdog_subcode));
-    if (watchdog_subcode == 2) {
-        retval = true;
-        logln('Arg1: ' + Args[0]);
-        logln("the resiliency phase of connected standby for too long without");
-        logln("entering DRIPS (deepest runtime idle platform state) due to an");
-        logln("unsatisfied device constraint with no activators active.");
-        logln('Arg2: ' + Args[1] + ', nt!_TRIAGE_POP_FX_DEVICE Device');
-        logln('Arg3: ' + Args[2] + ', Component index');
-        logln('Arg4: ' + Args[3] + ', Reserved => _TRIAGE_DEVICE_NODE');
+    logln("");
+    logln("The CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP live dump has a value of 0x0000015F.");
+    logln("This indicates that a connected standby watchdog timeout has occurred.");
+    logln("");
+    logln('Arg1: ' + Args[0] + ', ');
+    logln('Arg2: ' + Args[1] + ', ');
+    logln('Arg3: ' + Args[2] + ', ');
+    logln('Arg4: ' + Args[3] + ', ');
+    logln("");
 
-        var irp = new IRP(Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "Irp"));
-
-        // Get the ServiceName -- this one is a bit odd
-        var devnode = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "DeviceNode");
-        spew2('nt!_TRIAGE_POP_FX_DEVICE', devnode);
-
-        // make this into a function
-        var field = Get_Field_Offset('0x'+devnode, 'nt!_TRIAGE_DEVICE_NODE', 'ServiceName');
-        var driver_name = grep('dt _UNICODE_STRING ' + field, "Buffer", bufex);
-        //logln('name: ' + driver_name);
-
-        // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject
-        var pdo = Get_Pointer(Args[3], "nt!_TRIAGE_DEVICE_NODE", "PhysicalDeviceObject");
-
-        if (irp.pending.includes("01")) { // == true) {
-            logln("pending returned for irp: " + irp.addr + " on driver: " + driver_name + ", pdo: " + pdo);
-        }
-        spew('!irp ' + irp.addr);
-        logln("get the PDO stack");
-        spew('!devstack ' + pdo);
-        spew2('nt!_DEVICE_OBJECT', pdo);
-    }
-    return retval;
+    return true;
 }
-
 function DPC_WATCHDOG_VIOLATION_133(Args){
     logln(this.signature + " ***> DPC_WATCHDOG_VIOLATION <***");
-    logln("The DPC watchdog detected a prolonged run time at an IRQL of DISPATCH_LEVEL or above.");
     logln("bucket: " + this.bucket);
-    var watchdog_subcode = parseInt(Args[0]);
-    var retval = false;
-    //logln("subcode: " + String(watchdog_subcode));
-    if (watchdog_subcode == 1) {
-        retval = true;
-        logln('Arg1: ' + Args[0] + ', The system cumulatively spent an extended period of time at');
-        logln('                        DISPATCH_LEVEL or above. The offending component can usually be');
-        logln('                        identified with a stack trace.');
-        logln('Arg2: ' + Args[1] + ', The watchdog period.');
-        logln('Arg3: ' + Args[2] + ', cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, more info');
-        logln('Arg4: ' + Args[3] + ', ???');
+    logln("");
+    logln("The DPC_WATCHDOG_VIOLATION bug check has a value of 0x00000133. This bug check");
+    logln("indicates that the DPC watchdog executed, either because it detected a single");
+    logln("long-running deferred procedure call (DPC), or because the system spent a");
+    logln("prolonged time at an interrupt request level (IRQL) of DISPATCH_LEVEL or above.");
+    logln("");
+    logln("The value of Parameter 1 indicates whether a single DPC exceeded a timeout, or");
+    logln("whether the system cumulatively spent an extended period of time at IRQL DISPATCH_LEVEL");
+    logln("or above. DPCs should not run longer than 100 microseconds and ISRs should not run");
+    logln("longer than 25 microseconds, however the actual timeout values on the system are set much higher.");
+    logln("");
+    logln('Arg1: ' + Args[0] + ', ');
+    logln('Arg2: ' + Args[1] + ', ');
+    logln('Arg3: ' + Args[2] + ', ');
+    logln('Arg4: ' + Args[3] + ', ');
+    logln("");
 
-        var watchdog_triage = Args[2];
-
-        //for (let Line of exec("dt " + watchdog_triage + " nt!_DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK")) {
-        //    logln(Line);
-        //}
-        
-        // get the main thread
-        var thread;
-        for (let Line of exec(".thread")) { 
-            thread = Line.match(addrex2)[1]; 
-        }
-        // Look at thread and find any IRPs and module matches
-        var has_irps = false;
-        var irp_array = new Array(); // array of IRP structs
-        for (let Line of exec("!thread " + thread)) {
-            if (has_irps == true) {
-                if (Line.includes("Mdl:")) {
-                    var irp_addr = Line.match(addrex3)[1];
-                    var irp = new IRP(irp_addr);
-                    irp_array.push(irp); //(irp_addr);
-                    continue;
-                } else {
-                    has_irps = false;
-                }
-            }
-            if (Line.includes("IRP List:")) {
-                has_irps = true;
-                continue;
-            }
-            if (Line.includes(this.module)) {
-                logln("(kv) line of interest" + Line);
-            }
-        }
-        for (var irp_entry of irp_array) {
-            for (let Line of exec("!irp " + irp_entry.addr)) { 
-                logln(Line);
-            }
-            for (let Line of exec("dt nt!_IO_STACK_LOCATION " + irp_entry.current)) { 
-                logln(Line);
-            }
-        }
-        logln("");
-        // dump out and identify DPCs of interest
-        for (let Line of exec("!dpcs")) {
-            if (Line.includes(this.module)) { 
-                logln("(!dpcs) DPC of interest: " + Line);
-            }
-        }
-    }
-    return retval;
+    return true;
 }
-
-// $DumpFile = "D:\Intel_Dev\Dumps\BC_101\MEMORY_ZAC214703EV1_2022-01-31_12-33-21\MEMORY_ZAC214703EV1_2022-01-31_12-33-21.DMP"
-// PROCESS_NAME:  SgrmBroker.exe
-// System Guard Runtime Monitor Broker (SgrmBroker) is a Windows Service running and part of the Windows Defender System Guard.
-// FAULTING_THREAD:  ffffd086d97f3080
-// 
-// STACK_TEXT:  
-// ffff8089`7e36f598 fffff803`3a0207db     : ffffd086`c6d83000 ffff8089`7e36f830 00000000`00000000 fffff803`3a868b40 : 0xfffff803`357b001c
-// ffff8089`7e36f5a0 fffff803`39f3734c     : 00000000`00000001 ffff8089`7e36f830 ffffd086`d97f3080 ffffd086`d97f4080 : nt!HvlSwitchToVsmVtl1+0xab
-// ffff8089`7e36f6e0 fffff803`3a487472     : ffff8089`7e36f970 ffffd086`d97f3080 ffff8089`7e36f940 00000000`00000000 : nt!VslpEnterIumSecureMode+0x168
-// ffff8089`7e36f7b0 fffff803`3a5d1f8a     : ffffffff`ffffffff 00000000`00000000 ffff8089`7e36faa0 ffffffff`ffffffff : nt!VslCallEnclave+0x168
-// ffff8089`7e36f8f0 fffff803`3a02dac8     : 00000000`00000000 00000000`00000001 00000000`00000000 00000094`020ff5f0 : nt!PsCallEnclave+0x48a
-// ffff8089`7e36f9f0 fffff803`3a036e65     : 0000022c`083536c0 ffffd086`c6d25400 0000022c`0835b110 ffffd086`00000000 : nt!NtCallEnclave+0x38
-// ffff8089`7e36fa20 00007ffd`96266a91     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KiSystemServiceCopyEnd+0x25
-// 00000094`020ff5c0 00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : 0x00007ffd`96266a91
-// 
-// STACK_COMMAND:  .thread 0xffffd086d97f3080 ; kb
-// SYMBOL_NAME:  nt!HvlSwitchToVsmVtl1+ab
-//
-// Check out: vsm_communication_signed.pdf
-// MSR?? = KiSystemCall64
-// Dump MSRS? -> rMFF dumps all registers
-//
-
 function CLOCK_WATCHDOG_TIMEOUT_101(Args) {
     logln(this.signature + " ***> CLOCK_WATCHDOG_TIMEOUT <***");
     logln("bucket: " + this.bucket);
@@ -523,25 +361,8 @@ function CLOCK_WATCHDOG_TIMEOUT_101(Args) {
     logln('Arg4: ' + Args[3] + ', faulting processor');
     logln("");
 
-    var retval = true;
-    var clock_ticks = Args[0];
-    var prcb        = Args[2];
-    var cpu         = Args[3];
-
-    for (let Line of exec("!pcr " + cpu)) {
-        logln("pcr: " + Line);
-    }
-
-    for (let Line of exec("!prcb " + cpu)) {
-        logln("prcb: " + Line);
-    }
-    
-    for (let Line of exec("!thread " + this.thread)) {
-        logln("thread: " + Line);
-    }
-    return retval;
+    return true;
 }
-
 function INTERRUPT_EXCEPTION_NOT_HANDLED_3D(Args){ 
     logln(this.signature + " ***> INTERRUPT_EXCEPTION_NOT_HANDLED <***");
     logln("bucket: " + this.bucket);
@@ -556,35 +377,8 @@ function INTERRUPT_EXCEPTION_NOT_HANDLED_3D(Args){
     logln('Arg4: ' + Args[3] + ', 0');
     logln("");
 
-    var retval = false;
-    var exr = new EXR(Args[0]);
-    var cxr = Args[1];
-    var thread = null;
-    var ExceptionCode = null;
-    var ExceptionAddress = null;
-
-    retval = true;
-    for (let Line of exec("u " + exr.addr)) { 
-        logln("u: " + Line);
-    }
-
-    for (let Line of exec(".thread")) { 
-        thread = Line.match(addrex2)[1]; 
-    }
-
-    for (let Line of exec('.cxr ' + cxr)) {
-        logln("cxr: " + Line);
-    }
-
-    for (let Line of exec('!thread ' + thread)) {
-        logln("thread: " + Line);
-        if (Line.includes(exr.module)) {
-            logln("(kv) line of interest" + Line);
-        }
-    }
-    return retval;
+    return true;
 }
-
 function IRQL_NOT_LESS_OR_EQUAL_A(Args){
     logln(this.signature + " ***> IRQL_NOT_LESS_OR_EQUAL <***");
     logln("bucket: " + this.bucket);
@@ -602,28 +396,9 @@ function IRQL_NOT_LESS_OR_EQUAL_A(Args){
     logln("    bit 3 : value 0 = not an execute operation, 1 = execute operation (only on chips which support this level of status)");
     logln('Arg4: ' + Args[3] + ', address which referenced memory');
     logln("");
-    
-    for (let Line of exec('.trap ' + this.trap)) {
-        logln("trap: " + Line);
-    }
-
-    var thread;
-    for (let Line of exec(".thread")) { 
-        thread = Line.match(addrex2)[1]; 
-    }
-
-    // look at the handle of the invalid memory
-    for (let Line of exec('!handle ' + Args[0])) {
-        logln("handle: " + Line);
-    }
-    
-    for (let Line of exec('!thread ' + thread)) {
-        logln("thread: " + Line);
-    }
 
     return true;
 }
-
 function MEMORY_MANAGEMENT_1A(Args){
     logln(this.signature + " ***> MEMORY_MANAGEMENT <***");
     logln("bucket: " + this.bucket);
@@ -643,8 +418,7 @@ function MEMORY_MANAGEMENT_1A(Args){
 function SYSTEM_SERVICE_EXCEPTION_3B(Args){              
     logln(this.signature + " ***> SYSTEM_SERVICE_EXCEPTION <***");
     logln("bucket: " + this.bucket);
-    logln("context record: " + this.cxr);
-
+    logln("");
     logln("The SYSTEM_SERVICE_EXCEPTION bug check has a value of 0x0000003B. This indicates");
     logln("that an exception happened while executing a routine that transitions from");
     logln("non-privileged code to privileged code.");
@@ -654,22 +428,13 @@ function SYSTEM_SERVICE_EXCEPTION_3B(Args){
     logln('Arg3: ' + Args[2] + ', The address of the context record for the exception that caused the bug check');
     logln('Arg4: ' + Args[3] + ', 0');
     logln("");
-    var cxr = new CXR(this.cxr);
-    var thread;
-    for (let Line of exec(".thread")) { 
-        thread = Line.match(addrex2)[1]; 
-    }
-    spew('!thread ' + thread);
 
     return true;
 }
-
 function PAGE_FAULT_IN_NONPAGED_AREA_50(Args){
     logln(this.signature + " ***> PAGE_FAULT_IN_NONPAGED_AREA <***");
     logln("bucket: " + this.bucket);
-    logln("trap: " + this.trap);
-    logln("lock: " + this.lock);
-
+    logln("");
     logln("The PAGE_FAULT_IN_NONPAGED_AREA bug check has a value of 0x00000050. This indicates");
     logln("that invalid system memory has been referenced. Typically the memory address is");
     logln("wrong or the memory address is pointing at freed memory.");
@@ -679,14 +444,6 @@ function PAGE_FAULT_IN_NONPAGED_AREA_50(Args){
     logln('Arg3: ' + Args[2] + ', Address that referenced the memory (if known)');
     logln('Arg4: ' + Args[3] + ', Type of fault');
     logln("");
-    if (this.trap) { spew('.trap ' + this.trap); }
-    if (this.lock) { spew('!locks ' + this.lock); }
-    var thread;
-    for (let Line of exec(".thread")) {
-        thread = Line.match(addrex2)[1]; 
-    }
-    spew('!thread ' + thread);
-    spew('!address ' + Args[2]);
 
     return true;
 }
@@ -703,14 +460,6 @@ function SYSTEM_THREAD_EXCEPTION_NOT_HANDLED_7E(Args){
     logln('Arg3: ' + Args[2] + ', Exception Record Address');
     logln('Arg4: ' + Args[3] + ', Context Record Address');
     logln("");
-    var exr = new EXR(Args[2]);
-    var cxr = new CXR(Args[3]);
-
-    var thread;
-    for (let Line of exec(".thread")) { 
-        thread = Line.match(addrex2)[1]; 
-    }
-    spew('!thread ' + thread);
 
     return true;
 }
