@@ -640,6 +640,21 @@ function MEMORY_MANAGEMENT_1A(Args){
 
     return true;
 }
+function KMODE_EXCEPTION_NOT_HANDLED_1E(Args){
+    logln(this.signature + " ***> KMODE_EXCEPTION_NOT_HANDLED <***");
+    logln("bucket: " + this.bucket);
+    logln("");
+    logln("The KMODE_EXCEPTION_NOT_HANDLED bug check has a value of 0x0000001E. This indicates that");
+    logln("a kernel-mode program generated an exception that the error handler did not catch.");
+    logln("");
+    logln('Arg1: ' + Args[0] + ', The exception code that was not handled.');
+    logln('Arg2: ' + Args[1] + ', The address at which the exception occurred.');
+    logln('Arg3: ' + Args[2] + ', Parameter 0 of the exception.');
+    logln('Arg4: ' + Args[3] + ', Parameter 1 of the exception.');
+    logln("");
+
+    return true;
+}
 function SYSTEM_SERVICE_EXCEPTION_3B(Args){              
     logln(this.signature + " ***> SYSTEM_SERVICE_EXCEPTION <***");
     logln("bucket: " + this.bucket);
