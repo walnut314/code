@@ -11,6 +11,9 @@ $$ https://www.virusbulletin.com/uploads/pdf/conference_slides/2018/Svajcer-VB20
 $$ https://blog.talosintelligence.com/2019/02/windbg-malware-analysis-with-javascript.html
 $$ .cmdtree <-- help file
 
+$$ 1: kd> ?? sizeof(_DVM_TARGET)
+$$ unsigned int64 0x98
+
 
 .printf "dump processes - start\n";
 .for (r? @$t0=0; @$t0 < 4 ; r? @$t0=@$t0 + 1) {
