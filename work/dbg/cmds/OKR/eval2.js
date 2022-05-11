@@ -21,26 +21,9 @@ let addrex4     = /([a-fA-F0-9]{8})`([a-fA-F0-9]{8})/;
 let bufex       = /(\".*\")/;
 let exec        = undefined;
 //let logln       = undefined;
-//let spew        = undefined;
-//let spew2       = undefined;
-//let grep        = undefined;
-//let find        = undefined;
-//let dumpargs    = undefined;
 let logpath     = "C:\\sandbox\\dump\\dogfood\\";
 
 function initializeScript(){}
-
-function init() {
-    utils_init();
-//    host.namespace.Debugger.State.Scripts.utils.Contents.utils_init();
-//    logln    = host.namespace.Debugger.State.Scripts.utils.Contents.logln;
-//    spew     = host.namespace.Debugger.State.Scripts.utils.Contents.spew;
-//    spew2    = host.namespace.Debugger.State.Scripts.utils.Contents.spew2;
-//    dumpargs = host.namespace.Debugger.State.Scripts.utils.Contents.dumpargs;
-//    find     = host.namespace.Debugger.State.Scripts.utils.Contents.find;
-//    grep     = host.namespace.Debugger.State.Scripts.utils.Contents.grep;
-//    bufex    = new RegExp('(\".*\")');
-}
 
 function CXR(cxr_addr) {
     for (let Line of exec('.cxr ' + cxr_addr)) {
@@ -66,14 +49,10 @@ function EXR(exr_addr) {
     this.code = code;
     this.addr = addr;
     this.module = module;
-    //logln("exr code:   " + this.code);
-    //logln("exr addr:   " + this.addr);
-    //logln("exr module: " + this.module);
 }
 
 function IRP(irp_addr) {
     for(let Line of exec('!irp ' + irp_addr)) {
-        //logln("irp: " + Line);
         if (Line.includes("current (=")) { 
             var matches = Line.match(addrex3);
             var current = matches[1];
@@ -96,12 +75,6 @@ function IRP(irp_addr) {
     this.thread  = thread;
     this.buffer  = buffer;
     this.pending = Get_Value(irp_addr, "nt!_IRP", "PendingReturned");
-    //logln("irp.addr:    " + this.addr);
-    //logln("irp.current: " + this.current);
-    //logln("irp.irp_mj:  " + this.irp_mj);
-    //logln("irp.thread:  " + this.thread);
-    //logln("irp.buffer:  " + this.buffer);
-    //logln("irp.pending: " + this.pending);
 }
 
 function DumpFactory(signature, handler) { // creates a struct
@@ -185,7 +158,6 @@ function Dispatch(idx, args) {
 function EvalDump() {
     var Args = [];
     var index = null;
-    //exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
     init();
 
     var bucket = null;
@@ -234,16 +206,6 @@ function EvalDump() {
             var symbol_name = matches[1];
             logln("symbol_name: " + symbol_name);
         }
-        
-        //if (Line.includes("Loading Dump File")) {
-        //    //Loading Dump File [D:\Intel_Dev\Dumps\BC_A\MEMORY_TIN194703ES277_2020-02-03_17-41-15.DMP]
-        //    var matches = Line.match(/Loading Dump File [(.*)]/);
-        //    var file = matches[1];
-        //    logln("dump file: " + file);
-        //    var logfile = path + file;
-        //    logln("log file: " logfile);
-        //}
-        
         
     }
     if (index != null && index.length > 0) {
@@ -303,7 +265,6 @@ function VIDEO_SCHEDULER_INTERNAL_ERROR_119(Args){
     logln("Arguments:");
     var retval = false;
     var watchdog_subcode = parseInt(Args[0]);
-    //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 2) {
         retval = true;
 
@@ -355,7 +316,6 @@ function DRIVER_POWER_STATE_FAILURE_9F(Args){
     logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
     var retval = false;
-    //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 3) {
         retval = true;
         logln('Arg1: ' + Args[0] + ', A device object has been blocking an Irp for too long a time');
@@ -382,7 +342,6 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){
     dumpargs(Args);
     var watchdog_subcode = parseInt(Args[0]);
     var retval = false;
-    //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 2) {
         retval = true;
         logln('Arg1: ' + Args[0]);
@@ -425,7 +384,6 @@ function DPC_WATCHDOG_VIOLATION_133(Args){
     logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
     var retval = false;
-    //logln("subcode: " + String(watchdog_subcode));
     if (watchdog_subcode == 1) {
         retval = true;
         logln('Arg1: ' + Args[0] + ', The system cumulatively spent an extended period of time at');
@@ -437,10 +395,6 @@ function DPC_WATCHDOG_VIOLATION_133(Args){
 
         var watchdog_triage = Args[2];
 
-        //for (let Line of exec("dt " + watchdog_triage + " nt!_DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK")) {
-        //    logln(Line);
-        //}
-        
         // get the main thread
         var thread;
         for (let Line of exec(".thread")) { 
@@ -983,6 +937,12 @@ function UCMUCSI_LIVEDUMP_1D4(Args){
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~ utilities ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
+function init() {
+    utils_init();
+//    host.namespace.Debugger.State.Scripts.utils.Contents.utils_init();
+//    logln    = host.namespace.Debugger.State.Scripts.utils.Contents.logln;
+//    bufex    = new RegExp('(\".*\")');
+}
 
 function utils_init() {
     exec = host.namespace.Debugger.Utility.Control.ExecuteCommand;
