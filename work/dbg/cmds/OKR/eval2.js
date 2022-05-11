@@ -397,7 +397,7 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){
 
         // Get the ServiceName -- this one is a bit odd
         var devnode = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "DeviceNode");
-        spew2('nt!_TRIAGE_POP_FX_DEVICE', devnode);
+        spew2('nt!_TRIAGE_DEVICE_NODE', devnode);
 
         // make this into a function
         var field = Get_Field_Offset('0x'+devnode, 'nt!_TRIAGE_DEVICE_NODE', 'ServiceName');
@@ -414,6 +414,7 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){
         logln("get the PDO stack");
         spew('!devstack ' + pdo);
         spew2('nt!_DEVICE_OBJECT', pdo);
+        spew('!fxdevice ' + Args[1]);
     }
     return retval;
 }
