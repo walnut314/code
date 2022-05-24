@@ -50,6 +50,7 @@ OneNote WinDbg: search PLE-SW-DEV for:
 .symopt+ 0x40
 .symopt- 100
 .reload /f
+.reload /u igdkmdn64.sys
 
 .cxr <addr>; kv
 
