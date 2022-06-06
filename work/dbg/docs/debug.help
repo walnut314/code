@@ -3257,4 +3257,20 @@ Sel        Base              Limit          Type    l ze an es ng Flags
 0050 00000000`00000000 00000000`0000bc00 Data RW Ac 3 Bg By P  Nl 000004f3
 0058 Unable to get descriptor
 
+DML Reference:
+
+4: kd> dx Debugger.State.Scripts
+Debugger.State.Scripts                
+4: kd> dx -r1 Debugger.State.Scripts
+Debugger.State.Scripts                
+4: kd> dx -r1 Debugger.Utility.Control
+Debugger.Utility.Control                
+    ExecuteCommand   [ExecuteCommand(command) - Method which executes a debugger command and returns a collection of strings representing the lines of output of the command execution]
+    SetBreakpointAtSourceLocation [SetBreakpointAtSourceLocation(source_file, source_line, (opt) module_name) - Method which sets a breakpoint at a source line location and returns it as an object in order to be able to control its options]
+    SetBreakpointAtOffset [SetBreakpointAtOffset(function_name, function_offset, (opt) module_name) - Method which sets a breakpoint at an offset and returns it as an object in order to be able to control its options]
+    SetBreakpointForReadWrite [SetBreakpointForReadWrite(address, (opt) type, (opt) size) - Method which sets a breakpoint on read/write (default) at a certain address and returns it as an object in order to be able to control its options]
+    ChangeRegisterContext [ChangeRegisterContext(inheritUnspecifiedValues, pc, sp, [fp], [regCtx]) | ChangeRegisterContext(inheritUnspecifiedValues, regCtx) - Changes the active register context with a given abstract pc, sp, and optional fp or an optional object which contains named registers and values.  This is largely equivalent to having done .cxr in the debugger.  It does *NOT* change the register values of the thread/processor, only the debugger's current view of them]
+    WalkStackForRegisterContext [WalkStackForRegisterContext(inheritUnspecifiedValues, pc, sp, [fp], [regCtx]) | WalkStackForRegisterContext(inheritUnspecifiedValues, regCtx) - Performs a stack walk given the incoming abstract pc, sp, and optional fp or an optional object which contains named registers and values.  The returned stack walk is of the same form as <ThreadObject>.Stack]
+
+
 
