@@ -1,6 +1,8 @@
 1/25/2021 9:47:15 AM     C:\sandbox\code\work\uefi\notes
 
 Commands:
+https://docstore.mik.ua/manuals/hp-ux/en/5991-1247B/ch04s13.html
+
 Shell>
 // displays PCI devices
 Shell> map -r 
