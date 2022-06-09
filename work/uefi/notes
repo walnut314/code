@@ -1,5 +1,14 @@
 1/25/2021 9:47:15 AM     C:\sandbox\code\work\uefi\notes
 
+Commands:
+Shell>
+// displays PCI devices
+Shell> map -r 
+change drives
+Shell> FS0:
+FS0:\> pci > pci.log
+
+
 Flow:
 UEFI System Table
     UEFI Boot Services Table

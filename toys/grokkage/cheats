@@ -1,9 +1,9 @@
 7/28/2021 7:09:54 AM     C:\sandbox\code\toys\grokkage\cheats
 
 ------------------count bits------------------------------------------------
-    int count = 0; while (x) { count++; x &= (x-1); }
+    int cnt = 0; while (x) { cnt++; x &= (x-1); }
 ------------------insert sort-----------------------------------------------
-    for (c = 1 ; c <= n - 1; c++)
+    for (c = 1 ; c <= n - 1; c++) => exchg(a,b) {swap a and b}
         d = c;
         while (d > 0 && a[d] < a[d-1]) { exchg(a[d], a[d-1]); d--; }
 ------------------list------------------------------------------------------
@@ -34,26 +34,13 @@ void insert(ROOT R, KEY)              bool find(ROOT R, KEY)
             R->m[k-'a'] = NEW               R = R->m[k-'a']
         R = R->m[k-'a'] // next R       if R->m[TERM] == NULL return FALSE
     R->m[TERM] = NEW                    return TRUE
-------------------graph-----------------------------------------------------
-void bfs(GRAPH, START)
-    PUT(START)
-    VISITED[START] = 1
-    while (tail != head):
-        v = GET()
-        VISIT(v)
-        foreach i in GRAPH.n_vert:
-            if GRAPH[v][i] == 1 && !VISITED[i]:
-                PUT(i)
-                VISITED[i] = 1
-                PARENT[i] = v
 -------------------ring-----------------------------------------------------
-void put(x)                         int get()
+void put(x)                         int get()           MAX = 2^n
     if (!full())                        x = [tail]
         [head] = x                      tail = (tail+1)%MAX
         head = (head+1)%MAX             size--
         size++;                         return x
-
-int data() return size              int space() return MAX-data
+int data() return size              int space() return MAX-size
 -----------------------tree-------------------------------------------------
 void ins(TREE **T, X)               bool find(TREE T, X)
 if (*T == NULL) *T = NEW            if (T == NULL) return FALSE
@@ -61,16 +48,11 @@ elseif (X < T->x) ins(T->LEFT, X)   elif (X < T->x) return find(T->LEFT, X)
 elseif (X > T->x) ins(T->RIGHT, X)  elif (X > T->x) return find(T->RIGHT, X)
                                     return TRUE
 void bfs(TREE)                                      
-    PUT(T)
+    PUT(T); 
     while (!empty())
-        N = GET()
+        N = GET(); PROCESS();
         if (N->LEFT)  PUT(N->LEFT)
         if (N->RIGHT) PUT(N->RIGHT)
-----------------------sort--------------------------------------------------
-    insertion: floor sinks down, swap adjacents bubble up
-    quick: partition
-    merge: 
-    heap: 
 ---------------------------search-------------------------------------------
     binsearch:
 ----------------------------------------------------------------------------
