@@ -3,6 +3,8 @@
 Commands:
 https://docstore.mik.ua/manuals/hp-ux/en/5991-1247B/ch04s13.html
 
+DOS batch: http://www.chebucto.ns.ca/~ak621/DOS/BatExamp.html
+
 Shell>
 // displays PCI devices
 Shell> map -r 
