@@ -1,9 +1,9 @@
 "use strict";
 
-// File: eval2.js
-// .scriptload C:\dev\Dumps\eval2.js
-// .scriptunload eval2.js
-// kd> dx Debugger.State.Scripts.eval2.Contents.EvalDump()
+// File: eval.js
+// .scriptload C:\dev\Dumps\eval.js
+// .scriptunload eval.js
+// kd> dx Debugger.State.Scripts.eval.Contents.EvalDump()
 
 // TODO: CXR analysis
 //   replace all let line(s) with spew(s)
@@ -24,6 +24,22 @@ let exec        = undefined;
 let logpath     = "C:\\sandbox\\dump\\dogfood\\";
 
 function initializeScript(){}
+
+class PDO_Obj
+{
+    constructor(PdoRecordObject)
+    {
+        this.toString = function()
+        {
+            return "[" + this.Kd_PdoRecordObject + "]";
+        };
+        this.Kd_PdoRecordObject = PdoRecordObject;
+        //this.Kd_DriverdObject = Get_Pointer(PdoRecordObject, "nt!_DEVICE_OBJECT", "DriverObject");
+        //this.Kd_HardwareID = Get_Pointer(this.Kd_DriverdObject, "nt!_DRIVER_OBJECT", "HardwareDatabase");
+        //var buffer = Get_Pointer(this.Kd_HardwareID, "nt!_UNICODE_STRING", "Buffer");
+        //this.Kd_Description = host.memory.readWideString(buffer);
+    }
+}
 
 function CXR(cxr_addr) {
     for (let Line of exec('.cxr ' + cxr_addr)) {
@@ -365,6 +381,8 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){
 
         // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject
         var pdo = Get_Pointer(Args[3], "nt!_TRIAGE_DEVICE_NODE", "PhysicalDeviceObject");
+        var pdo_obj = new PDO_Obj(pdo);
+        logln("pdo: " + pdo_obj);
 
         if (irp.pending.includes("01")) { // == true) {
             logln("pending returned for irp: " + irp.addr + " on driver: " + driver_name + ", pdo: " + pdo);
