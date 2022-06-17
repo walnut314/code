@@ -6,10 +6,7 @@
 // kd> dx Debugger.State.Scripts.eval.Contents.EvalDump()
 
 // TODO: CXR analysis
-//   replace all let line(s) with spew(s)
-// 22ww2.4_Zaca_21ww50_SAM_Fail_to_resume_from_CS <-- needs digging into, manually dumped with power button
 // create database of analyses
-// cleanup regex's
 
 let regex       = /Arg(\d): ([a-fA-F0-9]{16})/;
 let irpex       = /.* = ([a-fA-F0-9]{8}`[a-fA-F0-9]{8})/;
