@@ -1,0 +1,12 @@
+6/28/2022 10:39:45 AM     F:\dev\code\work\dbg\cmds\OKR\pst.log
+
+c:\tools\PST\AutoLaunchTask
+c:\PwrStateTransitionStressTest\launch.bat
+c:\PwrStateTransitionStressTest\XML\StressTestConfig_20-weeks_35-CS(10min)_14_s4(7min)_1Reboot_PowerRundown-True.xml
+    =>  <RunApps>
+            <Name>C:\tools\PST\AnalyzeLiveKernelDumps.bat</Nam>
+        </RunApps>
+
+Let's emulate this at the bat level
+debug this to make sure kd is in path
+
