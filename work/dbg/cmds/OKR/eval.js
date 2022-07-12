@@ -22,85 +22,92 @@ let logpath     = "C:\\sandbox\\dump\\dogfood\\";
 
 function initializeScript(){}
 
-class PDO_Obj
-{
-    constructor(PdoRecordObject)
+class PDO {
+    constructor(pdo_addr)
     {
         this.toString = function()
         {
-            return "[" + this.Kd_PdoRecordObject + "]";
+            return "[" + this.pdo_address + "]";
         };
-        this.Kd_PdoRecordObject = PdoRecordObject;
-        //this.Kd_DriverdObject = Get_Pointer(PdoRecordObject, "nt!_DEVICE_OBJECT", "DriverObject");
+        this.pdo_address = pdo_addr;
+        //this.Kd_DriverdObject = Get_Pointer(pdo_addr, "nt!_DEVICE_OBJECT", "DriverObject");
         //this.Kd_HardwareID = Get_Pointer(this.Kd_DriverdObject, "nt!_DRIVER_OBJECT", "HardwareDatabase");
         //var buffer = Get_Pointer(this.Kd_HardwareID, "nt!_UNICODE_STRING", "Buffer");
         //this.Kd_Description = host.memory.readWideString(buffer);
     }
 }
 
-function CXR(cxr_addr) {
-    for (let Line of exec('.cxr ' + cxr_addr)) {
-        logln("cxr: " + Line);
+class CXR {
+    constructor(cxr_addr) {
+        for (let Line of exec('.cxr ' + cxr_addr)) {
+            logln("cxr: " + Line);
+        }
     }
 }
 
-function EXR(exr_addr) {
-    for (let Line of exec('.exr ' + exr_addr)) {
-        logln("exr: " + Line);
-        // ExceptionAddress: fffff80670be5cab (intelppm!HwpInterruptService+0x000000000000001b)
-        if (Line.includes("ExceptionAddress: ")) { 
-            var matches = Line.match(addrex3);
-            var addr = matches[1];
-            var matches = Line.match(/ \((.*)\+/);
-            var module = matches[1];
-        }
-        if (Line.includes("ExceptionCode: ")) { 
-            var matches = Line.match(hex8ex3);
-            var code = matches[1];
-        }
-    }
-    this.code = code;
-    this.addr = addr;
-    this.module = module;
-}
-
-function IRP(irp_addr) {
-    for(let Line of exec('!irp ' + irp_addr)) {
-        if (Line.includes("current (=")) { 
-            var matches = Line.match(addrex3);
-            var current = matches[1];
-        }
-        if (Line.includes("buffer=")) { 
-            var matches = Line.match(/buffer=([a-fA-F0-9]{16}):/);
-            var buffer = matches[1];
-        }
-        if (Line.includes(": Thread ")) { 
-            var matches = Line.match(/: Thread ([a-fA-F0-9]{16}):/);
-            if (matches != null) {
-                logln("thread matches: " + matches);
-                var thread = matches[1];
+class EXR {
+    constructor(exr_addr) {
+        for (let Line of exec('.exr ' + exr_addr)) {
+            logln("exr: " + Line);
+            // ExceptionAddress: fffff80670be5cab (intelppm!HwpInterruptService+0x000000000000001b)
+            if (Line.includes("ExceptionAddress: ")) { 
+                var matches = Line.match(addrex3);
+                var addr = matches[1];
+                var matches = Line.match(/ \((.*)\+/);
+                var module = matches[1];
+            }
+            if (Line.includes("ExceptionCode: ")) { 
+                var matches = Line.match(hex8ex3);
+                var code = matches[1];
             }
         }
+        this.code = code;
+        this.addr = addr;
+        this.module = module;
     }
-    this.addr    = irp_addr;
-    this.current = current;
-    this.irp_mj  = null;
-    this.thread  = thread;
-    this.buffer  = buffer;
-    this.pending = Get_Value(irp_addr, "nt!_IRP", "PendingReturned");
 }
 
-function DumpFactory(signature, handler) { // creates a struct
-    this.signature = signature; // string
-    this.handler = handler;     // dump parser
-    this.bucket = null;
-    this.module = null;
-    this.thread = null;
-    this.trap = null;
-    this.file = null;
-    this.cxr = null;
-    this.lock = null;
-    this.symbol_name = null;
+class IRP {
+    constructor(irp_addr) {
+        for(let Line of exec('!irp ' + irp_addr)) {
+            if (Line.includes("current (=")) { 
+                var matches = Line.match(addrex3);
+                var current = matches[1];
+            }
+            if (Line.includes("buffer=")) { 
+                var matches = Line.match(/buffer=([a-fA-F0-9]{16}):/);
+                var buffer = matches[1];
+            }
+            if (Line.includes(": Thread ")) { 
+                var matches = Line.match(/: Thread ([a-fA-F0-9]{16}):/);
+                if (matches != null) {
+                    logln("thread matches: " + matches);
+                    var thread = matches[1];
+                }
+            }
+        }
+        this.addr    = irp_addr;
+        this.current = current;
+        this.irp_mj  = null;
+        this.thread  = thread;
+        this.buffer  = buffer;
+        this.pending = Get_Value(irp_addr, "nt!_IRP", "PendingReturned");
+    }
+}
+
+class DumpFactory {
+    constructor (signature, handler) {
+        this.signature = signature; // string
+        this.handler = handler;     // dump parser
+        this.bucket = null;
+        this.module = null;
+        this.thread = null;
+        this.trap = null;
+        this.file = null;
+        this.cxr = null;
+        this.lock = null;
+        this.symbol_name = null;
+    }
 }
 
 var dump_maps = new Map();
@@ -133,9 +140,8 @@ dump_maps.set("(1C8)", new DumpFactory("(1C8)", MANUALLY_INITIATED_POWER_BUTTON_
 dump_maps.set("(1CC)", new DumpFactory("(1CC)", LKR_EXRESOURCE_TIMEOUT_LIVEDUMP_1CC));
 dump_maps.set("(1D4)", new DumpFactory("(1D4)", UCMUCSI_LIVEDUMP_1D4));
 
-
 function Classify(line) {
-    for (let [key, dumper] of dump_maps) { // makes case insensitive
+    for (let [key, dumper] of dump_maps) { // case insensitive compares
         if (line.toLowerCase().includes(dumper.signature.toLowerCase())) {
             return dumper.signature;
         }
@@ -144,7 +150,6 @@ function Classify(line) {
 }
 
 function CreateDebugStack() {
-    exec(".logappend " + logpath + "DebugStack.txt")
     // create DebugStack.txt with: "!sym prompts;.reload;!analyze -v;.ecxr;!for_each_frame dv /t;q"
     spew("||");
     spew("!sym prompts");
@@ -152,19 +157,16 @@ function CreateDebugStack() {
     spew("!analyze -v");
     spew(".ecxr");
     spew("!for_each_frame dv /t");
-    exec(".logclose")
 }
 
 function Dispatch(idx, args) {
     CreateDebugStack();
-    exec(".logappend " + logpath + "DrillDown.txt")
     logln("***> Intel Dump Analyzer <***\n");
     spew("||")
     logln("");
     if (!dump_maps.get(idx).handler(args)) {
         logln(dump_maps.get(idx).bucket + " bucket handler NOT IMPLEMENTED");
     }
-    exec(".logclose")
 }
 
 // 2: kd> dx Debugger.State.Scripts.eval.Contents.EvalDump()
@@ -177,45 +179,47 @@ function EvalDump() {
     var module = null;
     var thread = null;
     for(let Line of exec('!analyze -v')) {
+        //logln("line: " + Line);
         if (index == null) index = Classify(Line);
-        if (Line.match(/Arg\d:/)) { 
+        if (Line.match(/^Arg\d:/)) { 
             var matches = Line.match(regex);
             var idx = parseInt(matches[1]) - 1;
             Args[idx] = matches[2];
         }
-        if (Line.match(/FAILURE_BUCKET_ID: (.*)/)) {
-            var matches = Line.match(/FAILURE_BUCKET_ID: (.*)/);
+        if (Line.match(/^FAILURE_BUCKET_ID: (.*)/)) {
+            var matches = Line.match(/^FAILURE_BUCKET_ID: (.*)/);
             bucket = matches[1];
             logln("bucket: " + bucket);
         }
-        if (Line.match(/MODULE_NAME: (.*)/)) {
-            var matches = Line.match(/MODULE_NAME: (.*)/);
+        if (Line.match(/^MODULE_NAME: (.*)/)) {
+            var matches = Line.match(/^MODULE_NAME: (.*)/);
             module = matches[1];
             logln("module: " + module);
         }
-        if (Line.match(/FAULTING_THREAD: (.*)/)) {
-            var matches = Line.match(/FAULTING_THREAD: (.*)/);
+        if (Line.match(/^FAULTING_THREAD: (.*)/)) {
+            var matches = Line.match(/^FAULTING_THREAD: (.*)/);
             thread = matches[1];
             logln("thread: " + thread);
         }
-        if (Line.includes("TRAP_FRAME: ")) {
-            var matches = Line.match(/TRAP_FRAME:.*([a-fA-F0-9]{16}) /);
+        if (Line.match(/^TRAP_FRAME: (.*)/)) {
+            var matches = Line.match(/^TRAP_FRAME:.*([a-fA-F0-9]{16}) /);
             var trap = matches[1];
             logln("trap: " + trap);
         }
-        if (Line.includes("CONTEXT: ")) {
-            var matches = Line.match(/CONTEXT:.*([a-fA-F0-9]{16}) /);
+        if (Line.match(/^CONTEXT: (.*)/)) {
+            var matches = Line.match(/^CONTEXT:.*([a-fA-F0-9]{16}) /);
             var cxr = matches[1];
             logln("cxr: " + cxr);
         }
-        if (Line.includes("LOCK_ADDRESS: ")) {
-            var matches = Line.match(/LOCK_ADDRESS:.*([a-fA-F0-9]{16}) /);
+        if (Line.match(/^LOCK_ADDRESS: (.*)/)) {
+            logln("dude - lock addr?" + Line);
+            var matches = Line.match(/^LOCK_ADDRESS:.*([a-fA-F0-9]{16}) /);
             var lock = matches[1];
             logln("lock: " + lock);
         }
-        if (Line.includes("SYMBOL_NAME: ")) {
+        if (Line.match(/^SYMBOL_NAME: (.*)/)) {
             //var matches = Line.match(/SYMBOL_NAME:.*([a-fA-F0-9!+]{8})/);
-            var matches = Line.match(/SYMBOL_NAME:\s*(.*)/);
+            var matches = Line.match(/^SYMBOL_NAME:\s*(.*)/);
             var symbol_name = matches[1];
             logln("symbol_name: " + symbol_name);
         }
@@ -378,8 +382,6 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){
 
         // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject
         var pdo = Get_Pointer(Args[3], "nt!_TRIAGE_DEVICE_NODE", "PhysicalDeviceObject");
-        var pdo_obj = new PDO_Obj(pdo);
-        logln("pdo: " + pdo_obj);
 
         if (irp.pending.includes("01")) { // == true) {
             logln("pending returned for irp: " + irp.addr + " on driver: " + driver_name + ", pdo: " + pdo);
@@ -399,60 +401,95 @@ function DPC_WATCHDOG_VIOLATION_133(Args){
     logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
     var retval = false;
-    if (watchdog_subcode == 1) {
-        retval = true;
-        logln('Arg1: ' + Args[0] + ', The system cumulatively spent an extended period of time at');
-        logln('                        DISPATCH_LEVEL or above. The offending component can usually be');
-        logln('                        identified with a stack trace.');
-        logln('Arg2: ' + Args[1] + ', The watchdog period.');
-        logln('Arg3: ' + Args[2] + ', cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, more info');
-        logln('Arg4: ' + Args[3] + ', ???');
+    switch (watchdog_subcode) {
+        case 0: {
+            retval = true;
+            logln('Arg1: ' + Args[0] + ', A single DPC or ISR exceeded its time allotment. The offending component can usually be identified with a stack trace.');
+            logln('Arg2: ' + Args[1] + ', The DPC time count (in ticks)');
+            logln('Arg3: ' + Args[2] + ', The DPC time allotment (in ticks).');
+            logln('Arg4: ' + Args[3] + ', cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, which contains additional information regarding this single DPC timeout');
 
-        var watchdog_triage = Args[2];
+            var watchdog_triage = Args[3];
 
-        // get the main thread
-        var thread;
-        for (let Line of exec(".thread")) { 
-            thread = Line.match(addrex2)[1]; 
+            //for (let Line of exec("dt nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK " + watchdog_triage)) { 
+            //    logln(Line);
+            //}
+            
+            break;
         }
-        // Look at thread and find any IRPs and module matches
-        var has_irps = false;
-        var irp_array = new Array(); // array of IRP structs
-        for (let Line of exec("!thread " + thread)) {
-            if (has_irps == true) {
-                if (Line.includes("Mdl:")) {
-                    var irp_addr = Line.match(addrex3)[1];
-                    var irp = new IRP(irp_addr);
-                    irp_array.push(irp); //(irp_addr);
-                    continue;
-                } else {
-                    has_irps = false;
-                }
-            }
-            if (Line.includes("IRP List:")) {
-                has_irps = true;
-                continue;
-            }
-            if (Line.includes(this.module)) {
-                logln("(kv) line of interest" + Line);
-            }
-        }
-        for (var irp_entry of irp_array) {
-            for (let Line of exec("!irp " + irp_entry.addr)) { 
-                logln(Line);
-            }
-            for (let Line of exec("dt nt!_IO_STACK_LOCATION " + irp_entry.current)) { 
-                logln(Line);
-            }
-        }
-        logln("");
-        // dump out and identify DPCs of interest
-        for (let Line of exec("!dpcs")) {
-            if (Line.includes(this.module)) { 
-                logln("(!dpcs) DPC of interest: " + Line);
-            }
+        case 1: {
+            retval = true;
+            logln('Arg1: ' + Args[0] + ', The system cumulatively spent an extended period of time at IRQL DISPATCH_LEVEL or above. The offending component can usually be identified with a stack trace.');
+            logln('Arg2: ' + Args[1] + ', The watchdog period.');
+            logln('Arg3: ' + Args[2] + ', cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, more info');
+            logln('Arg4: ' + Args[3] + ', Reserved');
+
+            var watchdog_triage = Args[2];
+
+            break;
         }
     }
+
+    // common to both sub-types
+    // get the main thread
+    var thread;
+    for (let Line of exec(".thread")) { 
+        thread = Line.match(addrex2)[1]; 
+    }
+    // Look at thread and find any IRPs and module matches
+    var has_irps = false;
+    var irp_array = new Array(); // array of IRP structs
+    for (let Line of exec("!thread " + thread)) {
+        if (has_irps == true) {
+            if (Line.includes("Mdl:")) {
+                var irp_addr = Line.match(addrex3)[1];
+                var irp = new IRP(irp_addr);
+                irp_array.push(irp); //(irp_addr);
+                continue;
+            } else {
+                has_irps = false;
+            }
+        }
+        if (Line.includes("IRP List:")) {
+            has_irps = true;
+            continue;
+        }
+        if (Line.includes(this.module)) {
+            logln("(kv) line of interest: " + Line);
+        }
+    }
+    for (var irp_entry of irp_array) {
+        for (let Line of exec("!irp " + irp_entry.addr)) { 
+            logln(Line);
+        }
+        for (let Line of exec("dt nt!_IO_STACK_LOCATION " + irp_entry.current)) { 
+            logln(Line);
+        }
+    }
+    logln("");
+    // dump out and identify DPCs of interest
+    for (let Line of exec("!dpcs")) {
+        if (Line.includes(this.module)) { 
+            logln("(!dpcs) DPC of interest: " + Line);
+        }
+    }
+
+    // now spew the pcr for DPC
+    //spew("!pcr");
+    var prcb;
+    for(let Line of exec("!pcr")) {
+        if (Line.includes("Prcb:")) { 
+            prcb = Line.match(addrex3)[1];
+            logln("found prcb: " + prcb);
+        }
+        logln(Line) 
+    }
+    spew("dt nt!_KPRCB " + prcb + " Dpc*");
+    //logln("in debugger: " + "dt nt!_KPRCB " + prcb + " Dpc*");
+    //for (let Line of exec("dt nt!_KPRCB " + prcb + " Dpc*")) { 
+    //    logln(Line);
+    //}
+
     return retval;
 }
 
@@ -706,10 +743,10 @@ function INTERNAL_POWER_ERROR_A0(Args){
     logln("The INTERNAL_POWER_ERROR bug check has a value of 0x000000A0. This bug check");
     logln("indicates that the power policy manager experienced a fatal error.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
-    logln('Arg3: ' + Args[2] + ', ');
-    logln('Arg4: ' + Args[3] + ', ');
+    logln('Arg1: ' + Args[0] + ', Indicates the type of violation.');
+    logln('Arg2: ' + Args[1] + ', Violation subtype');
+    logln('Arg3: ' + Args[2] + ', Subtype dependent');
+    logln('Arg4: ' + Args[3] + ', Subtype dependent');
     logln("");
 
     return true;
@@ -722,10 +759,10 @@ function DRIVER_IRQL_NOT_LESS_OR_EQUAL_D1(Args){
     logln("indicates that a kernel-mode driver attempted to access pageable memory while");
     logln("the process IRQL that was too high.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
-    logln('Arg3: ' + Args[2] + ', ');
-    logln('Arg4: ' + Args[3] + ', ');
+    logln('Arg1: ' + Args[0] + ', Memory referenced.');
+    logln('Arg2: ' + Args[1] + ', IRQL at time of reference.');
+    logln('Arg3: ' + Args[2] + ', 0 - Read, 1 - Write, 2 - Execute, 8 - Execute');
+    logln('Arg4: ' + Args[3] + ', Address that referenced memory. Use ln (list nearest symbols) on this address to see the name of the function.');
     logln("");
 
     return true;
@@ -737,10 +774,10 @@ function VIDEO_TDR_FAILURE_116(Args){
     logln("The VIDEO_TDR_FAILURE bug check has a value of 0x00000116. This indicates that");
     logln("an attempt to reset the display driver and recover from a timeout failed.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
-    logln('Arg3: ' + Args[2] + ', ');
-    logln('Arg4: ' + Args[3] + ', ');
+    logln('Arg1: ' + Args[0] + ', The pointer to the internal TDR recovery context, if available.');
+    logln('Arg2: ' + Args[1] + ', A pointer into the responsible device driver module (for example, the owner tag).');
+    logln('Arg3: ' + Args[2] + ', The error code of the last failed operation, if available.');
+    logln('Arg4: ' + Args[3] + ', Internal context dependent data, if available.');
     logln("");
 
     return true;
@@ -752,10 +789,10 @@ function VIDEO_TDR_TIMEOUT_DETECTED_117(Args){
     logln("The VIDEO_TDR_TIMEOUT_DETECTED live dump has a value of 0x00000117. This");
     logln("indicates that the display driver failed to respond in a timely fashion.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
-    logln('Arg3: ' + Args[2] + ', ');
-    logln('Arg4: ' + Args[3] + ', ');
+    logln('Arg1: ' + Args[0] + ', The pointer to the internal TDR recovery context, if available.');
+    logln('Arg2: ' + Args[1] + ', A pointer into the responsible device driver module (for example, the owner tag).');
+    logln('Arg3: ' + Args[2] + ', The error code of the last failed operation, if available.');
+    logln('Arg4: ' + Args[3] + ', Internal context dependent data, if available.');
     logln("");
 
     return true;
@@ -766,11 +803,15 @@ function LKR_WHEA_UNCORRECTABLE_ERROR_124(Args){
     logln("");
     logln("The WHEA_UNCORRECTABLE_ERROR means that a hardware error has occurred.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
+    logln('Arg1: ' + Args[0] + ', Indicates type of WHEA error.');
+    logln('Arg2: ' + Args[1] + ', Address of WHEA_ERROR_RECORD structure');
     logln('Arg3: ' + Args[2] + ', ');
     logln('Arg4: ' + Args[3] + ', ');
     logln("");
+    spew('!errrec ' + Args[1]);
+    var len = Get_Value(Args[1], "nt!_WHEA_ERROR_RECORD", "Header.Length");
+    logln("creating bin file <whea.bin> for running cscripts: >>> crashlog.parse(r'whea.bin') ");
+    exec('.writemem whea.bin ' + Args[1] + ' L(' + len + ')');
 
     return true;
 }
@@ -782,11 +823,108 @@ function KERNEL_SECURITY_CHECK_FAILURE_139(Args){
     logln("This bug check indicates that the kernel has detected the corruption of");
     logln("a critical data structure.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
-    logln('Arg3: ' + Args[2] + ', ');
-    logln('Arg4: ' + Args[3] + ', ');
+    logln('Arg1: ' + Args[0] + ', The type of corruption. For more information, see the following table.');
+    logln('Arg2: ' + Args[1] + ', Address of the trap frame for the exception that caused the bug check');
+    logln('Arg3: ' + Args[2] + ', Address of the exception record for the exception that caused the bug check');
+    logln('Arg4: ' + Args[3] + ', Reserved');
     logln("");
+    switch (Args[0]) {
+        case '0000000000000000':	
+            logln("A stack-based buffer has been overrun (legacy /GS violation).");
+            break;
+        case '0000000000000001':	
+            logln("VTGuard instrumentation code detected an attempt to use an illegal virtual function table. Typically, a C++ object was corrupted, and then a virtual method call was attempted using the corrupted object's this pointer.");
+            break;
+        case '0000000000000002':	
+            logln("Stack cookie instrumentation code detected a stack-based buffer overrun (/GS violation).");
+            break;
+        case '0000000000000003':	
+            logln("A LIST_ENTRY was corrupted (for example, a double remove). For more information, see the following Cause section.");
+            break;
+        case '0000000000000004':	
+            logln("Reserved");
+            break;
+        case '0000000000000005':	
+            logln("An invalid parameter was passed to a function that considers invalid parameters fatal.");
+            break;
+        case '0000000000000006':	
+            logln("The stack cookie security cookie was not properly initialized by the loader. This may be caused by building a driver to run only on Windows 8 and attempting to load the driver image on an earlier version of Windows. To avoid this problem, you must build the driver to run on an earlier version of Windows.");
+            break;
+        case '0000000000000007':	
+            logln("A fatal program exit was requested.");
+            break;
+        case '0000000000000008':	
+            logln("A array bounds check inserted by the compiler detected an illegal array indexing operation.");
+            break;
+        case '0000000000000009':	
+            logln("A call to RtlQueryRegistryValues was made specifying RTL_QUERY_REGISTRY_DIRECT without RTL_QUERY_REGISTRY_TYPECHECK, and the target value was not in a trusted system hive.");
+            break;
+        case '000000000000000a':	
+            logln("Indirect call guard check detected invalid control transfer.");
+            break;
+        case '000000000000000b':	
+            logln("Write guard check detected invalid memory write.");
+            break;
+        case '000000000000000c':	
+            logln("An attempt was made to switch to an invalid fiber context.");
+            break;
+        case '000000000000000d':	
+            logln("An attempt was made to assign an invalid register context.");
+            break;
+        case '000000000000000e':	
+            logln("The reference count for an object is invalid.");
+            break;
+        case '0000000000000012':	
+            logln("An attempt was made to switch to an invalid jmp_buf context.");
+            break;
+        case '0000000000000013':	
+            logln("An unsafe modification was made to read-only data.");
+            break;
+        case '0000000000000014':	
+            logln("A cryptographic self-test failed.");
+            break;
+        case '0000000000000015':	
+            logln("An invalid exception chain was detected.");
+            break;
+        case '0000000000000016':	
+            logln("A cryptographic library error occurred.");
+            break;
+        case '0000000000000017':	
+            logln("An invalid call was made from within DllMain.");
+            break;
+        case '0000000000000018':	
+            logln("An invalid image base address was detected.");
+            break;
+        case '0000000000000019':	
+            logln("An unrecoverable failure was encountered while protecting a delay load import.");
+            break;
+        case '000000000000001a':	
+            logln("A call was made to an unsafe extension.");
+            break;
+        case '000000000000001b':	
+            logln("A deprecated service was invoked.");
+            break;
+        case '000000000000001c':	
+            logln("An out of bounds buffer access was detected.");
+            break;
+        case '000000000000001d':	
+            logln("An RTL_BALANCED_NODE RBTree entry has been corrupted.");
+            break;
+        case '0000000000000025':	
+            logln("An out of range switch jumptable entry was invoked.");
+            break;
+        case '0000000000000026':	
+            logln("A longjmp was attempted to an invalid target.");
+            break;
+        case '0000000000000027':	
+            logln("An export suppressed call target couldn't be made a valid call target.");
+            break;
+        default:
+            logln("Unknown error.");
+            break;
+    }
+    spew('.trap ' + Args[1]);
+    spew('.exr  ' + Args[2]);
 
     return true;
 }
@@ -797,11 +935,35 @@ function KERNEL_MODE_HEAP_CORRUPTION_13A(Args){
     logln("The KERNEL_MODE_HEAP_CORRUPTION bug check has a value of 0x0000013A. This");
     logln("indicates that the kernel mode heap manager has detected corruption in a heap.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
-    logln('Arg3: ' + Args[2] + ', ');
-    logln('Arg4: ' + Args[3] + ', ');
+    logln('Arg1: ' + Args[0] + ', Type of corruption detected- see list below');
+    logln('Arg2: ' + Args[1] + ', Address of the heap that reported the corruption');
+    logln('Arg3: ' + Args[2] + ', Address at which the corruption was detected');
+    logln('Arg4: ' + Args[3] + ', Reserved');
     logln("");
+
+    switch (Args[0]) {
+        case '0000000000000003': logln("A corrupt entry header was detected."); break;
+        case '0000000000000004': logln("Multiple corrupt entry headers were detected."); break;
+        case '0000000000000005': logln("A corrupt entry header in a large allocation was detected."); break;
+        case '0000000000000006': logln("A corruption was detected with features consistent with a buffer overrun."); break;
+        case '0000000000000007': logln("A corruption was detected with features consistent with a buffer underrun."); break;
+        case '0000000000000008': logln("A free block was passed to an operation that is only valid for busy blocks."); break;
+        case '0000000000000009': logln("An invalid argument was specified for the current operation."); break;
+        case '000000000000000a': logln("An invalid allocation type was detected."); break;
+        case '000000000000000b': logln("A corruption was detected with features consistent with a use-after-free error."); break;
+        case '000000000000000c': logln("The wrong heap was specified for the current operation."); break;
+        case '000000000000000d': logln("A corrupt free list was detected."); break;
+        case '000000000000000e': logln("The heap detected list corruption in a list other than the free list."); break;
+        case '000000000000000f': logln("A free block was passed to an operation that is only valid for busy blocks."); break;
+        case '0000000000000010': logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
+        case '0000000000000011': logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
+        case '0000000000000012': logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
+        case '0000000000000013': logln("The heap API was passed a NULL heap handle. Look at the call stack and to determine why a bad handle was supplied to the heap."); break;
+        case '0000000000000014': logln("The requested heap allocation is larger then the current allocation limit."); break;
+        case '0000000000000015': logln("In the process of performing a commit request, it was determined that the request would exceed the current commit limit."); break;
+        case '0000000000000016': logln("In the process of checking the size of the given VA Manager allocation, it was determined that the query was invalid."); break;
+        default: logln("unknown error"); break;
+    }
 
     return true;
 }
@@ -812,10 +974,10 @@ function VIDEO_ENGINE_TIMEOUT_DETECTED_141(Args){
     logln("The VIDEO_ENGINE_TIMEOUT_DETECTED live dump has a value of 0x00000141. This");
     logln("indicates that one of the display engines failed to respond in timely fashion.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
-    logln('Arg3: ' + Args[2] + ', ');
-    logln('Arg4: ' + Args[3] + ', ');
+    logln('Arg1: ' + Args[0] + ', Optional pointer to internal TDR recovery context (TDR_RECOVERY_CONTEXT).');
+    logln('Arg2: ' + Args[1] + ', The pointer into responsible device driver module (e.g owner tag).');
+    logln('Arg3: ' + Args[2] + ', The secondary driver specific bucketing key.');
+    logln('Arg4: ' + Args[3] + ', Optional internal context dependent data.');
     logln("");
 
     return true;
