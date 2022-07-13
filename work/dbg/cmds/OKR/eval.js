@@ -149,6 +149,11 @@ function Classify(line) {
     return null;
 }
 
+function SideloadSymbolsAndSources() {
+    spew(".sympath+ " + "F:\\Intel_Dev\\Bugs\\iaCamera\\syms\\ICL_7414\\x64");
+    spew(".srcpath+ " + "F:\\Intel_Dev\\Bugs\\iaCamera\\src\\ICL_SRC\\Camera");
+}
+
 function CreateDebugStack() {
     // create DebugStack.txt with: "!sym prompts;.reload;!analyze -v;.ecxr;!for_each_frame dv /t;q"
     spew("||");
@@ -160,6 +165,7 @@ function CreateDebugStack() {
 }
 
 function Dispatch(idx, args) {
+    SideloadSymbolsAndSources();
     CreateDebugStack();
     logln("***> Intel Dump Analyzer <***\n");
     spew("||")
