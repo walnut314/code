@@ -3274,3 +3274,66 @@ Debugger.Utility.Control
 
 
 
+ACPI device object correlation with ACPI device in !nstree
+1: kd> !devstack 0xffffd9085b0507b0
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffffd9085b5fcd90  \Driver\iactrllogicffffd908615d6700  
+> ffffd9085b0507b0  \Driver\ACPI       ffffd908552ea8b0  00000070
+!DevNode ffffd908615d6050 :
+  DeviceInst is "ACPI\INT3472\1"
+  ServiceName is "iactrllogic"
+
+Note: the !DevExt of the ACPI device is the Device of the ACPI Device below:
+
+| | | | ICL1 (ffffd90859390c30) - Device ffffd908552ea8b0
+| | | | | _ADR (ffffd90859390ce0) - Integer - 0000000000000000
+| | | | | _HID (ffffd90859390d90) - String - INT3472
+| | | | | _CID (ffffd90859390e40) - String - INT3472
+| | | | | _DDN (ffffd90859390ef0) - String - INCL-CRDD
+| | | | | _UID (ffffd90859390fc0) - String - 1
+
+PCI stuff:
+
+1: kd> !devstack 0xffffd90855de8360
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffffd9085b0bbd20  \Driver\iaLPSS2_I2C_ADLffffd9085abb77f0  0000004b
+  ffffd90855ae6d50  \Driver\ACPI       ffffd90852310460  
+> ffffd90855de8360  \Driver\pci        ffffd90855de84b0  NTPNP_PCI0017
+!DevNode ffffd908556e8010 :
+  DeviceInst is "PCI\VEN_8086&DEV_51EB&SUBSYS_72708086&REV_01\3&11583659&0&AB"
+  ServiceName is "iaLPSS2_I2C_ADL"
+
+1: kd> !devext
+!devext [<address> <type>]
+  <address> is the address of a device extension to
+            be dumped.
+  <type>    is the type of the object owning this extension:
+            PCI if it is a PCI device extension
+            ISAPNP if it is an ISAPNP device extension
+            PCMCIA if it is a PCMCIA device extension
+            HID if it is an HID device extension
+1: kd> !devext ffffd908552ea460 ACPI
+Device extension type 'ACPI' is not handled by !devext.
+1: kd> !devext ffffd90855de84b0 PCI
+PDO Extension, Bus 0x0, Device 15, Function 3.
+  DevObj 0xffffd90855de8360  Parent FDO DevExt 0xffffd908556eb190
+  Device State = PciStarted
+  Vendor ID 8086 (INTEL CORPORATION)  Device ID 51EB
+  Subsystem Vendor ID 8086 (INTEL CORPORATION)  Subsystem ID 7270
+  Header Type 0, Class Base/Sub 0c/80  (Serial Bus Controller/Unknown Sub Class)
+  Programming Interface: 00, Revision: 01, IntPin: 04, RawLine 2b
+  Possible Decodes ((cmd & 7) = 7): BMI
+  Capabilities: Ptr=80, power 
+  Logical Device Power State: D3
+  Device Wake Level:          Unspecified
+  WaitWakeIrp:                <none>
+  Requirements:     Alignment Length    Minimum          Maximum
+    BAR0    Mem:    00001000  00001000  0000000000000000 ffffffffffffffff
+  Resources:        Start            Length
+    BAR0    Mem:    0000007ffeecb000 00001000
+  Interrupt Requirement:
+    Line Based - Min Vector = 0x0, Max Vector = 0xffffffff
+  Interrupt Resource:    Type - Line Based, Interrupt Line = 0x2b
+  Config space access log: !pcicfglog 0xffffd90855de84b0
+
+
