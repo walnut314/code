@@ -1,4 +1,4 @@
-7/28/2021 7:09:54 AM     C:\sandbox\code\toys\grokkage\cheats
+7/25/2022 11:27:44 AM     D:\dev\code\toys\grokkage\cheats
 
 ------------------count bits------------------------------------------------
     int cnt = 0; while (x) { cnt++; x &= (x-1); }
@@ -42,19 +42,16 @@ void put(x)                         int get()           MAX = 2^n
         size++;                         return x
 int data() return size              int space() return MAX-size
 -----------------------tree-------------------------------------------------
-void ins(TREE **T, X)               bool find(TREE T, X)
-if (*T == NULL) *T = NEW            if (T == NULL) return FALSE
-elseif (X < T->x) ins(T->LEFT, X)   elif (X < T->x) return find(T->LEFT, X)
-elseif (X > T->x) ins(T->RIGHT, X)  elif (X > T->x) return find(T->RIGHT, X)
-                                    return TRUE
-void bfs(TREE)                                      
-    PUT(T); 
-    while (!empty())
-        N = GET(); PROCESS();
-        if (N->LEFT)  PUT(N->LEFT)
-        if (N->RIGHT) PUT(N->RIGHT)
+void ins(TREE **T, X)               void bfs(TREE)
+if (*T == NULL) *T = NEW            PUT(T, Q)
+elseif (X < T->x) ins(T->LEFT, X)   while (!empty(Q))
+elseif (X > T->x) ins(T->RIGHT, X)      N = GET(); PROCESS(N)
+                                        if (N->LEFT)  PUT(N->LEFT, Q)
+                                        if (N->RIGHT) PUT(N->RIGHT, Q)
 ---------------------------search-------------------------------------------
     binsearch:
 ----------------------------------------------------------------------------
 endian: uint32 x = 0x11223344L; (H->L), char *p = &x; loop: p[i] addrs increase
+bit count
+fifo
 
