@@ -52,6 +52,6 @@ elseif (X > T->x) ins(T->RIGHT, X)      N = GET(); PROCESS(N)
     binsearch:
 ----------------------------------------------------------------------------
 endian: uint32 x = 0x11223344L; (H->L), char *p = &x; loop: p[i] addrs increase
-bit count
+bit count: while (x) {  bits+ss+; x &= (x-1); }
 fifo
 
