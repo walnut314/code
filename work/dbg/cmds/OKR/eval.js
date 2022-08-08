@@ -150,8 +150,9 @@ function Classify(line) {
 }
 
 function SideloadSymbolsAndSources() {
-    spew(".sympath+ " + "F:\\Intel_Dev\\Bugs\\iaCamera\\syms\\ICL_7414\\x64");
-    spew(".srcpath+ " + "F:\\Intel_Dev\\Bugs\\iaCamera\\src\\ICL_SRC\\Camera");
+    spew(".sympath+ " + "http://symbols.intel.com/");
+    spew(".sympath+ " + "http://symbols.intel.com/SymProxy");
+    spew(".sympath+ " + "srv**http://symbols.intel.com/SymProxy");
 }
 
 function CreateDebugStack() {
@@ -996,7 +997,7 @@ function LKR_BUGCODE_NDIS_DRIVER_LIVE_DUMP_15E(Args){
     logln("code indicates that NDIS has captured a live kernel dump. NDIS does not generate");
     logln("a bug check in this situation.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
+    logln('Arg1: ' + Args[0] + ', Cause of Error');
     logln('Arg2: ' + Args[1] + ', ');
     logln('Arg3: ' + Args[2] + ', ');
     logln('Arg4: ' + Args[3] + ', ');
@@ -1056,10 +1057,28 @@ function LKR_WIN32K_CALLOUT_WATCHDOG_LIVEDUMP_1A1(Args){
     logln("The WIN32K_CALLOUT_WATCHDOG_LIVEDUMP live dump has a value of 0x000001A1.");
     logln("A callout to Win32k did not return promptly.");
     logln("");
-    logln('Arg1: ' + Args[0] + ', ');
-    logln('Arg2: ' + Args[1] + ', ');
-    logln('Arg3: ' + Args[2] + ', ');
-    logln('Arg4: ' + Args[3] + ', ');
+    logln('Arg1: ' + Args[0] + ', Thread blocking prompt return from a Win32k callout.');
+    logln('Arg2: ' + Args[1] + ', Reserved');
+    logln('Arg3: ' + Args[2] + ', Reserved');
+    logln('Arg4: ' + Args[3] + ', Reserved');
+    logln("");
+
+    spew("!thread " + Args[0]);
+
+    var lock;
+    var lockr;
+    for (let Line of exec('!locks')) {
+        if (Line.includes("Exclusively owned")) {
+            lock = Line.match("^Resource @ .*0x([a-fA-F0-9]{16})");
+        }
+        if (Line.includes(Args[0])) {
+            logln("Found resource: " + lock[1] + " associated with thread: " + Args[0]);
+        }
+    }
+    if (lock) {
+        spew("!locks " + lock[1]);
+    }
+
     logln("");
 
     return true;
