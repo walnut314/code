@@ -95,19 +95,30 @@ class IRP {
     }
 }
 
+class DEV_NODE {
+    constructor(Handle) {
+        this.address = Handle;
+    }
+    ExecuteDevNode() {
+        var cmd = "!devnode " + this.address.toString(16);
+        exec(".echo " + cmd, false);
+        exec(cmd, false);
+    }    
+}
+
 class DumpFactory {
     constructor (signature, handler) {
-        this.signature = signature; // string
-        this.handler = handler;     // dump parser
-        this.bucket = null;
-        this.module = null;
-        this.thread = null;
-        this.process_name = null;
-        this.trap = null;
-        this.file = null;
-        this.cxr = null;
-        this.lock = null;
-        this.symbol_name = null;
+        this.signature      = signature; // string
+        this.handler        = handler;     // dump parser
+        this.bucket         = null;
+        this.module         = null;
+        this.thread         = null;
+        this.process_name   = null;
+        this.trap           = null;
+        this.file           = null;
+        this.cxr            = null;
+        this.lock           = null;
+        this.symbol_name    = null;
     }
 }
 
@@ -296,10 +307,8 @@ function VIDEO_SCHEDULER_INTERNAL_ERROR_119(Args){
     logln("in a condition that video scheduler can no longer progress. Any other values after");
     logln("parameter 1 must be individually examined according to the subtype.");
     logln("Arguments:");
-    var retval = false;
     var watchdog_subcode = parseInt(Args[0]);
     if (watchdog_subcode == 2) {
-        retval = true;
 
         logln('Arg1: ' + Args[0] + ', The driver failed upon the submission of a command.');
         logln('Arg2: ' + Args[1] + ', Error status');
@@ -341,16 +350,14 @@ function VIDEO_SCHEDULER_INTERNAL_ERROR_119(Args){
         }
         spew("!thread " + thread);
     }
-    return retval;
+    return true;
 }
 
 function DRIVER_POWER_STATE_FAILURE_9F(Args){
     logln(this.signature + " ***> DRIVER_POWER_STATE_FAILURE <***");
     logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
-    var retval = false;
     if (watchdog_subcode == 3) {
-        retval = true;
         logln('Arg1: ' + Args[0] + ', A device object has been blocking an Irp for too long a time');
         logln('Arg2: ' + Args[1] + ', Physical Device Object of the stack');
         logln('Arg3: ' + Args[2] + ', nt!TRIAGE_9F_POWER on Win7 and higher, otherwise the Functional Device Object of the stack');
@@ -366,7 +373,7 @@ function DRIVER_POWER_STATE_FAILURE_9F(Args){
         spew('!irp ' + irp.addr);
         spew('!devstack ' + pdo);
     }
-    return retval;
+    return true;
 }
 
 function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){ 
@@ -374,41 +381,47 @@ function CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP_15F(Args){
     logln("bucket: " + this.bucket);
     dumpargs(Args);
     var watchdog_subcode = parseInt(Args[0]);
-    var retval = false;
-    if (watchdog_subcode == 2) {
-        retval = true;
-        logln('Arg1: ' + Args[0]);
-        logln("the resiliency phase of connected standby for too long without");
-        logln("entering DRIPS (deepest runtime idle platform state) due to an");
-        logln("unsatisfied device constraint with no activators active.");
-        logln('Arg2: ' + Args[1] + ', nt!_TRIAGE_POP_FX_DEVICE Device');
-        logln('Arg3: ' + Args[2] + ', Component index');
-        logln('Arg4: ' + Args[3] + ', Reserved => _TRIAGE_DEVICE_NODE');
+    //if (watchdog_subcode == 2) {
+    switch (watchdog_subcode) {
+        case 0x2: {
+            logln('Arg1: ' + Args[0]);
+            logln("the resiliency phase of connected standby for too long without");
+            logln("entering DRIPS (deepest runtime idle platform state) due to an");
+            logln("unsatisfied device constraint with no activators active.");
+            logln('Arg2: ' + Args[1] + ', nt!_TRIAGE_POP_FX_DEVICE Device');
+            logln('Arg3: ' + Args[2] + ', Component index');
+            logln('Arg4: ' + Args[3] + ', Reserved => _TRIAGE_DEVICE_NODE');
 
-        var irp = new IRP(Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "Irp"));
+            var irp = new IRP(Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "Irp"));
 
-        // Get the ServiceName -- this one is a bit odd
-        var devnode = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "DeviceNode");
-        spew2('nt!_TRIAGE_DEVICE_NODE', devnode);
+            // Get the ServiceName -- this one is a bit odd
+            var devnode = Get_Pointer(Args[1], "nt!_TRIAGE_POP_FX_DEVICE", "DeviceNode");
+            spew2('nt!_TRIAGE_DEVICE_NODE', devnode);
 
-        // make this into a function
-        var field = Get_Field_Offset('0x'+devnode, 'nt!_TRIAGE_DEVICE_NODE', 'ServiceName');
-        var driver_name = grep('dt _UNICODE_STRING ' + field, "Buffer", bufex);
-        //logln('name: ' + driver_name);
+            var node = new DEV_NODE(devnode);
+            node.ExecuteDevNode();
 
-        // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject
-        var pdo = Get_Pointer(Args[3], "nt!_TRIAGE_DEVICE_NODE", "PhysicalDeviceObject");
+            // make this into a function
+            var field = Get_Field_Offset('0x'+devnode, 'nt!_TRIAGE_DEVICE_NODE', 'ServiceName');
+            var driver_name = grep('dt _UNICODE_STRING ' + field, "Buffer", bufex);
+            //logln('name: ' + driver_name);
 
-        if (irp.pending.includes("01")) { // == true) {
-            logln("pending returned for irp: " + irp.addr + " on driver: " + driver_name + ", pdo: " + pdo);
+            // get the PDO -> _TRIAGE_DEVICE_NODE->PhysicalDeviceObject
+            var pdo = Get_Pointer(Args[3], "nt!_TRIAGE_DEVICE_NODE", "PhysicalDeviceObject");
+
+            if (irp.pending.includes("01")) { // == true) {
+                logln("pending returned for irp: " + irp.addr + " on driver: " + driver_name + ", pdo: " + pdo);
+            }
+            spew('!irp ' + irp.addr);
+            logln("get the PDO stack");
+            spew('!devstack ' + pdo);
+            spew2('nt!_DEVICE_OBJECT', pdo);
+            spew('!fxdevice ' + Args[1]);
+
+            break;
         }
-        spew('!irp ' + irp.addr);
-        logln("get the PDO stack");
-        spew('!devstack ' + pdo);
-        spew2('nt!_DEVICE_OBJECT', pdo);
-        spew('!fxdevice ' + Args[1]);
     }
-    return retval;
+    return true;
 }
 
 function DPC_WATCHDOG_VIOLATION_133(Args){
@@ -416,10 +429,8 @@ function DPC_WATCHDOG_VIOLATION_133(Args){
     logln("The DPC watchdog detected a prolonged run time at an IRQL of DISPATCH_LEVEL or above.");
     logln("bucket: " + this.bucket);
     var watchdog_subcode = parseInt(Args[0]);
-    var retval = false;
     switch (watchdog_subcode) {
         case 0: {
-            retval = true;
             logln('Arg1: ' + Args[0] + ', A single DPC or ISR exceeded its time allotment. The offending component can usually be identified with a stack trace.');
             logln('Arg2: ' + Args[1] + ', The DPC time count (in ticks)');
             logln('Arg3: ' + Args[2] + ', The DPC time allotment (in ticks).');
@@ -434,7 +445,6 @@ function DPC_WATCHDOG_VIOLATION_133(Args){
             break;
         }
         case 1: {
-            retval = true;
             logln('Arg1: ' + Args[0] + ', The system cumulatively spent an extended period of time at IRQL DISPATCH_LEVEL or above. The offending component can usually be identified with a stack trace.');
             logln('Arg2: ' + Args[1] + ', The watchdog period.');
             logln('Arg3: ' + Args[2] + ', cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, more info');
@@ -506,7 +516,7 @@ function DPC_WATCHDOG_VIOLATION_133(Args){
     //    logln(Line);
     //}
 
-    return retval;
+    return true;
 }
 
 // $DumpFile = "D:\Intel_Dev\Dumps\BC_101\MEMORY_ZAC214703EV1_2022-01-31_12-33-21\MEMORY_ZAC214703EV1_2022-01-31_12-33-21.DMP"
@@ -546,7 +556,6 @@ function CLOCK_WATCHDOG_TIMEOUT_101(Args) {
     logln('Arg4: ' + Args[3] + ', faulting processor');
     logln("");
 
-    var retval = true;
     var clock_ticks = Args[0];
     var prcb        = Args[2];
     var cpu         = Args[3];
@@ -562,7 +571,7 @@ function CLOCK_WATCHDOG_TIMEOUT_101(Args) {
     for (let Line of exec("!thread " + this.thread)) {
         logln("thread: " + Line);
     }
-    return retval;
+    return true;
 }
 
 function INTERRUPT_EXCEPTION_NOT_HANDLED_3D(Args){ 
@@ -579,14 +588,12 @@ function INTERRUPT_EXCEPTION_NOT_HANDLED_3D(Args){
     logln('Arg4: ' + Args[3] + ', 0');
     logln("");
 
-    var retval = false;
     var exr = new EXR(Args[0]);
     var cxr = Args[1];
     var thread = null;
     var ExceptionCode = null;
     var ExceptionAddress = null;
 
-    retval = true;
     for (let Line of exec("u " + exr.addr)) { 
         logln("u: " + Line);
     }
@@ -605,7 +612,7 @@ function INTERRUPT_EXCEPTION_NOT_HANDLED_3D(Args){
             logln("(kv) line of interest" + Line);
         }
     }
-    return retval;
+    return true;
 }
 
 function IRQL_NOT_LESS_OR_EQUAL_A(Args){
