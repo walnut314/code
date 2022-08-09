@@ -913,103 +913,110 @@ function KERNEL_SECURITY_CHECK_FAILURE_139(Args){
     logln('Arg3: ' + Args[2] + ', Address of the exception record for the exception that caused the bug check');
     logln('Arg4: ' + Args[3] + ', Reserved');
     logln("");
-    switch (Args[0]) {
-        case '0000000000000000':	
+
+    spew('.trap ' + Args[1]);
+    logln("");
+    spew('.exr  ' + Args[2]);
+    logln("");
+
+    var type = parseInt(Args[0]);
+    logln("The type of corruption is:");
+    switch (type) {
+        case 0x0:	
             logln("A stack-based buffer has been overrun (legacy /GS violation).");
             break;
-        case '0000000000000001':	
+        case 0x1:	
             logln("VTGuard instrumentation code detected an attempt to use an illegal virtual function table. Typically, a C++ object was corrupted, and then a virtual method call was attempted using the corrupted object's this pointer.");
             break;
-        case '0000000000000002':	
+        case 0x2:	
             logln("Stack cookie instrumentation code detected a stack-based buffer overrun (/GS violation).");
             break;
-        case '0000000000000003':	
+        case 0x3:	
             logln("A LIST_ENTRY was corrupted (for example, a double remove). For more information, see the following Cause section.");
             break;
-        case '0000000000000004':	
+        case 0x4:	
             logln("Reserved");
             break;
-        case '0000000000000005':	
+        case 0x5:	
             logln("An invalid parameter was passed to a function that considers invalid parameters fatal.");
             break;
-        case '0000000000000006':	
+        case 0x6:	
             logln("The stack cookie security cookie was not properly initialized by the loader. This may be caused by building a driver to run only on Windows 8 and attempting to load the driver image on an earlier version of Windows. To avoid this problem, you must build the driver to run on an earlier version of Windows.");
             break;
-        case '0000000000000007':	
+        case 0x7:	
             logln("A fatal program exit was requested.");
             break;
-        case '0000000000000008':	
+        case 0x8:	
             logln("A array bounds check inserted by the compiler detected an illegal array indexing operation.");
             break;
-        case '0000000000000009':	
+        case 0x9:	
             logln("A call to RtlQueryRegistryValues was made specifying RTL_QUERY_REGISTRY_DIRECT without RTL_QUERY_REGISTRY_TYPECHECK, and the target value was not in a trusted system hive.");
             break;
-        case '000000000000000a':	
+        case 0xa:	
             logln("Indirect call guard check detected invalid control transfer.");
             break;
-        case '000000000000000b':	
+        case 0xb:	
             logln("Write guard check detected invalid memory write.");
             break;
-        case '000000000000000c':	
+        case 0xc:	
             logln("An attempt was made to switch to an invalid fiber context.");
             break;
-        case '000000000000000d':	
+        case 0xd:	
             logln("An attempt was made to assign an invalid register context.");
             break;
-        case '000000000000000e':	
+        case 0xe:	
             logln("The reference count for an object is invalid.");
             break;
-        case '0000000000000012':	
+        case 0x12:	
             logln("An attempt was made to switch to an invalid jmp_buf context.");
             break;
-        case '0000000000000013':	
+        case 0x13:	
             logln("An unsafe modification was made to read-only data.");
             break;
-        case '0000000000000014':	
+        case 0x14:	
             logln("A cryptographic self-test failed.");
             break;
-        case '0000000000000015':	
+        case 0x15:	
             logln("An invalid exception chain was detected.");
             break;
-        case '0000000000000016':	
+        case 0x16:	
             logln("A cryptographic library error occurred.");
             break;
-        case '0000000000000017':	
+        case 0x17:	
             logln("An invalid call was made from within DllMain.");
             break;
-        case '0000000000000018':	
+        case 0x18:	
             logln("An invalid image base address was detected.");
             break;
-        case '0000000000000019':	
+        case 0x19:	
             logln("An unrecoverable failure was encountered while protecting a delay load import.");
             break;
-        case '000000000000001a':	
+        case 0x1a:	
             logln("A call was made to an unsafe extension.");
             break;
-        case '000000000000001b':	
+        case 0x1b:	
             logln("A deprecated service was invoked.");
             break;
-        case '000000000000001c':	
+        case 0x1c:	
             logln("An out of bounds buffer access was detected.");
             break;
-        case '000000000000001d':	
+        case 0x1d:	
             logln("An RTL_BALANCED_NODE RBTree entry has been corrupted.");
             break;
-        case '0000000000000025':	
+        case 0x25:	
             logln("An out of range switch jumptable entry was invoked.");
             break;
-        case '0000000000000026':	
+        case 0x26:	
             logln("A longjmp was attempted to an invalid target.");
             break;
-        case '0000000000000027':	
+        case 0x27:	
             logln("An export suppressed call target couldn't be made a valid call target.");
             break;
         default:
             logln("Unknown error.");
             break;
     }
-    spew('.trap ' + Args[1]);
-    spew('.exr  ' + Args[2]);
+    logln("");
 
     return true;
 }
@@ -1026,29 +1033,32 @@ function KERNEL_MODE_HEAP_CORRUPTION_13A(Args){
     logln('Arg4: ' + Args[3] + ', Reserved');
     logln("");
 
-    switch (Args[0]) {
-        case '0000000000000003': logln("A corrupt entry header was detected."); break;
-        case '0000000000000004': logln("Multiple corrupt entry headers were detected."); break;
-        case '0000000000000005': logln("A corrupt entry header in a large allocation was detected."); break;
-        case '0000000000000006': logln("A corruption was detected with features consistent with a buffer overrun."); break;
-        case '0000000000000007': logln("A corruption was detected with features consistent with a buffer underrun."); break;
-        case '0000000000000008': logln("A free block was passed to an operation that is only valid for busy blocks."); break;
-        case '0000000000000009': logln("An invalid argument was specified for the current operation."); break;
-        case '000000000000000a': logln("An invalid allocation type was detected."); break;
-        case '000000000000000b': logln("A corruption was detected with features consistent with a use-after-free error."); break;
-        case '000000000000000c': logln("The wrong heap was specified for the current operation."); break;
-        case '000000000000000d': logln("A corrupt free list was detected."); break;
-        case '000000000000000e': logln("The heap detected list corruption in a list other than the free list."); break;
-        case '000000000000000f': logln("A free block was passed to an operation that is only valid for busy blocks."); break;
-        case '0000000000000010': logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
-        case '0000000000000011': logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
-        case '0000000000000012': logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
-        case '0000000000000013': logln("The heap API was passed a NULL heap handle. Look at the call stack and to determine why a bad handle was supplied to the heap."); break;
-        case '0000000000000014': logln("The requested heap allocation is larger then the current allocation limit."); break;
-        case '0000000000000015': logln("In the process of performing a commit request, it was determined that the request would exceed the current commit limit."); break;
-        case '0000000000000016': logln("In the process of checking the size of the given VA Manager allocation, it was determined that the query was invalid."); break;
+    var type = parseInt(Args[0]);
+    logln("The type of corruption is:");
+    switch (type) {
+        case 0x03: logln("A corrupt entry header was detected."); break;
+        case 0x04: logln("Multiple corrupt entry headers were detected."); break;
+        case 0x05: logln("A corrupt entry header in a large allocation was detected."); break;
+        case 0x06: logln("A corruption was detected with features consistent with a buffer overrun."); break;
+        case 0x07: logln("A corruption was detected with features consistent with a buffer underrun."); break;
+        case 0x08: logln("A free block was passed to an operation that is only valid for busy blocks."); break;
+        case 0x09: logln("An invalid argument was specified for the current operation."); break;
+        case 0x0a: logln("An invalid allocation type was detected."); break;
+        case 0x0b: logln("A corruption was detected with features consistent with a use-after-free error."); break;
+        case 0x0c: logln("The wrong heap was specified for the current operation."); break;
+        case 0x0d: logln("A corrupt free list was detected."); break;
+        case 0x0e: logln("The heap detected list corruption in a list other than the free list."); break;
+        case 0x0f: logln("A free block was passed to an operation that is only valid for busy blocks."); break;
+        case 0x10: logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
+        case 0x11: logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
+        case 0x12: logln("The heap detected invalid internal state during the current operation. This is usually the result of a buffer overflow."); break;
+        case 0x13: logln("The heap API was passed a NULL heap handle. Look at the call stack and to determine why a bad handle was supplied to the heap."); break;
+        case 0x14: logln("The requested heap allocation is larger then the current allocation limit."); break;
+        case 0x15: logln("In the process of performing a commit request, it was determined that the request would exceed the current commit limit."); break;
+        case 0x16: logln("In the process of checking the size of the given VA Manager allocation, it was determined that the query was invalid."); break;
         default: logln("unknown error"); break;
     }
+    logln("");
 
     return true;
 }
