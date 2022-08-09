@@ -102,6 +102,7 @@ class DumpFactory {
         this.bucket = null;
         this.module = null;
         this.thread = null;
+        this.process_name = null;
         this.trap = null;
         this.file = null;
         this.cxr = null;
@@ -122,6 +123,7 @@ dump_maps.set("(9F)",  new DumpFactory("(9F)",  DRIVER_POWER_STATE_FAILURE_9F));
 dump_maps.set("(A0)",  new DumpFactory("(A0)",  INTERNAL_POWER_ERROR_A0));
 dump_maps.set("(D1)",  new DumpFactory("(D1)",  DRIVER_IRQL_NOT_LESS_OR_EQUAL_D1));
 dump_maps.set("(101)", new DumpFactory("(101)", CLOCK_WATCHDOG_TIMEOUT_101));
+dump_maps.set("(109)", new DumpFactory("(109)", CRITICAL_STRUCTURE_CORRUPTION_109));
 dump_maps.set("(116)", new DumpFactory("(116)", VIDEO_TDR_FAILURE_116));
 dump_maps.set("(117)", new DumpFactory("(117)", VIDEO_TDR_TIMEOUT_DETECTED_117));
 dump_maps.set("(119)", new DumpFactory("(119)", VIDEO_SCHEDULER_INTERNAL_ERROR_119));
@@ -185,6 +187,7 @@ function EvalDump() {
     var bucket = null;
     var module = null;
     var thread = null;
+    var process_name = null;
     for(let Line of exec('!analyze -v')) {
         //logln("line: " + Line);
         if (index == null) index = Classify(Line);
@@ -207,6 +210,11 @@ function EvalDump() {
             var matches = Line.match(/^FAULTING_THREAD: (.*)/);
             thread = matches[1];
             logln("thread: " + thread);
+        }
+        if (Line.match(/^PROCESS_NAME: (.*)/)) {
+            var matches = Line.match(/^PROCESS_NAME: (.*)/);
+            process_name = matches[1];
+            logln("process_name: " + process_name);
         }
         if (Line.match(/^TRAP_FRAME: (.*)/)) {
             var matches = Line.match(/^TRAP_FRAME:.*([a-fA-F0-9]{16}) /);
@@ -236,6 +244,7 @@ function EvalDump() {
         dump_maps.get(index).bucket         = bucket;
         dump_maps.get(index).module         = module;
         dump_maps.get(index).thread         = thread;
+        dump_maps.get(index).process_name   = process_name;
         dump_maps.get(index).trap           = trap;
         dump_maps.get(index).cxr            = cxr;
         dump_maps.get(index).lock           = lock;
@@ -774,6 +783,75 @@ function DRIVER_IRQL_NOT_LESS_OR_EQUAL_D1(Args){
 
     return true;
 }
+function CRITICAL_STRUCTURE_CORRUPTION_109(Args) {
+    logln(this.signature + " ***> CRITICAL_STRUCTURE_CORRUPTION <***");
+    logln("bucket: " + this.bucket);
+    logln("");
+    logln("The CRITICAL_STRUCTURE_CORRUPTION bug check has a value of 0x00000109. This");
+    logln("indicates that the kernel has detected critical kernel code or data corruption.");
+    logln("");
+    logln('Arg1: ' + Args[0] + ', Reserved');
+    logln('Arg2: ' + Args[1] + ', Reserved');
+    logln('Arg3: ' + Args[2] + ', Reserved');
+    logln('Arg4: ' + Args[3] + ', The type of the corrupted region.');
+    logln("");
+
+    var type = parseInt(Args[3]);
+    logln("The type of corruption is:");
+    switch (type) {
+        case 0x0:   { logln("   A generic data region"); break; }
+        case 0x1:   { logln("   A function modification or .pdata"); break; }
+        case 0x2:   { logln("   A processor interrupt dispatch table (IDT)"); break; }
+        case 0x3:   { logln("   A processor global descriptor table (GDT)"); break; }
+        case 0x4:   { logln("   A type-1 process list corruption"); break; }
+        case 0x5:   { logln("   A type-2 process list corruption"); break; }
+        case 0x6:   { logln("   A debug routine modification"); break; }
+        case 0x7:   { logln("   A critical MSR modification"); break; }
+        case 0x8:   { logln("   Object type"); break; }
+        case 0x9:   { logln("   A processor IVT"); break; }
+        case 0xA:   { logln("   Modification of a system service function"); break; }
+        case 0xB:   { logln("   A generic session data region"); break; }
+        case 0xC:   { logln("   Modification of a session function or .pdata"); break; }
+        case 0xD:   { logln("   Modification of an import table"); break; }
+        case 0xE:   { logln("   Modification of a session import table"); break; }
+        case 0xF:   { logln("   Ps Win32 callout modification"); break; }
+        case 0x10:  { logln("   Debug switch routine modification"); break; }
+        case 0x11:  { logln("   IRP allocator modification"); break; }
+        case 0x12:  { logln("   Driver call dispatcher modification"); break; }
+        case 0x13:  { logln("   IRP completion dispatcher modification"); break; }
+        case 0x14:  { logln("   IRP deallocator modification"); break; }
+        case 0x15:  { logln("   A processor control register"); break; }
+        case 0x16:  { logln("   Critical floating point control register modification"); break; }
+        case 0x17:  { logln("   Local APIC modification"); break; }
+        case 0x18:  { logln("   Kernel notification callout modification"); break; }
+        case 0x19:  { logln("   Loaded module list modification"); break; }
+        case 0x1A:  { logln("   Type 3 process list corruption"); break; }
+        case 0x1B:  { logln("   Type 4 process list corruption"); break; }
+        case 0x1C:  { logln("   Driver object corruption"); break; }
+        case 0x1D:  { logln("   Executive callback object modification"); break; }
+        case 0x1E:  { logln("   Modification of module padding"); break; }
+        case 0x1F:  { logln("   Modification of a protected process"); break; }
+        case 0x20:  { logln("   A generic data region"); break; }
+        case 0x21:  { logln("   A page hash mismatch"); break; }
+        case 0x22:  { logln("   A session page hash mismatch"); break; }
+        case 0x23:  { logln("   Load config directory modification"); break; }
+        case 0x24:  { logln("   Inverted function table modification"); break; }
+        case 0x25:  { logln("   Session configuration modification"); break; }
+        case 0x26:  { logln("   An extended processor control register"); break; }
+        case 0x27:  { logln("   Type 1 pool corruption"); break; }
+        case 0x28:  { logln("   Type 2 pool corruption"); break; }
+        case 0x29:  { logln("   Type 3 pool corruption"); break; }
+        case 0x101: { logln("   General pool corruption"); break; }
+        case 0x102: { logln("   Modification of win32k.sys"); break; }
+    }
+    logln("");
+    if (this.process_name) {
+        logln("process_name: " + this.process_name);
+        spew("!process 0 0 " + this.process_name);
+    }
+
+    return true;
+}
 function VIDEO_TDR_FAILURE_116(Args){
     logln(this.signature + " ***> VIDEO_TDR_FAILURE <***");
     logln("bucket: " + this.bucket);
@@ -1065,20 +1143,26 @@ function LKR_WIN32K_CALLOUT_WATCHDOG_LIVEDUMP_1A1(Args){
 
     spew("!thread " + Args[0]);
 
-    var lock;
-    var lockr;
+    var resource;
+    var owning_thread;
     for (let Line of exec('!locks')) {
         if (Line.includes("Exclusively owned")) {
-            lock = Line.match("^Resource @ .*0x([a-fA-F0-9]{16})");
+            resource = Line.match("^Resource @ .*0x([a-fA-F0-9]{16})");
+        }
+        if (Line.includes("<*>")) {
+            owning_thread = Line.match("Threads: ([a-fA-F0-9]{16})");
         }
         if (Line.includes(Args[0])) {
-            logln("Found resource: " + lock[1] + " associated with thread: " + Args[0]);
+            logln("Found resource: " + resource[1] + " associated with thread: " + Args[0]);
         }
     }
-    if (lock) {
-        spew("!locks " + lock[1]);
+    if (owning_thread) {
+        logln("owning thread: " + owning_thread[1]);
     }
-
+    logln("\ndump lock info");
+    if (resource) {
+        spew("!locks " + resource[1]);
+    }
     logln("");
 
     return true;
