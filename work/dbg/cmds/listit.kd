@@ -1,0 +1,25 @@
+!list "-t nt!_LIST_ENTRY.Flink -e -x \"dt iacamera64!_memory_range @$extret host_addr page_addr actual_size\" 0xffff9705ffea2250"
+3: kd> !list 0xffff9705ffea2250 <-- used list
+3: kd> !list 0xffff9706148ebe50 <-- free list
+
+!list "-t nt!_LIST_ENTRY.Flink -e -x \"dt iacamera64!_memory_range @$extret host_addr vied_addr vtl1_buffer_guid page_addr actual_size\" 0xffff9705ffea2250"
+
+static pmem_range cached_mem_range_by_host_addr;
+static pmem_range cached_mem_range_by_vied_addr;
+static pmem_range cached_mem_range_by_buffer_guid;
+
+struct _memory_range {
+    LIST_ENTRY list;
+    host_virtual_address_t host_addr;          // VTL0 insecure buffer kernel virtual address
+    vied_virtual_address_t vied_addr;          // Buffer device virtual address
+    HANDLE                 dvmm_node;          // Non-vsm mode only, for DVMM management
+    HANDLE                 vtl0_buffer_handle; // VSM mode only, for VTL0 insecure buffer
+    GUID                   vtl1_buffer_guid;   // VSM mode only, for VTL1 secure buffer
+    PMDL page_addr;                            // VTL0 inscure buffer mdl
+    enum mem_status status;                    // Buffer status, IN_USE or FREE
+    size_t actual_size;                        // Buffer size
+};
+
+All GUIDS are NULL
+
+
