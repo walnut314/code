@@ -1671,40 +1671,40 @@ Driver Extension List: (id , addr)
 Device Object list:
 ffffb98609be42e0  
 
-DriverEntry:   fffff8002ed5fb00	amduart
-DriverStartIo: 00000000	
-DriverUnload:  fffff8002ed5fc70	amduart
-AddDevice:     fffff800287870c0	Wdf01000!FxDriver::AddDevice
+DriverEntry:   fffff8002ed5fb00 amduart
+DriverStartIo: 00000000 
+DriverUnload:  fffff8002ed5fc70 amduart
+AddDevice:     fffff800287870c0 Wdf01000!FxDriver::AddDevice
 
 Dispatch routines:
-[00] IRP_MJ_CREATE                      fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[01] IRP_MJ_CREATE_NAMED_PIPE           fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[02] IRP_MJ_CLOSE                       fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[03] IRP_MJ_READ                        fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[04] IRP_MJ_WRITE                       fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[05] IRP_MJ_QUERY_INFORMATION           fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[06] IRP_MJ_SET_INFORMATION             fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[07] IRP_MJ_QUERY_EA                    fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[08] IRP_MJ_SET_EA                      fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[09] IRP_MJ_FLUSH_BUFFERS               fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[0a] IRP_MJ_QUERY_VOLUME_INFORMATION    fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[0b] IRP_MJ_SET_VOLUME_INFORMATION      fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[0c] IRP_MJ_DIRECTORY_CONTROL           fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[0d] IRP_MJ_FILE_SYSTEM_CONTROL         fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[0e] IRP_MJ_DEVICE_CONTROL              fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[0f] IRP_MJ_INTERNAL_DEVICE_CONTROL     fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[10] IRP_MJ_SHUTDOWN                    fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[11] IRP_MJ_LOCK_CONTROL                fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[12] IRP_MJ_CLEANUP                     fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[13] IRP_MJ_CREATE_MAILSLOT             fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[14] IRP_MJ_QUERY_SECURITY              fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[15] IRP_MJ_SET_SECURITY                fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[16] IRP_MJ_POWER                       fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[17] IRP_MJ_SYSTEM_CONTROL              fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[18] IRP_MJ_DEVICE_CHANGE               fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[19] IRP_MJ_QUERY_QUOTA                 fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[1a] IRP_MJ_SET_QUOTA                   fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
-[1b] IRP_MJ_PNP                         fffff8002873ab70	Wdf01000!FxDevice::DispatchWithLock
+[00] IRP_MJ_CREATE                      fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[01] IRP_MJ_CREATE_NAMED_PIPE           fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[02] IRP_MJ_CLOSE                       fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[03] IRP_MJ_READ                        fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[04] IRP_MJ_WRITE                       fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[05] IRP_MJ_QUERY_INFORMATION           fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[06] IRP_MJ_SET_INFORMATION             fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[07] IRP_MJ_QUERY_EA                    fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[08] IRP_MJ_SET_EA                      fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[09] IRP_MJ_FLUSH_BUFFERS               fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[0a] IRP_MJ_QUERY_VOLUME_INFORMATION    fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[0b] IRP_MJ_SET_VOLUME_INFORMATION      fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[0c] IRP_MJ_DIRECTORY_CONTROL           fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[0d] IRP_MJ_FILE_SYSTEM_CONTROL         fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[0e] IRP_MJ_DEVICE_CONTROL              fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[0f] IRP_MJ_INTERNAL_DEVICE_CONTROL     fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[10] IRP_MJ_SHUTDOWN                    fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[11] IRP_MJ_LOCK_CONTROL                fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[12] IRP_MJ_CLEANUP                     fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[13] IRP_MJ_CREATE_MAILSLOT             fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[14] IRP_MJ_QUERY_SECURITY              fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[15] IRP_MJ_SET_SECURITY                fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[16] IRP_MJ_POWER                       fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[17] IRP_MJ_SYSTEM_CONTROL              fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[18] IRP_MJ_DEVICE_CHANGE               fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[19] IRP_MJ_QUERY_QUOTA                 fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[1a] IRP_MJ_SET_QUOTA                   fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
+[1b] IRP_MJ_PNP                         fffff8002873ab70    Wdf01000!FxDevice::DispatchWithLock
 
 
 Device Object stacks:
@@ -3340,5 +3340,201 @@ PDO Extension, Bus 0x0, Device 15, Function 3.
     Line Based - Min Vector = 0x0, Max Vector = 0xffffffff
   Interrupt Resource:    Type - Line Based, Interrupt Line = 0x2b
   Config space access log: !pcicfglog 0xffffd90855de84b0
+
+PCI Space and Resource List:
+http://yeilho.blogspot.com/2013/11/pci-config-space-with-windbg.html
+
+0: kd> !devobj fffffa8009789a50  
+ Device object (fffffa8009789a50) is for:  
+  00000010 \Driver\PnpManager DriverObject fffffa80097560f0  
+ Current Irp 00000000 RefCount 0 Type 00000004 Flags 00001040  
+ Dacl fffff9a10010dd91 DevExt fffffa8009789ba0 DevObjExt fffffa8009789bb0 DevNode fffffa8009749010   
+ ExtensionFlags (0x00000800) DOE_DEFAULT_SD_PRESENT  
+ Characteristics (0x00000080) FILE_AUTOGENERATED_DEVICE_NAME  
+ AttachedDevice (Upper) fffffa80097a34b0 \Driver\ACPI_HAL  
+ Device queue is not busy.  
+
+0: kd> !devnode fffffa8009749010 6  
+ DevNode 0xfffffa8009749010 for PDO 0xfffffa8009789a50  
+  Parent 0xfffffa8009782cb0  Sibling 0xfffffa800979bd30  Child 0xfffffa800970b010    
+  InstancePath is "ROOT\ACPI_HAL\0000"  
+  State = DeviceNodeStarted (0x308)  
+  Previous State = DeviceNodeEnumerateCompletion (0x30d)  
+  StateHistory[05] = DeviceNodeEnumerateCompletion (0x30d)  
+  StateHistory[04] = DeviceNodeEnumeratePending (0x30c)  
+  StateHistory[03] = DeviceNodeStarted (0x308)  
+ [snip]  
+  StateHistory[08] = Unknown State (0x0)  
+  StateHistory[07] = Unknown State (0x0)  
+  StateHistory[06] = Unknown State (0x0)  
+  Flags (0x0c0001f5) DNF_MADEUP, DNF_HAL_NODE,   
+            DNF_ENUMERATED, DNF_IDS_QUERIED,   
+            DNF_HAS_BOOT_CONFIG, DNF_BOOT_CONFIG_RESERVED,   
+            DNF_NO_RESOURCE_REQUIRED, DNF_NO_LOWER_DEVICE_FILTERS,   
+            DNF_NO_LOWER_CLASS_FILTERS  
+  DisableableDepends = 1 (from children)  
+  BootResourcesList at 0xfffff8a000069ae0 Version 0.0 Interface 0 Bus #0  
+   Entry 0 - Interrupt (0x2) Driver Exclusive (0x2)  
+    Flags (0000) - LEVEL_SENSITIVE   
+    Level 0, Vector 0, Group 0, Affinity 0xff  
+    Range starts at 0x92 for 0x1 bytes  
+   Entry 56 - Port (0x1) Driver Exclusive (0x2)  
+    Flags (0x11) - PORT_MEMORY PORT_IO 16_BIT_DECODE   
+    Range starts at 0xa0 for 0x2 bytes  
+ [snip]  
+    Range starts at 0xf0 for 0x10 bytes  
+   Entry 59 - Port (0x1) Driver Exclusive (0x2)  
+    Flags (0x11) - PORT_MEMORY PORT_IO 16_BIT_DECODE   
+    Range starts at 0xcf8 for 0x8 bytes  
+   Entry 60 - Memory (0x3) Driver Exclusive (0x2)  
+    Flags (0000) - READ_WRITE   
+    Range starts at 0x00000000fec00000 for 0x400 bytes  
+ [snip]  
+
+1: kd> !arbiter 1
+
+DEVNODE ffffd601ae543c20 (HTREE\ROOT\0)
+  Port Arbiter "RootPort" at fffff80450e444e0
+    Allocated ranges:
+      0000000000000000 - 0000000000000cf7    
+        0000000000000000 - 0000000000000cf7 SC    ffffd601ae2c1ce0  (pci)
+        0000000000000000 - 000000000000000f  CB   ffffd601ae297da0 
+        0000000000000020 - 0000000000000021  CB   ffffd601ae297da0 
+        0000000000000040 - 0000000000000043  CB   ffffd601ae297da0 
+        0000000000000048 - 000000000000004b  CB   ffffd601ae297da0 
+        0000000000000070 - 0000000000000071  CB   ffffd601ae297da0 
+        0000000000000080 - 000000000000008f  CB   ffffd601ae297da0 
+        0000000000000092 - 0000000000000092  CB   ffffd601ae297da0 
+        00000000000000a0 - 00000000000000a1  CB   ffffd601ae297da0 
+        00000000000000c0 - 00000000000000cf  CB   ffffd601ae297da0 
+        00000000000000f0 - 00000000000000ff  CB   ffffd601ae297da0 
+      0000000000000cf8 - 0000000000000cff   B   ffffd601ae297da0 
+      0000000000000d00 - 000000000000ffff    
+        0000000000000d00 - 000000000000ffff SC    ffffd601ae2c1ce0  (pci)
+        0000000000001800 - 00000000000018fe  CB   ffffd601aef74ce0 
+        0000000000002000 - 00000000000020fe  CB   ffffd601aef46ce0 
+    Possible allocation:
+      < none >
+
+      DEVNODE ffffd601aef788a0 (ACPI\PNP0A08\0)
+        Port Arbiter "PCI I/O Port (b=0)" at ffffd601aef8c1c0
+          Allocated ranges:
+            0000000000000020 - 0000000000000021   B   ffffd601aefeeb30 
+            0000000000000024 - 0000000000000025   B   ffffd601aefeeb30 
+            0000000000000028 - 0000000000000029   B   ffffd601aefeeb30 
+            000000000000002c - 000000000000002d   B   ffffd601aefeeb30 
+            000000000000002e - 000000000000002f   B   ffffd601aefeed60 
+            0000000000000030 - 0000000000000031   B   ffffd601aefeeb30 
+            0000000000000034 - 0000000000000035   B   ffffd601aefeeb30 
+            0000000000000038 - 0000000000000039   B   ffffd601aefeeb30 
+            000000000000003c - 000000000000003d   B   ffffd601aefeeb30 
+            0000000000000040 - 0000000000000043   B   ffffd601aefe6ce0 
+            000000000000004e - 000000000000004f   B   ffffd601aefeed60 
+            0000000000000050 - 0000000000000053   B   ffffd601aefe6ce0 
+            0000000000000061 - 0000000000000061   B   ffffd601aefeed60 
+            0000000000000063 - 0000000000000063   B   ffffd601aefeed60 
+            0000000000000065 - 0000000000000065   B   ffffd601aefeed60 
+            0000000000000067 - 0000000000000067   B   ffffd601aefeed60 
+            0000000000000070 - 0000000000000077    
+              0000000000000070 - 0000000000000070  CB   ffffd601aefeed60 
+              0000000000000070 - 0000000000000077  C    ffffd601aefe6ab0 
+            0000000000000080 - 0000000000000080   B   ffffd601aefeed60 
+            0000000000000092 - 0000000000000092   B   ffffd601aefeed60 
+            00000000000000a0 - 00000000000000a1   B   ffffd601aefeeb30 
+            00000000000000a4 - 00000000000000a5   B   ffffd601aefeeb30 
+            00000000000000a8 - 00000000000000a9   B   ffffd601aefeeb30 
+            00000000000000ac - 00000000000000ad   B   ffffd601aefeeb30 
+            00000000000000b0 - 00000000000000b1   B   ffffd601aefeeb30 
+            00000000000000b2 - 00000000000000b3   B   ffffd601aefeed60 
+            00000000000000b4 - 00000000000000b5   B   ffffd601aefeeb30 
+            00000000000000b8 - 00000000000000b9   B   ffffd601aefeeb30 
+            00000000000000bc - 00000000000000bd   B   ffffd601aefeeb30 
+            00000000000004d0 - 00000000000004d1   B   ffffd601aefeeb30 
+            0000000000000680 - 000000000000069f   B   ffffd601aefeed60 
+            0000000000000cf8 - 0000000000000cff       00000000 <Not on bus>
+            000000000000164e - 000000000000164f   B   ffffd601aefeed60 
+            0000000000001854 - 0000000000001857   B   ffffd601aef7b060 
+            0000000000003000 - 000000000000303f     P ffffd601b204a360  (igfxn)
+            0000000000010000 - ffffffffffffffff       00000000 <Not on bus>
+          Possible allocation:
+            < none >
+
+1: kd> !devstack ffffd601b204a360
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffffd601b301c030  \Driver\igfxn      ffffd601b301c180  
+  ffffd601b2054cd0  \Driver\ACPI       ffffd601ae261010  
+> ffffd601b204a360  \Driver\pci        ffffd601b204a4b0  NTPNP_PCI0001
+!DevNode ffffd601b2050aa0 :
+  DeviceInst is "PCI\VEN_8086&DEV_8A56&SUBSYS_00371414&REV_07\3&11583659&0&10"
+  ServiceName is "igfxn"
+
+1: kd> !devnode ffffd601b2050aa0 6
+DevNode 0xffffd601b2050aa0 for PDO 0xffffd601b204a360
+  Parent 0xffffd601aef788a0   Sibling 0xffffd601b203aaa0   Child 0xffffd601b3b03c70   
+  InstancePath is "PCI\VEN_8086&DEV_8A56&SUBSYS_00371414&REV_07\3&11583659&0&10"
+  ServiceName is "igfxn"
+  State = DeviceNodeStarted (0x308)
+  Previous State = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[01] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[00] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[19] = DeviceNodeStarted (0x308)
+  StateHistory[18] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[17] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[16] = DeviceNodeStarted (0x308)
+  StateHistory[15] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[14] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[13] = DeviceNodeStarted (0x308)
+  StateHistory[12] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[11] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[10] = DeviceNodeStarted (0x308)
+  StateHistory[09] = DeviceNodeEnumerateCompletion (0x30d)
+  StateHistory[08] = DeviceNodeEnumeratePending (0x30c)
+  StateHistory[07] = DeviceNodeStarted (0x308)
+  StateHistory[06] = DeviceNodeStartPostWork (0x307)
+  StateHistory[05] = DeviceNodeStartCompletion (0x306)
+  StateHistory[04] = DeviceNodeStartPending (0x305)
+  StateHistory[03] = DeviceNodeResourcesAssigned (0x304)
+  StateHistory[02] = DeviceNodeDriversAdded (0x303)
+  Flags (0x6c0000f0)  DNF_ENUMERATED, DNF_IDS_QUERIED, 
+                      DNF_HAS_BOOT_CONFIG, DNF_BOOT_CONFIG_RESERVED, 
+                      DNF_NO_LOWER_DEVICE_FILTERS, DNF_NO_LOWER_CLASS_FILTERS, 
+                      DNF_NO_UPPER_DEVICE_FILTERS, DNF_NO_UPPER_CLASS_FILTERS
+  CapabilityFlags (0x00400000)  
+                                Unknown flags 0x00400000
+  CmResourceList at 0xffffb00d86688970  Version 1.1  Interface 0x5  Bus #0
+    Entry 0 - Memory (0x3) Device Exclusive (0x1)
+      Flags (
+      Range starts at 0x0000006001000000 for 0x1000000 bytes
+    Entry 1 - DevicePrivate (0x81) Device Exclusive (0x1)
+      Flags (
+      Data - {0x00000001, 0000000000, 0000000000}
+    Entry 2 - Memory (0x3) Device Exclusive (0x1)
+      Flags (PREFETCHABLE 
+      Range starts at 0x0000004000000000 for 0x10000000 bytes
+    Entry 3 - DevicePrivate (0x81) Device Exclusive (0x1)
+      Flags (
+      Data - {0x00000001, 0x00000002, 0000000000}
+    Entry 4 - Port (0x1) Device Exclusive (0x1)
+      Flags (PORT_MEMORY PORT_IO 16_BIT_DECODE POSITIVE_DECODE 
+      Range starts at 0x3000 for 0x40 bytes
+    Entry 5 - DevicePrivate (0x81) Device Exclusive (0x1)
+      Flags (
+      Data - {0x00000001, 0x00000004, 0000000000}
+    Entry 6 - Interrupt (0x2) Device Exclusive (0x1)
+      Flags (LATCHED MESSAGE 
+      Message Count 1, Vector 0xfffffff6, Group 0, Affinity 0
+    
+  BootResourcesList at 0xffffb00d80584120  Version 1.1  Interface 0x5  Bus #0
+    Entry 0 - Memory (0x3) Device Exclusive (0x1)
+      Flags (
+      Range starts at 0x0000006001000000 for 0x1000000 bytes
+    Entry 1 - Memory (0x3) Device Exclusive (0x1)
+      Flags (PREFETCHABLE 
+      Range starts at 0x0000004000000000 for 0x10000000 bytes
+    Entry 2 - Port (0x1) Device Exclusive (0x1)
+      Flags (PORT_MEMORY PORT_IO 16_BIT_DECODE POSITIVE_DECODE 
+      Range starts at 0x3000 for 0x40 bytes
+    
+  
 
 
