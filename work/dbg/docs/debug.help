@@ -3537,4 +3537,15 @@ DevNode 0xffffd601b2050aa0 for PDO 0xffffd601b204a360
     
   
 
+Secure mode debugging:
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/activating-secure-mode
+
+To activate Secure Mode, use one of the following methods:
+The -secure command-line option
+The .secure 1 command
+The .symopt+0x40000 command
+
+If you have an existing kernel debugging session and need to discover whether you are already in Secure Mode, use the .secure command with no arguments. This will tell you the current status of Secure Mode.
+
+After Secure Mode has been activated, it cannot be turned off. Even ending the debugging session will not turn it off. Secure Mode persists as long as the debugger itself is running.
 
