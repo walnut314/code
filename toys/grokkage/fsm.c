@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define FSM            for(;;)
 #define STATE(x)       x##_s 
@@ -34,6 +35,8 @@ int main()
     int s = 0;
     while (1) {
         state(s);
+        char c = getchar();
+        if (c == 'q') exit(1);
         s++;
         s %= 4;
     }
