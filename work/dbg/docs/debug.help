@@ -3549,3 +3549,38 @@ If you have an existing kernel debugging session and need to discover whether yo
 
 After Secure Mode has been activated, it cannot be turned off. Even ending the debugging session will not turn it off. Secure Mode persists as long as the debugger itself is running.
 
+E820 Bios hibernation memory map:
+!acpicache
+0: kd> !acpicache
+Dumping cached ACPI tables...
+  XSDT @(fffff7d840005018) Rev: 0x1 Len: 0x0000e4 TableID: OEMID   
+  MCFG @(fffff7d840006018) Rev: 0x1 Len: 0x00003c TableID: OEMID   
+  FACP @(fffff7d84005a018) Rev: 0x6 Len: 0x000114 TableID: OEMID   
+  APIC @(fffff7d84005b018) Rev: 0x5 Len: 0x0001dc TableID: OEMID   
+  DMAR @(fffff7d84005d018) Rev: 0x2 Len: 0x000088 TableID: EDK2    
+  HPET @(fffff7d84006a018) Rev: 0x1 Len: 0x000038 TableID: OEMID   
+  FPDT @(ffffce89b37470b8) Rev: 0x1 Len: 0x000034 TableID: EDK2    
+  NHLT @(ffffce89b36fe968) Rev: 000 Len: 0x0002f1 TableID: OEMID   
+  LPIT @(ffffce89b36fec88) Rev: 0x1 Len: 0x000094 TableID: OEMID   
+  SDEV @(ffffce89b36fed48) Rev: 0x1 Len: 0x0000b2 TableID: OEMID   
+  SSDT @(ffffce89b37f7018) Rev: 0x2 Len: 0x005d2c TableID: CpuSsdt
+  WSMT @(ffffce89b36fee28) Rev: 0x1 Len: 0x000028 TableID: OEMID   
+  SSDT @(ffffce89b3747228) Rev: 0x2 Len: 0x000574 TableID: Tpm2Tabl
+  TPM2 @(ffffce89b37477c8) Rev: 0x3 Len: 0x000034 TableID: EDK2    
+  SSDT @(ffffce89b3bdd018) Rev: 0x2 Len: 0x003aea TableID: SocGpe 
+  SSDT @(ffffce89b3be1018) Rev: 0x2 Len: 0x0039da TableID: SocCmn 
+  SSDT @(ffffce89b37fd018) Rev: 0x2 Len: 0x0011a0 TableID: SsdtSurf
+  SSDT @(ffffce89b3be5018) Rev: 0x2 Len: 0x002b22 TableID: SaSsdt 
+  SSDT @(ffffce89b3be8018) Rev: 0x2 Len: 0x0033d3 TableID: IgfxSsdt
+  SSDT @(ffffce89b38f6018) Rev: 0x2 Len: 0x0087cf TableID: TcssSsdt
+  SSDT @(ffffce89b38fe818) Rev: 0x2 Len: 0x0007b8 TableID: SsdtPld 
+  SSDT @(ffffce89b3beb418) Rev: 0x2 Len: 0x0004a9 TableID: SsdtPmi 
+  SSDT @(ffffce89b39c5018) Rev: 0x2 Len: 0x001513 TableID: RTD3    
+  BGRT @(ffffce89b39c6668) Rev: 0x1 Len: 0x000038 TableID: EDK2    
+  DBG2 @(ffffce89b39c66c8) Rev: 000 Len: 0x00005d TableID: OEMID   
+  DSDT @(ffffce89b39cb018) Rev: 0x2 Len: 0x029daf TableID: ADL     
+
+!ioreslist - from devnode 
+!cmreslist
+
+
