@@ -1,5 +1,12 @@
 11/4/2020 9:08:24 AM     C:\sandbox\code\work\dbg\docs\debug.help
 
+start:
+.lines
+lml, lm vi m pci
+!running -it
+!sysinfo machineid 
+!cpuinfo
+
 Break on reboot: Ctrl-Alt-K
 
 latest Windbg: \\dbg\privates\latest
@@ -3582,5 +3589,15 @@ Dumping cached ACPI tables...
 
 !ioreslist - from devnode 
 !cmreslist
+
+Common BugChecks:
+101     stops processing WD irqs, disable C-states
+124     whea !errrec
+9F      deadlock/timeout
+50      s/w bug, use verifier
+7A/77   !storagekd.storclass [2] in page error
+EF      crit proc except - can be storage paging errors see (7A/77)
+116     TDR 2ms Gfx T/O - chk evt logs for correctable machine chks
+133     DPC wdog
 
 
