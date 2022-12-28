@@ -33,6 +33,8 @@ Identify dump or LKD:
 0: kd> ||
 .  0 64-bit Kernel triage dump: C:\sandbox\dumps\Bug_2051983\0000e5380_PDCRevocation-20201111-0836.dmp
 
+modify dump file: DedicatedDumpFile, and AlwaysKeepMemoryDump --> registry settings
+
 Run scripts:
 kd> $$< <path to script>
 
@@ -629,7 +631,9 @@ fffff807`8578f9c6 488b4f38        mov     rcx,qword ptr [rdi+38h] ds:002b:ffffa7
 1: kd> .thread
 Implicit thread is now ffffa78f`4fec5680
 > .frame x <== set to frame x of .thread
+> .frame /r x <== set to frame x and show regs specific to that frame
 > dv <== locals
+> dv /V /i /t -- verbose locals
 
 1: kd> !thread ffffa78f4fec5680
 THREAD ffffa78f4fec5680  Cid 0004.0308  Teb: 0000000000000000 Win32Thread: 0000000000000000 RUNNING on processor 1
@@ -735,6 +739,8 @@ ffff8380`b9c2f550 fffff807`7efc99a8 nt!PspSystemThreadStartup+0x55
 ffff8380`b9c2f5a0 00000000`00000000 nt!KiStartSystemThread+0x28
 
 
+dump arch specific pointers - auto decode 32/64 bit:
+> dp @eax 
 dump registers:
 > r
 dump contents:
@@ -3214,6 +3220,23 @@ Memory Triage:
 4: kd> !poolval ffffcbbf421b6050 3
 4: kd> !poolused Gla1
 
+PTE of virtual address:
+0: kd> !pte fffff80433039a80
+                                           VA fffff80433039a80
+PXE at FFFF8C4623118F80    PPE at FFFF8C46231F0080    PDE at FFFF8C463E010CC0    PTE at FFFF8C7C021981C8
+contains 000000029FB0B063  contains 000000029FA0C063  contains 8A000001196009E3  contains 0000000000000000
+pfn 29fb0b    ---DA--KWEV  pfn 29fa0c    ---DA--KWEV  pfn 119600    -GLDA--KW-V  LARGE PAGE pfn 119639      
+
+contents of virtual address:
+0: kd> db fffff80433039a80 L8
+fffff804`33039a80  02 00 00 00 00 00 00 00                          ........
+
+the following will invoke the MM to translate the PFN to VA (okay if RAM, not MMIO)
+contents of physical address - use pfn and append last 12-bits of VA - pfn = 119639, 12-bits of VA = a80
+0: kd> !db 119639a80 L8
+#119639a80 02 00 00 00 00 00 00 00 ........p..2....
+
+
 10: kd> !poolfind -tag "DFCI"
 Scanning large pool allocation table for tag 0x49434644 (DFCI) (ffff9e0dfcc00000 : ffff9e0dfdc00000)
 ffff9e0df5003000 : tag DFCI, size    0x3090, Nonpaged pool
@@ -3241,6 +3264,9 @@ Summary:
 Hardware Breakpoints:
 https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/ba--break-on-access-
 > ba e1 MyAddress
+
+Deferred Breakpoint:
+> bu <addr>
 
 MSRs:
 ====
@@ -3599,5 +3625,15 @@ Common BugChecks:
 EF      crit proc except - can be storage paging errors see (7A/77)
 116     TDR 2ms Gfx T/O - chk evt logs for correctable machine chks
 133     DPC wdog
+
+Training Tips:
+.frame /r 3 --> frame specific registers
+gu - go up to caller
+pct - runs to next call or return
+on x64 proc - call convention (ABI) use 4 regs then stack: rcx, rdx, r8, r9
+ln <addr> --> find nearest symbol
+
+Secure Kernel:
+vtl0 (normal) /1 (secure) - virtual trust level, implemented by HyperV
 
 
