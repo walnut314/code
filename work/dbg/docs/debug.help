@@ -3632,6 +3632,7 @@ gu - go up to caller
 pct - runs to next call or return
 on x64 proc - call convention (ABI) use 4 regs then stack: rcx, rdx, r8, r9
 ln <addr> --> find nearest symbol
+.format <n> -- show n in all numeric and date/time formats
 
 Secure Kernel:
 vtl0 (normal) /1 (secure) - virtual trust level, implemented by HyperV
