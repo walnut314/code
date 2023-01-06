@@ -162,6 +162,21 @@ kd> !for_each_thread ".thread @#Thread; kP"
 or just dump all threads:
 kd> !for_each_thread
 
+Dump kernel service table (pretty sweet):
+.for(r $t0=0;@$t0<dwo(nt!KiServiceLimit);r $t0=@$t0+1){.printf "%d %y\n", $t0, nt!KiServiceTable+(dwo(nt!KiServiceTable+@$t0*4)>>4)}
+
+11: kd> .for(r $t0=0;@$t0<dwo(nt!KiServiceLimit);r $t0=@$t0+1){.printf "%d %y\n", $t0, nt!KiServiceTable+(dwo(nt!KiServiceTable+@$t0*4)>>4)}
+0 nt!NtAccessCheck (fffff801`656947f0)
+1 nt!NtWorkerFactoryWorkerReady (fffff801`657736d0)
+2 nt!NtAcceptConnectPort (fffff801`65bf61c0)
+3 nt!NtMapUserPhysicalPagesScatter (fffff801`65e335b0)
+4 nt!NtWaitForSingleObject (fffff801`65ad9c20)
+5 nt!NtCallbackReturn (fffff801`6582bef0)
+6 nt!NtReadFile (fffff801`65bb7270)
+7 nt!NtDeviceIoControlFile (fffff801`65ada420)
+8 nt!NtWriteFile (fffff801`65b1e850)
+
+
 
 is event signalled - 
 https://samscode.blogspot.com/2013/03/checking-events-signaled-state-in-km-w.html
@@ -3636,6 +3651,10 @@ ln <addr> --> find nearest symbol
 .lastevent
 .bugcheck
 du <address> -- dumps unicode string
+!kuser -- get the user shared data pointer
+.process /p /r <proc addr> --- sets context to process
+## remember 1st 4 parameters are in registers (1st is ecx) (not on stack)
+
 
 Secure Kernel:
 vtl0 (normal) /1 (secure) - virtual trust level, implemented by HyperV
