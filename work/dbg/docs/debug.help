@@ -3641,7 +3641,7 @@ EF      crit proc except - can be storage paging errors see (7A/77)
 116     TDR 2ms Gfx T/O - chk evt logs for correctable machine chks
 133     DPC wdog
 
-Training Tips:
+Training Tips - BEGIN:
 .frame /r 3 --> frame specific registers
 gu - go up to caller
 pct - runs to next call or return
@@ -3655,8 +3655,36 @@ du <address> -- dumps unicode string
 .process /p /r <proc addr> --- sets context to process
 ## remember 1st 4 parameters are in registers (1st is ecx) (not on stack)
 
+ACPI Tables for non-PNP devices
+BCD HKLM\BCD00000000 ->     boot cfg database
+mountvol /s x:
+boot mgr: CR0.PE=1 (Prot Mode), CR0.PG=1 (Paging enabled)
+
+Tool: dependency walker - load ntoskrnl.exe
+sigcheck -> gets version info and description
+
+\Windows\System32\config\SYSTEM (system hive)
+
+winload.efi (bootmgr) - Exit boot services -> ntos
+Visual studio tools prompt: -> ~System32> link -dump ntoskrnl.exe
+
+LOADER_PARAMETER_BLOCK passed to ntoskrnl - list of modules to load
+kd> !dh nt -> section header
+dt nt!_*LOADER*BLOCK*
+dt nt!_LOADER_PARAMETER_BLOCK <addr>
+
+kernel init phases:
+0: logo splash
+1: iomgr, pnp, pm, services
+2: boot drivers, pnnp discovery, 1st user process (SMSS.exe sess mgr) 
+
+tool: procmon - enable boot monitoring
+reboot - open procmon - smss.exe
+process tree
+
 
 Secure Kernel:
 vtl0 (normal) /1 (secure) - virtual trust level, implemented by HyperV
 
+Training Tips - END
 
