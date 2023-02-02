@@ -1,7 +1,5 @@
 11/4/2020 9:08:24 AM     C:\sandbox\code\work\dbg\docs\debug.help
 
-https://github.com/walnut314/code/blob/master/work/dbg/docs/debug.help
-
 start:
 .lines
 lml, lm vi m pci
@@ -3675,36 +3673,15 @@ kd> !dh nt -> section header
 dt nt!_*LOADER*BLOCK*
 dt nt!_LOADER_PARAMETER_BLOCK <addr>
 
-CSRSS: is the Windows subsystem
-
 kernel init phases:
 0: logo splash
 1: iomgr, pnp, pm, services
 2: boot drivers, pnnp discovery, 1st user process (SMSS.exe sess mgr) 
 
-shutdown:
-NtShutdownSystem -> NtSetSystemPowerState
-
-ACPI sleep control registers:
-!fadt -- ACPI table
-PM1 and PM2 Control Blocks have values stored from
-!amli find _S5
-!amli dns /v \_S5
-!amli dns /v \_S4
-!amli dns /v \_S3
-these values get stored in the PMx control blocks during sleep state
-
 tool: procmon - enable boot monitoring
 reboot - open procmon - smss.exe
 process tree
 
-!process 0 0 notepad.exe
-!process x 4 --> lists threads
-dt nt!_KTHREAD X Affinity
-
-CPU KPCR
-!pcr <N> -> gs:0 = KPCR via MSR
-db gs:0 = KPCR addr
 
 Secure Kernel:
 vtl0 (normal) /1 (secure) - virtual trust level, implemented by HyperV
