@@ -3655,7 +3655,7 @@ ln <addr> --> find nearest symbol
 du <address> -- dumps unicode string
 !kuser -- get the user shared data pointer
 .process /p /r <proc addr> --- sets context to process
-## remember 1st 4 parameters are in registers (1st is ecx) (not on stack)
+## remember 1st 4 parameters are in registers (ecx, edx, r8, r9) (not on stack)
 
 ACPI Tables for non-PNP devices
 BCD HKLM\BCD00000000 ->     boot cfg database
@@ -3705,6 +3705,14 @@ dt nt!_KTHREAD X Affinity
 CPU KPCR
 !pcr <N> -> gs:0 = KPCR via MSR
 db gs:0 = KPCR addr
+
+!idt -a --> dumps entire IDT
+dt nt!_KDPC
+!dpcs -- pending DPCs
+prefer .frame /r <N> over .trap <X> -- better registers
+!swd -- s/w watchdog status for DPCs
+
+APC: callback run in specific thread to crack it into context for buffer copy.
 
 Secure Kernel:
 vtl0 (normal) /1 (secure) - virtual trust level, implemented by HyperV
