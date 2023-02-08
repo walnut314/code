@@ -3719,3 +3719,9 @@ vtl0 (normal) /1 (secure) - virtual trust level, implemented by HyperV
 
 Training Tips - END
 
+Camera:
+x iacamera64!used_mem_list = struct _LIST_ENTRY [ 0xffff9705`ffea2250 - 0xffff9706`00b6cd00 ]
+x iacamera64!free_mem_list = struct _LIST_ENTRY [ 0xffff9706`148ebe50 - 0xffff9706`148e4050 ]
+0: kd> !list "-t nt!_LIST_ENTRY.Flink -e -x \"dt iacamera64!_memory_range @$extret host_addr vied_addr vtl1_buffer_guid page_addr actual_size\" 0xffff9705`ffea2250"
+
+
