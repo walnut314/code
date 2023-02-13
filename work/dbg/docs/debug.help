@@ -3660,6 +3660,20 @@ du <address> -- dumps unicode string
 
 ACPI Tables for non-PNP devices
 BCD HKLM\BCD00000000 ->     boot cfg database
+3: kd> !reg querykey \REGISTRY\MACHINE\
+Found KCB = ffffaf0b80edbc20 :: \REGISTRY\MACHINE
+Hive         ffffaf0b80e77000
+KeyNode      ffffaf0b80edc16c
+[SubKeyAddr]         [SubKeyName]
+ffffaf0b80edc4a4     BCD00000000
+ffffaf0b80edc74c     DRIVERS
+ffffaf0b80edc3cc     HARDWARE
+ffffaf0b80edc59c     SAM
+ffffaf0b80edc504     SECURITY
+ffffaf0b80edc374     SOFTWARE
+ffffaf0b80edc31c     SYSTEM
+
+
 mountvol /s x:
 boot mgr: CR0.PE=1 (Prot Mode), CR0.PG=1 (Paging enabled)
 
