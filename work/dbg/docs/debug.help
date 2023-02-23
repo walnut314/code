@@ -3739,4 +3739,51 @@ x iacamera64!used_mem_list = struct _LIST_ENTRY [ 0xffff9705`ffea2250 - 0xffff97
 x iacamera64!free_mem_list = struct _LIST_ENTRY [ 0xffff9706`148ebe50 - 0xffff9706`148e4050 ]
 0: kd> !list "-t nt!_LIST_ENTRY.Flink -e -x \"dt iacamera64!_memory_range @$extret host_addr vied_addr vtl1_buffer_guid page_addr actual_size\" 0xffff9705`ffea2250"
 
+Bugchecks:
+
+KMODE_EXCEPTION_NOT_HANDLED (1e)
+This is a very common bugcheck.  Usually the exception address pinpoints
+the driver/function that caused the problem.  Always note this address
+as well as the link date of the driver/image that contains this address.
+Arguments:
+Arg1: ffffffffc0000002, The exception code that was not handled
+Arg2: fffff8036072ebdf, The address that the exception occurred at
+Arg3: 0000000000000000, Parameter 0 of the exception
+Arg4: 0000000000000000, Parameter 1 of the exception
+
+STACK_TEXT:  
+3: kd> kv
+ # Child-SP          RetAddr               : Args to Child                                                           : Call Site
+00 ffffbf8e`31076488 fffff803`609392aa     : 00000000`0000001e ffffffff`c0000002 fffff803`6072ebdf 00000000`00000000 : nt!KeBugCheckEx
+01 ffffbf8e`31076490 fffff803`60833ebf     : ffffbf8e`31076cb0 ffffbf8e`31076560 fffff803`60400000 fffff803`6082da4e : nt!HvlpVtlCallExceptionHandler+0x22
+02 ffffbf8e`310764d0 fffff803`6060fac3     : ffffbf8e`310778f0 ffffbf8e`31077210 fffff803`6082da4e fffff803`604e9ca8 : nt!RtlpExecuteHandlerForException+0xf
+03 ffffbf8e`31076500 fffff803`6060f72d     : 00000000`00000000 ffffbf8e`310771b0 00000000`00000000 ffffbf8e`31077210 : nt!RtlDispatchException+0x2f3
+04 ffffbf8e`31076c70 fffff803`6072ebdf     : 00000000`c0000001 ffffe58b`50930950 ffff9a80`95911180 ffffbf8e`31077a38 : nt!RtlRaiseException+0x10d
+05 ffffbf8e`310771f0 fffff803`609fac8e     : ffffe58b`509308a0 00000000`00000001 ffff9a80`95911180 fffff803`5b599600 : nt!RtlRaiseStatus+0x4f
+06 ffffbf8e`31077790 fffff803`606bb72b     : ffffe58b`50930910 00000000`00000000 ffffbf8e`31077a38 00000000`00000000 : nt!purecall+0xe
+07 ffffbf8e`310777c0 fffff803`606bcea6     : 00000000`000004c0 ffffbf8e`310779f0 ffffe58b`3cb1a040 00000000`00035223 : nt!KiProcessExpiredTimerList+0x1eb
+08 ffffbf8e`310778f0 fffff803`6082da4e     : 00000000`00000000 ffff9a80`95911180 ffffe58b`3cb1a040 ffffe58b`48639080 : nt!KiRetireDpcList+0xed6
+09 ffffbf8e`31077b80 00000000`00000000     : ffffbf8e`31078000 ffffbf8e`31071000 00000000`00000000 00000000`00000000 : nt!KiIdleLoop+0x9e
+
+https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-exception_record
+3: kd> dt nt!_EXCEPTION_RECORD ffffbf8e`31077210
+   +0x000 ExceptionCode    : 0n-1073741822
+   +0x004 ExceptionFlags   : 0x81
+   +0x008 ExceptionRecord  : (null) 
+   +0x010 ExceptionAddress : 0xfffff803`6072ebdf Void
+   +0x018 NumberParameters : 0
+   +0x020 ExceptionInformation : [15] 0
+
+3: kd> .frame /r 5
+05 ffffbf8e`310771f0 fffff803`609fac8e     nt!RtlRaiseStatus+0x4f
+rax=0000000000000000 rbx=00000000c0000001 rcx=000000000000001e
+rdx=ffffffffc0000002 rsi=ffffe58b50930950 rdi=ffff9a8095911180
+rip=fffff8036072ebdf rsp=ffffbf8e310771f0 rbp=ffffbf8e31077889
+ r8=fffff8036072ebdf  r9=0000000000000000 r10=0000000000000000
+r11=ffffbf8e310764d0 r12=0000000000000001 r13=ffffbf8e31077a30
+r14=ffffbf8e31077a38 r15=0000000000000080
+iopl=0         nv up ei ng nz na po nc
+cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00000286
+nt!RtlRaiseStatus+0x4f:
+fffff803`6072ebdf 80c3ff          add     bl,0FFh
 
