@@ -1459,6 +1459,25 @@ ffff880593f36523 : {
 ffff880593f36523 : | Return(Zero)
 ffff880593f36525 : }
 
+ACPI live spew:
+To set ACPI logging on from Windbg:
+4: kd> !amli set spewon
+
+Check settings:
+4: kd> !amli set
+AMLTrace        =off
+AMLDebugSpew    =on
+DebuggerBreak   =off
+LoadDDBBreak    =off
+ErrorBreak      =off
+VerboseMode     =off
+LogEvent        =on
+LogSize         =204
+
+More info on this is at:
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/-amli-set
+
+
 SSH:
 #define SSH_PORT "\\_SB.PCI0.UA00" // SurfaceSerialHub.asl
 | | SSH_ (ffff8e87b297d208) - Device ffff8e87b1a4f010
@@ -3786,4 +3805,12 @@ iopl=0         nv up ei ng nz na po nc
 cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00000286
 nt!RtlRaiseStatus+0x4f:
 fffff803`6072ebdf 80c3ff          add     bl,0FFh
+
+VPU Debug:
+=========
+use vpu kd: vpudriver-29.0.10.395-RelWithDebInfo\RelWithDebInfo\tools\x64\ivdkmdbgextn\ivdkmdbgextn.dll
+!commands
+!bufdbgshowmsgs
+!vpubugchecksummary
+
 
