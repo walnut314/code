@@ -3812,5 +3812,7 @@ use vpu kd: vpudriver-29.0.10.395-RelWithDebInfo\RelWithDebInfo\tools\x64\ivdkmd
 !commands
 !bufdbgshowmsgs
 !vpubugchecksummary
+force dump on TDR:
+reg add "HKLM\System\CurrentControlSet\Control\GraphicsDrivers" /v "TdrLevel" /t REG_DWORD /d 1 /f
 
 
