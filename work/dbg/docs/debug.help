@@ -1866,6 +1866,18 @@ DPCs:
 CPU Type      KDPC       Function
 dpcs: no pending DPCs found
 
+!watchdoganalyze -v 0n0
+[Stack 38] Elapsed time since previous stack: 515 mSec; since reference stack: 593 mSec
+   Exiting function: fffff806766415da  nt!MiDemoteSlabEntriesDpc+0x20A 
+ # RetAddr           Call Site
+06 fffff806766415e3  nt!KeYieldProcessorEx+0x20 
+07 fffff806762be11a  nt!MiDemoteSlabEntriesDpc+0x213 
+
+.load wmitrace.dll;!wmitrace.logdump 0x2
+Found Buffers: 8 Messages: 626, sorting entries
+[2]FFFFFFFF.FFFFFFFF::03/05/2023-23:35:29.593 [PerfInfoEvent]DPC      Initial Time=7182779735385. Routine=0xFFFFF8047A2EE240 Routine Name: storport!RaidpAdapterDpcRoutine
+[2]FFFFFFFF.FFFFFFFF::03/05/2023-23:35:29.593 [PerfInfoEvent]DPC      Initial Time=7182779829781. Routine=0xFFFFF8047A2EE240 Routine Name: storport!RaidpAdapterDpcRoutine
+
 
 List processes:
 kd> !dml_proc
