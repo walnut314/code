@@ -3274,6 +3274,11 @@ Memory Triage:
 4: kd> !poolused Gla1
 4: kd> !poolused 7 -- dumps pool by all tags
 
+NO_PAGES_AVAILABLE (4d)
+No free pages available to continue operations.
+If kernel debugger available "!vm 3".
+4: kd> !vm 3
+
 PTE of virtual address:
 0: kd> !pte fffff80433039a80
                                            VA fffff80433039a80
