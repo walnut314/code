@@ -1870,8 +1870,7 @@ dpcs: no pending DPCs found
 6: kd> !intstats /d -- DPC and ISR stats (total since boot)
 6: kd> !intstats /w -- DPC and ISR stats (during DPC watchdog period)
 2: kd> !dpcwatchdog -- very cool summary per CPU
-
-!watchdoganalyze -v 0n0
+2: kd> !watchdoganalyze -v 0n0
 [Stack 38] Elapsed time since previous stack: 515 mSec; since reference stack: 593 mSec
    Exiting function: fffff806766415da  nt!MiDemoteSlabEntriesDpc+0x20A 
  # RetAddr           Call Site
