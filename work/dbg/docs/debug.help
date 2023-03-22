@@ -2,6 +2,7 @@
 
 https://github.com/walnut314/code/blob/master/work/dbg/docs/debug.help
 
+
 start:
 .lines
 lml, lm vi m pci
@@ -3685,6 +3686,8 @@ EF      crit proc except - can be storage paging errors see (7A/77)
 133     DPC wdog
 
 Training Tips - BEGIN:
+\\wosext2.amr.corp.intel.com\training\Nonsla
+
 .frame /r 3 --> frame specific registers
 gu - go up to caller
 pct - runs to next call or return
@@ -3888,4 +3891,35 @@ or ServiceContext addr in _KINTERRUPT
 !devstack <device>
 
 ============= Session 10 Training END =================
+
+============= Session 11 Training BEGIN =================
+
+Bug check 0xA: IRQL_NOT_LESS_OR_EQUAL
+valid = 0 or invalid address
+!irql
+!pte <addr> -- valid?
+u <addr>
+pageable code?
+!dh <addr of executable> e.g. !dh nt
+    find offset from nt and find section virtual address of !dh
+
+----------------
+Bug check 0xA: IRQL_NOT_LESS_OR_EQUAL
+!pte <mem ref'd>
+r cr2
+dt nt!_KDPC <addr in register?>
+.frame /r N
+try .formats <N>
+timers?
+!timer -- check list of timers for time addr (maybe paged out)
+!verifier -?
+!verifier 80 <timer addr> -- who freed it? --> gives the thread
+
+-----------------
+object manager
+!object X
+dt nt!_KMUTANT
+r rip=N
+
+============= Session 11 Training END =================
 
