@@ -3836,4 +3836,56 @@ use vpu kd: vpudriver-29.0.10.395-RelWithDebInfo\RelWithDebInfo\tools\x64\ivdkmd
 force dump on TDR:
 reg add "HKLM\System\CurrentControlSet\Control\GraphicsDrivers" /v "TdrLevel" /t REG_DWORD /d 1 /f
 
+============= Session 10 Training BEGIN =================
+DPC_WATCHDOG_VIOLATION (133)
+The DPC watchdog detected a prolonged run time at an IRQL of DISPATCH_LEVEL or above.
+Arguments:
+Arg1: 0000000000000000, A single DPC or ISR exceeded its time allotment. The offending
+	component can usually be identified with a stack trace.
+Arg2: 0000000000000501, The DPC time count (in ticks).
+Arg3: 0000000000000500, The DPC time allotment (in ticks).
+Arg4: fffff8035351c340, cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, which contains
+
+Timers: !time -- current time
+default timeouts
+DPC = 20 sec
+IRQ = 2 min
+repro faster by shortening these timeouts
+the times in the bugcheck are cumulative
+!swd --> DCP Count = 0 !! this is the culprit
+kv
+!idt -a // shows all IDTs
+dt nt!_KINTERRUPT <addr>
+!irql -- shows save IRQL
+kv -> find trap frame back in time leading up to the timer timeout
+what happened @timer irq
+!thread -- how long was thread running
+
+TLBs flushes all CPUs via IPI (and waits for resp)
+  finding outstanding IPIs?
+> !ipi -- very cool!!
+> ~2; r; k
+!pcr -> if curr == idle thread then non-responsive
+!smt -- shows virtual / physical CPUs
+
+-----------
+find who is trying to acquire spinlock?
+.cxr
+!running -it -- owner of spinlock should be running
+!cpuinfo -- shows how many CPUs
+.ignore_missing_pages 1
+.cxr
+maybe sharing w/DPC
+which ISR? uf KiCallIsr find calls to [? edi + X]
+.frame /r N
+u poi(addr of ISR) L1
+maybe [edi] is a _KINTERRUPT? 
+dt nt!_KINTERRUPT <addr in edi>
+    see vector and look at !idt -a output
+!idt <vector> shows driver
+or ServiceContext addr in _KINTERRUPT
+!wdfkd.wdfobject <ServiceContext addr> --> shows device
+!devstack <device>
+
+============= Session 10 Training END =================
 
