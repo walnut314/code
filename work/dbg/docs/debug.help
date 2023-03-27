@@ -3949,3 +3949,38 @@ see failed scsi requests and packets w/dual IRPs
 
 ============= Session 12 Training END =================
 
+============= Session 13 Training BEGIN =================
+Call conventions:
+32-bit:
+    push ebp -- return address
+    mov ebp,esp -- then stores current SP into BP
+    ebp is like a linked list, pointing to prev ebp & value after is return addr
+    dps @ebp L2
+    debuggers can walk the ebp chain
+    +offsets == point to passed in parms
+    -offsets == point to local vars
+
+64-bit:
+    eip is used to determine the function (needs symbols)
+    sub rsp,70h (e.g.) determine stack frame alloc from symbols
+    adds to rsp for return address
+    repeat
+
+!teb --> stack stuff (for overruns)
+
+Idle CPUs:
+    intelppm!MWaitIdle
+        mwait rax,rcx --> puts CPU in C-state
+        
+Note: halt => C1 state
+
+Soft affinity == Ideal Processor => warm cache
+
+!process 0 0 notepad.exe
+!process 0 0 csrss.exe
+try setting BreakOnTerminate in _EPROCESS and exit notepad -- it will break into debugger
+
+ba w 8 <addr> -- break on 8-byte write access
+
+============= Session 13 Training END =================
+
