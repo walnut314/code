@@ -3923,3 +3923,29 @@ r rip=N
 
 ============= Session 11 Training END =================
 
+============= Session 12 Training BEGIN =================
+objects -> ref counted -> view in process explorer and winobj
+!peb -- shows DLLs loaded in process
+.process /r /p <proc addr>
+!peb (no args after .process)
+
+Critical Processes:
+dt nt!_EPROCESS Flags => BreakOnTermination = 1
+
+bit diff: XOR ^
+trustlets = secure process VTL1
+VTL0 normal kernel
+
+----------------
+Bug check 0xEF: CRITICAL_PROCESS_DIED
+get proc addr
+dt nt!_EPROCESS <proc addr> => Flags.BreakOnTermination = 0y1
+> kn --> show lots of frames
+!pte
+!teb -- stack base limit overflow?
+
+paging failures - see storagekd.help -> storclass 2
+see failed scsi requests and packets w/dual IRPs
+
+============= Session 12 Training END =================
+
