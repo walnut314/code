@@ -3984,3 +3984,113 @@ ba w 8 <addr> -- break on 8-byte write access
 
 ============= Session 13 Training END =================
 
+============= Session 14 Training BEGIN =================
+
+Waitable objects: _DISPATCHER_HEADER
+0: kd> dt nt!_DISPATCHER_HEADER WaitListHead
+   +0x008 WaitListHead : _LIST_ENTRY -> WAIT_BLOCK
+        links object to wait block
+
+0: kd> dt nt!_KEVENT
+   +0x000 Header           : _DISPATCHER_HEADER
+0: kd> dt nt!_KMUTANT
+   +0x000 Header           : _DISPATCHER_HEADER
+   +0x018 MutantListEntry  : _LIST_ENTRY
+   +0x028 OwnerThread      : Ptr64 _KTHREAD
+   +0x030 MutantFlags      : UChar
+   +0x030 Abandoned        : Pos 0, 1 Bit
+   +0x030 Spare1           : Pos 1, 7 Bits
+   +0x030 Abandoned2       : Pos 0, 1 Bit
+   +0x030 AbEnabled        : Pos 1, 1 Bit
+   +0x030 Spare2           : Pos 2, 6 Bits
+   +0x031 ApcDisable       : UChar
+
+_KMUTANT has ownership -> thread
+Threads/Processes wait on Termination
+Files waited on for I/O termination
+signaled state
+
+0: kd> dt nt!_KWAIT_BLOCK
+   +0x000 WaitListEntry    : _LIST_ENTRY
+   +0x010 WaitType         : UChar
+   +0x011 BlockState       : UChar
+   +0x012 WaitKey          : Uint2B
+   +0x014 SpareLong        : Int4B
+   +0x018 Thread           : Ptr64 _KTHREAD
+   +0x018 NotificationQueue : Ptr64 _KQUEUE
+   +0x018 Dpc              : Ptr64 _KDPC
+   +0x020 Object           : Ptr64 Void
+   +0x028 SparePtr         : Ptr64 Void
+
+   links WB to object
+
+KWAIT_BLOCK (WB) has a Thread and an Object
+_KTHREAD has a WaitBlockList
+0: kd> dt nt!_KTHREAD
+   +0x000 Header           : _DISPATCHER_HEADER
+   +0x140 WaitBlock        : [4] _KWAIT_BLOCK
+   +0x24b WaitBlockCount   : UChar
+   +0x0d0 WaitBlockList    : Ptr64 _KWAIT_BLOCK -> list of WAIT_BLOCKs
+
+0: kd> dx -id 0,0,ffffa80df1cff040 -r1 (*((ntkrnlmp!_KWAIT_BLOCK (*)[4])0xffffa80dfe61f180))
+(*((ntkrnlmp!_KWAIT_BLOCK (*)[4])0xffffa80dfe61f180))                 [Type: _KWAIT_BLOCK [4]]
+    [0]              [Type: _KWAIT_BLOCK]
+    [1]              [Type: _KWAIT_BLOCK]
+    [2]              [Type: _KWAIT_BLOCK]
+    [3]              [Type: _KWAIT_BLOCK]
+
+0: kd> dx -id 0,0,ffffa80df1cff040 -r1 (*((ntkrnlmp!_KWAIT_BLOCK *)0xffffa80dfe61f180))
+(*((ntkrnlmp!_KWAIT_BLOCK *)0xffffa80dfe61f180))                 [Type: _KWAIT_BLOCK]
+    [+0x000] WaitListEntry    [Type: _LIST_ENTRY]
+    [+0x010] WaitType         : 0x1 [Type: unsigned char]
+    [+0x011] BlockState       : 0x4 [Type: unsigned char]
+    [+0x012] WaitKey          : 0x0 [Type: unsigned short]
+    [+0x014] SpareLong        : 1083 [Type: long]
+    [+0x018] Thread           : 0xffffa80dfe61f040 [Type: _KTHREAD *]
+    [+0x018] NotificationQueue : 0xffffa80dfe61f040 [Type: _KQUEUE *]
+    [+0x018] Dpc              : 0xffffa80dfe61f040 [Type: _KDPC *]
+    [+0x020] Object           : 0xffffa80e00b040e0 [Type: void *]
+    [+0x028] SparePtr         : 0x0 [Type: void *]
+
+Object is what is being waited on - see if thread NotificationEvent matches
+
+Note: if 3 objects or less WAITS the in _KTHREAD
+else in WaitBlockList.
+array of 4 and 3 max objects reserves one for _KTIMER (waitable)
+
+
+Bug check 0xD1: DRIVER_IRQL_NOT_LESS_OR_EQUAL
+1 Memory referenced.
+2 IRQL at time of reference.
+3 0 - Read 1 - Write 2 - Execute 8 - Execute
+4 Address that referenced memory. Use ln (list nearest symbols) on this address to see the name of the function.
+
+if mem ref'd == addr ref'ing mem then executing paged code
+
+Page fault is saved in CR2
+r cr2 -> page fault address
+!pte 
+!pcr (if curr == idle thread) then idle
+!irql
+IRQL is saved in CR8
+r cr8 => IRQL of CPU
+intelppm!IdleExecuteTransition : mwait --> CPU to C-state
+Page faults save context -- see Software Dev Manual chap 6
+#PF 
+uf nt!KiPageFault
+    push rbp -- 
+.frame /r <add of pg fault handler>
+dps rbp -- find fault code
+dps rbp - 8 <-- pushed rbp in KiPageFault
+
+r if --> saved interrupt flags: 0 = disabled, 1 = enabled
+!devnode 0 1 intelppm -> changes CPU C-states
+
+Is address in driver?
+lmvi m intelppm -- see start/end
+start < cr2 < end
+if upper bits are different xor or them for bit diff - maybe bit flip
+
+
+============= Session 14 Training END =================
+
