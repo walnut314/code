@@ -4091,6 +4091,26 @@ lmvi m intelppm -- see start/end
 start < cr2 < end
 if upper bits are different xor or them for bit diff - maybe bit flip
 
-
 ============= Session 14 Training END =================
+
+============= Session 15 Training BEGIN =================
+I/O Subsys
+DMA error bugcheck E6 caused by vtd iommu irq w/o verifier enabled
+    vbs - virtual base security
+rust - new language for drivers
+wdf is open source so private symbols - see channel9 MSDN going deep
+
+FDO policy owner
+SerCx: LPC (low pin count) class driver for i2c, spi, uart -- ACPI does PnP
+
+Lab: Bug Check 0x124: WHEA_UNCORRECTABLE_ERROR
+Arg2 = !errrec --> mwait bugchecked maybe - why???
+Arg3/4 Mci_Status
+see also event logs
+!idt -a
+--> nt!KiMcheckAbort stack = Addr
+in kv stack
+see if an IRQ handler is in the stack and ub the retaddr for instruction
+
+============= Session 15 Training END =================
 
