@@ -66,7 +66,7 @@ OneNote WinDbg: search PLE-SW-DEV for:
 .reload /u igdkmdn64.sys
 
 .cxr <addr>; kv
-
+> kPnL
 
 >>>>
 Here's a command to look up symbols saved to \\desmo\release\symbols:
@@ -3860,6 +3860,7 @@ repro faster by shortening these timeouts
 the times in the bugcheck are cumulative
 !swd --> DCP Count = 0 !! this is the culprit
 kv
+kPnL
 !idt -a // shows all IDTs
 dt nt!_KINTERRUPT <addr>
 !irql -- shows save IRQL
