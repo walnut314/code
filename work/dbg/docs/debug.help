@@ -1,6 +1,7 @@
 11/4/2020 9:08:24 AM     C:\sandbox\code\work\dbg\docs\debug.help
 
 https://github.com/walnut314/code/blob/master/work/dbg/docs/debug.help
+\\wosext2\training\Nonsla\WD
 
 
 start:
@@ -236,6 +237,7 @@ Look at all WDF100 on stacks:
 4: kd> !wdfiotarget 0xfffffe08d5bdb278
 4: kd> !wdfkd.wdflogdump WudfRd -d
 4: kd> !wdfldr WudfRd !! verify driver was successfully loaded
+4: kd> !wdfldr (no arg) shows all devices
 4: kd> !mex.us -a surfaceoempanel
 
 1: kd> dt FXDEVICE 0x216bc135b40
@@ -4136,5 +4138,34 @@ k stack maybe trap, e.g. nt!KiTrap06 -- illegal instruction
 u Arg2 -- exception occured at
 !pte Arg2 -- --KREV (kernel, read-only, exec, valid)
 
-============= Session 15 Training END =================
+============= Session 16 Training END =================
+
+============= Session 17 Training BEGIN =================
+
+devnode tree nt!_DEVICE_NODE
+DSDT (\__SB) bus
+inf file PCI\VEN_VID&DEV_DID
+VID & DID in PCI config space
+bus -> IoInvalidate -> Pnp QDR -> PDOs -> Pnp QDid
+
+!wdfldr (no arg) shows all devices
+boot loader - winload  scans registry -> ExitBootServices
+
+Phase 0 - Pnp init (IopInitializePlugPlayServices)
+    HTREE\ROOT\0 -> PnpManager - root device
+    what bus? root enumerated devs - non-Pnp
+    HKLM\SYS\CCS\Enum\Root -> ACPI_HAL -> ACPI -> DSDT Table
+
+Phase 1 - ROOT\ACPI_HAL\0000 (enums PCI) see enum reg key
+
+cmds:
+!arbiter <N>
+!pnpcompletion -- list all completed Pnp events
+!pnpevent -- list all queued Pnp events
+!pnptriage - full triage
+!lbt -- legacy bus table list
+!cmreslist <addr> -> devnode!ResourceList
+!ioreslist <addr> -> devnode!ResourceRequirements
+
+============= Session 17 Training END =================
 
