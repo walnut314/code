@@ -3273,6 +3273,7 @@ Memory Triage:
 4: kd> !poolval ffffcbbf421b6050 3
 4: kd> !poolused Gla1
 4: kd> !poolused 7 -- dumps pool by all tags
+4: kd> !sysptes
 
 NO_PAGES_AVAILABLE (4d)
 No free pages available to continue operations.
@@ -4111,6 +4112,29 @@ see also event logs
 --> nt!KiMcheckAbort stack = Addr
 in kv stack
 see if an IRQ handler is in the stack and ub the retaddr for instruction
+
+============= Session 15 Training END =================
+============= Session 16 Training BEGIN =================
+
+Drivers
+dps <driver object address>+0x70 (may change) -- dumps dispatch routines
+dt <driver>!_DRIVER_EXTENSION -- internals
+!error <status code> --> decodes to english
+
+_FILE_OBJECT instance of _DEVICE_OBJECT and are used for handles
+    handle to FO -> DO
+
+Lab: Bug Check 0xIE: KMODE_EXCEPTION_NOT_HANDLED
+1	The exception code that wasn't handled. --> !error Arg1
+2	The address where the exception occurred.
+3	Exception information parameter 0 of the exception record.
+4	Exception information parameter 0 of the exception record.
+
+k stack maybe trap, e.g. nt!KiTrap06 -- illegal instruction
+    unhandled exception
+!chkimg nt or any image like pci -- may show errors - usually hardware
+u Arg2 -- exception occured at
+!pte Arg2 -- --KREV (kernel, read-only, exec, valid)
 
 ============= Session 15 Training END =================
 
