@@ -4170,3 +4170,113 @@ cmds:
 
 ============= Session 17 Training END =================
 
+============= Session 18 Training BEGIN =================
+
+debug Pnp
+YB cases:
+0) no driver case: install it, or chk hw/ids in INF
+1) failed DriverEntry: set bu drvr!DriverEntry and debug
+2) failed AddDevice: find AddDevice address via DriverObject
+    dps <driver object address>+0x70 (may change) -- dumps dispatch routines
+    set bu drvr!AddDevice and debug
+3) Resource conflict
+4) Failed to START_DEVICE
+
+Case 1:
+!pnptriage
+CM_PROB_FAILED_DRIVER_ENTRY
+CM_PROB_FAILED_ADD
+look at !devnode(s)
+!pcitree
+
+bu drvr!DriverEntry
+bu drvr!AddDevice -> rcx = DriverObject
+
+Case 3: resource conflict
+!pcitree
+!pci 100 B D F 
+!pci 100 0 8 0 --> very cool
+see dt devnode!ResourceRequirements
+!ioreslist <res rqmts addr>
+OR
+!devnode <addr> 7
+devnode!ResourceList (RL) -> device view
+devnode!ResourceListTranslated (RLT) -> host view
+!cmreslist <RL>; !cmreslist <RLT>
+!idt <N> should match RLT value
+
+Lab YB w/Dump (e.g.)
+===================
+!pnptriage -> intelppm NORMAL_CONFLICT -> !code12 useless w/o privates
+dt devnode!ResourceRequirements -> !ioreslist <res rqmt addr>
+2+ devnodes w/same requirement? = conflict
+!devnode 0 1 intelppm (maybe not all conflict)
+
+Who owns the resource?
+!arbiter [Flags] -- I/O resource flag = 1
+!arbiter 1 -> C = range in conflict
+
+Where is the resource requirement coming from?
+dt denode!UniqueId ==> "\_SB.SCK0.C126" -- ACPI namespace
+!amli dns \_SB.SCK0.C126 --> Device
+!amli dns /s \_SB.SCK0.C126
+    look for _CRS -- resource requirements Buffer Ptr
+next look in DSDT tables
+!acpicache
+5: kd> !acpicache
+Dumping cached ACPI tables...
+  ...
+  DSDT @(ffff8004909c5018) Rev: 0x2 Len: 0x02ad92 TableID: ADL     
+
+5: kd> !acpicache 1 ffff8004909c5018
+Dumping cached ACPI tables...
+HEADER - ffff8004909c5018
+  Signature:               DSDT
+  Length:                  0x0002ad92
+  Revision:                0x02
+  Checksum:                0xf0
+  OEMID:                   INTEL
+  OEMTableID:              ADL     
+  OEMRevision:             0x00000000
+  CreatorID:               INTL
+  CreatorRev:              0x20200717
+
+5: kd> db ffff8004909c5018
+ffff8004`909c5018  44 53 44 54 92 ad 02 00-02 f0 49 4e 54 45 4c 00  DSDT......INTEL.
+ffff8004`909c5028  41 44 4c 20 20 20 20 20-00 00 00 00 49 4e 54 4c  ADL     ....INTL
+ffff8004`909c5038  17 07 20 20 a0 86 f8 04-00 15 5c 2f 04 5f 53 42  ..  ......\/._SB
+ffff8004`909c5048  5f 50 43 30 30 47 46 58-30 41 4c 53 49 00 00 15  _PC00GFX0ALSI...
+ffff8004`909c5058  5c 2f 04 5f 53 42 5f 50-43 30 30 47 46 58 30 43  \/._SB_PC00GFX0C
+ffff8004`909c5068  4c 49 44 00 00 15 5c 2f-04 5f 53 42 5f 50 43 30  LID...\/._SB_PC0
+ffff8004`909c5078  30 47 46 58 30 43 44 43-4b 00 00 15 5c 2f 04 5f  0GFX0CDCK...\/._
+ffff8004`909c5088  53 42 5f 50 43 30 30 47-46 58 30 43 42 4c 56 00  SB_PC00GFX0CBLV.
+
+Dump DSDT table to disk and decode:
+decoder: iasl.exe (Intel ASL comppiler)
+1. dump: .writemem d:\Intel_Dev\Bugs\Dumps\dsdt.bin ffff8004909c5018 L0x0002ad92
+2. !!dir d:\Intel_Dev\Bugs\Dumps
+03/30/2023  10:29 AM           175,506 dsdt.bin
+3. decode: d:\dev\code\work\uefi\asl\bin\iasl.exe -d dsdt.bin
+4. output: dsdt.dsl --> find C126 of \_SB.SCK0.C126 for resources
+    IO (Decode16,
+        0x0000,             // Range Minimum
+        000,             // Range Maximum
+        1,               // Alignment
+        F,               // Length
+        0)
+
+Who owns the resource? Search dsdt.dsl file for matching IO port.
+
+Lab WHEA w/Dump (e.g.)
+=====================
+!errrec <err rec addr>
+Source Type: 0x10 --> ntddk.h
+dt _WHEA_ERROR_SOURCE_TYPE
+?? (_WHEA_ERROR_SOURCE_TYPE) 0x10
+    -> WheaErrSrcTypeDeviceDriver
+db <err rec addr> --> CPER ....
+                      ...storport...
+!storagekd.storclass --> scsi errors
+
+============= Session 18 Training END =================
+
