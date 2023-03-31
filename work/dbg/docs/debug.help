@@ -4206,7 +4206,7 @@ devnode!ResourceListTranslated (RLT) -> host view
 !idt <N> should match RLT value
 
 Lab YB w/Dump (e.g.)
-===================
+-------------------
 !pnptriage -> intelppm NORMAL_CONFLICT -> !code12 useless w/o privates
 dt devnode!ResourceRequirements -> !ioreslist <res rqmt addr>
 2+ devnodes w/same requirement? = conflict
@@ -4268,7 +4268,7 @@ decoder: iasl.exe (Intel ASL comppiler)
 Who owns the resource? Search dsdt.dsl file for matching IO port.
 
 Lab WHEA w/Dump (e.g.)
-=====================
+---------------------
 !errrec <err rec addr>
 Source Type: 0x10 --> ntddk.h
 dt _WHEA_ERROR_SOURCE_TYPE
@@ -4279,4 +4279,44 @@ db <err rec addr> --> CPER ....
 !storagekd.storclass --> scsi errors
 
 ============= Session 18 Training END =================
+
+============= Session 19 Training BEGIN =================
+
+!process 0 0 csrss.exe
+.process /p /r <proc addr>
+!process <proc addr>
+dt nt!_IRP <irp addr>
+
+?? sizeof(nt!_IRP) -> 0xD0
+?? sizeof(nt!_IO_STACK_LOCATION) -> 0x48
+
+dt nt!_IO_STACK_LOCATION <irp addr> + 0xD0 + 0x48 * N, where N is the current stack location:
+_IRP.CurrentLocation = N
+busying == pending, complete, or pass down
+
+Lab !process 0 0 cmd.exe
+------------------------
+!process <proc addr>
+bp /p <proc addr> nt!ReadFile
+> .reload
+> k yay!!!
+> .frame /r 4 
+> !handle <rcx> -> file object == file path\name
+> ba w 8 <irp addr> + 0x30 --> _IO_STATUS 
+
+Lab Bugcheck 7F: UNEXPECTED_KERNEL_MODE_TRAP
+Arg1: exception code
+kv -> .trap frame or .frame /r N
+k> !ipi -- dumps all IPI's on all CPUs
+TLBs = VToP cache -- TLB flush CR4
+
+Lab Bugcheck 0xCC: PAGE_FAULT_IN_FREED_SPECIAL_POOL
+Arg1 Memory address referenced
+Arg2 0: Read 1: Write
+Arg3 Address that referenced memory (if known)
+Arg4 Reserved
+use !verifier special pool
+!verifier 80 Arg1 -- shows driver
+
+============= Session 19 Training END =================
 
