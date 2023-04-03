@@ -4303,7 +4303,9 @@ Length        : 544
 Flags         : 0x00000000
 Severity      : Fatal
 
-kd> .writemem c:\whea.bin <err rec addr> L (0n27744)
+kd> .writemem c:\whea.bin ffffa805e3755020 L (0n27744)
+Next: c:\Python38\Scripts\intel_crashlog.exe analyze whea.bin > whea.out
+options for intel_crashlog.exe: unpack,pack,trigger,extract,decode,hash,analyze,report,list,triage,console,diff,summary,signature,info,check
 
 Source Type: 0x10 --> ntddk.h
 dt _WHEA_ERROR_SOURCE_TYPE
