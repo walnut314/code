@@ -4270,6 +4270,41 @@ Who owns the resource? Search dsdt.dsl file for matching IO port.
 Lab WHEA w/Dump (e.g.)
 ---------------------
 !errrec <err rec addr>
+3: kd> !errrec ffffa805e3755020
+===============================================================================
+Common Platform Error Record @ ffffa805e3755020
+-------------------------------------------------------------------------------
+Record Id     : 01d96322e0eb16b9
+Severity      : Fatal (1)
+Length        : 27744
+Creator       : Microsoft
+Notify Type   : BOOT Error Record
+Timestamp     : 3/30/2023 16:15:45 (UTC)
+Flags         : 0x00000002 PreviousError
+
+===============================================================================
+Section 0     : Firmware Error Record Reference
+-------------------------------------------------------------------------------
+Descriptor    @ ffffa805e37550a0
+Section       @ ffffa805e37552e0
+Offset        : 704
+Length        : 2592
+Flags         : 0x00000000
+Severity      : Fatal
+
+
+===============================================================================
+Section 1     : Firmware Error Record Reference
+-------------------------------------------------------------------------------
+Descriptor    @ ffffa805e37550e8
+Section       @ ffffa805e3755d00
+Offset        : 3296
+Length        : 544
+Flags         : 0x00000000
+Severity      : Fatal
+
+kd> .writemem c:\whea.bin <err rec addr> L (0n27744)
+
 Source Type: 0x10 --> ntddk.h
 dt _WHEA_ERROR_SOURCE_TYPE
 ?? (_WHEA_ERROR_SOURCE_TYPE) 0x10
