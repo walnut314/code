@@ -620,6 +620,8 @@ Dump driver symbols:
 1: kd> x dxgkrnl!*
     and WHAMMO !!!!!
 
+1: kd> !dxglog
+
 1: kd> kL
 Child-SP          RetAddr           Call Site
 ffff8380`b9c2ef00 fffff807`8563e80f watchdog!WdDbgReportRecreate+0x116
