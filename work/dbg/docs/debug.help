@@ -620,6 +620,9 @@ Dump driver symbols:
 1: kd> x dxgkrnl!*
     and WHAMMO !!!!!
 
+Upload graphics dumps to:
+https://gdhm.intel.com/Upload/Upload
+
 1: kd> !dxglog
 
 1: kd> kL
