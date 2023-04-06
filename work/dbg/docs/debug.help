@@ -3886,6 +3886,15 @@ find who is trying to acquire spinlock?
 .cxr
 !running -it -- owner of spinlock should be running
 !cpuinfo -- shows how many CPUs
+1: kd> !cpuinfo
+CP  F/M/S Manufacturer  MHz PRCB Signature    MSR 8B Signature Features
+ 0  6,190,0 GenuineIntel  998 0000000f00000000                   311b3fff
+ 1  6,190,0 GenuineIntel  998 0000000f00000000                   311b3fff
+ 2  6,190,0 GenuineIntel  998 0000000f00000000                   311b3fff
+ 3  6,190,0 GenuineIntel  998 0000000f00000000                   311b3fff
+                      Cached Update Signature 0000000f00000000
+                     Initial Update Signature 0000000f00000000
+!pcr N (if curr == idle thread) then idle
 .ignore_missing_pages 1
 .cxr
 maybe sharing w/DPC
@@ -4312,6 +4321,38 @@ Severity      : Fatal
 kd> .writemem c:\whea.bin ffffa805e3755020 L (0n27744)
 Next: c:\Python38\Scripts\intel_crashlog.exe analyze whea.bin > whea.out
 options for intel_crashlog.exe: unpack,pack,trigger,extract,decode,hash,analyze,report,list,triage,console,diff,summary,signature,info,check
+
+In system events:
+Source column: WHEA-Logger
+Details: Event Data - RawData:
+!!! If raw data length is <= 256 then copy to command line and run dumprec /b
+w:\whea\dumprec.exe /b 435045520101FFFFFFFF0100030000000300000000010000133713011801222157227C5A5EEF034ABA49386D21A67BD9000000000000000000000000000000004ABCFE8E22529C40A59F6F06DDB7967866A4613D40AB9A40A698F362D464B38F9100000000000000020000000000000000300000000000000000000000000000C80000003800000000010000000000008B3A1885419C9C42939C5C3C087CA28000000000000000000000000000000000030000000000000000000000000000000000000000000000E10F364410C1DB408D76592836FAD332000000000000000000000000000000000000000001000AA080260001002600030000000000000000
+
+Note: dumprec can be found at (or w:\whea):
+\\cce-rpt-data\Tools\WHEA-Logger_256B_Decode
+
+============================================================
+1/24/3334 11:55:19 - Boot Error
+                     Informational (Previous Error)
+Platform ID:            {5a7c2257-ef5e-4a03-ba49-386d21a67bd9}
+------------------------------------------------------------
+  0 - MU Telemetry Section
+      Component ID:       {44360fe1-c110-40db-8d76-592836fad332}
+      Subcomponent ID:    {00000000-0000-0000-0000-000000000000}
+      Error Status Value: 0xa00a0001
+      Info 1:             0x300260001002680
+      Info 2:             0x0
+Raw Data: 56 bytes
+0000: e1 0f 36 44 10 c1 db 40 8d 76 59 28 36 fa d3 32
+0010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0020: 00 00 00 00 01 00 0a a0 80 26 00 01 00 26 00 03
+0030: 00 00 00 00 00 00 00 00
+
+if the raw data > 256, then:
+1. somehow convert it to binary file and run c:\Python38\Scripts\intel_crashlog.exe
+2. get a dump and extract from there using .writemem
+3. run pythonSV 
+
 
 Source Type: 0x10 --> ntddk.h
 dt _WHEA_ERROR_SOURCE_TYPE
