@@ -4351,7 +4351,7 @@ Raw Data: 56 bytes
 if the raw data > 256, then:
 1. somehow convert it to binary file and run c:\Python38\Scripts\intel_crashlog.exe
 2. get a dump and extract from there using .writemem
-3. run pythonSV 
+3. run pythonSV
 
 
 Source Type: 0x10 --> ntddk.h
@@ -4403,4 +4403,73 @@ use !verifier special pool
 !verifier 80 Arg1 -- shows driver
 
 ============= Session 19 Training END =================
+
+============= Session 20 Training BEGIN =================
+
+Power management states: S, D and F
+S0: SOi3: C/S or fully on
+S3: sleep RAM on
+S4: hiber - memmaps same on resume
+S5: off or hybrid - S4 kernel, S5 user
+
+S3 and C/S are mutually exclusive on a system 
+hybrid D3 RAM and disk (S4) -> desktop only S3 -> S4 Ok
+
+Device States:
+D0 & D3 -> see driver Properties -> Power Data: S -> D mappings
+    these are unenforced, only the driver enforces
+    FDO owns power policy, or Port Driver if miniport
+
+SOC states: F-states (PEP) Active/Idle
+
+!pcitree
+!pci 100 B D F -- live only power mgmt info
+dt nt!_DEVICE_NODE addr CurrentPowerState
+1: kd> dt nt!_DEVICE_NODE ffffbe839c328b60 CurrentPowerState.DeviceState
+   +0x09c CurrentPowerState             : 
+      +0x000 DeviceState                   : 1 ( PowerDeviceD0 )
+Note: this field updates when power IRP on its way down, so maybe in transition
+
+PCI PDO:
+1: kd> dt nt!_DEVICE_OBJECT ffffbe839c29e360 DeviceObjectExtension.PowerFlags
+   +0x138 DeviceObjectExtension 
+   ...
+    [+0x010] PowerFlags       : 0x10 [Type: unsigned long]
+The power state is the upper nibble of the PowerFlags
+
+1: kd> dt _DEVICE_POWER_STATE 
+nt!_DEVICE_POWER_STATE
+   PowerDeviceUnspecified = 0n0
+   PowerDeviceD0 = 0n1 <=== device is in D0
+   PowerDeviceD1 = 0n2
+   PowerDeviceD2 = 0n3
+   PowerDeviceD3 = 0n4
+   PowerDeviceMaximum = 0n5
+1: kd> ?? (nt!_DEVICE_POWER_STATE) 1
+_DEVICE_POWER_STATE PowerDeviceD0 (0n1)
+   
+Bus Drivers are reliable for this value - 
+    only if the fxdevice does not say: IrpInUse 
+    otherwise in transition
+
+Component States:
+!fxdevice -> (power management framework PoFx)
+dt nt!PoFx* -- shows all the PoFx APIs, including RegisterDevice
+!fxdevice shows all the PEP integrated devices
+    Current: is the current power state -- from the devnode
+
+WDF Drivers:
+!wdfkd.wdfldr --> lists all WDF drivers
+!wdfdriverinfo <name> -- shows list of devices managed by driver
+!wdfdevice <addr> ff -> gives the power state
+
+!poaction --> in flight IRPs
+    PDO -> pcitree
+
+To see what power states a device supports (no way directly)
+1. look at power state history
+2. if ACPI look for PS3 method
+3. PHM tool -> ETL file
+
+============= Session 20 Training END =================
 
