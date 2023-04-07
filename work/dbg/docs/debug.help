@@ -4348,10 +4348,24 @@ Raw Data: 56 bytes
 0020: 00 00 00 00 01 00 0a a0 80 26 00 01 00 26 00 03
 0030: 00 00 00 00 00 00 00 00
 
-if the raw data > 256, then:
-1. somehow convert it to binary file and run c:\Python38\Scripts\intel_crashlog.exe
-2. get a dump and extract from there using .writemem
-3. run pythonSV
+if the raw data > 256, then save the XML from the details tab of the system event:
+
+1. C:\CScripts\641258_ADL_CScripts_Rev1p0\cscripts_1.0\start_adl_offline.bat
+2. >>> crashlog.whea_logger_parser(r'd:\Intel_Dev\whea_learn\whea.xml')
+
+WHEA-Logger Event Parser 0.95
+
+extract from d:\Intel_Dev\whea_learn\whea.xml, data size = 6816
+save to C:\CScripts\641258_ADL_CScripts_Rev1p0\cscripts_1.0\commlibs\crashlog\crashlogs\samples\20230406_165447_whea.crashlog
+Done!
+>>> quit()
+
+3. grab file at: C:\CScripts\641258_ADL_CScripts_Rev1p0\cscripts_1.0\commlibs\crashlog\crashlogs\samples\20230406_165447_whea.crashlog'
+    This is the bin file similar to the bin file from .writemem from crash dump.
+
+4. c:\Python38\Scripts\intel_crashlog.exe analyze d:\Intel_Dev\whea_learn\20230406_165447_whea.crashlog > d:\Intel_Dev\whea_learn\20230406_165447_whea.crashlog.out
+    this produces the same format as if writemem from the dump file were used.
+
 
 
 Source Type: 0x10 --> ntddk.h
