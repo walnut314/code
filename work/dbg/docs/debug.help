@@ -4142,7 +4142,7 @@ dt <driver>!_DRIVER_EXTENSION -- internals
 _FILE_OBJECT instance of _DEVICE_OBJECT and are used for handles
     handle to FO -> DO
 
-Lab: Bug Check 0xIE: KMODE_EXCEPTION_NOT_HANDLED
+Lab: Bug Check 0x1E: KMODE_EXCEPTION_NOT_HANDLED
 1	The exception code that wasn't handled. --> !error Arg1
 2	The address where the exception occurred.
 3	Exception information parameter 0 of the exception record.
@@ -4325,7 +4325,9 @@ options for intel_crashlog.exe: unpack,pack,trigger,extract,decode,hash,analyze,
 In system events:
 Source column: WHEA-Logger
 Details: Event Data - RawData:
+
 !!! If raw data length is <= 256 then copy to command line and run dumprec /b
+
 w:\whea\dumprec.exe /b 435045520101FFFFFFFF0100030000000300000000010000133713011801222157227C5A5EEF034ABA49386D21A67BD9000000000000000000000000000000004ABCFE8E22529C40A59F6F06DDB7967866A4613D40AB9A40A698F362D464B38F9100000000000000020000000000000000300000000000000000000000000000C80000003800000000010000000000008B3A1885419C9C42939C5C3C087CA28000000000000000000000000000000000030000000000000000000000000000000000000000000000E10F364410C1DB408D76592836FAD332000000000000000000000000000000000000000001000AA080260001002600030000000000000000
 
 Note: dumprec can be found at (or w:\whea):
@@ -4486,4 +4488,11 @@ To see what power states a device supports (no way directly)
 3. PHM tool -> ETL file
 
 ============= Session 20 Training END =================
+
+============= Session 21 Training BEGIN =================
+
+
+
+
+============= Session 22 Training END =================
 
