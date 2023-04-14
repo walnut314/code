@@ -3881,6 +3881,26 @@ what happened @timer irq
 TLBs flushes all CPUs via IPI (and waits for resp)
   finding outstanding IPIs?
 > !ipi -- very cool!!
+> !ipi -v -- verbose
+IPI State for Processor 0
+    TargetCount          0  PacketBarrier        0  IpiFrozen     2 [Frozen]
+...
+IPI State for Processor 11
+    TargetCount          0  PacketBarrier        0  IpiFrozen     0 [Running]
+
+Ipi Cmd:
+11: kd> !apic
+Apic (x2Apic mode)  ID:67624d30 (67624d30)  LogDesc:67624d30  TPR 67624D30
+TimeCnt: 67624d30clk  SpurVec:30  FaultVec:67624d30  error:67624d30
+Ipi Cmd: 00007ffd`f0c297a5  Vec:A5  ExtINTA   Ph:00007FFD-Pend lvl high       
+Timer..: 00000000`67624d30  Vec:30  RESET       Dest=Self      edg high rirr  
+Linti0.: 00000000`67624d30  Vec:30  RESET       Dest=Self      edg high rirr  
+Linti1.: 00000000`67624d30  Vec:30  RESET       Dest=Self      edg high rirr  
+TMR: 03, 05, 0E, 11, 13-14, 17, 1C-1f, 23, 25, 2E, 31, 33-34, 37, 3C-3f, 43, 45, 4E, 51, 53-54, 57, 5C-5f, 63, 65, 6E, 71, 73-74, 77, 7C-7f, 83, 85, 8E, 91, 93-94, 97, 9C-9f, A3, A5, AE, B1, B3-b4, B7, BC-bf, C3, C5, CE, D1, D3-d4, D7, DC-df, E3, E5, EE, F1, F3-f4, F7, FC-ff
+IRR: 03, 05, 0E, 11, 13-14, 17, 1C-1f, 23, 25, 2E, 31, 33-34, 37, 3C-3f, 43, 45, 4E, 51, 53-54, 57, 5C-5f, 63, 65, 6E, 71, 73-74, 77, 7C-7f, 83, 85, 8E, 91, 93-94, 97, 9C-9f, A3, A5, AE, B1, B3-b4, B7, BC-bf, C3, C5, CE, D1, D3-d4, D7, DC-df, E3, E5, EE, F1, F3-f4, F7, FC-ff
+ISR: 03, 05, 0E, 11, 13-14, 17, 1C-1f, 23, 25, 2E, 31, 33-34, 37, 3C-3f, 43, 45, 4E, 51, 53-54, 57, 5C-5f, 63, 65, 6E, 71, 73-74, 77, 7C-7f, 83, 85, 8E, 91, 93-94, 97, 9C-9f, A3, A5, AE, B1, B3-b4, B7, BC-bf, C3, C5, CE, D1, D3-d4, D7, DC-df, E3, E5, EE, F1, F3-f4, F7, FC-ff
+    
+
 > ~2; r; k
 !pcr -> if curr == idle thread then non-responsive
 !smt -- shows virtual / physical CPUs
@@ -4573,4 +4593,10 @@ disable hyperV (== disable VBS)
 
 
 ============= Session 22 Training END =================
+
+============= Session 23 Training BEGIN =================
+
+
+
+
 
