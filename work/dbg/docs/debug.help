@@ -4491,6 +4491,62 @@ To see what power states a device supports (no way directly)
 
 ============= Session 21 Training BEGIN =================
 
+PPO and PEP (component F-states) can punt to PPO
+    PPO -> WAIT_WAKE -> then QDR?
+Non-Wake power Irps sent to TOS in separate worker thread to avoid deadlock
+SET_POWER only PEND or FWD Irp within Delta T
+Delta T violation - power mgr watchdog bugchk 9F (hang)
+    Delta T = 2 min for D0, 5 min for Dx
+
+System Power state - power mgr Irp from user
+1st S - QUERY then SET (must succeed! not checked)
+PPO sends Dx Irp then completes S-Irp
+pending S-Irp holds off further S-state stacks - very order sequential (Child/Parent)
+    or PPO can complete the S-IRP immediately
+
+Connected Standby - periodic wakes w/screen off, continues to update apps
+Disconnected Standby (Modern Standby) = S0ix
+    System in S0 but apps off, devices idle, D3 idle, CPU idle C-State
+        then PUnit (microController) -> PMIC driver disconnects power
+            like S3 -- slow natural death
+Wake? Periodic timer P-Code (PUnit) APIC timer -> C0 state ~ 30 seconds - only 1 CPU (w/shortest timeout)
+
+S3 vs CS are mutually exclusive
+debug using = tells why wake:
+powercfg /sleepstudy or event logs
+
+Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+    PDO and Irp in Args case #3 Irp timed out
+    !poaction -- state of Power mgr -> Set/Dx
+    or dt!_PNP_IRP_DATA <addr> in !irp params
+        -> PowerStateType -> Device/System
+    if System Power State -> poaction -> Broadcast in Progress: TRUE
+    
+dt nt!_DEVICE_NODE <addr> UniqueId -> ACPI namespace
+!amli dns /s <ACPI name>._DDN (device name)
+    _PS0 _PS3 power methods
+!amli u <acpi name)._PS0
+-> mailslot signal like PUnit -> PMIC
+is it running?
+!amli lc -- list of contexts running
+!amli u <pbOp>
+!amil find RAIL
+    fields vs buffers
+Fields:
+    find threads running ACPI code:
+kd> !stacks 2 acpi!
+!thread <thr adr>
+    ACPI!InternalOpRegionHandler -> PMIC
+    WdfIoTargetSendIoctlSynchronously
+        who is PMIC talking to?
+kd> .thread /p /r <thrd addr>
+kd> ub <addr caller of WdfIoTargetSendIoctlSynchronously Retn Addr>
+!wdfkd.wdfhandle <h>
+
+Current Power State:
+kd> dt nt!_DEVICE_NODE <node adr> CurrentPowerState.DeviceState
+
+WDF queues -- if PowerOff can't process requests!!
 
 
 
