@@ -3685,14 +3685,18 @@ Dumping cached ACPI tables...
 !cmreslist
 
 Common BugChecks:
-101     stops processing WD irqs, disable C-states
-124     whea !errrec
-9F      deadlock/timeout
-50      s/w bug, use verifier
-7A/77   !storagekd.storclass [2] in page error
-EF      crit proc except - can be storage paging errors see (7A/77)
-116     TDR 2ms Gfx T/O - chk evt logs for correctable machine chks
-133     DPC wdog
+101         stops processing WD irqs, disable C-states
+124         whea !errrec
+9F          power irp deadlock/timeout (pnp overlap)
+0A, D1, 50  memory corruption, s/w bug, use verifier
+7A/77       !storagekd.storclass [2] in page error
+EF          crit proc except - can be storage paging errors see (7A/77)
+116         TDR 2ms Gfx T/O - chk evt logs for correctable machine chks
+133, 102    DPC wdog
+1E, 1E, 7F  execution of garbage code
+
+documentation:
+kd> !analyze -show <BC num> --- will display format 
 
 Training Tips - BEGIN:
 \\wosext2.amr.corp.intel.com\training\Nonsla
@@ -4548,6 +4552,24 @@ kd> dt nt!_DEVICE_NODE <node adr> CurrentPowerState.DeviceState
 
 WDF queues -- if PowerOff can't process requests!!
 
+============= Session 21 Training END =================
+
+============= Session 22 Training BEGIN =================
+
+if IRQL = FF, IRQs are disabled @trap time
+cr8 = IRQL 
+
+Full dump enable:
+"wmic recoveros set DebugInfoType 1"
+
+Lab step through KeBugCheckEx
+kd> pct -- run to next call
+if call nt!guard_dispatch_icall -> u @rax shows the call point
+kd> !dbgprint -- see buffer of DbgPrint
+
+to debug: disable VBS and secure boot
+disable hyperV (== disable VBS)
+    bcdedit /set hypervisorlaunchtype off
 
 
 ============= Session 22 Training END =================
