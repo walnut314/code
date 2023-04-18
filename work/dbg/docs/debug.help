@@ -3,6 +3,9 @@
 https://github.com/walnut314/code/blob/master/work/dbg/docs/debug.help
 \\wosext2\training\Nonsla\WD
 
+note: windbg can be used to open drivers to compare versions for fix
+> uf driver!function
+
 kPnL
 
 start:
@@ -4596,7 +4599,45 @@ disable hyperV (== disable VBS)
 
 ============= Session 23 Training BEGIN =================
 
+Lab Bugcheck 0x133 DPC_WATCHDOG_VIOLATION
+> !swd
+check DPC Count = 0
+> k (note: TOS and BOS don't matter)
+!irql find what caused the timer to fire
+look at !thread for tick count
+Arg2 = watchdog period -- default DPC timeout = 2 min
+> .frame /r N
+disasm & figure it out
 
 
+Lab Bugcheck 0x50 PAGE_FAULT_IN_NONPAGED_AREA
+> u Arg3, r CR2 = Arg1
+> k
+> u <start of fcn> <scene of crime>
+uf caller
+!poactino -- maybe shutting down
+
+
+Lab Bugcheck 0x50 PAGE_FAULT_IN_NONPAGED_AREA
+Arg1 = mem accessed
+Arg3 = mem accessor
+u Arg3, r CR2 = Arg1
+!pte Arg1
+> .frame ...
+> ub
+deep dive disasm -- if private symbols:
+dv /V /i /y
+dt ...
+!wdfhandle
+!idt x
+!pool <addr>
+?? sizeof(_STRUCT)
+!stacks 2 <driver>
+maybe pnp or power stuff
+!running -it
+OR find resources that are gone
+
+
+============= Session 23 Training END =================
 
 
