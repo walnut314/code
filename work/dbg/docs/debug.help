@@ -97,6 +97,46 @@ First get the WDF memory buffer:
 Treating handle as a KMDF handle!
 WDFMEMORY 0x00001efa6c939448:  Buffer 0xffffe105936c6c30, Length 0x3a0 (928) bytes
 
+> !ppmstate -- PPM
+> !ppm
+> !popolicy
+2: kd> !popolicy
+SYSTEM_POWER_POLICY (R.1) @ 0xfffff8066c23d3c4
+  PowerButton:     Hibernate  Flags: 00000000   Event: 00000000  
+  SleepButton:     Hibernate  Flags: 00000000   Event: 00000000  
+  LidClose:        Hibernate  Flags: 00000000   Event: 00000000  
+  Idle:            Hibernate  Flags: 00000000   Event: 00000000  
+  OverThrottled:        None  Flags: 00000000   Event: 00000000  
+  IdleTimeout:             0  IdleSensitivity:        90%
+  MinSleep:               S0  MaxSleep:               S0
+  LidOpenWake:            S0  FastSleep:              S0
+  WinLogonFlags:           1  S4Timeout:            e100
+  VideoTimeout:            0  VideoDim:                0
+  SpinTimeout:            1e  OptForPower:             0
+  FanTolerance:            0% ForcedThrottle:          0%
+  MinThrottle:             0% DyanmicThrottle:      None (0)
+2: kd> !ppmperfpolicy
+Not suported. Use !ppmsettings instead.
+2: kd> !ppmsettings
+Error retrieving size of nt!PpmPolicyConfigTable
+2: kd> !ppmcheck
+
+  PpmCheckArmed:             TRUE
+  PpmCheckStartDpc:          0xfffff8066c23bc80
+  PpmCheckDpc:               0xfffff8066c23bcc0
+  PpmCheckTimer:             -
+  PpmCheckMakeupCount:       0
+  PpmCheckLastExecutionTime: -
+  PpmCheckTime:              08:25:32.391.610us (0x469f83a744)
+  PpmCheckPhase:             0
+  PpmCheckRegistered:        0xfffff8066c20bca0
+Affinity Conversion Failed
+  PpmPerfStatesRegistered:   0xfffff8066c20bf20
+Affinity Conversion Failed
+  CoreParkingEnabled:        FALSE
+  CoreParkingMask:           0xfffff8066c20bdb0
+Affinity Conversion Failed
+
 
 
 DMFKd info:
@@ -3085,6 +3125,8 @@ Processor 2 is the one that hit the page fault, and you'll have to do
 That shows a partial stack up to the first trap. From there, look at the trap frame and 
 dump k = rsp rip 40 to walk past the trap frame.
 
+2: kd> !hvexts.help
+Commands for W:\Tools\mexdbg\hvexts.dll:
 
 
 ======================================================================
