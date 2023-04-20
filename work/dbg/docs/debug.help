@@ -3902,7 +3902,7 @@ DPC_WATCHDOG_VIOLATION (133)
 The DPC watchdog detected a prolonged run time at an IRQL of DISPATCH_LEVEL or above.
 Arguments:
 Arg1: 0000000000000000, A single DPC or ISR exceeded its time allotment. The offending
-	component can usually be identified with a stack trace.
+    component can usually be identified with a stack trace.
 Arg2: 0000000000000501, The DPC time count (in ticks).
 Arg3: 0000000000000500, The DPC time allotment (in ticks).
 Arg4: fffff8035351c340, cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, which contains
@@ -4212,10 +4212,10 @@ _FILE_OBJECT instance of _DEVICE_OBJECT and are used for handles
     handle to FO -> DO
 
 Lab: Bug Check 0x1E: KMODE_EXCEPTION_NOT_HANDLED
-1	The exception code that wasn't handled. --> !error Arg1
-2	The address where the exception occurred.
-3	Exception information parameter 0 of the exception record.
-4	Exception information parameter 0 of the exception record.
+1   The exception code that wasn't handled. --> !error Arg1
+2   The address where the exception occurred.
+3   Exception information parameter 0 of the exception record.
+4   Exception information parameter 0 of the exception record.
 
 k stack maybe trap, e.g. nt!KiTrap06 -- illegal instruction
     unhandled exception
@@ -4444,6 +4444,176 @@ dt _WHEA_ERROR_SOURCE_TYPE
 ?? (_WHEA_ERROR_SOURCE_TYPE) 0x10
     -> WheaErrSrcTypeDeviceDriver
 db <err rec addr> --> CPER ....
+
+Another way to get the WHEA data:
+================================
+3: kd> !whea 
+Error Source Table @ fffff800019ca250
+13 Error Sources
+Error Source 0 @ fffffa80064132c0
+   Notify Type      : Machine Check Exception
+   Type             : 0x0 (MCE)
+   Error Count      : 8
+   Record Count     : 10
+   Record Length    : c3e
+   Error Records    : wrapper @ fffffa8007cf4000  record @ fffffa8007cf4030
+. . . . 
+
+# 3: kd> !errrec fffffa8007cf4030 
+===============================================================================
+## Common Platform Error Record @ fffffa8007cf4030
+-------------------------------------------------------------------------------
+Revision      : 2.1
+Record Id     : 01c9c7ff04e0ff7d
+Severity      : Fatal (1)
+Length        : 1730
+Creator       : Microsoft
+Notify Type   : Machine Check Exception
+Timestamp     : 4/28/2009 12:54:47
+Flags         : 0x00000000
+# 
+
+19: kd> dt -r WHEA_ERROR_RECORD fffffa8007cf4030
+Wdf01000!WHEA_ERROR_RECORD
+
+Also, check !pci ff 0x0 1 0 (ff B D F)
+19: kd> !pci ff 1 0 0
+PCI Segment 0 Bus 0
+00:0  8086:a706.00  Cmd[0006:.mb...]  Sts[2090:c....]  Intel Host Bridge  SubID:8086:7270
+      cf8:80000000  IntPin:0  IntLine:0  Rom:0  cis:0  cap:e0
+      Cap[e0] ID 09 Vendor Specific
+      00000000:  a7068086 20900006 06000000 00000000
+      00000010:  00000000 00000000 00000000 00000000
+      00000020:  00000000 00000000 00000000 72708086
+      00000030:  00000000 000000e0 00000000 00000000
+
+PCI Segment 0 Bus 0x1
+00:0  10de:28a1.a1  Cmd[0006:.mb...]  Sts[0010:c....]  Nvidia 3D Controller  SubID:1414:0082
+      cf8:80010000  IntPin:1  IntLine:0  Rom:0  cis:0  cap:60
+      MEM[0]:66000000  MPF[1]:c         MEM[2]:60        MPF[3]:c         M1M[4]:62        IO[5]:1          
+      Cap[60] ID 01 PowerManagement
+          PMC   4803 (PME from D3H0 v3)
+          PMCSR 0008 (PME_Status=0 PME_En=0 State=D0)
+      Cap[68] ID 05 MSI
+           MSI Enabled
+           MsgAddr     fee007b0
+           MsgAddrHi   0
+           MsData      0
+      Cap[78] ID 10 PCI Express
+PCI Express Capabilities @ 7a
+  Capability Version                  = 1
+  Device/Port Type                    = 0 : Endpoint
+  Slot Implemented                    = 0
+  Interrupt Message Number            = 0
+  Reserved                            = 0
+Device Capabilities @ 7c
+  Max Payload Size Supported          = 1 : 256 bytes
+  Phantom Functions Supported         = 0 : None
+  Extended Tag Supported              = 1 : 8-bit
+  L0s AcceptableLatency               = 7 : [4us, INF)
+  L1 Acceptable Latency               = 6 : [64us, INF)
+  Attention Button Present            = 0
+  Attention Indicator Present         = 0
+  Power Indicator Present             = 0
+  Reserved (1)                        = 0
+  Captured Slot Power Limit           = 4B
+  Captured Slot Power Limit Scale     = 0 : 1.0x
+  Reserved (2)                        = 0
+Device Control @ 80
+  Correctable Error Enable            = 0
+  Non-fatal Error Enable              = 0
+  Fatal Error Enable                  = 0
+  Unsupported Request Error Enable    = 0
+  Enable Relaxed Order                = 1
+  Max Payload Size                    = 1 : 256 bytes
+  Extended Tag Enable                 = 1
+  Phantom Functions Enable            = 0
+  Aux-power Enable                    = 0
+  No-snoop Enable                     = 1
+  Max Read Request Size               = 2 : 512 bytes
+  Bridge Config Retry Enable          = 0
+Device Status @ 82
+  Correctable Error Detected          = 0
+  Non-fatal Error Detected            = 0
+  Fatal Error Detected                = 0
+  Unsupported Request Detected        = 0
+  Aux Power Detected                  = 0
+  Transactions Pending                = 0
+  Reserved                            = 0
+Link Capabilities @ 84
+  Maximum Link Speed                  = 1 : 2.5 Gb/s
+  Maximum Link Width                  = 8
+  Active State PM Support             = 2 : L0s
+  L0s Exit Latency                    = 6 : [2us, 4us)
+  L1 Exit Latency                     = 2 : [2us, 4us)
+  Reserved                            = 0
+  Port Number                         = 0
+Link Control @ 88
+  Active State PM Control             = 0 : Disabled
+  Reserved (1)                        = 0
+  Read Completion Boundary            = 0 : 64 byte
+  Link Disable                        = 0
+  Retrain Link                        = 0
+  Common Clock Config                 = 1
+  Extended Synch                      = 0
+  Reserved (2)                        = 0
+Link Status @ 8a
+  Link Speed                          = 1 : 2.5 Gb/s
+  Link Width                          = x8
+  Link Training Error                 = 0
+  Link Training                       = 0
+  Slot Clock Config                   = 1
+  Reserved                            = 0
+Slot Capabilities @ 8c
+  Attention Button Present            = 0
+  Power Controller Present            = 0
+  MRL Sensor Present                  = 0
+  Attention Indicator Present         = 0
+  Power Indicator Present             = 0
+  Hot-plug Surprise                   = 0
+  Hot-plug Capable                    = 0
+  Slot Power Limit Value              = 0
+  Slot Power Limit Scale              = 0 : 1.0x
+  Electromechanical Lock Present      = 0
+  No Command Completed Support        = 0
+  Physical Slot Number                = 0
+Slot Control @ 90
+  Attention Button Enable             = 0
+  Power Fault Detected Enable         = 0
+  MRL Sensor Enable                   = 0
+  Presence Detect Enable              = 0
+  Command Completed Enable            = 0
+  Hot-plug Interrupt Enable           = 0
+  Attention Indicator Control         = 0 : Reserved
+  Power Indicator Control             = 0 : Reserved
+  Power Controller Control            = 0 : On
+  Reserved                            = 0
+Slot Status @ 92
+  Attention Button Pressed            = 0
+  Power Fault Detected                = 0
+  MRL Sensor Changed                  = 0
+  Presence Detect Changed             = 0
+  Command Completed                   = 0
+  MRL Sensor State                    = 0 : Closed
+  Presence Detect State               = 0 : Slot Empty
+  Reserved                            = 0
+Root Control @ 94
+  Correctable SERR# Enable            = 0
+  Non-fatal SERR# Enable              = 0
+  Fatal SERR# Enable                  = 0
+  PME Interrupt Enable                = 0
+Root Status @ 98
+  PME Requester ID                    = 0
+  PME Status                          = 0
+  PME Pending                         = 0
+  Reserved                            = 0
+      Cap[b4] ID 09 Vendor Specific
+      00000000:  28a110de 00100006 030200a1 00000000
+      00000010:  66000000 0000000c 00000060 0000000c
+      00000020:  00000062 00000001 00000000 00821414
+      00000030:  00000000 00000060 00000000 00000100
+
+
                       ...storport...
 !storagekd.storclass --> scsi errors
 
