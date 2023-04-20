@@ -4679,7 +4679,69 @@ maybe pnp or power stuff
 !running -it
 OR find resources that are gone
 
-
 ============= Session 23 Training END =================
+
+============= Session 24 Training BEGIN =================
+
+Lab Bugcheck 0xD1 DRIVER_IRQL_NOT_LESS_OR_EQUAL
+1 Memory referenced.
+2 IRQL at time of reference.
+3 0 - Read 1 - Write 2 - Execute 8 - Execute
+4 Address that referenced memory
+
+> k; !pte Arg1
+note !pte "Contains" are the bits: KWEV etc... -- bit 0 is the V bit
+use verifier if possible, like if mem was accessed after freed
+!stacks 2 <driver> -- maybe find freeing of mem in threads
+or just look at the stack (kv) and deduce: timers? wdf?
+!wdfdriverinfo find Pnp/Power states
+!wdfdevice <dev> ff -- bottom entries are most recent
+look for pending Irps
+
+
+Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+Type 3: PDO, Irp
+!poaction
+look at exec resources -- they have owners
+.thread /r /p <thr>; kn
+.frame /r N
+ub
+dt nt!_ERESOURCE <addr> OwnerEntry. -- OwnerThread.
+!locks nt!PopPolicyLock  -- thread waiting timed out by owner thread -> waiting on mutant
+dt nt!_KMUTANT <adr> OwnerEntry. -- OwnerThread.
+.thread /r /p <thr>
+maybe circular dependence -- or deadlock (2 threads, 2 locks, reverse order)
+WaitForResource samples every 3 secs (like spin lock) yields
+note: not all locks have owners
+
+
+Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+Type 3: PDO, Irp
+!irp; !devstack
+ACPI case (GPIO)
+> !amli lc --> nothing!
+!poaction; !thread <addr>
+pg fault (2 min wait!, why?) storage?
+!storagekd.storclass -- looks OK, then why 2 min wait?
+chk power state of storage:
+!devstack -> !devnode
+dt nt!_DEVICE_NODE <adr> CurrentPowerState.DeviceState = D0 -- ok
+urr?  could be the D0 is in flight -- chk !poaction -- PDO none !!! arghhh!!!
+it's in D0 -- why IO stuck paging? now what !!!
+check child powered and not parent
+SATA controller maybe OFF but disk in D0
+chk parent devnode
+dt nt!_DEVICE_NODE <adr> CurrentPowerState.DeviceState = D0 -- ok
+chk in-flight D0 Irp in !poaction --- PDO --> yes!!!
+    see if there is no thread working on the SATA D0 Irp -- all threads busy on other power Irps
+    ie, look at all threads in !poaction --> !thread <t1>; !thread <t2>; ...
+    this is a kind of deadlock -- SATA not in D0 -- limited # of power threads
+!pte <code adr> of paging I/O waiting --> paged out!!
+driver of code addr is on paging path -- can't be paged out -- deadlock
+    chk if code addr is 0 (ZERO) offset in stack --> bang!
+    !dh <driver name>
+    > ? code addr - driver name = section header offset (Virtual Address) Flags = "Not Paged" not set? then paged section
+
+============= Session 24 Training END =================
 
 
