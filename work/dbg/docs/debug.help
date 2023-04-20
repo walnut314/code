@@ -3324,8 +3324,8 @@ Memory Triage:
 4: kd> !pte ffffcbbf421b6050
 4: kd> !pplookaside 
 4: kd> !poolval ffffcbbf421b6050 3
-4: kd> !poolused Gla1
 4: kd> !poolused 7 -- dumps pool by all tags
+4: kd> !poolfind Gla1
 4: kd> !sysptes
 
 NO_PAGES_AVAILABLE (4d)
