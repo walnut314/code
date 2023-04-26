@@ -1,0 +1,1582 @@
+To find the list of registered PEP devices:
+
+!list -t nt!_POP_FX_DEVICE.Link.Flink -x "dt" -a "nt!_POP_FX_DEVICE DeviceId" poi(nt!PopFxDeviceList)
+
+output:
+1: kd> !list -t nt!_POP_FX_DEVICE.Link.Flink -x "dt" -a "nt!_POP_FX_DEVICE DeviceId" poi(nt!PopFxDeviceList)
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.PEG1"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.PEG0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.RP08"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.RP09"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.RP11"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.PEG0.PEGP"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4000&SUBDEV_0002&REV_0001&UID_00000002"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4000&SUBDEV_0001&REV_0001&UID_0000b000"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4000&SUBDEV_0001&REV_0001&UID_0000b001"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0005&REV_0001&UID_00000000"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0001&REV_0001&UID_00000000"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0002&REV_0001&UID_00000000"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0003&REV_0001&UID_00000001"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0003&REV_0001&UID_00000002"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0003&REV_0001&UID_00000000"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0006&REV_0001&UID_00000000"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_vvvv&DEV_dddd&SUBVEN_ssss&SUBDEV_yyyy&REV_rrrr&INST_iiii&UID_uuuuuuuu"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0007&REV_0001&UID_00000000"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0007&REV_0001&UID_00000000"
+   +0x0d8 DeviceId : _UNICODE_STRING "VEN_MSFT&DEV_4100&SUBDEV_0007&REV_0001&UID_00000000"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR00"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.GPI0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR01"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR02"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR03"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR04"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR05"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR06"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.TDM0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR07"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR08"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR09"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR10"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR11"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR12"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR13"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR14"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR15"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR16"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR17"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR18"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PR19"
+   +0x0d8 DeviceId : _UNICODE_STRING "USB4\VIRTUAL_POWER_PDO\4&34a9f288&0&0"
+   +0x0d8 DeviceId : _UNICODE_STRING "USB4\ROOT_DEVICE_ROUTER&VID_8086&PID_A73E\4&34a9f288&0&0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.GNA0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C6"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.TXHC"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.THC0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.THC1"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C1"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C5"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C4"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.HECI"
+   +0x0d8 DeviceId : _UNICODE_STRING "VHF\HID_DEVICE_SYSTEM_VHF\3&12f55104&0&{bc7bd890-7c95-5e96-932c-bd667aa1d375}"
+   +0x0d8 DeviceId : _UNICODE_STRING "VHF\HID_DEVICE_SYSTEM_VHF\3&12f55104&0&{b5a92f8d-fc23-590d-a967-03b8f061939d}"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.UA00"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.HDAS"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.RP11.PXSX"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.RP08.PXSX"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.TRP0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.TRP1"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.SSH"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C1.PA06"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C1.PA02"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C1.PA01"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C1.PA04"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C1.PA05"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C1.PA03"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.TXHC.RHUB"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.HDAS.IDA"
+   +0x0d8 DeviceId : _UNICODE_STRING "INTELAUDIO\FUNC_01&VEN_10EC&DEV_0274&SUBSYS_10EC1282&REV_1000\5&28ecc1a&0&0001"
+   +0x0d8 DeviceId : _UNICODE_STRING "INTELAUDIO\CTLR_DEV_51CA&LINKTYPE_06&DEVTYPE_06&VEN_8086&DEV_AE50&SUBSYS_72708086&REV_0001\0601"
+   +0x0d8 DeviceId : _UNICODE_STRING "ButtonConverter\ConvertedDevice\5&344c377e&0&0"
+   +0x0d8 DeviceId : _UNICODE_STRING "{2DEDC554-A829-42AB-90E9-E4E4B4772981}\Target_SAM&Category_HID\4&191da002&0&SHP_DEVICE_02"
+   +0x0d8 DeviceId : _UNICODE_STRING "{2DEDC554-A829-42AB-90E9-E4E4B4772981}\Target_SAM&Category_HID\4&191da002&0&SHP_DEVICE_06"
+   +0x0d8 DeviceId : _UNICODE_STRING "{2DEDC554-A829-42AB-90E9-E4E4B4772981}\Target_SAM&Category_HID\4&191da002&0&SHP_DEVICE_07"
+   +0x0d8 DeviceId : _UNICODE_STRING "{2DEDC554-A829-42AB-90E9-E4E4B4772981}\Target_SAM&Category_HID\4&191da002&0&SHP_DEVICE_01"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.GFX0"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.PEG1.PEGP"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.RP09.PXSX"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.I2C0.FINK"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.XHCI"
+   +0x0d8 DeviceId : _UNICODE_STRING "\_SB.PC00.XHCI.RHUB"
+
+Now find devices that are "supposed" to be registered, via BIOS:
+1: kd> !amli find PEPD
+\_SB.PEPD
+
+1: kd> !amli dns /s \_SB.PEPD
+
+ACPI Name Space: \_SB.PEPD (ffff9509c2f8c6d8)
+Device(PEPD)
+| String(_HID:Str="INT33A1")
+| Integer(_CID:Value=0x00000000800dd041[2148388929])
+| Integer(_UID:Value=0x0000000000000001[1])
+| Buffer(LBUF:Ptr=ffff9509c2f8c9f8,Len=192){
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
+| Package(PPD0:NumElements=3){
+| | String(:Str="\_SB.PC00.SAT0")
+| | Integer(:Value=0x0000000000000000[0])
+| | Package(:NumElements=2){
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=3){
+| | | | Integer(:Value=0x00000000000000ff[255])
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Integer(:Value=0x0000000000000081[129])
+| | | }
+| | }
+| }
+| Package(PPD3:NumElements=3){
+| | String(:Str="\_SB.PC00.SAT0")
+| | Integer(:Value=0x0000000000000000[0])
+| | Package(:NumElements=2){
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x00000000000000ff[255])
+| | | | Integer(:Value=0x0000000000000003[3])
+| | | }
+| | }
+| }
+| Package(WWD3:NumElements=3){
+| | String(:Str="\_SB.PC00.RP04")
+| | Integer(:Value=0x0000000000000000[0])
+| | Package(:NumElements=2){
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x00000000000000ff[255])
+| | | | Integer(:Value=0x0000000000000003[3])
+| | | }
+| | }
+| }
+| Package(PKD0:NumElements=2){
+| | Integer(:Value=0x0000000000000000[0])
+| | Package(:NumElements=3){
+| | | Integer(:Value=0x00000000000000ff[255])
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Integer(:Value=0x0000000000000081[129])
+| | }
+| }
+| Package(PKD3:NumElements=2){
+| | Integer(:Value=0x0000000000000000[0])
+| | Package(:NumElements=2){
+| | | Integer(:Value=0x00000000000000ff[255])
+| | | Integer(:Value=0x0000000000000003[3])
+| | }
+| }
+| Package(DEVY:NumElements=120){
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR00")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR01")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR02")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR03")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR04")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR05")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR06")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR07")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.GFX0")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.UA00")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.UA01")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.I2C0")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.I2C1")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.XHCI")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.HDAS")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.PEMC")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.PSDC")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.I2C2")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.I2C3")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.I2C4")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.I2C5")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.UA02")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SPI0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SPI1")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP01")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP02")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP03")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP04")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP05")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP06")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP07")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP08")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP09")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP10")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP11")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP12")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP13")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP14")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP15")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP16")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP17")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP18")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP19")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP20")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.VOL0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR08")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR09")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR10")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR11")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR12")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR13")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR14")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR15")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SPI2")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.CNVW")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.IPU0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.HECI")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.GLAN")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.PEG0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.THC0")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.THC1")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.PEG0.PEGP")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="USB\VID_8087&PID_0AC9&MI*")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000002[2])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.I2C6")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.PEG1")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR16")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR17")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR18")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR19")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR20")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR21")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR22")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR23")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.GNA0")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.VMD0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP21")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP22")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP23")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP24")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="Reserved For DTBT RP0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="Reserved For DTBT RP1")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP25")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP26")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP27")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.RP28")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.PRT0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.PRT1")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.PRT2")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.PRT3")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.PRT4")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.PRT5")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.PRT6")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.SAT0.PRT7")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.HEC3")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=3){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | | Integer(:Value=0x0000000000000081[129])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.PEG2")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR24")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR25")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR26")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR27")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR28")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR29")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR30")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PR31")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000000[0])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.PUF0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.PUF1")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.I2C7")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.SSH")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.TXHC")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.TXDC")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.TRP0")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.TRP1")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.TRP2")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.TRP3")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC01.TRP0")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC01.TRP1")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC01.TRP2")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC01.TRP3")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.TDM0")
+| | | Integer(:Value=0x0000000000000001[1])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| | Package(:NumElements=3){
+| | | String(:Str="\_SB.PC00.TDM1")
+| | | Integer(:Value=0x0000000000000000[0])
+| | | Package(:NumElements=2){
+| | | | Integer(:Value=0x0000000000000000[0])
+| | | | Package(:NumElements=2){
+| | | | | Integer(:Value=0x00000000000000ff[255])
+| | | | | Integer(:Value=0x0000000000000003[3])
+| | | | }
+| | | }
+| | }
+| }
+| Method(GUCP:Flags=0xa,CodeBuff=ffff9509c341afba,Len=39)
+| Method(GRPC:Flags=0x9,CodeBuff=ffff9509c341b16a,Len=206)
+| Method(DSDF:Flags=0xa,CodeBuff=ffff9509c341b3ba,Len=88)
+| Method(PARS:Flags=0x9,CodeBuff=ffff9509c341b59a,Len=43)
+| Method(RPPC:Flags=0x8,CodeBuff=ffff9509c341b74a,Len=1505)
+| Package(BCCD:NumElements=0){
+| }
+| OpRegion(LS0I:RegionSpace=SystemMemory,Offset=0xffffa78051147000,Len=192)
+| Field(:Base=LS0I,BaseObjData=ffff9509c341bee0)
+| * Base =>OpRegion(:RegionSpace=SystemMemory,Offset=0xffffa78051147000,Len=192)
+| FieldUnit(L0IX:FieldParent=ffff9509c341bf50,ByteOffset=0x0,StartBit=0x0,NumBits=1536,FieldFlags=0x11)
+| Package(_DSD:NumElements=2){
+| | Buffer(:Ptr=ffff9509c2f8c7c8,Len=16){
+	0x14,0xd8,0xff,0xda,0xba,0x6e,0x8c,0x4d,0x8a,0x91,0xbc,0x9b,0xbf,0x4a
+	0xa3,0x01}
+| | Package(:NumElements=1){
+| | | Package(:NumElements=2){
+| | | | String(:Str="intel-cec-pson-switching-enabled-in-s0")
+| | | | Integer(:Value=0x0000000000000001[1])
+| | | }
+| | }
+| }
+| Method(PSOP:Flags=0x0,CodeBuff=ffff9509c341c452,Len=159)
+| Method(_STA:Flags=0x0,CodeBuff=ffff9509c341c67a,Len=7)
+| Method(_INI:Flags=0x8,CodeBuff=ffff9509c341c80a,Len=14)
+| Method(_DSM:Flags=0xc,CodeBuff=ffff9509c341c99a,Len=2584)
+
+Filter the 2 lists and diff them.
+
+
+Another way:
+1: kd> dps poi(intelpep!PepKnownDeviceList)
+ffff9509`bf85e3b0  00000000`00140012
+ffff9509`bf85e3b8  ffff9509`bf75f6a0 <-- unicode string buffer
+ffff9509`bf85e3c0  ffff9509`c664b8e0
+ffff9509`bf85e3c8  00000000`00000101
+ffff9509`bf85e3d0  ffff9509`bbcffe70
+ffff9509`bf85e3d8  ffff9509`bf887010
+ffff9509`bf85e3e0  00000000`00000000
+ffff9509`bf85e3e8  00000000`00140012
+ffff9509`bf85e3f0  ffff9509`bf75f430 <-- unicode string buffer
+ffff9509`bf85e3f8  ffff9509`c67da990
+ffff9509`bf85e400  00000000`00000101
+ffff9509`bf85e408  ffff9509`bbcffd10
+ffff9509`bf85e410  ffff9509`bf8870c8
+ffff9509`bf85e418  00000000`00000000
+ffff9509`bf85e420  00000000`00140012
+ffff9509`bf85e428  ffff9509`bf75f7c0
+
+$ find size of struct 
+1: kd> ? ffff9509`bf85e3e8 - ffff9509`bf85e3b0
+Evaluate expression: 56 = 00000000`00000038
+
+let N = element of array
+1: kd> dt nt!_UNICODE_STRING poi(intelpep!PepKnownDeviceList)+38*N Buffer
+ "\_SB.PR02"
+   +0x008 Buffer : 0xffff9509`bf75f7c0  "\_SB.PR02"
+
+

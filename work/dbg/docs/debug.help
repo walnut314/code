@@ -4964,6 +4964,52 @@ what is the timeout?  its param4 of KeWait so sent on stack
 
 Lab Bugcheck 0x15F: CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP
 ===============================================================
+For MSFT telemetry
+PEP veto Type 3 Arg1
+a device on PEP list needs to reach a power state --> list from BIOS
+Arg3 = veto name reason string unicode
+> du Arg3 -> "device not registered"
+> u Arg4 --> intelpep!....
+which device?
+list registered list of devs, and list that is supposed to be registered.
+1. !pnptriage -- look for CM_PROB_... of PEP devices - note: USB is not PEP
+2. !fxdevice --> lists registered devices
+3. script: !list -t nt!_POP_FX_DEVICE.Link.Flink -x "dt" -a "nt!_POP_FX_DEVICE DeviceId" poi(nt!PopFxDeviceList)
+    output -- see pep.kd file -- these are all the PEP devices, registered or not
+4. Which devices are supposed to be registered - from BIOS.
+> !amli find PEPD
+    \_SB.PEPD
+> !amli dns /s \_SB.PEPD
+    --> another list of deivces (see pep.kd file) -- diff with !list output
+5. or dump the DSDT table
+> !acpicache --> DSDT entry
+> !acpicache 1 <addr of DSDT entry>
+> .writemem <file path to dsdt.bin> <addr of DSDT> L0x<Length>
+C:\> iasl.exe -d dsdt.bin > dsdt.out --> PEPD and Package list of PEP devs (master list)
+6. Another method: use PEP structs
+> dd intelpep!PepKnownDeviceCount L1
+> x intelpep!PepKnownDeviceList <-- array
+> dps poi(intelpep!PepKnownDeviceList)
+> start du'ing pointers
+OR
+> ? addr2 - addr1 (in array) for struct length
+> dt nt!_UNICODE_STRING poi(intelpep!PepKnownDeviceList)+38*N Buffer --> N is entry in array
+7. Another method - disasm Pep function
+> uf intelpep!PepFindDeviceMatch --> find mem allocation and size
+
+filter the output files and diff to find missing device from PepKnownDeviceList
+
+excluded /v arg
+findstr /v unicode_string <file>
+note: PEG0 is internal graphics
+
+> !amli find <missing device> -- it exists, now what
+> !amli dns /s <missing dev> -- see if _STA exists
+check parent of device RP? chk _ADR
+_ADR ==> device | function --> see if in !pcitree
+if not in !pcitree - then either disabled, driver failed, no driver exists, or hidden by BIOS
+
+note: kdnet can take over device for debug
 
 Lab Bugcheck 0xE1: WORKER_THREAD_RETURNED_AT_BAD_IRQL
 =====================================================
