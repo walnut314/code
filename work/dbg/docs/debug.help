@@ -5013,9 +5013,65 @@ note: kdnet can take over device for debug
 
 Lab Bugcheck 0xE1: WORKER_THREAD_RETURNED_AT_BAD_IRQL
 =====================================================
+> !irql
+> k
+> ln Arg1
+dox API or search kernel
+> dt nt!_*WORK*ITEM* -> _IO_WORKITEM
+dt nt!_IO_WORKITEM Arg4 -- just a guess
+    -> Routine
+    -> IoObject
+    -> Context --> !wdfobject
+> !wdfobject Context
+> !wdfobject -> Work item -> cm_Callback
+find resources -> interrupt == Arg2 IRQL
+> !idt -a -- find IRQ connected to driver
+    copy table to file and make a script - list of:
+    dt nt!_KINTERRUPT <adr> Irql -- run and find IRQ with matching IRQL in Arg2
+    dt nt!_KINTERRUPT <adr> ServiceContext
+> !wdfobject ServiceContext --> find wdf device
+> dt nt!_KINTERRUPT ActualLock = 0 or 1 if spin lock is acquired, and not released
+> !wdfdevice <dev>
+    find owning thread and pending irps
+> !thread -> possible race condition
+see WdfAcquireInterruptLock rules in API dox
+
+best to troubleshoot by running verifier - will BC and the rule violation
 
 Lab Bugcheck 0x1E: KMODE_EXCEPTION_NOT_HANDLED
 ==============================================
+> u Arg2
+> k --> GPF in stack?
+invalid instruction? corrupt mem?
+> !process 0 0
+> !pte Arg2 KREV -- so its OK
+> chkimg nt -> 0 errors
+
+c:\> windbg -z <exec binary>
+> .lines
+> u ntoskrnl!SwapContext -- same bad bytes
+not possible MSFT introduced bad instructions
+and GPF and BAD INSTR are mutually exclusive errors
+HRESET MSR
+> x nt!*HRESET*
+> running -it (nothing)
+see what the system is doing
+> ~0s;k
+> ~1s;k
+> ~2s;k
+> ~3s;k
+
+System Sleep?
+> lm --> unloaded modules are a clue of (hiber/resume)
+> !poaction
+    Lightest State: Hibernate
+> dd nt!PoResumeFromHibernate L1
+    0 / 1 -> resuming?
+On resume from hibernation, restoring the MSR's is a MUST
+need live repro, compare 2 systems before and after hiber to compare MSRs
+> rdmsr 17DA
+
+see bugs: 14013764866 and 22012486156
 
 ============= Session 25 Training END =================
 
