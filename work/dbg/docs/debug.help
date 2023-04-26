@@ -1514,6 +1514,8 @@ ffff880593f36525 : }
 ACPI live spew:
 To set ACPI logging on from Windbg:
 4: kd> !amli set spewon
+kd> !amli set spewon traceon verboseon
+kd> !amli set spewoff traceoff verboseoff
 
 Check settings:
 4: kd> !amli set
@@ -3843,6 +3845,7 @@ x iacamera64!free_mem_list = struct _LIST_ENTRY [ 0xffff9706`148ebe50 - 0xffff97
 Bugchecks:
 
 KMODE_EXCEPTION_NOT_HANDLED (1e)
+================================
 This is a very common bugcheck.  Usually the exception address pinpoints
 the driver/function that caused the problem.  Always note this address
 as well as the link date of the driver/image that contains this address.
@@ -4192,6 +4195,7 @@ FDO policy owner
 SerCx: LPC (low pin count) class driver for i2c, spi, uart -- ACPI does PnP
 
 Lab: Bug Check 0x124: WHEA_UNCORRECTABLE_ERROR
+==============================================
 Arg2 = !errrec --> mwait bugchecked maybe - why???
 Arg3/4 Mci_Status
 see also event logs
@@ -4212,6 +4216,7 @@ _FILE_OBJECT instance of _DEVICE_OBJECT and are used for handles
     handle to FO -> DO
 
 Lab: Bug Check 0x1E: KMODE_EXCEPTION_NOT_HANDLED
+================================================
 1   The exception code that wasn't handled. --> !error Arg1
 2   The address where the exception occurred.
 3   Exception information parameter 0 of the exception record.
@@ -4634,7 +4639,7 @@ _IRP.CurrentLocation = N
 busying == pending, complete, or pass down
 
 Lab !process 0 0 cmd.exe
-------------------------
+========================
 !process <proc addr>
 bp /p <proc addr> nt!ReadFile
 > .reload
@@ -4644,12 +4649,14 @@ bp /p <proc addr> nt!ReadFile
 > ba w 8 <irp addr> + 0x30 --> _IO_STATUS 
 
 Lab Bugcheck 7F: UNEXPECTED_KERNEL_MODE_TRAP
+============================================
 Arg1: exception code
 kv -> .trap frame or .frame /r N
 k> !ipi -- dumps all IPI's on all CPUs
 TLBs = VToP cache -- TLB flush CR4
 
 Lab Bugcheck 0xCC: PAGE_FAULT_IN_FREED_SPECIAL_POOL
+===================================================
 Arg1 Memory address referenced
 Arg2 0: Read 1: Write
 Arg3 Address that referenced memory (if known)
@@ -4755,6 +4762,7 @@ debug using = tells why wake:
 powercfg /sleepstudy or event logs
 
 Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+=============================================
     PDO and Irp in Args case #3 Irp timed out
     !poaction -- state of Power mgr -> Set/Dx
     or dt!_PNP_IRP_DATA <addr> in !irp params
@@ -4798,6 +4806,7 @@ Full dump enable:
 "wmic recoveros set DebugInfoType 1"
 
 Lab step through KeBugCheckEx
+=============================
 kd> pct -- run to next call
 if call nt!guard_dispatch_icall -> u @rax shows the call point
 kd> !dbgprint -- see buffer of DbgPrint
@@ -4812,6 +4821,7 @@ disable hyperV (== disable VBS)
 ============= Session 23 Training BEGIN =================
 
 Lab Bugcheck 0x133 DPC_WATCHDOG_VIOLATION
+=========================================
 > !swd
 check DPC Count = 0
 > k (note: TOS and BOS don't matter)
@@ -4823,6 +4833,7 @@ disasm & figure it out
 
 
 Lab Bugcheck 0x50 PAGE_FAULT_IN_NONPAGED_AREA
+=============================================
 > u Arg3, r CR2 = Arg1
 > k
 > u <start of fcn> <scene of crime>
@@ -4831,6 +4842,7 @@ uf caller
 
 
 Lab Bugcheck 0x50 PAGE_FAULT_IN_NONPAGED_AREA
+=============================================
 Arg1 = mem accessed
 Arg3 = mem accessor
 u Arg3, r CR2 = Arg1
@@ -4854,6 +4866,7 @@ OR find resources that are gone
 ============= Session 24 Training BEGIN =================
 
 Lab Bugcheck 0xD1 DRIVER_IRQL_NOT_LESS_OR_EQUAL
+===============================================
 1 Memory referenced.
 2 IRQL at time of reference.
 3 0 - Read 1 - Write 2 - Execute 8 - Execute
@@ -4870,6 +4883,7 @@ look for pending Irps
 
 
 Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+=============================================
 Type 3: PDO, Irp
 !poaction
 look at exec resources -- they have owners
@@ -4886,6 +4900,7 @@ note: not all locks have owners
 
 
 Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+=============================================
 Type 3: PDO, Irp
 !irp; !devstack
 ACPI case (GPIO)
@@ -4914,4 +4929,47 @@ driver of code addr is on paging path -- can't be paged out -- deadlock
 
 ============= Session 24 Training END =================
 
+============= Session 25 Training BEGIN =================
+
+Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+=============================================
+    Type 3 - Irp, PDO -> SET_POWER timeout
+real driver name (not service name) -> dt nt!_DEVICE_OBJECT <dev> DriverObject -> DriverName
+    real name in DriverInit function prefix
+symbol file also contains the real driver name
+C:\> sigcheck -v <driver sys file> ==> gives name and version
+
+why did power IRP timeout?
+!poaction --> no thread?
+!stacks 2 <driver name> ?
+WDF driver? -> !wdfdriverinfo <name> -- if many devs find FDO
+    look at IRP stack, TOS is FDO, BOS if PDO
+
+or !drvobj \Driver\name
+    fine FDO in list of !drvobj
+or !wdfdevice <fdo> ff -> pended power irps --> owning thread
+.thread /r /p <thr>
+!thread --> waiting 2 min timeout (D0 timeout) for FDO -> notification event?
+-> KeWait -- .frame prior to this call
+.frame /r N-1
+ub
+lookup API for KeWait param1 is event object -> rcx = [rbx+E8] (struct)
+look at caller function: u <func>  rbx is a "this" pointer if C++
+> dv /V /i /t -> @rbx = "this"
+look for offset E8 in struct (if symbols) -> KEVENT 
+drivers poll for completion of FW load then signal the KEVENT directly or in ISR/DPC
+what is the timeout?  its param4 of KeWait so sent on stack
+> dq <rsp+offset> L1 --> timeout in 100 nsec units (10^-9) (10^-7)
+    so value is in msec -- in code imul -1000 s/b idiv bug
+
+Lab Bugcheck 0x15F: CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP
+===============================================================
+
+Lab Bugcheck 0xE1: WORKER_THREAD_RETURNED_AT_BAD_IRQL
+=====================================================
+
+Lab Bugcheck 0x1E: KMODE_EXCEPTION_NOT_HANDLED
+==============================================
+
+============= Session 25 Training END =================
 
