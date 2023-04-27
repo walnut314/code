@@ -3731,6 +3731,16 @@ Dumping cached ACPI tables...
 !ioreslist - from devnode 
 !cmreslist
 
+BIOS Version:
+1: kd> !gbl
+Good Bios List Entry --- Machine BIOS Date 
+[OEMELOEMEL]
+AcpiOemId="FACP","OEMEL "
+AcpiOemTableId="FACP","OEMEL   "
+AcpiOemRevision=">=","FACP",0
+AcpiRevision=">=","FACP",6
+AcpiCreatorRevision=">=","FACP",20191121
+
 Common BugChecks:
 101         stops processing WD irqs, disable C-states
 124         whea !errrec
