@@ -265,6 +265,42 @@ Register based stack dump:
 0: kd> !wmitrace.logger 0x02 <-- Circular Kernel Context Logger
 0: kd> !wmitrace.logdump *   <-- dump all logs
 
+4: kd> !wmitrace.strdump
+(WmiTrace) StrDump Generic
+  LoggerContext Array @ 0xFFFFBE031ED71CC0 [80 Elements]
+    Logger Id 0x02 @ 0xFFFFBE03201E3600 Named 'Circular Kernel Context Logger'
+    Logger Id 0x03 @ 0xFFFFBE03202F0040 Named 'Eventlog-Security'
+    Logger Id 0x04 @ 0xFFFFBE03201E4040 Named 'DefenderApiLogger'
+    Logger Id 0x05 @ 0xFFFFBE03202EA380 Named 'DefenderAuditLogger'
+    Logger Id 0x06 @ 0xFFFFBE03202EA940 Named 'DiagLog'
+    Logger Id 0x07 @ 0xFFFFBE03202ED040 Named 'Diagtrack-Listener'
+    Logger Id 0x08 @ 0xFFFFBE03202ED600 Named 'EventLog-Application'
+    Logger Id 0x09 @ 0xFFFFBE03202F0600 Named 'EventLog-System'
+    Logger Id 0x0a @ 0xFFFFBE03202F3040 Named 'FaceTel'
+    Logger Id 0x0b @ 0xFFFFBE03202F3600 Named 'LwtNetLog'
+    Logger Id 0x0c @ 0xFFFFBE03202F6040 Named 'Microsoft-Windows-Rdp-Graphics-RdpIdd-Trace'
+    Logger Id 0x0d @ 0xFFFFBE03202F6640 Named 'NetCore'
+    Logger Id 0x0e @ 0xFFFFBE03210E2080 Named 'NtfsLog'
+    Logger Id 0x0f @ 0xFFFFBE03210E2640 Named 'RadioMgr'
+    Logger Id 0x10 @ 0xFFFFBE032F0319C0 Named 'ScreenOnPowerStudyTraceSession'
+    Logger Id 0x11 @ 0xFFFFBE03210E5600 Named 'ReFSLog'
+    Logger Id 0x12 @ 0xFFFFBE03210E8040 Named 'UBPM'
+    Logger Id 0x13 @ 0xFFFFBE03210E98C0 Named 'WdiContextLog'
+    Logger Id 0x14 @ 0xFFFFBE03210EC040 Named 'WiFiDriverIHVSession'
+    Logger Id 0x15 @ 0xFFFFBE03210EC600 Named 'WiFiSession'
+    Logger Id 0x16 @ 0xFFFFBE0327797400 Named 'NetCfgTrace'
+    Logger Id 0x18 @ 0xFFFFBE032EF3A9C0 Named 'SleepStudyTraceSession'
+    Logger Id 0x19 @ 0xFFFFBE0330FA2040 Named 'F589D420-8B9A-40A2-95A8-DBB27ED17997'
+    Logger Id 0x1a @ 0xFFFFBE0330FC2700 Named 'BE235AAC-AC9D-4DDC-9FA6-D4C37AF837B7'
+    Logger Id 0x1b @ 0xFFFFBE0330F60040 Named 'D425B399-4B71-4151-8DAF-413F92A75EC3'
+    Logger Id 0x1d @ 0xFFFFBE0329A0F600 Named 'WFP-IPsec Diagnostics'
+    Logger Id 0x1e @ 0xFFFFBE032D8C9700 Named 'MpWppTracing-20230326-050133-00000003-ffffffff'
+    Logger Id 0x20 @ 0xFFFFBE032B14E8C0 Named 'SgrmEtwSession'
+    Logger Id 0x21 @ 0xFFFFBE032F03EA00 Named 'SHS-03262023-050148-7-1ff'
+
+0: kd> !wmitrace.logdump 0x02
+0: kd> !wmitrace.logdump 'Circular Kernel Context Logger'
+    
 ==== WDF debugging ====
 
 Look at all WDF100 on stacks:
