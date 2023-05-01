@@ -5121,3 +5121,8 @@ see bugs: 14013764866 and 22012486156
 
 ============= Session 25 Training END =================
 
+MSRs:
+RPL:
+IA32_X2APIC_LVT_THERMAL 833 => see RPLS MSR HAS.pdf
+
+
