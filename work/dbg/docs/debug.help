@@ -4489,6 +4489,16 @@ Done!
     this produces the same format as if writemem from the dump file were used.
 
 
+Note: the whea.crashlog file can be opened in Intel System Debugger and viewed.
+REASON: 20010H
+This header field indicates the reason for the Crash Log trigger.
+Field           Value   Symbolic Description
+CPU_REASON      2H      UMCF: An uncorrectable machine-check occurred Reason of the Crash Log trigger initiated by the CPU 
+PCH_RESET       0H      NONE Type of reset that occurred during the Crash Log trigger 
+PCODE_MCA       0H      NONE Pcode MCA error code sent by the CPU 
+TRIGGER_REASON  4H      CPU_TRIG: This Crash Log record was triggered due to an error condition on the CPU. Reason of the Crash Log trigger 
+UMCF: An uncorrectable machine-check occurred
+
 
 Source Type: 0x10 --> ntddk.h
 dt _WHEA_ERROR_SOURCE_TYPE
