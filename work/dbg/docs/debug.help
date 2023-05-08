@@ -5136,3 +5136,18 @@ RPL:
 IA32_X2APIC_LVT_THERMAL 833 => see RPLS MSR HAS.pdf
 
 
+=======================================================
+
+Capturing UEFI logs:
+We can use below commands to get UEFI logs
+1.  mountvol s: /s,
+2.  mkdir s:\UefiLogs,
+3.  reboot device,
+4.  reproduce the issue.
+5.  mountvol s: /s, share the logs in s:\UefiLogs directory
+
+=======================================================
+
+
+
+
