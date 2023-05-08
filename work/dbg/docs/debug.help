@@ -1283,25 +1283,17 @@ Registry
 !reg querykey \REGISTRY\MACHINE\SYSTEM\ControlSet001\Services
 
 4: kd> !reg querykey \REGISTRY\MACHINE\SYSTEM\ControlSet001\Services\igfxn
-
-
 Sorry <\REGISTRY\MACHINE\SYSTEM\ControlSet001\Services\igfxn> is not cached 
-
 ===========================================================================================
 Falling back to traversing the tree of nodes.
-
 Hive         ffff8c8320246000
 KeyNode      ffff8c83251e6cac
-
 [SubKeyAddr]         [SubKeyName]
 ffff8c83251e6f2c     Parameters
 ffff8c83251e7024     Video
-
 [SubKeyAddr]         [VolatileSubKeyName]
 ffff8c83209f8644     Enum
-
  Use '!reg keyinfo ffff8c8320246000 <SubKeyAddr>' to dump the subkey details
-
 [ValueType]         [ValueName]                   [ValueData]
 REG_DWORD           Type                          1
 REG_DWORD           Start                         3
