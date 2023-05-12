@@ -5167,4 +5167,30 @@ We can use below commands to get UEFI logs
 
 
 
+PNP Locks:
+3: kd> !pnplocks
+********************************************************************************
+Dumping PnP locks...
+********************************************************************************
+Resource @ nt!PiEngineLock (0xfffff8032fc5c7e0)    Available
+    Contention Count = 146
+1 total locks
+
+Resource @ nt!IopDeviceTreeLock (0xfffff8032fc5c700)    Available
+    Contention Count = 4
+1 total locks
+
+Resource @ nt!PnpRegistryDeviceResource (0xfffff8032fc5c980)    Available
+    Contention Count = 2744
+1 total locks
+
+********************************************************************************
+If one or more of above are NOT available, do !thread on the owner thread to find the thread hung in PnP
+********************************************************************************
+
+3: kd> !polist
+All entries in Power Irp Serial List
+unable to get nt!PopIrpSerialListLength
+PopIrpSerialListLength = 0
+
 
