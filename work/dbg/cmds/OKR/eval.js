@@ -519,29 +519,6 @@ function DPC_WATCHDOG_VIOLATION_133(Args){
     return true;
 }
 
-// $DumpFile = "D:\Intel_Dev\Dumps\BC_101\MEMORY_ZAC214703EV1_2022-01-31_12-33-21\MEMORY_ZAC214703EV1_2022-01-31_12-33-21.DMP"
-// PROCESS_NAME:  SgrmBroker.exe
-// System Guard Runtime Monitor Broker (SgrmBroker) is a Windows Service running and part of the Windows Defender System Guard.
-// FAULTING_THREAD:  ffffd086d97f3080
-// 
-// STACK_TEXT:  
-// ffff8089`7e36f598 fffff803`3a0207db     : ffffd086`c6d83000 ffff8089`7e36f830 00000000`00000000 fffff803`3a868b40 : 0xfffff803`357b001c
-// ffff8089`7e36f5a0 fffff803`39f3734c     : 00000000`00000001 ffff8089`7e36f830 ffffd086`d97f3080 ffffd086`d97f4080 : nt!HvlSwitchToVsmVtl1+0xab
-// ffff8089`7e36f6e0 fffff803`3a487472     : ffff8089`7e36f970 ffffd086`d97f3080 ffff8089`7e36f940 00000000`00000000 : nt!VslpEnterIumSecureMode+0x168
-// ffff8089`7e36f7b0 fffff803`3a5d1f8a     : ffffffff`ffffffff 00000000`00000000 ffff8089`7e36faa0 ffffffff`ffffffff : nt!VslCallEnclave+0x168
-// ffff8089`7e36f8f0 fffff803`3a02dac8     : 00000000`00000000 00000000`00000001 00000000`00000000 00000094`020ff5f0 : nt!PsCallEnclave+0x48a
-// ffff8089`7e36f9f0 fffff803`3a036e65     : 0000022c`083536c0 ffffd086`c6d25400 0000022c`0835b110 ffffd086`00000000 : nt!NtCallEnclave+0x38
-// ffff8089`7e36fa20 00007ffd`96266a91     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KiSystemServiceCopyEnd+0x25
-// 00000094`020ff5c0 00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : 0x00007ffd`96266a91
-// 
-// STACK_COMMAND:  .thread 0xffffd086d97f3080 ; kb
-// SYMBOL_NAME:  nt!HvlSwitchToVsmVtl1+ab
-//
-// Check out: vsm_communication_signed.pdf
-// MSR?? = KiSystemCall64
-// Dump MSRS? -> rMFF dumps all registers
-//
-
 function CLOCK_WATCHDOG_TIMEOUT_101(Args) {
     logln(this.signature + " ***> CLOCK_WATCHDOG_TIMEOUT <***");
     logln("bucket: " + this.bucket);
