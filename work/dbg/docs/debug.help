@@ -1,6 +1,12 @@
 11/4/2020 9:08:24 AM     C:\sandbox\code\work\dbg\docs\debug.help
 
 https://github.com/walnut314/code/blob/master/work/dbg/docs/debug.help
+\\wosext2\training\Nonsla\WD
+
+note: windbg can be used to open drivers to compare versions for fix
+> uf driver!function
+
+kPnL
 
 start:
 .lines
@@ -64,7 +70,7 @@ OneNote WinDbg: search PLE-SW-DEV for:
 .reload /u igdkmdn64.sys
 
 .cxr <addr>; kv
-
+> kPnL
 
 >>>>
 Here's a command to look up symbols saved to \\desmo\release\symbols:
@@ -90,6 +96,46 @@ First get the WDF memory buffer:
 4: kd> !wdfmemory 0x00001efa6c939448
 Treating handle as a KMDF handle!
 WDFMEMORY 0x00001efa6c939448:  Buffer 0xffffe105936c6c30, Length 0x3a0 (928) bytes
+
+> !ppmstate -- PPM
+> !ppm
+> !popolicy
+2: kd> !popolicy
+SYSTEM_POWER_POLICY (R.1) @ 0xfffff8066c23d3c4
+  PowerButton:     Hibernate  Flags: 00000000   Event: 00000000  
+  SleepButton:     Hibernate  Flags: 00000000   Event: 00000000  
+  LidClose:        Hibernate  Flags: 00000000   Event: 00000000  
+  Idle:            Hibernate  Flags: 00000000   Event: 00000000  
+  OverThrottled:        None  Flags: 00000000   Event: 00000000  
+  IdleTimeout:             0  IdleSensitivity:        90%
+  MinSleep:               S0  MaxSleep:               S0
+  LidOpenWake:            S0  FastSleep:              S0
+  WinLogonFlags:           1  S4Timeout:            e100
+  VideoTimeout:            0  VideoDim:                0
+  SpinTimeout:            1e  OptForPower:             0
+  FanTolerance:            0% ForcedThrottle:          0%
+  MinThrottle:             0% DyanmicThrottle:      None (0)
+2: kd> !ppmperfpolicy
+Not suported. Use !ppmsettings instead.
+2: kd> !ppmsettings
+Error retrieving size of nt!PpmPolicyConfigTable
+2: kd> !ppmcheck
+
+  PpmCheckArmed:             TRUE
+  PpmCheckStartDpc:          0xfffff8066c23bc80
+  PpmCheckDpc:               0xfffff8066c23bcc0
+  PpmCheckTimer:             -
+  PpmCheckMakeupCount:       0
+  PpmCheckLastExecutionTime: -
+  PpmCheckTime:              08:25:32.391.610us (0x469f83a744)
+  PpmCheckPhase:             0
+  PpmCheckRegistered:        0xfffff8066c20bca0
+Affinity Conversion Failed
+  PpmPerfStatesRegistered:   0xfffff8066c20bf20
+Affinity Conversion Failed
+  CoreParkingEnabled:        FALSE
+  CoreParkingMask:           0xfffff8066c20bdb0
+Affinity Conversion Failed
 
 
 
@@ -219,6 +265,42 @@ Register based stack dump:
 0: kd> !wmitrace.logger 0x02 <-- Circular Kernel Context Logger
 0: kd> !wmitrace.logdump *   <-- dump all logs
 
+4: kd> !wmitrace.strdump
+(WmiTrace) StrDump Generic
+  LoggerContext Array @ 0xFFFFBE031ED71CC0 [80 Elements]
+    Logger Id 0x02 @ 0xFFFFBE03201E3600 Named 'Circular Kernel Context Logger'
+    Logger Id 0x03 @ 0xFFFFBE03202F0040 Named 'Eventlog-Security'
+    Logger Id 0x04 @ 0xFFFFBE03201E4040 Named 'DefenderApiLogger'
+    Logger Id 0x05 @ 0xFFFFBE03202EA380 Named 'DefenderAuditLogger'
+    Logger Id 0x06 @ 0xFFFFBE03202EA940 Named 'DiagLog'
+    Logger Id 0x07 @ 0xFFFFBE03202ED040 Named 'Diagtrack-Listener'
+    Logger Id 0x08 @ 0xFFFFBE03202ED600 Named 'EventLog-Application'
+    Logger Id 0x09 @ 0xFFFFBE03202F0600 Named 'EventLog-System'
+    Logger Id 0x0a @ 0xFFFFBE03202F3040 Named 'FaceTel'
+    Logger Id 0x0b @ 0xFFFFBE03202F3600 Named 'LwtNetLog'
+    Logger Id 0x0c @ 0xFFFFBE03202F6040 Named 'Microsoft-Windows-Rdp-Graphics-RdpIdd-Trace'
+    Logger Id 0x0d @ 0xFFFFBE03202F6640 Named 'NetCore'
+    Logger Id 0x0e @ 0xFFFFBE03210E2080 Named 'NtfsLog'
+    Logger Id 0x0f @ 0xFFFFBE03210E2640 Named 'RadioMgr'
+    Logger Id 0x10 @ 0xFFFFBE032F0319C0 Named 'ScreenOnPowerStudyTraceSession'
+    Logger Id 0x11 @ 0xFFFFBE03210E5600 Named 'ReFSLog'
+    Logger Id 0x12 @ 0xFFFFBE03210E8040 Named 'UBPM'
+    Logger Id 0x13 @ 0xFFFFBE03210E98C0 Named 'WdiContextLog'
+    Logger Id 0x14 @ 0xFFFFBE03210EC040 Named 'WiFiDriverIHVSession'
+    Logger Id 0x15 @ 0xFFFFBE03210EC600 Named 'WiFiSession'
+    Logger Id 0x16 @ 0xFFFFBE0327797400 Named 'NetCfgTrace'
+    Logger Id 0x18 @ 0xFFFFBE032EF3A9C0 Named 'SleepStudyTraceSession'
+    Logger Id 0x19 @ 0xFFFFBE0330FA2040 Named 'F589D420-8B9A-40A2-95A8-DBB27ED17997'
+    Logger Id 0x1a @ 0xFFFFBE0330FC2700 Named 'BE235AAC-AC9D-4DDC-9FA6-D4C37AF837B7'
+    Logger Id 0x1b @ 0xFFFFBE0330F60040 Named 'D425B399-4B71-4151-8DAF-413F92A75EC3'
+    Logger Id 0x1d @ 0xFFFFBE0329A0F600 Named 'WFP-IPsec Diagnostics'
+    Logger Id 0x1e @ 0xFFFFBE032D8C9700 Named 'MpWppTracing-20230326-050133-00000003-ffffffff'
+    Logger Id 0x20 @ 0xFFFFBE032B14E8C0 Named 'SgrmEtwSession'
+    Logger Id 0x21 @ 0xFFFFBE032F03EA00 Named 'SHS-03262023-050148-7-1ff'
+
+0: kd> !wmitrace.logdump 0x02
+0: kd> !wmitrace.logdump 'Circular Kernel Context Logger'
+    
 ==== WDF debugging ====
 
 Look at all WDF100 on stacks:
@@ -235,6 +317,7 @@ Look at all WDF100 on stacks:
 4: kd> !wdfiotarget 0xfffffe08d5bdb278
 4: kd> !wdfkd.wdflogdump WudfRd -d
 4: kd> !wdfldr WudfRd !! verify driver was successfully loaded
+4: kd> !wdfldr (no arg) shows all devices
 4: kd> !mex.us -a surfaceoempanel
 
 1: kd> dt FXDEVICE 0x216bc135b40
@@ -615,6 +698,11 @@ for x64 dumps but the output will be the same.
 Dump driver symbols:
 1: kd> x dxgkrnl!*
     and WHAMMO !!!!!
+
+Upload graphics dumps to:
+https://gdhm.intel.com/Upload/Upload
+
+1: kd> !dxglog
 
 1: kd> kL
 Child-SP          RetAddr           Call Site
@@ -1195,25 +1283,17 @@ Registry
 !reg querykey \REGISTRY\MACHINE\SYSTEM\ControlSet001\Services
 
 4: kd> !reg querykey \REGISTRY\MACHINE\SYSTEM\ControlSet001\Services\igfxn
-
-
 Sorry <\REGISTRY\MACHINE\SYSTEM\ControlSet001\Services\igfxn> is not cached 
-
 ===========================================================================================
 Falling back to traversing the tree of nodes.
-
 Hive         ffff8c8320246000
 KeyNode      ffff8c83251e6cac
-
 [SubKeyAddr]         [SubKeyName]
 ffff8c83251e6f2c     Parameters
 ffff8c83251e7024     Video
-
 [SubKeyAddr]         [VolatileSubKeyName]
 ffff8c83209f8644     Enum
-
  Use '!reg keyinfo ffff8c8320246000 <SubKeyAddr>' to dump the subkey details
-
 [ValueType]         [ValueName]                   [ValueData]
 REG_DWORD           Type                          1
 REG_DWORD           Start                         3
@@ -1458,6 +1538,27 @@ ffff880593f36521 : Else
 ffff880593f36523 : {
 ffff880593f36523 : | Return(Zero)
 ffff880593f36525 : }
+
+ACPI live spew:
+To set ACPI logging on from Windbg:
+4: kd> !amli set spewon
+kd> !amli set spewon traceon verboseon
+kd> !amli set spewoff traceoff verboseoff
+
+Check settings:
+4: kd> !amli set
+AMLTrace        =off
+AMLDebugSpew    =on
+DebuggerBreak   =off
+LoadDDBBreak    =off
+ErrorBreak      =off
+VerboseMode     =off
+LogEvent        =on
+LogSize         =204
+
+More info on this is at:
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/-amli-set
+
 
 SSH:
 #define SSH_PORT "\\_SB.PCI0.UA00" // SurfaceSerialHub.asl
@@ -1846,6 +1947,22 @@ DPCs:
 6: kd> !dpcs 4
 CPU Type      KDPC       Function
 dpcs: no pending DPCs found
+
+6: kd> !logdump 0x2 -- Circular Kernel Context Logger history
+6: kd> !intstats /d -- DPC and ISR stats (total since boot)
+6: kd> !intstats /w -- DPC and ISR stats (during DPC watchdog period)
+2: kd> !dpcwatchdog -- very cool summary per CPU
+2: kd> !watchdoganalyze -v 0n0
+[Stack 38] Elapsed time since previous stack: 515 mSec; since reference stack: 593 mSec
+   Exiting function: fffff806766415da  nt!MiDemoteSlabEntriesDpc+0x20A 
+ # RetAddr           Call Site
+06 fffff806766415e3  nt!KeYieldProcessorEx+0x20 
+07 fffff806762be11a  nt!MiDemoteSlabEntriesDpc+0x213 
+
+.load wmitrace.dll;!wmitrace.logdump 0x2
+Found Buffers: 8 Messages: 626, sorting entries
+[2]FFFFFFFF.FFFFFFFF::03/05/2023-23:35:29.593 [PerfInfoEvent]DPC      Initial Time=7182779735385. Routine=0xFFFFF8047A2EE240 Routine Name: storport!RaidpAdapterDpcRoutine
+[2]FFFFFFFF.FFFFFFFF::03/05/2023-23:35:29.593 [PerfInfoEvent]DPC      Initial Time=7182779829781. Routine=0xFFFFF8047A2EE240 Routine Name: storport!RaidpAdapterDpcRoutine
 
 
 List processes:
@@ -3038,6 +3155,8 @@ Processor 2 is the one that hit the page fault, and you'll have to do
 That shows a partial stack up to the first trap. From there, look at the trap frame and 
 dump k = rsp rip 40 to walk past the trap frame.
 
+2: kd> !hvexts.help
+Commands for W:\Tools\mexdbg\hvexts.dll:
 
 
 ======================================================================
@@ -3235,8 +3354,14 @@ Memory Triage:
 4: kd> !pte ffffcbbf421b6050
 4: kd> !pplookaside 
 4: kd> !poolval ffffcbbf421b6050 3
-4: kd> !poolused Gla1
 4: kd> !poolused 7 -- dumps pool by all tags
+4: kd> !poolfind Gla1
+4: kd> !sysptes
+
+NO_PAGES_AVAILABLE (4d)
+No free pages available to continue operations.
+If kernel debugger available "!vm 3".
+4: kd> !vm 3
 
 PTE of virtual address:
 0: kd> !pte fffff80433039a80
@@ -3634,17 +3759,33 @@ Dumping cached ACPI tables...
 !ioreslist - from devnode 
 !cmreslist
 
+BIOS Version:
+1: kd> !gbl
+Good Bios List Entry --- Machine BIOS Date 
+[OEMELOEMEL]
+AcpiOemId="FACP","OEMEL "
+AcpiOemTableId="FACP","OEMEL   "
+AcpiOemRevision=">=","FACP",0
+AcpiRevision=">=","FACP",6
+AcpiCreatorRevision=">=","FACP",20191121
+
 Common BugChecks:
-101     stops processing WD irqs, disable C-states
-124     whea !errrec
-9F      deadlock/timeout
-50      s/w bug, use verifier
-7A/77   !storagekd.storclass [2] in page error
-EF      crit proc except - can be storage paging errors see (7A/77)
-116     TDR 2ms Gfx T/O - chk evt logs for correctable machine chks
-133     DPC wdog
+101         stops processing WD irqs, disable C-states
+124         whea !errrec
+9F          power irp deadlock/timeout (pnp overlap)
+0A, D1, 50  memory corruption, s/w bug, use verifier
+7A/77       !storagekd.storclass [2] in page error
+EF          crit proc except - can be storage paging errors see (7A/77)
+116         TDR 2ms Gfx T/O - chk evt logs for correctable machine chks
+133, 102    DPC wdog
+1E, 1E, 7F  execution of garbage code
+
+documentation:
+kd> !analyze -show <BC num> --- will display format 
 
 Training Tips - BEGIN:
+\\wosext2.amr.corp.intel.com\training\Nonsla
+
 .frame /r 3 --> frame specific registers
 gu - go up to caller
 pct - runs to next call or return
@@ -3709,6 +3850,31 @@ PM1 and PM2 Control Blocks have values stored from
 !amli dns /v \_S3
 these values get stored in the PMx control blocks during sleep state
 
+The event log chronicles the most recent 150 events that occurred in the interpreter.
+Here is an example of the log display:
+kd> !amli dl
+RUN!: [c15a6618]QTh=00000000,QCt=00000000,QFg=00000000: Ctx=c18b4000,rc=0
+KICK: [c15a6618]QTh=00000000,QCt=00000000,QFg=00000000: rc=0
+SYNC: [c15a6618]QTh=00000000,QCt=00000000,QFg=00000002,LockPhase=0,Locked=0,IRQL=00: Obj=\_WAK
+ASYN: [c15a6618]QTh=00000000,QCt=00000000,QFg=00000002,LockPhase=0,Locked=0,IRQL=00: Obj=\_WAK
+REST: [c15a6618]QTh=00000000,QCt=00000000,QFg=00000002: Ctx=c18b4000,Obj=\_WAK
+INSQ: [c15a6618]QTh=00000000,QCt=00000000,QFg=00000002: Ctx=c18b4000,Obj=\_WAK
+EVAL: [c15a6618]QTh=00000000,QCt=00000000,QFg=00000002: Ctx=c18b4000,Obj=\_WAK
+RUNC: [c15a6618]QTh=c15a6618,QCt=c18b4000,QFg=00000002: Ctx=c18b4000,Obj=\_WAK
+
+!amli display string buffer
+| | TZ03 (ffffa0828ec1ed10) - Device ffffa0828bbdf010
+| | | _STR (ffffa0828ec1ee40) - Buffer - 8ec1ee20 L=000a
+
+2: kd> !amli dns ffffa0828ec1ee40
+ACPI Name Space: \_SB.TZ03._STR (ffffa0828ec1ee40)
+Buffer(_STR:Ptr=ffffa0828ec1ee20,Len=10){
+    0x52,0x00,0x54,0x00,0x53,0x00,0x33,0x00,0x00,0x00}
+
+2: kd> dc ffffa0828ec1ee20
+ffffa082`8ec1ee20  00540052 00330053 00000000 00000000  R.T.S.3.........
+
+
 tool: procmon - enable boot monitoring
 reboot - open procmon - smss.exe
 process tree
@@ -3742,6 +3908,7 @@ x iacamera64!free_mem_list = struct _LIST_ENTRY [ 0xffff9706`148ebe50 - 0xffff97
 Bugchecks:
 
 KMODE_EXCEPTION_NOT_HANDLED (1e)
+================================
 This is a very common bugcheck.  Usually the exception address pinpoints
 the driver/function that caused the problem.  Always note this address
 as well as the link date of the driver/image that contains this address.
@@ -3786,4 +3953,1244 @@ iopl=0         nv up ei ng nz na po nc
 cs=0010  ss=0018  ds=002b  es=002b  fs=0053  gs=002b             efl=00000286
 nt!RtlRaiseStatus+0x4f:
 fffff803`6072ebdf 80c3ff          add     bl,0FFh
+
+VPU Debug:
+=========
+use vpu kd: vpudriver-29.0.10.395-RelWithDebInfo\RelWithDebInfo\tools\x64\ivdkmdbgextn\ivdkmdbgextn.dll
+!commands
+!bufdbgshowmsgs
+!vpubugchecksummary
+force dump on TDR:
+reg add "HKLM\System\CurrentControlSet\Control\GraphicsDrivers" /v "TdrLevel" /t REG_DWORD /d 1 /f
+
+============= Session 10 Training BEGIN =================
+DPC_WATCHDOG_VIOLATION (133)
+The DPC watchdog detected a prolonged run time at an IRQL of DISPATCH_LEVEL or above.
+Arguments:
+Arg1: 0000000000000000, A single DPC or ISR exceeded its time allotment. The offending
+    component can usually be identified with a stack trace.
+Arg2: 0000000000000501, The DPC time count (in ticks).
+Arg3: 0000000000000500, The DPC time allotment (in ticks).
+Arg4: fffff8035351c340, cast to nt!DPC_WATCHDOG_GLOBAL_TRIAGE_BLOCK, which contains
+
+Timers: !time -- current time
+default timeouts
+DPC = 20 sec
+IRQ = 2 min
+repro faster by shortening these timeouts
+the times in the bugcheck are cumulative
+!swd --> DCP Count = 0 !! this is the culprit
+kv
+kPnL
+!idt -a // shows all IDTs
+dt nt!_KINTERRUPT <addr>
+!irql -- shows save IRQL
+kv -> find trap frame back in time leading up to the timer timeout
+what happened @timer irq
+!thread -- how long was thread running
+
+TLBs flushes all CPUs via IPI (and waits for resp)
+  finding outstanding IPIs?
+> !ipi -- very cool!!
+> !ipi -v -- verbose
+IPI State for Processor 0
+    TargetCount          0  PacketBarrier        0  IpiFrozen     2 [Frozen]
+...
+IPI State for Processor 11
+    TargetCount          0  PacketBarrier        0  IpiFrozen     0 [Running]
+
+Ipi Cmd:
+11: kd> !apic
+Apic (x2Apic mode)  ID:67624d30 (67624d30)  LogDesc:67624d30  TPR 67624D30
+TimeCnt: 67624d30clk  SpurVec:30  FaultVec:67624d30  error:67624d30
+Ipi Cmd: 00007ffd`f0c297a5  Vec:A5  ExtINTA   Ph:00007FFD-Pend lvl high       
+Timer..: 00000000`67624d30  Vec:30  RESET       Dest=Self      edg high rirr  
+Linti0.: 00000000`67624d30  Vec:30  RESET       Dest=Self      edg high rirr  
+Linti1.: 00000000`67624d30  Vec:30  RESET       Dest=Self      edg high rirr  
+TMR: 03, 05, 0E, 11, 13-14, 17, 1C-1f, 23, 25, 2E, 31, 33-34, 37, 3C-3f, 43, 45, 4E, 51, 53-54, 57, 5C-5f, 63, 65, 6E, 71, 73-74, 77, 7C-7f, 83, 85, 8E, 91, 93-94, 97, 9C-9f, A3, A5, AE, B1, B3-b4, B7, BC-bf, C3, C5, CE, D1, D3-d4, D7, DC-df, E3, E5, EE, F1, F3-f4, F7, FC-ff
+IRR: 03, 05, 0E, 11, 13-14, 17, 1C-1f, 23, 25, 2E, 31, 33-34, 37, 3C-3f, 43, 45, 4E, 51, 53-54, 57, 5C-5f, 63, 65, 6E, 71, 73-74, 77, 7C-7f, 83, 85, 8E, 91, 93-94, 97, 9C-9f, A3, A5, AE, B1, B3-b4, B7, BC-bf, C3, C5, CE, D1, D3-d4, D7, DC-df, E3, E5, EE, F1, F3-f4, F7, FC-ff
+ISR: 03, 05, 0E, 11, 13-14, 17, 1C-1f, 23, 25, 2E, 31, 33-34, 37, 3C-3f, 43, 45, 4E, 51, 53-54, 57, 5C-5f, 63, 65, 6E, 71, 73-74, 77, 7C-7f, 83, 85, 8E, 91, 93-94, 97, 9C-9f, A3, A5, AE, B1, B3-b4, B7, BC-bf, C3, C5, CE, D1, D3-d4, D7, DC-df, E3, E5, EE, F1, F3-f4, F7, FC-ff
+    
+
+> ~2; r; k
+!pcr -> if curr == idle thread then non-responsive
+!smt -- shows virtual / physical CPUs
+
+-----------
+find who is trying to acquire spinlock?
+.cxr
+!running -it -- owner of spinlock should be running
+!cpuinfo -- shows how many CPUs
+1: kd> !cpuinfo
+CP  F/M/S Manufacturer  MHz PRCB Signature    MSR 8B Signature Features
+ 0  6,190,0 GenuineIntel  998 0000000f00000000                   311b3fff
+ 1  6,190,0 GenuineIntel  998 0000000f00000000                   311b3fff
+ 2  6,190,0 GenuineIntel  998 0000000f00000000                   311b3fff
+ 3  6,190,0 GenuineIntel  998 0000000f00000000                   311b3fff
+                      Cached Update Signature 0000000f00000000
+                     Initial Update Signature 0000000f00000000
+!pcr N (if curr == idle thread) then idle
+.ignore_missing_pages 1
+.cxr
+maybe sharing w/DPC
+which ISR? uf KiCallIsr find calls to [? edi + X]
+.frame /r N
+u poi(addr of ISR) L1
+maybe [edi] is a _KINTERRUPT? 
+dt nt!_KINTERRUPT <addr in edi>
+    see vector and look at !idt -a output
+!idt <vector> shows driver
+or ServiceContext addr in _KINTERRUPT
+!wdfkd.wdfobject <ServiceContext addr> --> shows device
+!devstack <device>
+
+============= Session 10 Training END =================
+
+============= Session 11 Training BEGIN =================
+
+Bug check 0xA: IRQL_NOT_LESS_OR_EQUAL
+valid = 0 or invalid address
+!irql
+!pte <addr> -- valid?
+u <addr>
+pageable code?
+!dh <addr of executable> e.g. !dh nt
+    find offset from nt and find section virtual address of !dh
+
+----------------
+Bug check 0xA: IRQL_NOT_LESS_OR_EQUAL
+!pte <mem ref'd>
+r cr2
+dt nt!_KDPC <addr in register?>
+.frame /r N
+try .formats <N>
+timers?
+!timer -- check list of timers for time addr (maybe paged out)
+!verifier -?
+!verifier 80 <timer addr> -- who freed it? --> gives the thread
+
+-----------------
+object manager
+!object X
+dt nt!_KMUTANT
+r rip=N
+
+============= Session 11 Training END =================
+
+============= Session 12 Training BEGIN =================
+objects -> ref counted -> view in process explorer and winobj
+!peb -- shows DLLs loaded in process
+.process /r /p <proc addr>
+!peb (no args after .process)
+
+Critical Processes:
+dt nt!_EPROCESS Flags => BreakOnTermination = 1
+
+bit diff: XOR ^
+trustlets = secure process VTL1
+VTL0 normal kernel
+
+----------------
+Bug check 0xEF: CRITICAL_PROCESS_DIED
+get proc addr
+dt nt!_EPROCESS <proc addr> => Flags.BreakOnTermination = 0y1
+> kn --> show lots of frames
+!pte
+!teb -- stack base limit overflow?
+
+paging failures - see storagekd.help -> storclass 2
+see failed scsi requests and packets w/dual IRPs
+
+============= Session 12 Training END =================
+
+============= Session 13 Training BEGIN =================
+Call conventions:
+32-bit:
+    push ebp -- return address
+    mov ebp,esp -- then stores current SP into BP
+    ebp is like a linked list, pointing to prev ebp & value after is return addr
+    dps @ebp L2
+    debuggers can walk the ebp chain
+    +offsets == point to passed in parms
+    -offsets == point to local vars
+
+64-bit:
+    eip is used to determine the function (needs symbols)
+    sub rsp,70h (e.g.) determine stack frame alloc from symbols
+    adds to rsp for return address
+    repeat
+
+!teb --> stack stuff (for overruns)
+
+Idle CPUs:
+    intelppm!MWaitIdle
+        mwait rax,rcx --> puts CPU in C-state
+        
+Note: halt => C1 state
+
+Soft affinity == Ideal Processor => warm cache
+
+!process 0 0 notepad.exe
+!process 0 0 csrss.exe
+try setting BreakOnTerminate in _EPROCESS and exit notepad -- it will break into debugger
+
+ba w 8 <addr> -- break on 8-byte write access
+
+============= Session 13 Training END =================
+
+============= Session 14 Training BEGIN =================
+
+Waitable objects: _DISPATCHER_HEADER
+0: kd> dt nt!_DISPATCHER_HEADER WaitListHead
+   +0x008 WaitListHead : _LIST_ENTRY -> WAIT_BLOCK
+        links object to wait block
+
+0: kd> dt nt!_KEVENT
+   +0x000 Header           : _DISPATCHER_HEADER
+0: kd> dt nt!_KMUTANT
+   +0x000 Header           : _DISPATCHER_HEADER
+   +0x018 MutantListEntry  : _LIST_ENTRY
+   +0x028 OwnerThread      : Ptr64 _KTHREAD
+   +0x030 MutantFlags      : UChar
+   +0x030 Abandoned        : Pos 0, 1 Bit
+   +0x030 Spare1           : Pos 1, 7 Bits
+   +0x030 Abandoned2       : Pos 0, 1 Bit
+   +0x030 AbEnabled        : Pos 1, 1 Bit
+   +0x030 Spare2           : Pos 2, 6 Bits
+   +0x031 ApcDisable       : UChar
+
+_KMUTANT has ownership -> thread
+Threads/Processes wait on Termination
+Files waited on for I/O termination
+signaled state
+
+0: kd> dt nt!_KWAIT_BLOCK
+   +0x000 WaitListEntry    : _LIST_ENTRY
+   +0x010 WaitType         : UChar
+   +0x011 BlockState       : UChar
+   +0x012 WaitKey          : Uint2B
+   +0x014 SpareLong        : Int4B
+   +0x018 Thread           : Ptr64 _KTHREAD
+   +0x018 NotificationQueue : Ptr64 _KQUEUE
+   +0x018 Dpc              : Ptr64 _KDPC
+   +0x020 Object           : Ptr64 Void
+   +0x028 SparePtr         : Ptr64 Void
+
+   links WB to object
+
+KWAIT_BLOCK (WB) has a Thread and an Object
+_KTHREAD has a WaitBlockList
+0: kd> dt nt!_KTHREAD
+   +0x000 Header           : _DISPATCHER_HEADER
+   +0x140 WaitBlock        : [4] _KWAIT_BLOCK
+   +0x24b WaitBlockCount   : UChar
+   +0x0d0 WaitBlockList    : Ptr64 _KWAIT_BLOCK -> list of WAIT_BLOCKs
+
+0: kd> dx -id 0,0,ffffa80df1cff040 -r1 (*((ntkrnlmp!_KWAIT_BLOCK (*)[4])0xffffa80dfe61f180))
+(*((ntkrnlmp!_KWAIT_BLOCK (*)[4])0xffffa80dfe61f180))                 [Type: _KWAIT_BLOCK [4]]
+    [0]              [Type: _KWAIT_BLOCK]
+    [1]              [Type: _KWAIT_BLOCK]
+    [2]              [Type: _KWAIT_BLOCK]
+    [3]              [Type: _KWAIT_BLOCK]
+
+0: kd> dx -id 0,0,ffffa80df1cff040 -r1 (*((ntkrnlmp!_KWAIT_BLOCK *)0xffffa80dfe61f180))
+(*((ntkrnlmp!_KWAIT_BLOCK *)0xffffa80dfe61f180))                 [Type: _KWAIT_BLOCK]
+    [+0x000] WaitListEntry    [Type: _LIST_ENTRY]
+    [+0x010] WaitType         : 0x1 [Type: unsigned char]
+    [+0x011] BlockState       : 0x4 [Type: unsigned char]
+    [+0x012] WaitKey          : 0x0 [Type: unsigned short]
+    [+0x014] SpareLong        : 1083 [Type: long]
+    [+0x018] Thread           : 0xffffa80dfe61f040 [Type: _KTHREAD *]
+    [+0x018] NotificationQueue : 0xffffa80dfe61f040 [Type: _KQUEUE *]
+    [+0x018] Dpc              : 0xffffa80dfe61f040 [Type: _KDPC *]
+    [+0x020] Object           : 0xffffa80e00b040e0 [Type: void *]
+    [+0x028] SparePtr         : 0x0 [Type: void *]
+
+Object is what is being waited on - see if thread NotificationEvent matches
+
+Note: if 3 objects or less WAITS the in _KTHREAD
+else in WaitBlockList.
+array of 4 and 3 max objects reserves one for _KTIMER (waitable)
+
+
+Bug check 0xD1: DRIVER_IRQL_NOT_LESS_OR_EQUAL
+1 Memory referenced.
+2 IRQL at time of reference.
+3 0 - Read 1 - Write 2 - Execute 8 - Execute
+4 Address that referenced memory. Use ln (list nearest symbols) on this address to see the name of the function.
+
+if mem ref'd == addr ref'ing mem then executing paged code
+
+Page fault is saved in CR2
+r cr2 -> page fault address
+!pte 
+!pcr (if curr == idle thread) then idle
+!irql
+IRQL is saved in CR8
+r cr8 => IRQL of CPU
+intelppm!IdleExecuteTransition : mwait --> CPU to C-state
+Page faults save context -- see Software Dev Manual chap 6
+#PF 
+uf nt!KiPageFault
+    push rbp -- 
+.frame /r <add of pg fault handler>
+dps rbp -- find fault code
+dps rbp - 8 <-- pushed rbp in KiPageFault
+
+r if --> saved interrupt flags: 0 = disabled, 1 = enabled
+!devnode 0 1 intelppm -> changes CPU C-states
+
+Is address in driver?
+lmvi m intelppm -- see start/end
+start < cr2 < end
+if upper bits are different xor or them for bit diff - maybe bit flip
+
+============= Session 14 Training END =================
+
+============= Session 15 Training BEGIN =================
+I/O Subsys
+DMA error bugcheck E6 caused by vtd iommu irq w/o verifier enabled
+    vbs - virtual base security
+rust - new language for drivers
+wdf is open source so private symbols - see channel9 MSDN going deep
+
+FDO policy owner
+SerCx: LPC (low pin count) class driver for i2c, spi, uart -- ACPI does PnP
+
+Lab: Bug Check 0x124: WHEA_UNCORRECTABLE_ERROR
+==============================================
+Arg2 = !errrec --> mwait bugchecked maybe - why???
+Arg3/4 Mci_Status
+see also event logs
+!idt -a
+--> nt!KiMcheckAbort stack = Addr
+in kv stack
+see if an IRQ handler is in the stack and ub the retaddr for instruction
+
+============= Session 15 Training END =================
+============= Session 16 Training BEGIN =================
+
+Drivers
+dps <driver object address>+0x70 (may change) -- dumps dispatch routines
+dt <driver>!_DRIVER_EXTENSION -- internals
+!error <status code> --> decodes to english
+
+_FILE_OBJECT instance of _DEVICE_OBJECT and are used for handles
+    handle to FO -> DO
+
+Lab: Bug Check 0x1E: KMODE_EXCEPTION_NOT_HANDLED
+================================================
+1   The exception code that wasn't handled. --> !error Arg1
+2   The address where the exception occurred.
+3   Exception information parameter 0 of the exception record.
+4   Exception information parameter 0 of the exception record.
+
+k stack maybe trap, e.g. nt!KiTrap06 -- illegal instruction
+    unhandled exception
+!chkimg nt or any image like pci -- may show errors - usually hardware
+u Arg2 -- exception occured at
+!pte Arg2 -- --KREV (kernel, read-only, exec, valid)
+
+============= Session 16 Training END =================
+
+============= Session 17 Training BEGIN =================
+
+devnode tree nt!_DEVICE_NODE
+DSDT (\__SB) bus
+inf file PCI\VEN_VID&DEV_DID
+VID & DID in PCI config space
+bus -> IoInvalidate -> Pnp QDR -> PDOs -> Pnp QDid
+
+!wdfldr (no arg) shows all devices
+boot loader - winload  scans registry -> ExitBootServices
+
+Phase 0 - Pnp init (IopInitializePlugPlayServices)
+    HTREE\ROOT\0 -> PnpManager - root device
+    what bus? root enumerated devs - non-Pnp
+    HKLM\SYS\CCS\Enum\Root -> ACPI_HAL -> ACPI -> DSDT Table
+
+Phase 1 - ROOT\ACPI_HAL\0000 (enums PCI) see enum reg key
+
+cmds:
+!arbiter <N>
+!pnpcompletion -- list all completed Pnp events
+!pnpevent -- list all queued Pnp events
+!pnptriage - full triage
+!lbt -- legacy bus table list
+!cmreslist <addr> -> devnode!ResourceList
+!ioreslist <addr> -> devnode!ResourceRequirements
+
+============= Session 17 Training END =================
+
+============= Session 18 Training BEGIN =================
+
+debug Pnp
+YB cases:
+0) no driver case: install it, or chk hw/ids in INF
+1) failed DriverEntry: set bu drvr!DriverEntry and debug
+2) failed AddDevice: find AddDevice address via DriverObject
+    dps <driver object address>+0x70 (may change) -- dumps dispatch routines
+    set bu drvr!AddDevice and debug
+3) Resource conflict
+4) Failed to START_DEVICE
+
+Case 1:
+!pnptriage
+CM_PROB_FAILED_DRIVER_ENTRY
+CM_PROB_FAILED_ADD
+look at !devnode(s)
+!pcitree
+
+bu drvr!DriverEntry
+bu drvr!AddDevice -> rcx = DriverObject
+
+Case 3: resource conflict
+!pcitree
+!pci 100 B D F 
+!pci 100 0 8 0 --> very cool
+see dt devnode!ResourceRequirements
+!ioreslist <res rqmts addr>
+OR
+!devnode <addr> 7
+devnode!ResourceList (RL) -> device view
+devnode!ResourceListTranslated (RLT) -> host view
+!cmreslist <RL>; !cmreslist <RLT>
+!idt <N> should match RLT value
+
+Lab YB w/Dump (e.g.)
+-------------------
+!pnptriage -> intelppm NORMAL_CONFLICT -> !code12 useless w/o privates
+dt devnode!ResourceRequirements -> !ioreslist <res rqmt addr>
+2+ devnodes w/same requirement? = conflict
+!devnode 0 1 intelppm (maybe not all conflict)
+
+Who owns the resource?
+!arbiter [Flags] -- I/O resource flag = 1
+!arbiter 1 -> C = range in conflict
+
+Where is the resource requirement coming from?
+dt denode!UniqueId ==> "\_SB.SCK0.C126" -- ACPI namespace
+!amli dns \_SB.SCK0.C126 --> Device
+!amli dns /s \_SB.SCK0.C126
+    look for _CRS -- resource requirements Buffer Ptr
+next look in DSDT tables
+!acpicache
+5: kd> !acpicache
+Dumping cached ACPI tables...
+  ...
+  DSDT @(ffff8004909c5018) Rev: 0x2 Len: 0x02ad92 TableID: ADL     
+
+5: kd> !acpicache 1 ffff8004909c5018
+Dumping cached ACPI tables...
+HEADER - ffff8004909c5018
+  Signature:               DSDT
+  Length:                  0x0002ad92
+  Revision:                0x02
+  Checksum:                0xf0
+  OEMID:                   INTEL
+  OEMTableID:              ADL     
+  OEMRevision:             0x00000000
+  CreatorID:               INTL
+  CreatorRev:              0x20200717
+
+5: kd> db ffff8004909c5018
+ffff8004`909c5018  44 53 44 54 92 ad 02 00-02 f0 49 4e 54 45 4c 00  DSDT......INTEL.
+ffff8004`909c5028  41 44 4c 20 20 20 20 20-00 00 00 00 49 4e 54 4c  ADL     ....INTL
+ffff8004`909c5038  17 07 20 20 a0 86 f8 04-00 15 5c 2f 04 5f 53 42  ..  ......\/._SB
+ffff8004`909c5048  5f 50 43 30 30 47 46 58-30 41 4c 53 49 00 00 15  _PC00GFX0ALSI...
+ffff8004`909c5058  5c 2f 04 5f 53 42 5f 50-43 30 30 47 46 58 30 43  \/._SB_PC00GFX0C
+ffff8004`909c5068  4c 49 44 00 00 15 5c 2f-04 5f 53 42 5f 50 43 30  LID...\/._SB_PC0
+ffff8004`909c5078  30 47 46 58 30 43 44 43-4b 00 00 15 5c 2f 04 5f  0GFX0CDCK...\/._
+ffff8004`909c5088  53 42 5f 50 43 30 30 47-46 58 30 43 42 4c 56 00  SB_PC00GFX0CBLV.
+
+Dump DSDT table to disk and decode:
+decoder: iasl.exe (Intel ASL comppiler)
+1. dump: .writemem d:\Intel_Dev\Bugs\Dumps\dsdt.bin ffff8004909c5018 L0x0002ad92
+2. !!dir d:\Intel_Dev\Bugs\Dumps
+03/30/2023  10:29 AM           175,506 dsdt.bin
+3. decode: d:\dev\code\work\uefi\asl\bin\iasl.exe -d dsdt.bin
+4. output: dsdt.dsl --> find C126 of \_SB.SCK0.C126 for resources
+    IO (Decode16,
+        0x0000,             // Range Minimum
+        000,             // Range Maximum
+        1,               // Alignment
+        F,               // Length
+        0)
+
+Who owns the resource? Search dsdt.dsl file for matching IO port.
+
+Lab WHEA w/Dump (e.g.)
+---------------------
+!errrec <err rec addr>
+3: kd> !errrec ffffa805e3755020
+===============================================================================
+Common Platform Error Record @ ffffa805e3755020
+-------------------------------------------------------------------------------
+Record Id     : 01d96322e0eb16b9
+Severity      : Fatal (1)
+Length        : 27744
+Creator       : Microsoft
+Notify Type   : BOOT Error Record
+Timestamp     : 3/30/2023 16:15:45 (UTC)
+Flags         : 0x00000002 PreviousError
+
+===============================================================================
+Section 0     : Firmware Error Record Reference
+-------------------------------------------------------------------------------
+Descriptor    @ ffffa805e37550a0
+Section       @ ffffa805e37552e0
+Offset        : 704
+Length        : 2592
+Flags         : 0x00000000
+Severity      : Fatal
+
+
+===============================================================================
+Section 1     : Firmware Error Record Reference
+-------------------------------------------------------------------------------
+Descriptor    @ ffffa805e37550e8
+Section       @ ffffa805e3755d00
+Offset        : 3296
+Length        : 544
+Flags         : 0x00000000
+Severity      : Fatal
+
+kd> .writemem c:\whea.bin ffffa805e3755020 L (0n27744)
+Next: c:\Python38\Scripts\intel_crashlog.exe analyze whea.bin > whea.out
+options for intel_crashlog.exe: unpack,pack,trigger,extract,decode,hash,analyze,report,list,triage,console,diff,summary,signature,info,check
+
+In system events:
+Source column: WHEA-Logger
+Details: Event Data - RawData:
+
+!!! If raw data length is <= 256 then copy to command line and run dumprec /b
+
+w:\whea\dumprec.exe /b 435045520101FFFFFFFF0100030000000300000000010000133713011801222157227C5A5EEF034ABA49386D21A67BD9000000000000000000000000000000004ABCFE8E22529C40A59F6F06DDB7967866A4613D40AB9A40A698F362D464B38F9100000000000000020000000000000000300000000000000000000000000000C80000003800000000010000000000008B3A1885419C9C42939C5C3C087CA28000000000000000000000000000000000030000000000000000000000000000000000000000000000E10F364410C1DB408D76592836FAD332000000000000000000000000000000000000000001000AA080260001002600030000000000000000
+
+Note: dumprec can be found at (or w:\whea):
+\\cce-rpt-data\Tools\WHEA-Logger_256B_Decode
+
+============================================================
+1/24/3334 11:55:19 - Boot Error
+                     Informational (Previous Error)
+Platform ID:            {5a7c2257-ef5e-4a03-ba49-386d21a67bd9}
+------------------------------------------------------------
+  0 - MU Telemetry Section
+      Component ID:       {44360fe1-c110-40db-8d76-592836fad332}
+      Subcomponent ID:    {00000000-0000-0000-0000-000000000000}
+      Error Status Value: 0xa00a0001
+      Info 1:             0x300260001002680
+      Info 2:             0x0
+Raw Data: 56 bytes
+0000: e1 0f 36 44 10 c1 db 40 8d 76 59 28 36 fa d3 32
+0010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0020: 00 00 00 00 01 00 0a a0 80 26 00 01 00 26 00 03
+0030: 00 00 00 00 00 00 00 00
+
+if the raw data > 256, then save the XML from the details tab of the system event:
+
+1. C:\CScripts\641258_ADL_CScripts_Rev1p0\cscripts_1.0\start_adl_offline.bat
+2. >>> crashlog.whea_logger_parser(r'd:\Intel_Dev\whea_learn\whea.xml')
+
+WHEA-Logger Event Parser 0.95
+
+extract from d:\Intel_Dev\whea_learn\whea.xml, data size = 6816
+save to C:\CScripts\641258_ADL_CScripts_Rev1p0\cscripts_1.0\commlibs\crashlog\crashlogs\samples\20230406_165447_whea.crashlog
+Done!
+>>> quit()
+
+3. grab file at: C:\CScripts\641258_ADL_CScripts_Rev1p0\cscripts_1.0\commlibs\crashlog\crashlogs\samples\20230406_165447_whea.crashlog'
+    This is the bin file similar to the bin file from .writemem from crash dump.
+
+4. c:\Python38\Scripts\intel_crashlog.exe analyze d:\Intel_Dev\whea_learn\20230406_165447_whea.crashlog > d:\Intel_Dev\whea_learn\20230406_165447_whea.crashlog.out
+    this produces the same format as if writemem from the dump file were used.
+
+
+Note: the whea.crashlog file can be opened in Intel System Debugger and viewed.
+REASON: 20010H
+This header field indicates the reason for the Crash Log trigger.
+Field           Value   Symbolic Description
+CPU_REASON      2H      UMCF: An uncorrectable machine-check occurred Reason of the Crash Log trigger initiated by the CPU 
+PCH_RESET       0H      NONE Type of reset that occurred during the Crash Log trigger 
+PCODE_MCA       0H      NONE Pcode MCA error code sent by the CPU 
+TRIGGER_REASON  4H      CPU_TRIG: This Crash Log record was triggered due to an error condition on the CPU. Reason of the Crash Log trigger 
+UMCF: An uncorrectable machine-check occurred
+
+
+Source Type: 0x10 --> ntddk.h
+dt _WHEA_ERROR_SOURCE_TYPE
+?? (_WHEA_ERROR_SOURCE_TYPE) 0x10
+    -> WheaErrSrcTypeDeviceDriver
+db <err rec addr> --> CPER ....
+
+Another way to get the WHEA data:
+================================
+3: kd> !whea 
+Error Source Table @ fffff800019ca250
+13 Error Sources
+Error Source 0 @ fffffa80064132c0
+   Notify Type      : Machine Check Exception
+   Type             : 0x0 (MCE)
+   Error Count      : 8
+   Record Count     : 10
+   Record Length    : c3e
+   Error Records    : wrapper @ fffffa8007cf4000  record @ fffffa8007cf4030
+. . . . 
+
+# 3: kd> !errrec fffffa8007cf4030 
+===============================================================================
+## Common Platform Error Record @ fffffa8007cf4030
+-------------------------------------------------------------------------------
+Revision      : 2.1
+Record Id     : 01c9c7ff04e0ff7d
+Severity      : Fatal (1)
+Length        : 1730
+Creator       : Microsoft
+Notify Type   : Machine Check Exception
+Timestamp     : 4/28/2009 12:54:47
+Flags         : 0x00000000
+# 
+
+19: kd> dt -r WHEA_ERROR_RECORD fffffa8007cf4030
+Wdf01000!WHEA_ERROR_RECORD
+
+Also, check !pci ff 0x0 1 0 (ff B D F)
+19: kd> !pci ff 1 0 0
+PCI Segment 0 Bus 0
+00:0  8086:a706.00  Cmd[0006:.mb...]  Sts[2090:c....]  Intel Host Bridge  SubID:8086:7270
+      cf8:80000000  IntPin:0  IntLine:0  Rom:0  cis:0  cap:e0
+      Cap[e0] ID 09 Vendor Specific
+      00000000:  a7068086 20900006 06000000 00000000
+      00000010:  00000000 00000000 00000000 00000000
+      00000020:  00000000 00000000 00000000 72708086
+      00000030:  00000000 000000e0 00000000 00000000
+
+PCI Segment 0 Bus 0x1
+00:0  10de:28a1.a1  Cmd[0006:.mb...]  Sts[0010:c....]  Nvidia 3D Controller  SubID:1414:0082
+      cf8:80010000  IntPin:1  IntLine:0  Rom:0  cis:0  cap:60
+      MEM[0]:66000000  MPF[1]:c         MEM[2]:60        MPF[3]:c         M1M[4]:62        IO[5]:1          
+      Cap[60] ID 01 PowerManagement
+          PMC   4803 (PME from D3H0 v3)
+          PMCSR 0008 (PME_Status=0 PME_En=0 State=D0)
+      Cap[68] ID 05 MSI
+           MSI Enabled
+           MsgAddr     fee007b0
+           MsgAddrHi   0
+           MsData      0
+      Cap[78] ID 10 PCI Express
+PCI Express Capabilities @ 7a
+  Capability Version                  = 1
+  Device/Port Type                    = 0 : Endpoint
+  Slot Implemented                    = 0
+  Interrupt Message Number            = 0
+  Reserved                            = 0
+Device Capabilities @ 7c
+  Max Payload Size Supported          = 1 : 256 bytes
+  Phantom Functions Supported         = 0 : None
+  Extended Tag Supported              = 1 : 8-bit
+  L0s AcceptableLatency               = 7 : [4us, INF)
+  L1 Acceptable Latency               = 6 : [64us, INF)
+  Attention Button Present            = 0
+  Attention Indicator Present         = 0
+  Power Indicator Present             = 0
+  Reserved (1)                        = 0
+  Captured Slot Power Limit           = 4B
+  Captured Slot Power Limit Scale     = 0 : 1.0x
+  Reserved (2)                        = 0
+Device Control @ 80
+  Correctable Error Enable            = 0
+  Non-fatal Error Enable              = 0
+  Fatal Error Enable                  = 0
+  Unsupported Request Error Enable    = 0
+  Enable Relaxed Order                = 1
+  Max Payload Size                    = 1 : 256 bytes
+  Extended Tag Enable                 = 1
+  Phantom Functions Enable            = 0
+  Aux-power Enable                    = 0
+  No-snoop Enable                     = 1
+  Max Read Request Size               = 2 : 512 bytes
+  Bridge Config Retry Enable          = 0
+Device Status @ 82
+  Correctable Error Detected          = 0
+  Non-fatal Error Detected            = 0
+  Fatal Error Detected                = 0
+  Unsupported Request Detected        = 0
+  Aux Power Detected                  = 0
+  Transactions Pending                = 0
+  Reserved                            = 0
+Link Capabilities @ 84
+  Maximum Link Speed                  = 1 : 2.5 Gb/s
+  Maximum Link Width                  = 8
+  Active State PM Support             = 2 : L0s
+  L0s Exit Latency                    = 6 : [2us, 4us)
+  L1 Exit Latency                     = 2 : [2us, 4us)
+  Reserved                            = 0
+  Port Number                         = 0
+Link Control @ 88
+  Active State PM Control             = 0 : Disabled
+  Reserved (1)                        = 0
+  Read Completion Boundary            = 0 : 64 byte
+  Link Disable                        = 0
+  Retrain Link                        = 0
+  Common Clock Config                 = 1
+  Extended Synch                      = 0
+  Reserved (2)                        = 0
+Link Status @ 8a
+  Link Speed                          = 1 : 2.5 Gb/s
+  Link Width                          = x8
+  Link Training Error                 = 0
+  Link Training                       = 0
+  Slot Clock Config                   = 1
+  Reserved                            = 0
+Slot Capabilities @ 8c
+  Attention Button Present            = 0
+  Power Controller Present            = 0
+  MRL Sensor Present                  = 0
+  Attention Indicator Present         = 0
+  Power Indicator Present             = 0
+  Hot-plug Surprise                   = 0
+  Hot-plug Capable                    = 0
+  Slot Power Limit Value              = 0
+  Slot Power Limit Scale              = 0 : 1.0x
+  Electromechanical Lock Present      = 0
+  No Command Completed Support        = 0
+  Physical Slot Number                = 0
+Slot Control @ 90
+  Attention Button Enable             = 0
+  Power Fault Detected Enable         = 0
+  MRL Sensor Enable                   = 0
+  Presence Detect Enable              = 0
+  Command Completed Enable            = 0
+  Hot-plug Interrupt Enable           = 0
+  Attention Indicator Control         = 0 : Reserved
+  Power Indicator Control             = 0 : Reserved
+  Power Controller Control            = 0 : On
+  Reserved                            = 0
+Slot Status @ 92
+  Attention Button Pressed            = 0
+  Power Fault Detected                = 0
+  MRL Sensor Changed                  = 0
+  Presence Detect Changed             = 0
+  Command Completed                   = 0
+  MRL Sensor State                    = 0 : Closed
+  Presence Detect State               = 0 : Slot Empty
+  Reserved                            = 0
+Root Control @ 94
+  Correctable SERR# Enable            = 0
+  Non-fatal SERR# Enable              = 0
+  Fatal SERR# Enable                  = 0
+  PME Interrupt Enable                = 0
+Root Status @ 98
+  PME Requester ID                    = 0
+  PME Status                          = 0
+  PME Pending                         = 0
+  Reserved                            = 0
+      Cap[b4] ID 09 Vendor Specific
+      00000000:  28a110de 00100006 030200a1 00000000
+      00000010:  66000000 0000000c 00000060 0000000c
+      00000020:  00000062 00000001 00000000 00821414
+      00000030:  00000000 00000060 00000000 00000100
+
+
+                      ...storport...
+!storagekd.storclass --> scsi errors
+
+============= Session 18 Training END =================
+
+============= Session 19 Training BEGIN =================
+
+!process 0 0 csrss.exe
+.process /p /r <proc addr>
+!process <proc addr>
+dt nt!_IRP <irp addr>
+
+?? sizeof(nt!_IRP) -> 0xD0
+?? sizeof(nt!_IO_STACK_LOCATION) -> 0x48
+
+dt nt!_IO_STACK_LOCATION <irp addr> + 0xD0 + 0x48 * N, where N is the current stack location:
+_IRP.CurrentLocation = N
+busying == pending, complete, or pass down
+
+Lab !process 0 0 cmd.exe
+========================
+!process <proc addr>
+bp /p <proc addr> nt!ReadFile
+> .reload
+> k yay!!!
+> .frame /r 4 
+> !handle <rcx> -> file object == file path\name
+> ba w 8 <irp addr> + 0x30 --> _IO_STATUS 
+
+Lab Bugcheck 7F: UNEXPECTED_KERNEL_MODE_TRAP
+============================================
+Arg1: exception code
+kv -> .trap frame or .frame /r N
+k> !ipi -- dumps all IPI's on all CPUs
+TLBs = VToP cache -- TLB flush CR4
+
+Lab Bugcheck 0xCC: PAGE_FAULT_IN_FREED_SPECIAL_POOL
+===================================================
+Arg1 Memory address referenced
+Arg2 0: Read 1: Write
+Arg3 Address that referenced memory (if known)
+Arg4 Reserved
+use !verifier special pool
+!verifier 80 Arg1 -- shows driver
+
+============= Session 19 Training END =================
+
+============= Session 20 Training BEGIN =================
+
+Power management states: S, D and F
+S0: SOi3: C/S or fully on
+S3: sleep RAM on
+S4: hiber - memmaps same on resume
+S5: off or hybrid - S4 kernel, S5 user
+
+S3 and C/S are mutually exclusive on a system 
+hybrid D3 RAM and disk (S4) -> desktop only S3 -> S4 Ok
+
+Device States:
+D0 & D3 -> see driver Properties -> Power Data: S -> D mappings
+    these are unenforced, only the driver enforces
+    FDO owns power policy, or Port Driver if miniport
+
+SOC states: F-states (PEP) Active/Idle
+
+!pcitree
+!pci 100 B D F -- live only power mgmt info
+dt nt!_DEVICE_NODE addr CurrentPowerState
+1: kd> dt nt!_DEVICE_NODE ffffbe839c328b60 CurrentPowerState.DeviceState
+   +0x09c CurrentPowerState             : 
+      +0x000 DeviceState                   : 1 ( PowerDeviceD0 )
+Note: this field updates when power IRP on its way down, so maybe in transition
+
+PCI PDO:
+1: kd> dt nt!_DEVICE_OBJECT ffffbe839c29e360 DeviceObjectExtension.PowerFlags
+   +0x138 DeviceObjectExtension 
+   ...
+    [+0x010] PowerFlags       : 0x10 [Type: unsigned long]
+The power state is the upper nibble of the PowerFlags
+
+1: kd> dt _DEVICE_POWER_STATE 
+nt!_DEVICE_POWER_STATE
+   PowerDeviceUnspecified = 0n0
+   PowerDeviceD0 = 0n1 <=== device is in D0
+   PowerDeviceD1 = 0n2
+   PowerDeviceD2 = 0n3
+   PowerDeviceD3 = 0n4
+   PowerDeviceMaximum = 0n5
+1: kd> ?? (nt!_DEVICE_POWER_STATE) 1
+_DEVICE_POWER_STATE PowerDeviceD0 (0n1)
+   
+Bus Drivers are reliable for this value - 
+    only if the fxdevice does not say: IrpInUse 
+    otherwise in transition
+
+Component States:
+!fxdevice -> (power management framework PoFx)
+dt nt!PoFx* -- shows all the PoFx APIs, including RegisterDevice
+!fxdevice shows all the PEP integrated devices
+    Current: is the current power state -- from the devnode
+
+WDF Drivers:
+!wdfkd.wdfldr --> lists all WDF drivers
+!wdfdriverinfo <name> -- shows list of devices managed by driver
+!wdfdevice <addr> ff -> gives the power state
+
+!poaction --> in flight IRPs
+    PDO -> pcitree
+
+To see what power states a device supports (no way directly)
+1. look at power state history
+2. if ACPI look for PS3 method
+3. PHM tool -> ETL file
+
+============= Session 20 Training END =================
+
+============= Session 21 Training BEGIN =================
+
+PPO and PEP (component F-states) can punt to PPO
+    PPO -> WAIT_WAKE -> then QDR?
+Non-Wake power Irps sent to TOS in separate worker thread to avoid deadlock
+SET_POWER only PEND or FWD Irp within Delta T
+Delta T violation - power mgr watchdog bugchk 9F (hang)
+    Delta T = 2 min for D0, 5 min for Dx
+
+System Power state - power mgr Irp from user
+1st S - QUERY then SET (must succeed! not checked)
+PPO sends Dx Irp then completes S-Irp
+pending S-Irp holds off further S-state stacks - very order sequential (Child/Parent)
+    or PPO can complete the S-IRP immediately
+
+Connected Standby - periodic wakes w/screen off, continues to update apps
+Disconnected Standby (Modern Standby) = S0ix
+    System in S0 but apps off, devices idle, D3 idle, CPU idle C-State
+        then PUnit (microController) -> PMIC driver disconnects power
+            like S3 -- slow natural death
+Wake? Periodic timer P-Code (PUnit) APIC timer -> C0 state ~ 30 seconds - only 1 CPU (w/shortest timeout)
+
+S3 vs CS are mutually exclusive
+debug using = tells why wake:
+powercfg /sleepstudy or event logs
+
+Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+=============================================
+    PDO and Irp in Args case #3 Irp timed out
+    !poaction -- state of Power mgr -> Set/Dx
+    or dt!_PNP_IRP_DATA <addr> in !irp params
+        -> PowerStateType -> Device/System
+    if System Power State -> poaction -> Broadcast in Progress: TRUE
+    
+dt nt!_DEVICE_NODE <addr> UniqueId -> ACPI namespace
+!amli dns /s <ACPI name>._DDN (device name)
+    _PS0 _PS3 power methods
+!amli u <acpi name)._PS0
+-> mailslot signal like PUnit -> PMIC
+is it running?
+!amli lc -- list of contexts running
+!amli u <pbOp>
+!amil find RAIL
+    fields vs buffers
+Fields:
+    find threads running ACPI code:
+kd> !stacks 2 acpi!
+!thread <thr adr>
+    ACPI!InternalOpRegionHandler -> PMIC
+    WdfIoTargetSendIoctlSynchronously
+        who is PMIC talking to?
+kd> .thread /p /r <thrd addr>
+kd> ub <addr caller of WdfIoTargetSendIoctlSynchronously Retn Addr>
+!wdfkd.wdfhandle <h>
+
+Current Power State:
+kd> dt nt!_DEVICE_NODE <node adr> CurrentPowerState.DeviceState
+
+WDF queues -- if PowerOff can't process requests!!
+
+============= Session 21 Training END =================
+
+============= Session 22 Training BEGIN =================
+
+if IRQL = FF, IRQs are disabled @trap time
+cr8 = IRQL 
+
+Full dump enable:
+"wmic recoveros set DebugInfoType 1"
+
+Lab step through KeBugCheckEx
+=============================
+kd> pct -- run to next call
+if call nt!guard_dispatch_icall -> u @rax shows the call point
+kd> !dbgprint -- see buffer of DbgPrint
+
+to debug: disable VBS and secure boot
+disable hyperV (== disable VBS)
+    bcdedit /set hypervisorlaunchtype off
+
+
+============= Session 22 Training END =================
+
+============= Session 23 Training BEGIN =================
+
+Lab Bugcheck 0x133 DPC_WATCHDOG_VIOLATION
+=========================================
+> !swd
+check DPC Count = 0
+> k (note: TOS and BOS don't matter)
+!irql find what caused the timer to fire
+look at !thread for tick count
+Arg2 = watchdog period -- default DPC timeout = 2 min
+> .frame /r N
+disasm & figure it out
+
+
+Lab Bugcheck 0x50 PAGE_FAULT_IN_NONPAGED_AREA
+=============================================
+> u Arg3, r CR2 = Arg1
+> k
+> u <start of fcn> <scene of crime>
+uf caller
+!poactino -- maybe shutting down
+
+
+Lab Bugcheck 0x50 PAGE_FAULT_IN_NONPAGED_AREA
+=============================================
+Arg1 = mem accessed
+Arg3 = mem accessor
+u Arg3, r CR2 = Arg1
+!pte Arg1
+> .frame ...
+> ub
+deep dive disasm -- if private symbols:
+dv /V /i /y
+dt ...
+!wdfhandle
+!idt x
+!pool <addr>
+?? sizeof(_STRUCT)
+!stacks 2 <driver>
+maybe pnp or power stuff
+!running -it
+OR find resources that are gone
+
+============= Session 23 Training END =================
+
+============= Session 24 Training BEGIN =================
+
+Lab Bugcheck 0xD1 DRIVER_IRQL_NOT_LESS_OR_EQUAL
+===============================================
+1 Memory referenced.
+2 IRQL at time of reference.
+3 0 - Read 1 - Write 2 - Execute 8 - Execute
+4 Address that referenced memory
+
+> k; !pte Arg1
+note !pte "Contains" are the bits: KWEV etc... -- bit 0 is the V bit
+use verifier if possible, like if mem was accessed after freed
+!stacks 2 <driver> -- maybe find freeing of mem in threads
+or just look at the stack (kv) and deduce: timers? wdf?
+!wdfdriverinfo find Pnp/Power states
+!wdfdevice <dev> ff -- bottom entries are most recent
+look for pending Irps
+
+
+Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+=============================================
+Type 3: PDO, Irp
+!poaction
+look at exec resources -- they have owners
+.thread /r /p <thr>; kn
+.frame /r N
+ub
+dt nt!_ERESOURCE <addr> OwnerEntry. -- OwnerThread.
+!locks nt!PopPolicyLock  -- thread waiting timed out by owner thread -> waiting on mutant
+dt nt!_KMUTANT <adr> OwnerEntry. -- OwnerThread.
+.thread /r /p <thr>
+maybe circular dependence -- or deadlock (2 threads, 2 locks, reverse order)
+WaitForResource samples every 3 secs (like spin lock) yields
+note: not all locks have owners
+
+
+Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+=============================================
+Type 3: PDO, Irp
+!irp; !devstack
+ACPI case (GPIO)
+> !amli lc --> nothing!
+!poaction; !thread <addr>
+pg fault (2 min wait!, why?) storage?
+!storagekd.storclass -- looks OK, then why 2 min wait?
+chk power state of storage:
+!devstack -> !devnode
+dt nt!_DEVICE_NODE <adr> CurrentPowerState.DeviceState = D0 -- ok
+urr?  could be the D0 is in flight -- chk !poaction -- PDO none !!! arghhh!!!
+it's in D0 -- why IO stuck paging? now what !!!
+check child powered and not parent
+SATA controller maybe OFF but disk in D0
+chk parent devnode
+dt nt!_DEVICE_NODE <adr> CurrentPowerState.DeviceState = D0 -- ok
+chk in-flight D0 Irp in !poaction --- PDO --> yes!!!
+    see if there is no thread working on the SATA D0 Irp -- all threads busy on other power Irps
+    ie, look at all threads in !poaction --> !thread <t1>; !thread <t2>; ...
+    this is a kind of deadlock -- SATA not in D0 -- limited # of power threads
+!pte <code adr> of paging I/O waiting --> paged out!!
+driver of code addr is on paging path -- can't be paged out -- deadlock
+    chk if code addr is 0 (ZERO) offset in stack --> bang!
+    !dh <driver name>
+    > ? code addr - driver name = section header offset (Virtual Address) Flags = "Not Paged" not set? then paged section
+
+============= Session 24 Training END =================
+
+============= Session 25 Training BEGIN =================
+
+Lab Bugcheck 0x9F: DRIVER_POWER_STATE_FAILURE
+=============================================
+    Type 3 - Irp, PDO -> SET_POWER timeout
+real driver name (not service name) -> dt nt!_DEVICE_OBJECT <dev> DriverObject -> DriverName
+    real name in DriverInit function prefix
+symbol file also contains the real driver name
+C:\> sigcheck -v <driver sys file> ==> gives name and version
+
+why did power IRP timeout?
+!poaction --> no thread?
+!stacks 2 <driver name> ?
+WDF driver? -> !wdfdriverinfo <name> -- if many devs find FDO
+    look at IRP stack, TOS is FDO, BOS if PDO
+
+or !drvobj \Driver\name
+    fine FDO in list of !drvobj
+or !wdfdevice <fdo> ff -> pended power irps --> owning thread
+.thread /r /p <thr>
+!thread --> waiting 2 min timeout (D0 timeout) for FDO -> notification event?
+-> KeWait -- .frame prior to this call
+.frame /r N-1
+ub
+lookup API for KeWait param1 is event object -> rcx = [rbx+E8] (struct)
+look at caller function: u <func>  rbx is a "this" pointer if C++
+> dv /V /i /t -> @rbx = "this"
+look for offset E8 in struct (if symbols) -> KEVENT 
+drivers poll for completion of FW load then signal the KEVENT directly or in ISR/DPC
+what is the timeout?  its param4 of KeWait so sent on stack
+> dq <rsp+offset> L1 --> timeout in 100 nsec units (10^-9) (10^-7)
+    so value is in msec -- in code imul -1000 s/b idiv bug
+
+Lab Bugcheck 0x15F: CONNECTED_STANDBY_WATCHDOG_TIMEOUT_LIVEDUMP
+===============================================================
+For MSFT telemetry
+PEP veto Type 3 Arg1
+a device on PEP list needs to reach a power state --> list from BIOS
+Arg3 = veto name reason string unicode
+> du Arg3 -> "device not registered"
+> u Arg4 --> intelpep!....
+which device?
+list registered list of devs, and list that is supposed to be registered.
+1. !pnptriage -- look for CM_PROB_... of PEP devices - note: USB is not PEP
+2. !fxdevice --> lists registered devices
+3. script: !list -t nt!_POP_FX_DEVICE.Link.Flink -x "dt" -a "nt!_POP_FX_DEVICE DeviceId" poi(nt!PopFxDeviceList)
+    output -- see pep.kd file -- these are all the PEP devices, registered or not
+4. Which devices are supposed to be registered - from BIOS.
+> !amli find PEPD
+    \_SB.PEPD
+> !amli dns /s \_SB.PEPD
+    --> another list of deivces (see pep.kd file) -- diff with !list output
+5. or dump the DSDT table
+> !acpicache --> DSDT entry
+> !acpicache 1 <addr of DSDT entry>
+> .writemem <file path to dsdt.bin> <addr of DSDT> L0x<Length>
+C:\> iasl.exe -d dsdt.bin > dsdt.out --> PEPD and Package list of PEP devs (master list)
+6. Another method: use PEP structs
+> dd intelpep!PepKnownDeviceCount L1
+> x intelpep!PepKnownDeviceList <-- array
+> dps poi(intelpep!PepKnownDeviceList)
+> start du'ing pointers
+OR
+> ? addr2 - addr1 (in array) for struct length
+> dt nt!_UNICODE_STRING poi(intelpep!PepKnownDeviceList)+38*N Buffer --> N is entry in array
+7. Another method - disasm Pep function
+> uf intelpep!PepFindDeviceMatch --> find mem allocation and size
+
+filter the output files and diff to find missing device from PepKnownDeviceList
+
+excluded /v arg
+findstr /v unicode_string <file>
+note: PEG0 is internal graphics
+
+> !amli find <missing device> -- it exists, now what
+> !amli dns /s <missing dev> -- see if _STA exists
+check parent of device RP? chk _ADR
+_ADR ==> device | function --> see if in !pcitree
+if not in !pcitree - then either disabled, driver failed, no driver exists, or hidden by BIOS
+
+note: kdnet can take over device for debug
+
+Lab Bugcheck 0xE1: WORKER_THREAD_RETURNED_AT_BAD_IRQL
+=====================================================
+> !irql
+> k
+> ln Arg1
+dox API or search kernel
+> dt nt!_*WORK*ITEM* -> _IO_WORKITEM
+dt nt!_IO_WORKITEM Arg4 -- just a guess
+    -> Routine
+    -> IoObject
+    -> Context --> !wdfobject
+> !wdfobject Context
+> !wdfobject -> Work item -> cm_Callback
+find resources -> interrupt == Arg2 IRQL
+> !idt -a -- find IRQ connected to driver
+    copy table to file and make a script - list of:
+    dt nt!_KINTERRUPT <adr> Irql -- run and find IRQ with matching IRQL in Arg2
+    dt nt!_KINTERRUPT <adr> ServiceContext
+> !wdfobject ServiceContext --> find wdf device
+> dt nt!_KINTERRUPT ActualLock = 0 or 1 if spin lock is acquired, and not released
+> !wdfdevice <dev>
+    find owning thread and pending irps
+> !thread -> possible race condition
+see WdfAcquireInterruptLock rules in API dox
+
+best to troubleshoot by running verifier - will BC and the rule violation
+
+Lab Bugcheck 0x1E: KMODE_EXCEPTION_NOT_HANDLED
+==============================================
+> u Arg2
+> k --> GPF in stack?
+invalid instruction? corrupt mem?
+> !process 0 0
+> !pte Arg2 KREV -- so its OK
+> chkimg nt -> 0 errors
+
+c:\> windbg -z <exec binary>
+> .lines
+> u ntoskrnl!SwapContext -- same bad bytes
+not possible MSFT introduced bad instructions
+and GPF and BAD INSTR are mutually exclusive errors
+HRESET MSR
+> x nt!*HRESET*
+> running -it (nothing)
+see what the system is doing
+> ~0s;k
+> ~1s;k
+> ~2s;k
+> ~3s;k
+
+System Sleep?
+> lm --> unloaded modules are a clue of (hiber/resume)
+> !poaction
+    Lightest State: Hibernate
+> dd nt!PoResumeFromHibernate L1
+    0 / 1 -> resuming?
+On resume from hibernation, restoring the MSR's is a MUST
+need live repro, compare 2 systems before and after hiber to compare MSRs
+> rdmsr 17DA
+
+see bugs: 14013764866 and 22012486156
+
+============= Session 25 Training END =================
+
+MSRs:
+RPL:
+IA32_X2APIC_LVT_THERMAL 833 => see RPLS MSR HAS.pdf
+
+
+=======================================================
+
+Capturing UEFI logs:
+We can use below commands to get UEFI logs
+1.  mountvol s: /s,
+2.  mkdir s:\UefiLogs,
+3.  reboot device,
+4.  reproduce the issue.
+5.  mountvol s: /s, share the logs in s:\UefiLogs directory
+
+=======================================================
+
+
+
+PNP Locks:
+3: kd> !pnplocks
+********************************************************************************
+Dumping PnP locks...
+********************************************************************************
+Resource @ nt!PiEngineLock (0xfffff8032fc5c7e0)    Available
+    Contention Count = 146
+1 total locks
+
+Resource @ nt!IopDeviceTreeLock (0xfffff8032fc5c700)    Available
+    Contention Count = 4
+1 total locks
+
+Resource @ nt!PnpRegistryDeviceResource (0xfffff8032fc5c980)    Available
+    Contention Count = 2744
+1 total locks
+
+********************************************************************************
+If one or more of above are NOT available, do !thread on the owner thread to find the thread hung in PnP
+********************************************************************************
+
+3: kd> !polist
+All entries in Power Irp Serial List
+unable to get nt!PopIrpSerialListLength
+PopIrpSerialListLength = 0
+
 
