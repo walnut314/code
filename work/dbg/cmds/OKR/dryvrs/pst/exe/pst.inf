@@ -1,0 +1,8 @@
+[Version]
+Signature="$WINDOWS NT$"
+
+[pst.NT.Wdf]
+KmdfService = pst, pst_Service_kmdfInst
+
+[pst_Service_kmdfInst]
+KmdfLibraryVersion = 1.11

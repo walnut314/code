@@ -1,0 +1,22 @@
+TARGETNAME=cli
+TARGETTYPE=PROGRAM
+
+UMTYPE=console
+UMBASE=0x1000000
+USE_MSVCRT=1 
+
+TARGETPATH=obj
+
+INCLUDES=\
+                $(DDK_INC_PATH); \
+                $(SDK_INC_PATH); \
+                ..\inc;
+
+TARGETLIBS=$(SDK_LIB_PATH)\ole32.lib \
+           $(DDK_LIB_PATH)\ntdll.lib \
+           $(DDK_LIB_PATH)\ntoskrnl.lib 
+ 
+SOURCES= cli.c \
+         evt.c \
+         cli.rc
+
