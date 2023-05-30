@@ -15,12 +15,17 @@
 #ifdef ALLOC_PRAGMA
 #pragma alloc_text( INIT, DriverEntry )
 #pragma alloc_text( PAGE, PstDeviceAdd)
+#pragma alloc_text( PAGE, PstEvtDeviceContextCleanup)
+#pragma alloc_text( PAGE, PstControlDeviceAdd)
 #pragma alloc_text( PAGE, PstEvtRead)
 #pragma alloc_text( PAGE, PstEvtWrite)
 #pragma alloc_text( PAGE, PstEvtDeviceControl)
+#pragma alloc_text( PAGE, PstEvtDeviceD0Entry)
+#pragma alloc_text( PAGE, PstEvtDeviceD0Exit)
 #pragma alloc_text( PAGE, PstSendAndForget)
 #pragma alloc_text( PAGE, PstSendWithCallback)
 #pragma alloc_text( PAGE, PstCompletionCallback)
+#pragma alloc_text( PAGE, FileEvtIoDeviceControl)
 #endif // ALLOC_PRAGMA
 
 
@@ -30,8 +35,11 @@ DriverEntry(
     IN PUNICODE_STRING      RegistryPath
     )
 {
-    WDF_DRIVER_CONFIG config;
-    NTSTATUS          status;
+    NTSTATUS              status;
+    WDF_DRIVER_CONFIG     config;
+    WDFDRIVER             hDriver;
+    PWDFDEVICE_INIT       pInit = NULL;
+    WDF_OBJECT_ATTRIBUTES attributes;
 
 #if DBG
     DbgPrint("Pst...Compiled %s %s\n",
@@ -42,24 +50,137 @@ DriverEntry(
     WDF_DRIVER_CONFIG_INIT(&config,
                            PstDeviceAdd);
 
+    WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
     status = WdfDriverCreate(DriverObject,
                              RegistryPath,
-                             WDF_NO_OBJECT_ATTRIBUTES,
+                             &attributes,
                              &config,
-                             WDF_NO_HANDLE);
+                             &hDriver);
 
     if (!NT_SUCCESS(status)) {
-#if DBG
-        DbgPrint("WdfDriverCreate failed - 0x%x\n",
-                 status);
-#endif
+
+        KdPrint(("WdfDriverCreate failed - 0x%x\n", status));
         goto done;
     }
 
-    status = STATUS_SUCCESS;
+    //
+    //
+    // In order to create a control device, we first need to allocate a
+    // WDFDEVICE_INIT structure and set all properties.
+    //
+    pInit = WdfControlDeviceInitAllocate(
+                            hDriver,
+                            &SDDL_DEVOBJ_SYS_ALL_ADM_RWX_WORLD_RW_RES_R
+                            );
+
+    if (pInit == NULL) {
+        status = STATUS_INSUFFICIENT_RESOURCES;
+        goto done;
+    }
+    
+    status = PstControlDeviceAdd(hDriver, pInit);
 
 done:
 
+    return status;
+}
+
+NTSTATUS
+PstControlDeviceAdd(
+    IN WDFDRIVER Driver,
+    IN PWDFDEVICE_INIT DeviceInit
+    )
+{
+    NTSTATUS                  status;
+    WDF_OBJECT_ATTRIBUTES     attributes;
+    WDF_IO_QUEUE_CONFIG       ioQueueConfig;
+    WDFQUEUE                  queue;
+    WDFDEVICE                 controlDevice;
+    
+    DECLARE_CONST_UNICODE_STRING(ntDeviceName, NTDEVICE_NAME_STRING) ;
+    DECLARE_CONST_UNICODE_STRING(symbolicLinkName, SYMBOLIC_NAME_STRING) ;
+    
+    UNREFERENCED_PARAMETER(Driver);
+
+    PAGED_CODE();
+
+    WdfDeviceInitSetExclusive(DeviceInit, TRUE);
+    WdfDeviceInitSetIoType(DeviceInit, WdfDeviceIoBuffered);
+
+    status = WdfDeviceInitAssignName(DeviceInit, &ntDeviceName);
+    if (!NT_SUCCESS(status)) {
+        KdPrint(("WdfDeviceInitAssignName failed 0x%x", status));
+        goto End;
+    }
+
+    // Specify the size of device context
+    //
+    WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&attributes,
+                                    CONTROL_DEVICE_EXTENSION);
+
+    //attributes.EvtCleanupCallback = PstEvtDeviceContextCleanup;
+
+    status = WdfDeviceCreate(&DeviceInit,
+                             &attributes,
+                             &controlDevice);
+
+    if (!NT_SUCCESS(status)) {
+        KdPrint(("WdfDeviceCreate failed 0x%x", status));
+        goto End;
+    }
+
+    //
+    // Create a symbolic link for the control object so that usermode can open
+    // the device.
+    //
+    status = WdfDeviceCreateSymbolicLink(controlDevice,
+                                &symbolicLinkName);
+
+    if (!NT_SUCCESS(status)) {
+        //
+        // Control device will be deleted automatically by the framework.
+        //
+        TraceEvents(TRACE_LEVEL_ERROR, DBG_INIT, "WdfDeviceCreateSymbolicLink failed %!STATUS!", status);
+        goto End;
+    }
+
+    //
+    // Configure a default queue so that requests that are not
+    // configure-fowarded using WdfDeviceConfigureRequestDispatching to goto
+    // other queues get dispatched here.
+    //
+    WDF_IO_QUEUE_CONFIG_INIT_DEFAULT_QUEUE(&ioQueueConfig,
+                                    WdfIoQueueDispatchSequential);
+
+    ioQueueConfig.EvtIoDeviceControl = FileEvtIoDeviceControl;
+
+    WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
+    __analysis_assume(ioQueueConfig.EvtIoStop != 0);
+    status = WdfIoQueueCreate(controlDevice,
+                              &ioQueueConfig,
+                              &attributes,
+                              &queue // pointer to default queue
+                              );
+    __analysis_assume(ioQueueConfig.EvtIoStop == 0);
+    if (!NT_SUCCESS(status)) {
+        KdPrint(("WdfIoQueueCreate failed 0x%x", status));
+        goto End;
+    }
+    
+    // Control devices must notify WDF when they are done initializing.   I/O is
+    // rejected until this call is made.
+    //
+    WdfControlFinishInitializing(controlDevice);
+
+End:    
+    //
+    // If the device is created successfully, framework would clear the
+    // DeviceInit value. Otherwise device create must have failed so we
+    // should free the memory ourself.
+    //
+    if (DeviceInit != NULL) {
+        WdfDeviceInitFree(DeviceInit);
+    }
     return status;
 }
 
@@ -69,19 +190,32 @@ PstDeviceAdd(
     IN PWDFDEVICE_INIT DeviceInit
     )
 {
-    NTSTATUS                  status;
-    WDF_OBJECT_ATTRIBUTES     wdfObjectAttr;
-    WDFDEVICE                 wdfDevice;
-    PPST_DEVICE_CONTEXT       devContext;
-    WDF_IO_QUEUE_CONFIG       ioQueueConfig;
+    NTSTATUS                        status;
+    WDF_OBJECT_ATTRIBUTES           attributes;
+    WDF_PNPPOWER_EVENT_CALLBACKS    pnpPowerCallbacks;
+    WDFDEVICE                       wdfDevice;
+    PPST_DEVICE_CONTEXT             devContext;
+    WDF_IO_QUEUE_CONFIG             ioQueueConfig;
 
-#if DBG
-    DbgPrint("PstEvtDeviceAdd: Adding device...\n");
-#endif
+    KdPrint(("PstEvtDeviceAdd: Adding device...\n"));
 
     PAGED_CODE();
 
     UNREFERENCED_PARAMETER(Driver);
+
+#if 1
+    //
+    // Configure Pnp/power callbacks
+    //
+    WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);
+    pnpPowerCallbacks.EvtDeviceD0Entry = PstEvtDeviceD0Entry;
+    pnpPowerCallbacks.EvtDeviceD0Exit  = PstEvtDeviceD0Exit;
+
+    WdfDeviceInitSetPnpPowerEventCallbacks(
+       DeviceInit,
+       &pnpPowerCallbacks
+       );
+#endif
 
     // Indicate that we're creating a FILTER Device, as opposed to a FUNCTION Device.
     //
@@ -94,23 +228,26 @@ PstDeviceAdd(
 
     // Setup our device attributes specifying our per-Device context
     //
-    WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&wdfObjectAttr,
+    WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&attributes,
                                             PST_DEVICE_CONTEXT);
 
+
+    attributes.EvtCleanupCallback = PstEvtDeviceContextCleanup;
+
+
     status = WdfDeviceCreate(&DeviceInit,
-                             &wdfObjectAttr,
+                             &attributes,
                              &wdfDevice);
 
     if (!NT_SUCCESS(status)) {
         TraceEvents(TRACE_LEVEL_ERROR, DBG_INIT, "WdfDeviceCreate failed %!STATUS!", status);
-        goto done;
+        goto Cleanup;
     }
 
     // Save our WDFDEVICE handle in the Device context for convenience
     //
     devContext = PstGetDeviceContext(wdfDevice);
     devContext->WdfDevice = wdfDevice;
-
     //
     // Create our default Queue -- This is how we receive Requests.
     //
@@ -141,14 +278,115 @@ PstDeviceAdd(
 
     if (!NT_SUCCESS(status)) {
         TraceEvents(TRACE_LEVEL_ERROR, DBG_INIT, "WdfIoQueueCreate failed %!STATUS!", status);
-        goto done;
+        goto Cleanup;
     }
 
     status = STATUS_SUCCESS;
 
-done:
+Cleanup:
+
+    if (!NT_SUCCESS(status)) {
+        
+        if (DeviceInit != NULL) {
+            WdfDeviceInitFree(DeviceInit);
+        }
+
+        if (wdfDevice) {
+            WdfObjectDelete(wdfDevice);
+        }
+    }
 
     return status;
+}
+
+VOID PstEvtDeviceContextCleanup(
+    IN WDFOBJECT Device
+)
+{
+    PPST_DEVICE_CONTEXT     devContext;
+
+    PAGED_CODE();
+    devContext = PstGetDeviceContext(Device);
+
+}
+
+NTSTATUS PstEvtDeviceD0Entry(
+    IN WDFDEVICE                Device,
+    IN WDF_POWER_DEVICE_STATE   PreviousState
+)
+{
+    NTSTATUS                status;
+    PPST_DEVICE_CONTEXT     devContext;
+
+    UNREFERENCED_PARAMETER(Device);
+    UNREFERENCED_PARAMETER(PreviousState);
+
+    PAGED_CODE();
+    devContext = PstGetDeviceContext(Device);
+
+    status = STATUS_SUCCESS;
+    return status;
+}
+
+NTSTATUS PstEvtDeviceD0Exit(
+    IN WDFDEVICE                Device,
+    IN WDF_POWER_DEVICE_STATE   TargetState
+)
+{
+    NTSTATUS status;
+
+    UNREFERENCED_PARAMETER(Device);
+    UNREFERENCED_PARAMETER(TargetState);
+    
+    PAGED_CODE();
+    
+    status = STATUS_SUCCESS;
+
+    return status;
+}
+
+
+VOID
+FileEvtIoDeviceControl(
+    IN WDFQUEUE         Queue,
+    IN WDFREQUEST       Request,
+    IN size_t           OutputBufferLength,
+    IN size_t           InputBufferLength,
+    IN ULONG            IoControlCode
+    )
+{
+    NTSTATUS status;
+
+    UNREFERENCED_PARAMETER(Queue);
+
+    PAGED_CODE();
+
+    if(!OutputBufferLength || !InputBufferLength)
+    {
+        status = STATUS_INVALID_PARAMETER;
+        goto End;
+    }
+
+    switch (IoControlCode)
+    {
+    case IOCTL_PST_METHOD_BUFFERED:
+        KdPrint(("ioctl recv'd\n"));
+        status = STATUS_SUCCESS;
+        break;
+    default:
+        //
+        // The specified I/O control code is unrecognized by this driver.
+        //
+        status = STATUS_INVALID_DEVICE_REQUEST;
+        KdPrint(("ERROR: unrecognized IOCTL %x\n", IoControlCode));
+        break;
+        
+    }
+
+End:
+    WdfRequestComplete(Request, status);
+
+
 }
 
 VOID
@@ -201,7 +439,7 @@ VOID
 PstEvtRead(
     IN WDFQUEUE         Queue,
     IN WDFREQUEST       Request,
-    IN size_t            Length
+    IN size_t           Length
     )
 {
     PPST_DEVICE_CONTEXT devContext;
@@ -227,7 +465,7 @@ VOID
 PstEvtWrite(
     IN WDFQUEUE         Queue,
     IN WDFREQUEST       Request,
-    IN size_t            Length
+    IN size_t           Length
     )
 {
     PPST_DEVICE_CONTEXT devContext;
