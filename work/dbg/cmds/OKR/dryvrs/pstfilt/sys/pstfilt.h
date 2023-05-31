@@ -28,8 +28,6 @@ Environment:
 #define NTDEVICE_NAME_STRING     L"\\Device\\PstFilt"
 #define SYMBOLIC_NAME_STRING     L"\\DosDevices\\PstFilt"
 
-ULONG IOCTL_YOU_ARE_INTERESTED_IN = (ULONG)CTL_CODE(FILE_DEVICE_UNKNOWN, 2048, METHOD_BUFFERED, FILE_ANY_ACCESS);
-
 // Our per Device context
 //
 typedef struct _PST_DEVICE_CONTEXT {  // NOLINT(cppcoreguidelines-pro-type-member-init)
@@ -50,6 +48,12 @@ WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(CONTROL_DEVICE_EXTENSION,
 //
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(PST_DEVICE_CONTEXT,
                                    PstGetDeviceContext)
+
+typedef struct _GLOBAL_PST {
+    int ndevs;
+    BOOLEAN fail;
+    PPST_DEVICE_CONTEXT devs[8];
+} GLOBAL_PST, *PGLOBAL_PST;
 
 DRIVER_INITIALIZE DriverEntry;
 
@@ -83,12 +87,12 @@ EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL  FileEvtIoDeviceControl;
 
 EVT_WDF_DRIVER_DEVICE_ADD           PstEvtDeviceAdd;
 EVT_WDF_OBJECT_CONTEXT_CLEANUP      PstEvtDeviceContextCleanup;
-EVT_WDF_IO_QUEUE_IO_READ            PstEvtRead;
-EVT_WDF_IO_QUEUE_IO_WRITE           PstEvtWrite;
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL  PstEvtDeviceControl;
 EVT_WDF_REQUEST_COMPLETION_ROUTINE  PstCompletionCallback;
-EVT_WDF_DEVICE_D0_ENTRY             PstEvtDeviceD0Entry;
-EVT_WDF_DEVICE_D0_EXIT              PstEvtDeviceD0Exit;
+EVT_WDF_DEVICE_QUERY_REMOVE         PstEvtDeviceQueryRemove;
+EVT_WDF_DEVICE_SURPRISE_REMOVAL     PstEvtDeviceSurpriseRemoval;
+EVT_WDF_DEVICE_RELATIONS_QUERY      PstEvtDeviceRelationsQuery;
+EVT_WDFDEVICE_WDM_IRP_PREPROCESS    PstEvtDeviceWdmIrpPreprocess;
 
 VOID
 PstSendAndForget(IN WDFREQUEST Request, 

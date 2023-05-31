@@ -19,17 +19,18 @@
 #pragma alloc_text( PAGE, PstDeviceAdd)
 #pragma alloc_text( PAGE, PstEvtDeviceContextCleanup)
 #pragma alloc_text( PAGE, PstControlDeviceAdd)
-#pragma alloc_text( PAGE, PstEvtRead)
-#pragma alloc_text( PAGE, PstEvtWrite)
 #pragma alloc_text( PAGE, PstEvtDeviceControl)
-#pragma alloc_text( PAGE, PstEvtDeviceD0Entry)
-#pragma alloc_text( PAGE, PstEvtDeviceD0Exit)
+#pragma alloc_text( PAGE, PstEvtDeviceWdmIrpPreprocess)
 #pragma alloc_text( PAGE, PstSendAndForget)
 #pragma alloc_text( PAGE, PstSendWithCallback)
 #pragma alloc_text( PAGE, PstCompletionCallback)
 #pragma alloc_text( PAGE, FileEvtIoDeviceControl)
 #endif // ALLOC_PRAGMA
 
+// GLOBALS
+//
+GLOBAL_PST  globals;
+//
 
 NTSTATUS
 DriverEntry(
@@ -48,6 +49,9 @@ DriverEntry(
              __DATE__,
              __TIME__);
 #endif
+
+    globals.ndevs = 0;
+    globals.fail = WdfFalse;
 
     WDF_DRIVER_CONFIG_INIT(&config,
                            PstDeviceAdd);
@@ -215,9 +219,9 @@ PstDeviceAdd(
 {
     NTSTATUS                        status;
     WDF_OBJECT_ATTRIBUTES           attributes;
-    WDF_PNPPOWER_EVENT_CALLBACKS    pnpPowerCallbacks;
+    //WDF_PNPPOWER_EVENT_CALLBACKS    pnpPowerCallbacks;
     WDFDEVICE                       wdfDevice;
-    PPST_DEVICE_CONTEXT             devContext;
+    PPST_DEVICE_CONTEXT             devContext = NULL;
     WDF_IO_QUEUE_CONFIG             ioQueueConfig;
 
     KdPrint(("PstEvtDeviceAdd: Adding device...\n"));
@@ -226,13 +230,14 @@ PstDeviceAdd(
 
     UNREFERENCED_PARAMETER(Driver);
 
-#if 1
+#if 0
     //
     // Configure Pnp/power callbacks
     //
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);
-    pnpPowerCallbacks.EvtDeviceD0Entry = PstEvtDeviceD0Entry;
-    pnpPowerCallbacks.EvtDeviceD0Exit  = PstEvtDeviceD0Exit;
+    pnpPowerCallbacks.EvtDeviceQueryRemove      = PstEvtDeviceQueryRemove;
+    pnpPowerCallbacks.EvtDeviceSurpriseRemoval  = PstEvtDeviceSurpriseRemoval;
+    pnpPowerCallbacks.EvtDeviceRelationsQuery   = PstEvtDeviceRelationsQuery;
 
     WdfDeviceInitSetPnpPowerEventCallbacks(
        DeviceInit,
@@ -240,6 +245,14 @@ PstDeviceAdd(
        );
 #endif
 
+    UCHAR MinorFunctionTable[1] = {IRP_MN_QUERY_DEVICE_RELATIONS};
+    // create a WDM Irp callback for Pnp
+    status = WdfDeviceInitAssignWdmIrpPreprocessCallback(DeviceInit, 
+                                                         PstEvtDeviceWdmIrpPreprocess,
+                                                         IRP_MJ_PNP,
+                                                         MinorFunctionTable,
+                                                         1);
+    
     // Indicate that we're creating a FILTER Device, as opposed to a FUNCTION Device.
     //
     // This will cause the Framework to attach us correctly to the device stack,
@@ -287,8 +300,6 @@ PstDeviceAdd(
     // READ Requests, you can just not specify an EvtIoRead callback and the
     // Framework will "do the right thing" and send it along.
     //
-    ioQueueConfig.EvtIoRead          = PstEvtRead;
-    ioQueueConfig.EvtIoWrite         = PstEvtWrite;
     ioQueueConfig.EvtIoDeviceControl = PstEvtDeviceControl;
 
     //
@@ -304,8 +315,6 @@ PstDeviceAdd(
         goto Cleanup;
     }
 
-    status = STATUS_SUCCESS;
-
 Cleanup:
 
     if (!NT_SUCCESS(status)) {
@@ -317,6 +326,9 @@ Cleanup:
         if (wdfDevice) {
             WdfObjectDelete(wdfDevice);
         }
+    } else {
+        globals.devs[globals.ndevs] = devContext;
+        globals.ndevs++;
     }
 
     return status;
@@ -341,41 +353,152 @@ VOID PstEvtDeviceContextCleanup(
     
 }
 
-NTSTATUS PstEvtDeviceD0Entry(
-    IN WDFDEVICE                Device,
-    IN WDF_POWER_DEVICE_STATE   PreviousState
+NTSTATUS PstEvtDeviceWdmIrpPreprocess(
+    IN WDFDEVICE Device,
+    IN PIRP Irp
 )
 {
-    NTSTATUS                status;
-    PPST_DEVICE_CONTEXT     devContext;
+    NTSTATUS status;
+    PIO_STACK_LOCATION irpStack;
+    UCHAR minorFunction;
 
     UNREFERENCED_PARAMETER(Device);
-    UNREFERENCED_PARAMETER(PreviousState);
+    UNREFERENCED_PARAMETER(Irp);
 
     PAGED_CODE();
-    devContext = PstGetDeviceContext(Device);
+
+    irpStack = IoGetCurrentIrpStackLocation(Irp);    
+    minorFunction = irpStack->MinorFunction;
+
+    switch (minorFunction) {
+        case IRP_MN_QUERY_DEVICE_RELATIONS:
+            KdPrint(("IRP_MN_QUERY_DEVICE_RELATIONS"));
+            DbgPrint("IRP_MN_QUERY_DEVICE_RELATIONS");
+            break;
+        case IRP_MN_REMOVE_DEVICE:
+            KdPrint(("IRP_MN_REMOVE_DEVICE"));
+            DbgPrint("IRP_MN_REMOVE_DEVICE");
+            globals.ndevs--;
+            globals.devs[globals.ndevs] = NULL;
+            break;
+        case IRP_MN_SURPRISE_REMOVAL:
+            KdPrint(("IRP_MN_SURPRISE_REMOVAL"));
+            DbgPrint("IRP_MN_SURPRISE_REMOVAL");
+            globals.ndevs--;
+            globals.devs[globals.ndevs] = NULL;
+            break;
+        default:
+            break;
+    }
 
     status = STATUS_SUCCESS;
+
     return status;
 }
 
-NTSTATUS PstEvtDeviceD0Exit(
-    IN WDFDEVICE                Device,
-    IN WDF_POWER_DEVICE_STATE   TargetState
+NTSTATUS PstEvtDeviceQueryRemove(
+    IN WDFDEVICE Device
 )
 {
     NTSTATUS status;
 
     UNREFERENCED_PARAMETER(Device);
-    UNREFERENCED_PARAMETER(TargetState);
-    
+
     PAGED_CODE();
+
+    globals.ndevs--;
+    globals.devs[globals.ndevs] = NULL;
     
     status = STATUS_SUCCESS;
 
     return status;
 }
 
+VOID
+PstEvtDeviceSurpriseRemoval(
+    IN WDFDEVICE Device
+)
+{
+    UNREFERENCED_PARAMETER(Device);
+
+    PAGED_CODE();
+
+    globals.ndevs--;
+    globals.devs[globals.ndevs] = NULL;
+
+}
+
+#if 0
+VOID RemoveAllChildDevices(
+    IN WDFDEVICE Device)
+{
+    WdfFdoLockStaticChildListForIteration(Device);
+
+    WDFDEVICE  hChild = NULL;
+
+    while ((hChild = WdfFdoRetrieveNextStaticChild(
+        Device, 
+        hChild,
+        WdfRetrieveAddedChildren)) != NULL) 
+    {
+        NTSTATUS Status = WdfPdoMarkMissing(hChild);
+        if (!NT_SUCCESS(Status))
+        {
+            KdPrint(("Device %p WdfPdoMarkMissing %p error %x\n", Device, hChild, Status));
+        }
+        else
+        {
+            KdPrint(("Device %p WdfPdoMarkMissing %p\n", Device, hChild));
+            WDF_DEVICE_STATE    deviceState;
+            WDF_DEVICE_STATE_INIT (&deviceState);
+            deviceState.Removed = WdfTrue;
+            WdfDeviceSetDeviceState(hChild,
+                &deviceState);
+        }
+    }
+
+    WdfFdoUnlockStaticChildListFromIteration(Device);
+}
+#endif
+
+VOID
+PstEvtDeviceRelationsQuery(
+    IN WDFDEVICE Device,
+    IN DEVICE_RELATION_TYPE RelationType
+)
+{
+    WDF_DEVICE_STATE    deviceState;
+    PPST_DEVICE_CONTEXT devContext;
+
+    UNREFERENCED_PARAMETER(Device);
+    UNREFERENCED_PARAMETER(RelationType);
+
+    PAGED_CODE();
+
+#if 0
+typedef struct _WDF_DEVICE_STATE {
+  ULONG         Size;
+  WDF_TRI_STATE Disabled;
+  WDF_TRI_STATE DontDisplayInUI;
+  WDF_TRI_STATE Failed;
+  WDF_TRI_STATE NotDisableable;
+  WDF_TRI_STATE Removed;
+  WDF_TRI_STATE ResourcesChanged;
+  WDF_TRI_STATE AssignedToGuest;
+} WDF_DEVICE_STATE, *PWDF_DEVICE_STATE;
+#endif
+
+    if (globals.fail == WdfTrue) {
+        //RemoveAllChildDevices(Device);
+        //
+        devContext = globals.devs[globals.ndevs-1];
+        WDF_DEVICE_STATE_INIT(&deviceState);
+        deviceState.Removed = WdfTrue;
+        WdfDeviceSetDeviceState(Device, &deviceState);
+        WdfDeviceRemoveRemovalRelationsPhysicalDevice(Device, WdfDeviceWdmGetPhysicalDevice(devContext->WdfDevice));
+    }
+
+}        
 
 VOID
 FileEvtIoDeviceControl(
@@ -386,7 +509,9 @@ FileEvtIoDeviceControl(
     IN ULONG            IoControlCode
     )
 {
-    NTSTATUS status;
+    NTSTATUS            status;
+    PPST_DEVICE_CONTEXT devContext;
+    PDEVICE_OBJECT      pdo;
 
     UNREFERENCED_PARAMETER(Queue);
 
@@ -402,10 +527,18 @@ FileEvtIoDeviceControl(
     {
     case IOCTL_PST_METHOD_FAIL_STACK:
         KdPrint(("ioctl fail recv'd\n"));
+        globals.fail = WdfTrue;
+        devContext = globals.devs[globals.ndevs-1];
+        pdo = WdfDeviceWdmGetPhysicalDevice(devContext->WdfDevice);
+        IoInvalidateDeviceRelations(pdo, BusRelations);
         status = STATUS_SUCCESS;
         break;
     case IOCTL_PST_METHOD_RESTORE_STACK:
         KdPrint(("ioctl restore recv'd\n"));
+        globals.fail = WdfFalse;
+        devContext = globals.devs[globals.ndevs-1];
+        pdo = WdfDeviceWdmGetPhysicalDevice(devContext->WdfDevice);
+        IoInvalidateDeviceRelations(pdo, BusRelations);
         status = STATUS_SUCCESS;
         break;
     default:
@@ -448,7 +581,7 @@ PstEvtDeviceControl(WDFQUEUE   Queue,
     //
     // We're searching for one specific IOCTL function code that we're interested in
     //
-    if (IoControlCode == IOCTL_YOU_ARE_INTERESTED_IN) {
+    if (IoControlCode == IOCTL_PST_METHOD_FAIL_STACK) {
 
 #if DBG
         DbgPrint("PstEvtDeviceControl -- The IOCTL we're looking for was found!  Request 0x%p\n",
@@ -456,65 +589,13 @@ PstEvtDeviceControl(WDFQUEUE   Queue,
 #endif
         // Do something useful.
         //
-
         //
         // We want to see the results for this particular Request... so send it
         // and request a callback for when the Request has been completed.
-        PstSendWithCallback(Request,
-                                    devContext);
+        PstSendWithCallback(Request, devContext);
 
         return;
     }
-
-    PstSendAndForget(Request,
-                           devContext);
-}
-
-VOID
-PstEvtRead(
-    IN WDFQUEUE         Queue,
-    IN WDFREQUEST       Request,
-    IN size_t           Length
-    )
-{
-    PPST_DEVICE_CONTEXT devContext;
-
-    PAGED_CODE();
-    
-    UNREFERENCED_PARAMETER(Length);
-
-    devContext = PstGetDeviceContext(WdfIoQueueGetDevice(Queue));
-
-#if DBG
-    DbgPrint("PstEvtRead -- Request 0x%p\n",
-             Request);
-#endif
-
-    PstSendAndForget(Request,
-                           devContext);
-}
-
-
-
-VOID
-PstEvtWrite(
-    IN WDFQUEUE         Queue,
-    IN WDFREQUEST       Request,
-    IN size_t           Length
-    )
-{
-    PPST_DEVICE_CONTEXT devContext;
-
-    PAGED_CODE();
-
-    UNREFERENCED_PARAMETER(Length);
-
-    devContext = PstGetDeviceContext(WdfIoQueueGetDevice(Queue));
-
-#if DBG
-    DbgPrint("GenFilterEvtWrite -- Request 0x%p\n",
-             Request);
-#endif
 
     PstSendAndForget(Request,
                            devContext);
