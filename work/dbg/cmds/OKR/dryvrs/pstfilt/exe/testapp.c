@@ -1,30 +1,5 @@
 /*++
 
-Copyright (c) Microsoft Corporation.  All rights reserved.
-
-    THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
-    KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
-    PURPOSE.
-
-
-Module Name:
-
-    testapp.c
-
-Abstract:
-
-    Purpose of this app to test the PST sample driver. The app
-    makes four different ioctl calls to test all the buffer types, write
-    some random buffer content to a file created by the driver in \SystemRoot\Temp
-    directory, and reads the same file and matches the content.
-    If -l option is specified, it does the write and read operation in a loop
-    until the app is terminated by pressing ^C.
-
-    Make sure you have the \SystemRoot\Temp directory exists before you run the test.
-
-Environment:
-
     Win32 console application.
 
 --*/
@@ -386,16 +361,16 @@ DoIoctls(
     //
 
     if(FAILED(StringCchCopy(InputBuffer, sizeof(InputBuffer),
-        "this String is from User Application; using METHOD_BUFFERED"))){
+        "this String is from User Application; using IOCTL_PST_METHOD_FAIL_STACK"))){
         return;
     }
 
-    printf("\nCalling DeviceIoControl METHOD_BUFFERED:\n");
+    printf("\nCalling DeviceIoControl IOCTL_PST_METHOD_FAIL_STACK:\n");
 
     memset(OutputBuffer, 0, sizeof(OutputBuffer));
 
     bRc = DeviceIoControl ( hDevice,
-                            (DWORD) IOCTL_PST_METHOD_BUFFERED,
+                            (DWORD) IOCTL_PST_METHOD_FAIL_STACK,
                             InputBuffer,
                             (DWORD) strlen( InputBuffer )+1,
                             OutputBuffer,
@@ -413,21 +388,17 @@ DoIoctls(
     printf("    OutBuffer (%d): %s\n", bytesReturned, OutputBuffer);
 
 
-    //
-    // Performing METHOD_NEITHER
-    //
-
-    printf("\nCalling DeviceIoControl METHOD_NEITHER\n");
+    printf("\nCalling DeviceIoControl IOCTL_PST_METHOD_RESTORE_STACK\n");
 
     if(FAILED(StringCchCopy(InputBuffer, sizeof(InputBuffer),
-               "this String is from User Application; using METHOD_NEITHER"))) {
+               "this String is from User Application; using IOCTL_PST_METHOD_RESTORE_STACK"))) {
         return;
     }
 
     memset(OutputBuffer, 0, sizeof(OutputBuffer));
 
     bRc = DeviceIoControl ( hDevice,
-                            (DWORD) IOCTL_PST_METHOD_NEITHER,
+                            (DWORD) IOCTL_PST_METHOD_RESTORE_STACK,
                             InputBuffer,
                             (DWORD) strlen( InputBuffer )+1,
                             OutputBuffer,
@@ -441,71 +412,6 @@ DoIoctls(
         printf ( "Error in DeviceIoControl : %d\n", GetLastError());
         return;
 
-    }
-
-    printf("    OutBuffer (%d): %s\n", bytesReturned, OutputBuffer);
-
-    //
-    // Performing METHOD_IN_DIRECT
-    //
-
-    printf("\nCalling DeviceIoControl METHOD_IN_DIRECT\n");
-
-    if(FAILED(StringCchCopy(InputBuffer, sizeof(InputBuffer),
-               "this String is from User Application; using METHOD_IN_DIRECT"))) {
-        return;
-    }
-
-    if(FAILED(StringCchCopy(OutputBuffer, sizeof(OutputBuffer),
-               "This String is from User Application in OutBuffer; using METHOD_IN_DIRECT"))) {
-        return;
-    }
-
-    bRc = DeviceIoControl ( hDevice,
-                            (DWORD) IOCTL_PST_METHOD_IN_DIRECT,
-                            InputBuffer,
-                            (DWORD) strlen( InputBuffer )+1,
-                            OutputBuffer,
-                            sizeof( OutputBuffer),
-                            &bytesReturned,
-                            NULL
-                            );
-
-    if ( !bRc )
-    {
-        printf ( "Error in DeviceIoControl : : %d", GetLastError());
-        return;
-    }
-
-    printf("    Number of bytes transfered from OutBuffer: %d\n",
-                                    bytesReturned);
-
-    //
-    // Performing METHOD_OUT_DIRECT
-    //
-
-    printf("\nCalling DeviceIoControl METHOD_OUT_DIRECT\n");
-    if(FAILED(StringCchCopy(InputBuffer, sizeof(InputBuffer),
-               "this String is from User Application; using METHOD_OUT_DIRECT"))){
-        return;
-    }
-
-    memset(OutputBuffer, 0, sizeof(OutputBuffer));
-
-    bRc = DeviceIoControl ( hDevice,
-                            (DWORD) IOCTL_PST_METHOD_OUT_DIRECT,
-                            InputBuffer,
-                            (DWORD) strlen( InputBuffer )+1,
-                            OutputBuffer,
-                            sizeof( OutputBuffer),
-                            &bytesReturned,
-                            NULL
-                            );
-
-    if ( !bRc )
-    {
-        printf ( "Error in DeviceIoControl : : %d", GetLastError());
-        return;
     }
 
     printf("    OutBuffer (%d): %s\n", bytesReturned, OutputBuffer);

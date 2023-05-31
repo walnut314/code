@@ -14,6 +14,8 @@
 
 #ifdef ALLOC_PRAGMA
 #pragma alloc_text( INIT, DriverEntry )
+#pragma alloc_text( PAGE, PstDriverUnload)
+#pragma alloc_text( PAGE, PstEvtDriverUnload)
 #pragma alloc_text( PAGE, PstDeviceAdd)
 #pragma alloc_text( PAGE, PstEvtDeviceContextCleanup)
 #pragma alloc_text( PAGE, PstControlDeviceAdd)
@@ -50,6 +52,8 @@ DriverEntry(
     WDF_DRIVER_CONFIG_INIT(&config,
                            PstDeviceAdd);
 
+    config.EvtDriverUnload = PstEvtDriverUnload;
+
     WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
     status = WdfDriverCreate(DriverObject,
                              RegistryPath,
@@ -77,12 +81,31 @@ DriverEntry(
         status = STATUS_INSUFFICIENT_RESOURCES;
         goto done;
     }
+
+    DriverObject->DriverUnload = PstDriverUnload;
     
     status = PstControlDeviceAdd(hDriver, pInit);
-
 done:
 
     return status;
+}
+
+VOID
+PstEvtDriverUnload(
+    IN WDFDRIVER Driver
+    )
+{
+    UNREFERENCED_PARAMETER(Driver);
+    PAGED_CODE();
+}
+
+VOID
+PstDriverUnload(
+    IN PDRIVER_OBJECT DriverObject
+    )
+{
+    UNREFERENCED_PARAMETER(DriverObject);
+    PAGED_CODE();
 }
 
 NTSTATUS
@@ -231,9 +254,7 @@ PstDeviceAdd(
     WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&attributes,
                                             PST_DEVICE_CONTEXT);
 
-
     attributes.EvtCleanupCallback = PstEvtDeviceContextCleanup;
-
 
     status = WdfDeviceCreate(&DeviceInit,
                              &attributes,
@@ -248,6 +269,8 @@ PstDeviceAdd(
     //
     devContext = PstGetDeviceContext(wdfDevice);
     devContext->WdfDevice = wdfDevice;
+    devContext->DeviceInit = DeviceInit;
+
     //
     // Create our default Queue -- This is how we receive Requests.
     //
@@ -308,6 +331,14 @@ VOID PstEvtDeviceContextCleanup(
     PAGED_CODE();
     devContext = PstGetDeviceContext(Device);
 
+    if (devContext->DeviceInit != NULL) {
+        WdfDeviceInitFree(devContext->DeviceInit);
+    }
+
+    if (devContext->WdfDevice) {
+        WdfObjectDelete(devContext->WdfDevice);
+    }
+    
 }
 
 NTSTATUS PstEvtDeviceD0Entry(
@@ -369,8 +400,12 @@ FileEvtIoDeviceControl(
 
     switch (IoControlCode)
     {
-    case IOCTL_PST_METHOD_BUFFERED:
-        KdPrint(("ioctl recv'd\n"));
+    case IOCTL_PST_METHOD_FAIL_STACK:
+        KdPrint(("ioctl fail recv'd\n"));
+        status = STATUS_SUCCESS;
+        break;
+    case IOCTL_PST_METHOD_RESTORE_STACK:
+        KdPrint(("ioctl restore recv'd\n"));
         status = STATUS_SUCCESS;
         break;
     default:

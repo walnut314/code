@@ -34,6 +34,7 @@ ULONG IOCTL_YOU_ARE_INTERESTED_IN = (ULONG)CTL_CODE(FILE_DEVICE_UNKNOWN, 2048, M
 //
 typedef struct _PST_DEVICE_CONTEXT {  // NOLINT(cppcoreguidelines-pro-type-member-init)
     WDFDEVICE       WdfDevice;
+    PWDFDEVICE_INIT DeviceInit;
     // Other interesting stuff would go here
     //
 } PST_DEVICE_CONTEXT, *PPST_DEVICE_CONTEXT;
@@ -51,6 +52,16 @@ WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(PST_DEVICE_CONTEXT,
                                    PstGetDeviceContext)
 
 DRIVER_INITIALIZE DriverEntry;
+
+VOID
+PstDriverUnload(
+    IN PDRIVER_OBJECT DriverObject
+    );
+
+VOID
+PstEvtDriverUnload(
+    IN WDFDRIVER Driver
+    );
 
 // Don't use EVT_WDF_DRIVER_DEVICE_ADD for PstDeviceAdd even though 
 // the signature is same because this is not an event called by the 
