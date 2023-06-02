@@ -52,6 +52,7 @@ WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(PST_DEVICE_CONTEXT,
 typedef struct _GLOBAL_PST {
     int ndevs;
     BOOLEAN fail;
+    KMUTEX  lock;
     PPST_DEVICE_CONTEXT devs[8];
 } GLOBAL_PST, *PGLOBAL_PST;
 

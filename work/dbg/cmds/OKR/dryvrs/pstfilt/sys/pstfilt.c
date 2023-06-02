@@ -11,7 +11,6 @@
 //
 #include "pstfilt.tmh"
 
-
 #ifdef ALLOC_PRAGMA
 #pragma alloc_text( INIT, DriverEntry )
 #pragma alloc_text( PAGE, PstDriverUnload)
@@ -51,6 +50,7 @@ DriverEntry(
 
     globals.ndevs = 0;
     globals.fail = WdfFalse;
+    KeInitializeMutex(&globals.lock, 0);
 
     WDF_DRIVER_CONFIG_INIT(&config, PstDeviceAdd);
 
@@ -309,8 +309,10 @@ Cleanup:
             WdfObjectDelete(wdfDevice);
         }
     } else {
+        KeWaitForSingleObject(&globals.lock, Executive, KernelMode, FALSE, NULL);
         globals.devs[globals.ndevs] = devContext;
         globals.ndevs++;
+        KeReleaseMutex(&globals.lock, FALSE);
     }
 
     return status;
@@ -344,6 +346,7 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
     PIO_STACK_LOCATION irpStack;
     DEVICE_RELATION_TYPE type;
     UCHAR minorFunction;
+    PDEVICE_RELATIONS relations;
 
     UNREFERENCED_PARAMETER(Device);
     UNREFERENCED_PARAMETER(Irp);
@@ -355,23 +358,36 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
 
     switch (minorFunction) {
         case IRP_MN_QUERY_DEVICE_RELATIONS:
-            type = irpStack->Parameters.QueryDeviceRelations.Type;
             KdPrint(("IRP_MN_QUERY_DEVICE_RELATIONS"));
-            DbgPrint("IRP_MN_QUERY_DEVICE_RELATIONS");
+            type = irpStack->Parameters.QueryDeviceRelations.Type;
             if (type == BusRelations) {
+                // forward the request with callback - or send synchronously
+                relations = (PDEVICE_RELATIONS) Irp->IoStatus.Information;
+                if (relations) {
+                    for (ULONG i = 0; i < relations->Count; i++) {
+                        PDEVICE_OBJECT obj = relations->Objects[i];
+                        KdPrint(("obj -> %p", obj));
+                    }
+                }
             }
             break;
         case IRP_MN_REMOVE_DEVICE:
             KdPrint(("IRP_MN_REMOVE_DEVICE"));
-            DbgPrint("IRP_MN_REMOVE_DEVICE");
-            globals.ndevs--;
-            globals.devs[globals.ndevs] = NULL;
+            KeWaitForSingleObject(&globals.lock, Executive, KernelMode, FALSE, NULL);
+            if (globals.ndevs) {
+                globals.ndevs--;
+                globals.devs[globals.ndevs] = NULL;
+            }
+            KeReleaseMutex(&globals.lock, FALSE);
             break;
         case IRP_MN_SURPRISE_REMOVAL:
             KdPrint(("IRP_MN_SURPRISE_REMOVAL"));
-            DbgPrint("IRP_MN_SURPRISE_REMOVAL");
-            globals.ndevs--;
-            globals.devs[globals.ndevs] = NULL;
+            KeWaitForSingleObject(&globals.lock, Executive, KernelMode, FALSE, NULL);
+            if (globals.ndevs) {
+                globals.ndevs--;
+                globals.devs[globals.ndevs] = NULL;
+            }
+            KeReleaseMutex(&globals.lock, FALSE);
             break;
         default:
             break;
@@ -381,78 +397,6 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
 
     return status;
 }
-
-#if 0
-VOID RemoveAllChildDevices(
-    IN WDFDEVICE Device)
-{
-    WdfFdoLockStaticChildListForIteration(Device);
-
-    WDFDEVICE  hChild = NULL;
-
-    while ((hChild = WdfFdoRetrieveNextStaticChild(
-        Device, 
-        hChild,
-        WdfRetrieveAddedChildren)) != NULL) 
-    {
-        NTSTATUS Status = WdfPdoMarkMissing(hChild);
-        if (!NT_SUCCESS(Status))
-        {
-            KdPrint(("Device %p WdfPdoMarkMissing %p error %x\n", Device, hChild, Status));
-        }
-        else
-        {
-            KdPrint(("Device %p WdfPdoMarkMissing %p\n", Device, hChild));
-            WDF_DEVICE_STATE    deviceState;
-            WDF_DEVICE_STATE_INIT (&deviceState);
-            deviceState.Removed = WdfTrue;
-            WdfDeviceSetDeviceState(hChild,
-                &deviceState);
-        }
-    }
-
-    WdfFdoUnlockStaticChildListFromIteration(Device);
-}
-#endif
-
-VOID
-PstEvtDeviceRelationsQuery(
-    IN WDFDEVICE Device,
-    IN DEVICE_RELATION_TYPE RelationType
-)
-{
-    WDF_DEVICE_STATE    deviceState;
-    PPST_DEVICE_CONTEXT devContext;
-
-    UNREFERENCED_PARAMETER(Device);
-    UNREFERENCED_PARAMETER(RelationType);
-
-    PAGED_CODE();
-
-#if 0
-typedef struct _WDF_DEVICE_STATE {
-  ULONG         Size;
-  WDF_TRI_STATE Disabled;
-  WDF_TRI_STATE DontDisplayInUI;
-  WDF_TRI_STATE Failed;
-  WDF_TRI_STATE NotDisableable;
-  WDF_TRI_STATE Removed;
-  WDF_TRI_STATE ResourcesChanged;
-  WDF_TRI_STATE AssignedToGuest;
-} WDF_DEVICE_STATE, *PWDF_DEVICE_STATE;
-#endif
-
-    if (globals.fail == WdfTrue) {
-        //RemoveAllChildDevices(Device);
-        //
-        devContext = globals.devs[globals.ndevs-1];
-        WDF_DEVICE_STATE_INIT(&deviceState);
-        deviceState.Removed = WdfTrue;
-        WdfDeviceSetDeviceState(Device, &deviceState);
-        WdfDeviceRemoveRemovalRelationsPhysicalDevice(Device, WdfDeviceWdmGetPhysicalDevice(devContext->WdfDevice));
-    }
-
-}        
 
 VOID
 FileEvtIoDeviceControl(
@@ -481,16 +425,20 @@ FileEvtIoDeviceControl(
     {
     case IOCTL_PST_METHOD_FAIL_STACK:
         KdPrint(("ioctl fail recv'd\n"));
+        KeWaitForSingleObject(&globals.lock, Executive, KernelMode, FALSE, NULL);
         globals.fail = WdfTrue;
         devContext = globals.devs[globals.ndevs-1];
+        KeReleaseMutex(&globals.lock, FALSE);        
         pdo = WdfDeviceWdmGetPhysicalDevice(devContext->WdfDevice);
         IoInvalidateDeviceRelations(pdo, BusRelations);
         status = STATUS_SUCCESS;
         break;
     case IOCTL_PST_METHOD_RESTORE_STACK:
         KdPrint(("ioctl restore recv'd\n"));
+        KeWaitForSingleObject(&globals.lock, Executive, KernelMode, FALSE, NULL);
         globals.fail = WdfFalse;
         devContext = globals.devs[globals.ndevs-1];
+        KeReleaseMutex(&globals.lock, FALSE);        
         pdo = WdfDeviceWdmGetPhysicalDevice(devContext->WdfDevice);
         IoInvalidateDeviceRelations(pdo, BusRelations);
         status = STATUS_SUCCESS;
