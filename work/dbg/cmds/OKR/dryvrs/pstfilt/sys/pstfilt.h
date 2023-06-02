@@ -25,16 +25,16 @@ Environment:
 #include "public.h" // contains IOCTL definitions
 #include "Trace.h" // contains macros for WPP tracing
 
-#define NTDEVICE_NAME_STRING     L"\\Device\\PstFilt"
-#define SYMBOLIC_NAME_STRING     L"\\DosDevices\\PstFilt"
+#define NTDEVICE_NAME_STRING    L"\\Device\\PstFilt"
+#define SYMBOLIC_NAME_STRING    L"\\DosDevices\\PstFilt"
+
+#define NUM_PNP_CALLBACKS       (3)
 
 // Our per Device context
 //
 typedef struct _PST_DEVICE_CONTEXT {  // NOLINT(cppcoreguidelines-pro-type-member-init)
     WDFDEVICE       WdfDevice;
     PWDFDEVICE_INIT DeviceInit;
-    // Other interesting stuff would go here
-    //
 } PST_DEVICE_CONTEXT, *PPST_DEVICE_CONTEXT;
 
 typedef struct _CONTROL_DEVICE_EXTENSION {
@@ -89,9 +89,6 @@ EVT_WDF_DRIVER_DEVICE_ADD           PstEvtDeviceAdd;
 EVT_WDF_OBJECT_CONTEXT_CLEANUP      PstEvtDeviceContextCleanup;
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL  PstEvtDeviceControl;
 EVT_WDF_REQUEST_COMPLETION_ROUTINE  PstCompletionCallback;
-EVT_WDF_DEVICE_QUERY_REMOVE         PstEvtDeviceQueryRemove;
-EVT_WDF_DEVICE_SURPRISE_REMOVAL     PstEvtDeviceSurpriseRemoval;
-EVT_WDF_DEVICE_RELATIONS_QUERY      PstEvtDeviceRelationsQuery;
 EVT_WDFDEVICE_WDM_IRP_PREPROCESS    PstEvtDeviceWdmIrpPreprocess;
 
 VOID

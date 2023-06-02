@@ -28,7 +28,6 @@
 #endif // ALLOC_PRAGMA
 
 // GLOBALS
-//
 GLOBAL_PST  globals;
 //
 
@@ -53,8 +52,7 @@ DriverEntry(
     globals.ndevs = 0;
     globals.fail = WdfFalse;
 
-    WDF_DRIVER_CONFIG_INIT(&config,
-                           PstDeviceAdd);
+    WDF_DRIVER_CONFIG_INIT(&config, PstDeviceAdd);
 
     config.EvtDriverUnload = PstEvtDriverUnload;
 
@@ -87,7 +85,7 @@ DriverEntry(
     }
 
     DriverObject->DriverUnload = PstDriverUnload;
-    
+
     status = PstControlDeviceAdd(hDriver, pInit);
 done:
 
@@ -142,10 +140,7 @@ PstControlDeviceAdd(
 
     // Specify the size of device context
     //
-    WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&attributes,
-                                    CONTROL_DEVICE_EXTENSION);
-
-    //attributes.EvtCleanupCallback = PstEvtDeviceContextCleanup;
+    WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&attributes, CONTROL_DEVICE_EXTENSION);
 
     status = WdfDeviceCreate(&DeviceInit,
                              &attributes,
@@ -219,7 +214,6 @@ PstDeviceAdd(
 {
     NTSTATUS                        status;
     WDF_OBJECT_ATTRIBUTES           attributes;
-    //WDF_PNPPOWER_EVENT_CALLBACKS    pnpPowerCallbacks;
     WDFDEVICE                       wdfDevice;
     PPST_DEVICE_CONTEXT             devContext = NULL;
     WDF_IO_QUEUE_CONFIG             ioQueueConfig;
@@ -230,28 +224,16 @@ PstDeviceAdd(
 
     UNREFERENCED_PARAMETER(Driver);
 
-#if 0
-    //
-    // Configure Pnp/power callbacks
-    //
-    WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);
-    pnpPowerCallbacks.EvtDeviceQueryRemove      = PstEvtDeviceQueryRemove;
-    pnpPowerCallbacks.EvtDeviceSurpriseRemoval  = PstEvtDeviceSurpriseRemoval;
-    pnpPowerCallbacks.EvtDeviceRelationsQuery   = PstEvtDeviceRelationsQuery;
+    UCHAR MinorFunctionTable[NUM_PNP_CALLBACKS] = {IRP_MN_QUERY_DEVICE_RELATIONS,
+                                                   IRP_MN_REMOVE_DEVICE,
+                                                   IRP_MN_SURPRISE_REMOVAL};
 
-    WdfDeviceInitSetPnpPowerEventCallbacks(
-       DeviceInit,
-       &pnpPowerCallbacks
-       );
-#endif
-
-    UCHAR MinorFunctionTable[1] = {IRP_MN_QUERY_DEVICE_RELATIONS};
     // create a WDM Irp callback for Pnp
     status = WdfDeviceInitAssignWdmIrpPreprocessCallback(DeviceInit, 
                                                          PstEvtDeviceWdmIrpPreprocess,
                                                          IRP_MJ_PNP,
                                                          MinorFunctionTable,
-                                                         1);
+                                                         NUM_PNP_CALLBACKS);
     
     // Indicate that we're creating a FILTER Device, as opposed to a FUNCTION Device.
     //
@@ -360,6 +342,7 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
 {
     NTSTATUS status;
     PIO_STACK_LOCATION irpStack;
+    DEVICE_RELATION_TYPE type;
     UCHAR minorFunction;
 
     UNREFERENCED_PARAMETER(Device);
@@ -372,8 +355,11 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
 
     switch (minorFunction) {
         case IRP_MN_QUERY_DEVICE_RELATIONS:
+            type = irpStack->Parameters.QueryDeviceRelations.Type;
             KdPrint(("IRP_MN_QUERY_DEVICE_RELATIONS"));
             DbgPrint("IRP_MN_QUERY_DEVICE_RELATIONS");
+            if (type == BusRelations) {
+            }
             break;
         case IRP_MN_REMOVE_DEVICE:
             KdPrint(("IRP_MN_REMOVE_DEVICE"));
@@ -394,38 +380,6 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
     status = STATUS_SUCCESS;
 
     return status;
-}
-
-NTSTATUS PstEvtDeviceQueryRemove(
-    IN WDFDEVICE Device
-)
-{
-    NTSTATUS status;
-
-    UNREFERENCED_PARAMETER(Device);
-
-    PAGED_CODE();
-
-    globals.ndevs--;
-    globals.devs[globals.ndevs] = NULL;
-    
-    status = STATUS_SUCCESS;
-
-    return status;
-}
-
-VOID
-PstEvtDeviceSurpriseRemoval(
-    IN WDFDEVICE Device
-)
-{
-    UNREFERENCED_PARAMETER(Device);
-
-    PAGED_CODE();
-
-    globals.ndevs--;
-    globals.devs[globals.ndevs] = NULL;
-
 }
 
 #if 0
@@ -553,7 +507,6 @@ FileEvtIoDeviceControl(
 
 End:
     WdfRequestComplete(Request, status);
-
 
 }
 
