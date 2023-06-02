@@ -4,7 +4,24 @@ $ErrorActionPreference = 'stop'
 #requires -runasadmin
 
 $marshal = [Runtime.InteropServices.Marshal]
-$Do_PST_IOCTL = '0x9C412408'
+$Do_PST_IOCTL = '0x9C412400'
+$action = ""
+
+if ($Args.Count -eq 0) {
+    Write-Host("usage: pstfilt.ps1 {fail|recover}")
+} else {
+    $action = $Args[0]
+    Write-Host("First argument is " + $action)
+}
+
+if ($action -eq "fail") {
+    $Do_PST_IOCTL = '0x9C412400'
+}
+elseif ($action -eq "recover") {
+    $Do_PST_IOCTL = '0x9C412404'
+} else {
+    Exit
+}
 
 $kernel32 = Add-Type -Name 'kernel32' -Namespace 'Win32' -PassThru -MemberDefinition @"
 [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
