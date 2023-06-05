@@ -28,7 +28,7 @@ Environment:
 #define NTDEVICE_NAME_STRING    L"\\Device\\PstFilt"
 #define SYMBOLIC_NAME_STRING    L"\\DosDevices\\PstFilt"
 
-#define NUM_PNP_CALLBACKS       (3)
+#define NUM_PNP_CALLBACKS       (4)
 
 // Our per Device context
 //

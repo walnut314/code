@@ -1,5 +1,10 @@
 #include "pstfilt.h"
 
+// TODO:
+// when recovering, walk from the bus pdo to the ??? devnode
+// and get that PDO and invalidate that as well.
+// see notes.log
+
 //
 // The trace message header file must be included in a source file
 // before any WPP macro calls and after defining a WPP_CONTROL_GUIDS
@@ -225,6 +230,7 @@ PstDeviceAdd(
     UNREFERENCED_PARAMETER(Driver);
 
     UCHAR MinorFunctionTable[NUM_PNP_CALLBACKS] = {IRP_MN_QUERY_DEVICE_RELATIONS,
+                                                   IRP_MN_QUERY_DEVICE_TEXT,
                                                    IRP_MN_REMOVE_DEVICE,
                                                    IRP_MN_SURPRISE_REMOVAL};
 
@@ -349,10 +355,10 @@ SignalCompletion(
     UNREFERENCED_PARAMETER(DeviceObject);
     UNREFERENCED_PARAMETER(Irp);
 
-    if (Context == NULL) {
-        NT_ASSERT(Context != NULL);
-        return STATUS_INVALID_PARAMETER;
-    }
+//    if (Context == NULL) {
+//        NT_ASSERT(Context != NULL);
+//        return STATUS_INVALID_PARAMETER;
+//    }
 
     KeSetEvent(Event, IO_NO_INCREMENT, FALSE);
 
@@ -374,13 +380,13 @@ SendIrpSynchronous(
     NT_ASSERT(Irp->StackCount >= TargetDeviceObject->StackSize);
 
     KeInitializeEvent(&event, SynchronizationEvent, FALSE);
+    IoCopyCurrentIrpStackLocationToNext(Irp);
     IoSetCompletionRoutine(Irp, SignalCompletion, &event,
                            TRUE, TRUE, TRUE);
 
     status = IoCallDriver(TargetDeviceObject, Irp);
     _Analysis_assume_(status!=STATUS_PENDING);
     if (status == STATUS_PENDING) {
-
         KeWaitForSingleObject(&event,
                               Executive,
                               KernelMode,
@@ -398,7 +404,7 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
     IN PIRP Irp
 )
 {
-    NTSTATUS status;
+    NTSTATUS status = STATUS_SUCCESS;
     PIO_STACK_LOCATION irpStack;
     DEVICE_RELATION_TYPE type;
     UCHAR minorFunction;
@@ -417,28 +423,48 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
         case IRP_MN_QUERY_DEVICE_RELATIONS:
             KdPrint(("IRP_MN_QUERY_DEVICE_RELATIONS"));
             type = irpStack->Parameters.QueryDeviceRelations.Type;
+
+            // forward the request with callback synchronously
+            //
+            target = WdfDeviceWdmGetAttachedDevice(Device);
+            status = SendIrpSynchronous(target, Irp);
+            if (!NT_SUCCESS(status)) {
+                goto Error_exit;
+            }
+
             if (type == BusRelations) {
-                // forward the request with callback - or send synchronously
+                relations  = (PDEVICE_RELATIONS) Irp->IoStatus.Information;
+                if (relations) {
+                    for (ULONG i = 0; i < relations->Count; i++) {
+                        PDEVICE_OBJECT obj = relations->Objects[i];
+                        KdPrint(("obj -> %p", obj));
+                    }
+                }
                 KeWaitForSingleObject(&globals.lock, Executive, KernelMode, FALSE, NULL);
                 if (globals.fail == WdfTrue) {
                     KeReleaseMutex(&globals.lock, FALSE);
-                    target = WdfDeviceWdmGetAttachedDevice(Device);
-                    IoCopyCurrentIrpStackLocationToNext(Irp);
-                    status = SendIrpSynchronous(target, Irp);
-                    if (NT_SUCCESS(status)) {
-                        relations = (PDEVICE_RELATIONS) Irp->IoStatus.Information;
-                        if (relations) {
-                            for (ULONG i = 0; i < relations->Count; i++) {
-                                PDEVICE_OBJECT obj = relations->Objects[i];
-                                KdPrint(("obj -> %p", obj));
-                            }
+                    if (relations) {
+                        // NULL out the objects - note we may need to allocate memory for this
+                        for (ULONG i = 0; i < relations->Count; i++) {
+                            relations->Objects[i] = NULL;
                         }
+                        relations->Count = 0;
                     }
                 } else {
                     KeReleaseMutex(&globals.lock, FALSE);
                 }
             }
+            status = Irp->IoStatus.Status;
             break;
+
+        case IRP_MN_QUERY_DEVICE_TEXT:
+            target = WdfDeviceWdmGetAttachedDevice(Device);
+            status = SendIrpSynchronous(target, Irp);
+            if (!NT_SUCCESS(status)) {
+                goto Error_exit;
+            }
+            break;
+
         case IRP_MN_REMOVE_DEVICE:
             KdPrint(("IRP_MN_REMOVE_DEVICE"));
             KeWaitForSingleObject(&globals.lock, Executive, KernelMode, FALSE, NULL);
@@ -448,6 +474,7 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
             }
             KeReleaseMutex(&globals.lock, FALSE);
             break;
+
         case IRP_MN_SURPRISE_REMOVAL:
             KdPrint(("IRP_MN_SURPRISE_REMOVAL"));
             KeWaitForSingleObject(&globals.lock, Executive, KernelMode, FALSE, NULL);
@@ -457,12 +484,16 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
             }
             KeReleaseMutex(&globals.lock, FALSE);
             break;
+
         default:
             break;
     }
 
-    status = STATUS_SUCCESS;
+//    status = STATUS_SUCCESS;
 
+Error_exit:
+    Irp->IoStatus.Status = status;
+    IoCompleteRequest(Irp, IO_NO_INCREMENT);
     return status;
 }
 
