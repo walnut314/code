@@ -1,0 +1,6 @@
+
+1. pst -- just an ioctl driver
+2. create a pstfilt in C - same as genfilter
+3. add pst ioctl driver stuff to pstfilt
+
+

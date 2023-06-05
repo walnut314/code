@@ -1,0 +1,49 @@
+
+Note: Running msbuild /t:/sdv p:/Inputs= /? without parameters displays usage for the SDV commands.
+Note: Run msbuild with /bl option to produce msbuild.binlog and view with W:\Tools\MsBuildLogViewer\MSBuildStructuredLogSetup.exe
+
+https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/-static-driver-verifier-commands--msbuild-
+https://learn.microsoft.com/en-us/previous-versions/ff552811(v=vs.85)
+https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/static-driver-verifier
+https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk
+
+Standalone environments:
+The EWDK is a standalone, self-contained command-line environment for building drivers. It includes Visual Studio Build Tools, the SDK, and the WDK. The latest public version of the EWDK contains Visual Studio 2022 Build Tools 17.1.5 and MSVC toolset v14.31. To get started, mount the ISO and run LaunchBuildEnv.
+
+For VS environments:
+You can use the Visual Studio interface with the build tools provided in the EWDK.
+1. Mount the EWDK ISO.
+2. Run LaunchBuildEnv.cmd.
+3. In the environment created in step 2, type SetupVSEnv, and then press Enter.
+4. Launch devenv.exe from the same environment, using the full file path. Example: "C:\Program Files\Microsoft Visual Studio\2022\%Community|Professional|Enterprise%\Common7\IDE\devenv.exe"
+Note that the Visual Studio major version should match with the version in the EWDK. For example, Visual Studio 2022 works with the EWDK that contain VS17.X build tools. For a list of Visual Studio 2022 version numbers, see Visual
+
+Per WDK notes:
+SDV fails in the EWDK if VS is not installed
+SDV has a dependency on VCRUNTIME140D.dll as part of Visual Studio. As such, running the EWDK on a machine 
+without VS installed will fail. Install Visual Studio on the machine to work around this issue.
+
+
+Template:
+msbuild /t:sdv /p:Inputs="Parameters" ProjectFile /p:Configuration=configuration /p:Platform=platform
+
+These all fail:
+msbuild /bl /t:sdv /p:Inputs="/check:nullcheck" F:\dryvrz\pst\sys\pst.vcxproj /p:Configuration="release" /p:Platform="x64"
+msbuild /bl /t:sdv /p:Inputs="/check:CancelSpinLock" pst.sln /p:Configuration="release" /p:Platform="x64"
+msbuild /bl /t:sdv /p:Inputs="/check:nullcheck" pst.sln /p:Configuration="release" /p:Platform="x64"
+msbuild /bl /t:sdv /p:inputs="/devenv /check" "pst.sln" /p:configuration="release" /p:platform="x64" 
+msbuild /bl /t:sdv /p:inputs="/scan" pst.sln /p:configuration="release" /p:platform="x64" 
+msbuild /bl /t:sdv /p:Inputs="/scan" pst.sln /p:Configuration="release" /p:Platform="x64"
+msbuild "pst.sln" /t:sdv /p:inputs="/check /devenv" /p:configuration="release" /p:platform="x64" /p:SolutionDir=""
+
+This succeeds but produces no executable binaries:
+msbuild /bl /t:sdv pst.sln /M /P:Platform="x64";Configuration="debug" /flp:Verbosity=Diagnostic /p:RunCodeAnalysis=true
+
+These work:
+msbuild.exe /bl pst.sln /M /P:Platform="x64";Configuration="debug" /flp:Verbosity=Diagnostic /p:RunCodeAnalysis=true
+msbuild /bl /t:sdv /p:Inputs="/clean" pst.sln /p:Configuration="release" /p:Platform="x64"
+
+This brings up a UI then says can't build:
+msbuild /t:sdv /p:Inputs="/view" pst.sln /p:Configuration="release" /p:Platform="x64"
+
+

@@ -1,0 +1,105 @@
+
+https://www.codeproject.com/Articles/13090/Building-and-deploying-a-basic-WDF-Kernel-Mode-Dri
+
+https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdfdevice/ns-wdfdevice-_wdf_pnppower_event_callbacks
+
+https://github.com/uri247/wdk80
+
+Service: pstfilt
+    REG_DWORD       Type            1
+    REG_DWORD       Start           3
+    REG_DWORD       ErrorControl    1
+
+Enum\USB\\VID_046D&PID_0825&MI_00\7&1c6c3755&0&0000
+    REG_MULTI_SZ    UpperFilters    pstfilt
+
+
+        DevNode 0xffffb70cc259da60 for PDO 0xffffb70cc259f360
+          InstancePath is "PCI\VEN_8086&DEV_51ED&SUBSYS_72708086&REV_01\3&11583659&0&A0"
+          ServiceName is "USBXHCI"
+          State = DeviceNodeStarted (0x30a)
+          Previous State = DeviceNodeEnumerateCompletion (0x30f)
+          DevNode 0xffffb70cc84ad010 for PDO 0xffffb70cca8e9060
+            InstancePath is "USB\ROOT_HUB30\4&338de6a&0&0"
+            ServiceName is "USBHUB3"
+            State = DeviceNodeStarted (0x30a)
+            Previous State = DeviceNodeEnumerateCompletion (0x30f)
+            DevNode 0xffffb70ccc5ee3c0 for PDO 0xffffb70cc91602c0
+              InstancePath is "USB\VID_05E3&PID_0610\5&2cdbcaf7&0&6"
+              ServiceName is "USBHUB3"
+              State = DeviceNodeStarted (0x30a)
+              Previous State = DeviceNodeEnumerateCompletion (0x30f)
+              DevNode 0xffff8582882bd010 for PDO 0xffff85828845ae00
+                InstancePath is "USB\VID_046D&PID_0825\DC282AA0"
+                ServiceName is "usbccgp"
+                State = DeviceNodeStarted (0x30a)
+                Previous State = DeviceNodeEnumerateCompletion (0x30f)
+                DevNode 0xffff8582859029e0 for PDO 0xffff8582856e3870
+                  InstancePath is "USB\VID_046D&PID_0825&MI_00\7&1c6c3755&0&0000"
+                  ServiceName is "usbvideo"
+                  State = DeviceNodeStarted (0x30a)
+                  Previous State = DeviceNodeEnumerateCompletion (0x30f)
+                DevNode 0xffff8582860ec8a0 for PDO 0xffff85828a49d830
+                  InstancePath is "USB\VID_046D&PID_0825&MI_02\7&1c6c3755&0&0002"
+                  ServiceName is "usbaudio"
+                  State = DeviceNodeStarted (0x30a)
+                  Previous State = DeviceNodeEnumerateCompletion (0x30f)
+                  DevNode 0xffff85827fe93bb0 for PDO 0xffff858286b40e00
+                    InstancePath is "SWD\MMDEVAPI\{0.0.1.00000000}.{fad00072-de70-41d2-a7bb-e7566ad48e83}"
+                    State = DeviceNodeStarted (0x30a)
+                    Previous State = DeviceNodeStartPostWork (0x309)
+
+0: kd> !devstack 0xffff8582856e3870
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffff85828463de00  \Driver\ksthunk    ffff85828463df50  000000eb
+  ffff858282c8ede0  \Driver\pstfilt    ffff85828839e8a0  
+  ffff858282c78de0  \Driver\usbvideo   ffff858282c78f50  
+> ffff8582856e3870  \Driver\usbccgp    ffff8582856e39c0  000000e9
+!DevNode ffff8582859029e0 :
+  DeviceInst is "USB\VID_046D&PID_0825&MI_00\7&1c6c3755&0&0000"
+  ServiceName is "usbvideo"
+
+
+              DevNode 0xffffa684993f5520 for PDO 0xffffa684998e3e00
+                InstancePath is "USB\VID_046D&PID_0825\DC282AA0"
+                ServiceName is "usbccgp"
+                State = DeviceNodeStarted (0x30a)
+                Previous State = DeviceNodeEnumerateCompletion (0x30f)
+                DevNode 0xffffa6849974eb20 for PDO 0xffffa684998b1310
+                  InstancePath is "USB\VID_046D&PID_0825&MI_00\7&1c6c3755&0&0000"
+                  ServiceName is "usbvideo"
+                  State = DeviceNodeStarted (0x30a)
+                  Previous State = DeviceNodeEnumerateCompletion (0x30f)
+                DevNode 0xffffa68499b42aa0 for PDO 0xffffa6849974f7f0
+                  InstancePath is "USB\VID_046D&PID_0825&MI_02\7&1c6c3755&0&0002"
+                  ServiceName is "usbaudio"
+                  State = DeviceNodeStarted (0x30a)
+                  Previous State = DeviceNodeEnumerateCompletion (0x30f)
+                  DevNode 0xffffa684924eb8a0 for PDO 0xffffa6848cd08e00
+                    InstancePath is "SWD\MMDEVAPI\{0.0.1.00000000}.{fad00072-de70-41d2-a7bb-e7566ad48e83}"
+                    State = DeviceNodeStarted (0x30a)
+                    Previous State = DeviceNodeStartPostWork (0x309)
+
+0: kd> dt _device_object 0xffffa684998e3e00
+nt!_DEVICE_OBJECT
+   +0x000 Type             : 0n3
+   +0x002 Size             : 0x178
+   +0x004 ReferenceCount   : 0n0
+   +0x008 DriverObject     : 0xffffa684`84509d80 _DRIVER_OBJECT
+   +0x010 NextDevice       : 0xffffa684`81b02d80 _DEVICE_OBJECT
+   +0x018 AttachedDevice   : 0xffffa684`995e5830 _DEVICE_OBJECT
+   +0x138 DeviceObjectExtension : 0xffffa684`998e3f78 _DEVOBJ_EXTENSION
+
+0: kd> dt nt!_DEVOBJ_EXTENSION 0xffffa684`998e3f78
+    [+0x028] DeviceNode       : 0xffffa684993f5520 [Type: void *]
+
+0: kd> dt _DEVICE_NODE 0xffffa684993f5520 
+nt!_DEVICE_NODE
+   +0x000 Sibling          : (null) 
+   +0x008 Child            : 0xffffa684`9974eb20 _DEVICE_NODE
+   +0x010 Parent           : 0xffffa684`7f669b20 _DEVICE_NODE
+   +0x018 LastChild        : 0xffffa684`99b42aa0 _DEVICE_NODE
+   +0x020 PhysicalDeviceObject : 0xffffa684`998e3e00 _DEVICE_OBJECT
+   +0x028 InstancePath     : _UNICODE_STRING "USB\VID_046D&PID_0825\DC282AA0"
+   +0x038 ServiceName      : _UNICODE_STRING "usbccgp"
+
