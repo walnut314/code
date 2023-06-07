@@ -28,12 +28,14 @@ Environment:
 #define NTDEVICE_NAME_STRING    L"\\Device\\PstFilt"
 #define SYMBOLIC_NAME_STRING    L"\\DosDevices\\PstFilt"
 
-#define NUM_PNP_CALLBACKS       (4)
+#define NUM_PNP_CALLBACKS       (5)
 
 // Our per Device context
 //
 typedef struct _PST_DEVICE_CONTEXT {  // NOLINT(cppcoreguidelines-pro-type-member-init)
     WDFDEVICE       WdfDevice;
+    PDEVICE_OBJECT  WdmDevice;
+    PDEVICE_OBJECT  WdmTarget;
     PWDFDEVICE_INIT DeviceInit;
 } PST_DEVICE_CONTEXT, *PPST_DEVICE_CONTEXT;
 

@@ -10,7 +10,8 @@ Service: pstfilt
     REG_DWORD       Start           3
     REG_DWORD       ErrorControl    1
 
-Enum\USB\\VID_046D&PID_0825&MI_00\7&1c6c3755&0&0000
+Upper filter the port driver, not the functions
+Enum\USB\\VID_046D&PID_0825
     REG_MULTI_SZ    UpperFilters    pstfilt
 
 

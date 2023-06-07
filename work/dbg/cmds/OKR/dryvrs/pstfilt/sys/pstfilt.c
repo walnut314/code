@@ -231,6 +231,7 @@ PstDeviceAdd(
 
     UCHAR MinorFunctionTable[NUM_PNP_CALLBACKS] = {IRP_MN_QUERY_DEVICE_RELATIONS,
                                                    IRP_MN_QUERY_DEVICE_TEXT,
+                                                   IRP_MN_QUERY_ID,
                                                    IRP_MN_REMOVE_DEVICE,
                                                    IRP_MN_SURPRISE_REMOVAL};
 
@@ -270,6 +271,8 @@ PstDeviceAdd(
     //
     devContext = PstGetDeviceContext(wdfDevice);
     devContext->WdfDevice = wdfDevice;
+    devContext->WdmDevice = WdfDeviceWdmGetDeviceObject(wdfDevice);
+    devContext->WdmTarget = WdfDeviceWdmGetAttachedDevice(wdfDevice);
     devContext->DeviceInit = DeviceInit;
 
     //
@@ -410,6 +413,7 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
     UCHAR minorFunction;
     PDEVICE_RELATIONS relations;
     PDEVICE_OBJECT target;
+    PDEVICE_OBJECT dev;
 
     UNREFERENCED_PARAMETER(Device);
     UNREFERENCED_PARAMETER(Irp);
@@ -457,6 +461,14 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
             status = Irp->IoStatus.Status;
             break;
 
+        case IRP_MN_QUERY_ID:
+            target = WdfDeviceWdmGetAttachedDevice(Device);
+            status = SendIrpSynchronous(target, Irp);
+            if (!NT_SUCCESS(status)) {
+                goto Error_exit;
+            }
+            break;
+
         case IRP_MN_QUERY_DEVICE_TEXT:
             target = WdfDeviceWdmGetAttachedDevice(Device);
             status = SendIrpSynchronous(target, Irp);
@@ -472,7 +484,16 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
                 globals.ndevs--;
                 globals.devs[globals.ndevs] = NULL;
             }
+            globals.fail = WdfFalse;
             KeReleaseMutex(&globals.lock, FALSE);
+
+            target = WdfDeviceWdmGetAttachedDevice(Device);
+            dev = WdfDeviceWdmGetDeviceObject(Device);
+            status = SendIrpSynchronous(target, Irp);
+            IoDetachDevice(target); 
+            IoDeleteDevice(dev);
+            status = STATUS_SUCCESS;
+
             break;
 
         case IRP_MN_SURPRISE_REMOVAL:
@@ -483,6 +504,8 @@ NTSTATUS PstEvtDeviceWdmIrpPreprocess(
                 globals.devs[globals.ndevs] = NULL;
             }
             KeReleaseMutex(&globals.lock, FALSE);
+            target = WdfDeviceWdmGetAttachedDevice(Device);
+            status = SendIrpSynchronous(target, Irp);
             break;
 
         default:
