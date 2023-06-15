@@ -6,3 +6,5 @@ EXPORTS
     help
     idt
     st
+    cam1
+    cam2

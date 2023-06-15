@@ -10,7 +10,6 @@ static PDEBUG_CONTROL4 DebugControl;
 static PDEBUG_SYMBOLS3 DebugSymbols;
 static PDEBUG_DATA_SPACES4 DebugDataSpaces;
 
-
 static
 HRESULT
 QueryInterfaces(

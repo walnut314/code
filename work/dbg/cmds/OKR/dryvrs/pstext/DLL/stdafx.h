@@ -10,10 +10,15 @@
 //#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <Windows.h>
-#include <DbgEng.h>
+#define KDEXT_64BIT
 #include <wdbgexts.h>
+#include <DbgEng.h>
 #include <imagehlp.h>
 
 #include <tchar.h>
 
 // TODO: reference additional headers your program requires here
+//extern WINDBG_EXTENSION_APIS ExtensionApis;
+//#define dprintf (ExtensionApis.lpOutputRoutine)
+#include "..\incs\camera.h"
+

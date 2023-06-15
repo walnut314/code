@@ -48,3 +48,5 @@ IsKernelMode(
 
     return Status;
 }
+
+
