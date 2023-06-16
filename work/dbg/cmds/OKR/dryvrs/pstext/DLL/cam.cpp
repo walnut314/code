@@ -72,7 +72,15 @@ cam1(
     BOOL IsAll = FALSE;
     ULONG64 CamMemList = 0xffffbc0db8935c70;
     ULONG BytesRead;
+    ULONG64 Info;
+    ULONG64 ProcListAddr;
     CAM camera;
+    NT_IMAGE_INFO ntInfo;
+    LIST_ENTRY list;
+    ULONG64 listAddr;
+    ULONG64 KProcAddr;
+    KPROCESS KProc;
+    int i;
 
     __try {
         if ((Status = QueryInterfaces(DebugClient)) != S_OK) {
@@ -106,9 +114,63 @@ cam1(
         DebugControl->Output(DEBUG_OUTPUT_NORMAL, "dude, awesome camera stuff: %d args: %s isall: %d\n", 1, args, IsAll);
         DebugControl->Output(DEBUG_OUTPUT_NORMAL, "more stuff: cam1: %x, cam2: %x, cam3: %x, cam4: %x, at %I64x\n", 
                                         camera.dude1, camera.dude2, camera.dude3, camera.dude4, CamMemList);
+
+        if ((Status = DebugSymbols->GetOffsetByName("nt!NtImageInfo", &Info)) != S_OK) {
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "no Info.\n");
+            __leave;
+        }
+        if ((Status = DebugDataSpaces->ReadVirtual(Info, &ntInfo, sizeof(NT_IMAGE_INFO), &BytesRead)) != S_OK) {
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "no Info data.\n");
+            __leave;
+        }
+
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: Version             %x\n",    ntInfo.Version);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: OsMajorVersion      %x\n",    ntInfo.OsMajorVersion);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: OsMinorVersion      %x\n",    ntInfo.OsMinorVersion);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: MajorRelease        %x\n",    ntInfo.MajorRelease);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: LoaderBlockSize     %x\n",    ntInfo.LoaderBlockSize);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: LoaderExtensionSize %x\n",    ntInfo.LoaderExtensionSize);
+
+        /*
+         *  fffff804`64a42190 nt!KiProcessListHead = struct _LIST_ENTRY [ 0xffff9b88`230ff390 - 0xffff9b88`46444410 ]
+         */ 
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: dude1\n");
+        if ((Status = DebugSymbols->GetOffsetByName("nt!KiProcessListHead", &ProcListAddr)) != S_OK) {
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "no Proc list.\n");
+            __leave;
+        }
+        // cast to LIST_ENTRY, and get Flink
+        //
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: dude2\n");
+        if ((Status = DebugDataSpaces->ReadVirtual(ProcListAddr, &list, sizeof(LIST_ENTRY), &BytesRead)) != S_OK) {
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "no list for procs.\n");
+            __leave;
+        }
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "Flink: %I64x\n", list.Flink);
+        i = 4; // terminator for fake data
+        while (list.Flink && i > 0) {
+            // dump structure
+            KProcAddr = (ULONG64) list.Flink;
+            if ((Status = DebugDataSpaces->ReadVirtual(KProcAddr, &KProc, sizeof(KPROCESS), &BytesRead)) != S_OK) {
+                DebugControl->Output(DEBUG_OUTPUT_NORMAL, "list loop fail1 %d\n", i);
+                __leave;
+            }
+            // get next link
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "loop KProcAddr(%d): %I64x\n", i, KProcAddr);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "loop KProc.ProcessListEntry(%d): %I64x\n", i, KProc.ProcessListEntry);
+            listAddr = (ULONG64) KProc.ProcessListEntry.Flink;
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "loop listAddr(%d): %I64x\n", i, listAddr);
+            if ((Status = DebugDataSpaces->ReadVirtual(listAddr, &list, sizeof(LIST_ENTRY), &BytesRead)) != S_OK) {
+                DebugControl->Output(DEBUG_OUTPUT_NORMAL, "list loop fail2 %d\n", i);
+                __leave;
+            }
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "loop Flink(%d): %I64x\n", i, list.Flink);
+            i--;
+        }
     }
 
     __finally {
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: BAM!!!\n");
         ReleaseInterfaces();
     }
     return Status;
