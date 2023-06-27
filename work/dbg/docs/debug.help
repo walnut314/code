@@ -5012,6 +5012,9 @@ real driver name (not service name) -> dt nt!_DEVICE_OBJECT <dev> DriverObject -
 symbol file also contains the real driver name
 C:\> sigcheck -v <driver sys file> ==> gives name and version
 
+!locks -> nt!PopPolicyLock -- look at lock owner *AND* waiters for driver of interest - dump threads
+maybe some API is being called during D0Enter/Exit that shouldn't be - bug 22018457411
+
 why did power IRP timeout?
 !poaction --> no thread?
 !stacks 2 <driver name> ?
