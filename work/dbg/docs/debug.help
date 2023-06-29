@@ -648,6 +648,10 @@ UMDF v2.15+:
 
 
 ========================
+BIOS version check:
+wmic bios
+Device manager\Firmware\Surface UEFI\Firmware\Firmware version.
+
 
 > vertarget -- os version
 1: kd> !sysinfo
