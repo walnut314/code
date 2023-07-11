@@ -29,6 +29,7 @@ help(
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "st   - Displays system service table.\n");
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "idt  - Displays interrupt descriptor table\n\n");
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mem_used - Displays camera memory in use\n\n");
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mem_used2 - Also displays camera memory in use\n\n");
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "cam  - Displays camera stuff\n\n");
         }
 
