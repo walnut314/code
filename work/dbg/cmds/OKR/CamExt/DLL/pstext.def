@@ -1,0 +1,8 @@
+EXPORTS
+
+    DebugExtensionInitialize
+    DebugExtensionUninitialize
+
+    help
+    mem_used
+    mem_used_p
