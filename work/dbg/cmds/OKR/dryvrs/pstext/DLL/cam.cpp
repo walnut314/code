@@ -5,6 +5,9 @@
 #include "stdafx.h"
 #include "common.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static PDEBUG_CONTROL4 DebugControl;
 static PDEBUG_SYMBOLS3 DebugSymbols;
@@ -63,6 +66,62 @@ ReleaseInterfaces(
 
 HRESULT
 CALLBACK
+mem_used(
+    _In_ PDEBUG_CLIENT DebugClient,
+    _In_opt_ PCSTR args
+    )
+{
+    HRESULT Status = S_OK;
+    BOOL IsAll = FALSE;
+    ULONG BytesRead;
+    ULONG64 Info;
+    LIST_ENTRY list;
+    ULONG64 listAddr;
+    char cmd[] = "!list -t nt!_LIST_ENTRY.Flink -e -x \"dt iacamera64!_memory_range @$extret host_addr page_addr actual_size\" \0";
+
+    __try {
+        if ((Status = QueryInterfaces(DebugClient)) != S_OK) {
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "Could not query interfaces.\n");
+            __leave;
+        }
+        if ((Status = IsKernelMode(DebugClient, __FUNCTION__)) != S_OK) {
+            __leave;
+        }
+
+        if (args) {
+            if ((args[0] == '-' || args[0] == '/') && args[1] == 'a') {
+                IsAll = TRUE;
+            }
+        } else { // args is never NULL
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "!cam1 usage: wusup\n");
+            return Status;
+        }
+
+        Status = DebugControl->Execute(DEBUG_OUTCTL_ALL_CLIENTS, "x iacamera64!used_mem_list", DEBUG_EXECUTE_ECHO);
+
+        Status = DebugSymbols->GetOffsetByName("iacamera64!used_mem_list", &Info);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "list: %I64x\n", Info);
+        Status = DebugDataSpaces->ReadVirtual(Info, &list, sizeof(LIST_ENTRY), &BytesRead);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "flink: %I64x\n", list.Flink);
+        size_t full_len = strlen(cmd) + 4*sizeof(ULONG64);
+        char* full_cmd = new char[full_len];
+        listAddr = (ULONG64) list.Flink;
+        sprintf_s(full_cmd, full_len, "%s %I64x", cmd, listAddr);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "yoyo: %d len %d %s\n", full_len, strlen(full_cmd), full_cmd);
+        Status = DebugControl->Execute(DEBUG_OUTCTL_ALL_CLIENTS, full_cmd, DEBUG_EXECUTE_ECHO);
+
+    }
+
+
+    __finally {
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "ntInfo: BAM!!!\n");
+        ReleaseInterfaces();
+    }
+    return Status;
+}
+
+HRESULT
+CALLBACK
 cam1(
     _In_ PDEBUG_CLIENT DebugClient,
     _In_opt_ PCSTR args
@@ -70,7 +129,7 @@ cam1(
 {
     HRESULT Status = S_OK;
     BOOL IsAll = FALSE;
-    ULONG64 CamMemList = 0xffffbc0db8935c70;
+    ULONG64 CamMemList = 0xffffe58b446cc5e0;
     ULONG BytesRead;
     ULONG64 Info;
     ULONG64 ProcListAddr;
@@ -80,6 +139,7 @@ cam1(
     ULONG64 listAddr;
     ULONG64 KProcAddr;
     KPROCESS KProc;
+    char cmd[] = "!list -t nt!_LIST_ENTRY.Flink -e -x \"dt iacamera64!_memory_range @$extret host_addr page_addr actual_size\" \0";
     int i;
 
     __try {
@@ -105,7 +165,23 @@ cam1(
             }
         } else { // args is never NULL
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "!cam1 usage: wusup\n");
+            return Status;
         }
+
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "yo dude: %s\n", cmd);
+
+        Status = DebugControl->Execute(DEBUG_OUTCTL_ALL_CLIENTS, "x iacamera64!used_mem_list", DEBUG_EXECUTE_ECHO);
+        Status = DebugSymbols->GetOffsetByName("iacamera64!used_mem_list", &Info);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "list: %I64x\n", Info);
+        Status = DebugDataSpaces->ReadVirtual(Info, &list, sizeof(LIST_ENTRY), &BytesRead);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "flink: %I64x\n", list.Flink);
+        size_t full_len = strlen(cmd) + 4*sizeof(ULONG64);
+        char* full_cmd = new char[full_len];
+        listAddr = (ULONG64) list.Flink;
+        sprintf_s(full_cmd, full_len, "%s %I64x", cmd, listAddr);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "yoyo: %d len %d %s\n", full_len, strlen(full_cmd), full_cmd);
+        Status = DebugControl->Execute(DEBUG_OUTCTL_ALL_CLIENTS, full_cmd, DEBUG_EXECUTE_ECHO);
+
 
         if ((Status = DebugDataSpaces->ReadVirtual(CamMemList, &camera, sizeof(CAM), &BytesRead)) != S_OK) {
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "Could not read camera memory list.\n");
