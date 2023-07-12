@@ -20,22 +20,17 @@ QueryInterfaces(
     )
 {
     HRESULT Status = S_OK;
-
     if ((Status = DebugClient->QueryInterface(__uuidof(IDebugControl), (PVOID *)&DebugControl)) != S_OK) {
-
         return Status;
     }
 
     if ((Status = DebugClient->QueryInterface(__uuidof(IDebugSymbols), (PVOID *)&DebugSymbols)) != S_OK) {
-
         return Status;
     }
 
     if ((Status = DebugClient->QueryInterface(__uuidof(IDebugDataSpaces), (PVOID *)&DebugDataSpaces)) != S_OK) {
-
         return Status;
     }
-
     return Status;
 }
 
@@ -46,19 +41,16 @@ ReleaseInterfaces(
     )
 {
     if (DebugDataSpaces) {
-
         DebugDataSpaces->Release();
         DebugDataSpaces = NULL;
     }
 
     if (DebugSymbols) {
-
         DebugSymbols->Release();
         DebugSymbols = NULL;
     }
 
     if (DebugControl) {
-
         DebugControl->Release();
         DebugControl = NULL;
     }
