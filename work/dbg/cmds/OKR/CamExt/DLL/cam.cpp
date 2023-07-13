@@ -101,16 +101,16 @@ mem_used(
 
         while (Flink != Blink) {
             Status = DebugDataSpaces->ReadVirtual(Flink, &mem, sizeof(memory_range_t), &BytesRead);
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "host_addr   : 0x%I64x\n",    mem.host_addr);
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "page_addr   : 0x%I64x\n",    mem.page_addr);
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "actual_size : 0x%llx\n\n",  mem.actual_size);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "host_addr   : 0x%I64x\n",  mem.host_addr);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "page_addr   : 0x%I64x\n",  mem.page_addr);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "actual_size : 0x%llx\n\n", mem.actual_size);
             Flink = (ULONG64) mem.list.Flink;
         }
         // grab the trailing link
         Status = DebugDataSpaces->ReadVirtual(Flink, &mem, sizeof(memory_range_t), &BytesRead);
-        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "host_addr   : 0x%I64x\n",    mem.host_addr);
-        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "page_addr   : 0x%I64x\n",    mem.page_addr);
-        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "actual_size : 0x%lx\n\n",  mem.actual_size);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "host_addr   : 0x%I64x\n", mem.host_addr);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "page_addr   : 0x%I64x\n", mem.page_addr);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "actual_size : 0x%lx\n\n", mem.actual_size);
 
     }
 
