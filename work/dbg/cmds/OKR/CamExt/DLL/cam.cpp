@@ -8,60 +8,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "cam.h"
-
+#include "extn.hpp"
 
 static PDEBUG_CONTROL4 DebugControl;
 static PDEBUG_SYMBOLS3 DebugSymbols;
 static PDEBUG_DATA_SPACES4 DebugDataSpaces;
-
-
-Kam::Kam(
-    )
-    : m_Progress(0)
-{
-}
-
-
-Kam::~Kam()
-{
-}
-
-
-Kam& Kam::operator++()
-{
-    if (m_Progress == 70)
-    {
-        m_Progress = 0;
-    }
-    ++m_Progress;
-    return *this;
-}
-
-HRESULT Kam::Exec(
-    _In_ PCHAR cmd)
-{
-    HRESULT Status = S_OK;
-    Status = DebugControl->Execute(DEBUG_OUTCTL_ALL_CLIENTS, cmd, DEBUG_EXECUTE_ECHO);
-    return Status;
-}
-
-HRESULT Kam::Eval(
-    _In_ PCHAR expr)
-{
-    HRESULT Status = S_OK;
-    DEBUG_VALUE val;
-    ULONG64 size;
-
-    Status = DebugControl->SetExpressionSyntax(DEBUG_EXPR_CPLUSPLUS);
-    Status = DebugControl->Evaluate(expr, DEBUG_VALUE_INT64, &val, NULL);
-    size = (ULONG64) val.I64;
-    DebugControl->Output(DEBUG_OUTPUT_NORMAL, "eval: %s = 0n%I64d == 0x%I64x\n", expr, size, size);
-    Status = DebugControl->SetExpressionSyntax(DEBUG_EXPR_MASM);
-
-    return Status;
-}
-
 
 static
 HRESULT
@@ -121,24 +72,18 @@ test(
     )
 {
     HRESULT Status = S_OK;
-    Kam k;
+    Extension ext(DebugClient);
+    DEBUG_VALUE val;
 
-    if ((Status = QueryInterfaces(DebugClient)) != S_OK) {
-        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "Could not query interfaces.\n");
-        return Status;
-    }
-        if (args) {
-            if ((args[0] == '-' || args[0] == '/') && args[1] == 'a') {
-            }
-        } else { // args is never NULL
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "!cam1 usage: wusup\n");
-            return Status;
+    if (args) {
+        if ((args[0] == '-' || args[0] == '/') && args[1] == 'a') {
         }
+    }
+    if ((Status = ext.Eval("sizeof(iacamera64!FrameContext)", &val)) != S_OK) {
+        goto _Exit;
+    }
 
-    Status = k.Eval("sizeof(iacamera64!FrameContext)");
-
-    ReleaseInterfaces();
-
+_Exit:
     return Status;
 }
 

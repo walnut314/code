@@ -1,4 +1,4 @@
-Build started 7/14/2023 3:56:07 PM.
+Build started 7/14/2023 4:46:29 PM.
 Environment at start of build:
 ALLUSERSPROFILE = C:\ProgramData
 APPDATA = C:\Users\bbartel\AppData\Roaming
@@ -120,13 +120,13 @@ __VSCMD_PREINIT_PATH = C:\Intel\DFPython\bin\;C:\Python38\Scripts\;C:\Python38\;
 __VSCMD_PREINIT_VCToolsVersion = 14.31.31103
 __VSCMD_PREINIT_VS170COMNTOOLS = G:\Program Files\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\
 
-Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\MSBuild.exe"
+Logging verbosity is set to: Diagnostic.16:46:30.029     0>Process = "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\MSBuild.exe"
                    MSBuild executable path = "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\MSBuild.exe"
                    Command line arguments = "msbuild.exe  PstExt.sln /M /T:clean /P:Platform="x64";Configuration="release" /flp:Verbosity=Diagnostic"
                    Current directory = "d:\Intel_Dev\CamExt"
                    MSBuild version = "17.1.0+ae57d105c"
-15:56:08.681     1>Project "d:\Intel_Dev\CamExt\PstExt.sln" on node 1 (clean target(s)).
-15:56:08.681     1>Initial Properties:
+16:46:30.733     1>Project "d:\Intel_Dev\CamExt\PstExt.sln" on node 1 (clean target(s)).
+16:46:30.733     1>Initial Properties:
                    __DOTNET_ADD_32BIT = 1
                    __DOTNET_PREFERRED_BITNESS = 32
                    __VSCMD_PREINIT_PATH = C:\Intel\DFPython\bin\;C:\Python38\Scripts\;C:\Python38\;C:\Program Files\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Program Files\TortoiseGit\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Windows Kits\10\Microsoft Application Virtualization\Sequencer\;C:\Program Files\PuTTY\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Cobol\bin;C:\windows\SysWOW64\WindowsPowerShell\v1.0\Modules\TShell\TShell\;C:\Program Files\CMake\bin;c:\Program Files (x86)\Windows Kits\10\Debuggers\x64;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;c:\intel\packman\packman_cli;C:\Program Files\Cppcheck;C:\Program Files\dotnet\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\bbartel\bin;C:\Python38\Scripts\;C:\Python38\;C:\Users\bbartel\AppData\Local\Microsoft\WindowsApps;C:\Users\bbartel\AppData\Local\GitHubDesktop\bin;C:\VSCode\bin;C:\Users\bbartel\AppData\Roaming\npm;C:\Users\bbartel\.dotnet\tools;
@@ -330,7 +330,7 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                    XTF_XBOXIP_OVERRIDE =  10.0.0.62
                    ZES_ENABLE_SYSMAN = 1
 
-15:56:08.681     1>Initial Items:
+16:46:30.733     1>Initial Items:
                    ProjectReference
                        d:\Intel_Dev\CamExt\DLL\pstext.vcxproj
                            AdditionalProperties = Configuration=Release; Platform=x64
@@ -364,8 +364,8 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                            Platform = x86
                            Configuration = Release
 
-15:56:08.713     1>Target "ValidateSolutionConfiguration: (TargetId:2)" in file "d:\Intel_Dev\CamExt\PstExt.sln.metaproj" from project "d:\Intel_Dev\CamExt\PstExt.sln" (entry point):
-15:56:08.729     1>Task "Error" skipped, due to false condition; (('$(CurrentSolutionConfigurationContents)' == '') and ('$(SkipInvalidConfigurations)' != 'true')) was evaluated as (('<SolutionConfiguration>
+16:46:30.765     1>Target "ValidateSolutionConfiguration: (TargetId:2)" in file "d:\Intel_Dev\CamExt\PstExt.sln.metaproj" from project "d:\Intel_Dev\CamExt\PstExt.sln" (entry point):
+16:46:30.781     1>Task "Error" skipped, due to false condition; (('$(CurrentSolutionConfigurationContents)' == '') and ('$(SkipInvalidConfigurations)' != 'true')) was evaluated as (('<SolutionConfiguration>
   <ProjectConfiguration Project="{5BBD5478-483A-4DB0-855A-74187E629C1A}" AbsolutePath="d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" BuildProjectInSolution="True">Release|x64</ProjectConfiguration>
 </SolutionConfiguration>' == '') and ('' != 'true')).
                    Task "Warning" skipped, due to false condition; (('$(CurrentSolutionConfigurationContents)' == '') and ('$(SkipInvalidConfigurations)' == 'true')) was evaluated as (('<SolutionConfiguration>
@@ -376,13 +376,13 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                      Task Parameter:Text=Building solution configuration "release|x64". (TaskId:2)
                      Building solution configuration "release|x64". (TaskId:2)
                    Done executing task "Message". (TaskId:2)
-15:56:08.801     1>Done building target "ValidateSolutionConfiguration" in project "PstExt.sln".: (TargetId:2)
-15:56:08.801     1>Target "ValidateToolsVersions: (TargetId:3)" in file "d:\Intel_Dev\CamExt\PstExt.sln.metaproj" from project "d:\Intel_Dev\CamExt\PstExt.sln" (entry point):
+16:46:30.847     1>Done building target "ValidateSolutionConfiguration" in project "PstExt.sln".: (TargetId:2)
+16:46:30.847     1>Target "ValidateToolsVersions: (TargetId:3)" in file "d:\Intel_Dev\CamExt\PstExt.sln.metaproj" from project "d:\Intel_Dev\CamExt\PstExt.sln" (entry point):
                    Task "Error" skipped, due to false condition; ('$(MSBuildToolsVersion)' == '2.0' and ('$(ProjectToolsVersion)' != '2.0' and '$(ProjectToolsVersion)' != '')) was evaluated as ('Current' == '2.0' and ('' != '2.0' and '' != '')).
-15:56:08.801     1>Done building target "ValidateToolsVersions" in project "PstExt.sln".: (TargetId:3)
-15:56:08.801     1>Target "ValidateProjects: (TargetId:4)" in file "d:\Intel_Dev\CamExt\PstExt.sln.metaproj" from project "d:\Intel_Dev\CamExt\PstExt.sln" (entry point):
-15:56:08.801     1>Done building target "ValidateProjects" in project "PstExt.sln".: (TargetId:4)
-15:56:08.801     1>Target "Clean: (TargetId:5)" in file "d:\Intel_Dev\CamExt\PstExt.sln.metaproj" from project "d:\Intel_Dev\CamExt\PstExt.sln" (entry point):
+16:46:30.847     1>Done building target "ValidateToolsVersions" in project "PstExt.sln".: (TargetId:3)
+16:46:30.847     1>Target "ValidateProjects: (TargetId:4)" in file "d:\Intel_Dev\CamExt\PstExt.sln.metaproj" from project "d:\Intel_Dev\CamExt\PstExt.sln" (entry point):
+16:46:30.847     1>Done building target "ValidateProjects" in project "PstExt.sln".: (TargetId:4)
+16:46:30.847     1>Target "Clean: (TargetId:5)" in file "d:\Intel_Dev\CamExt\PstExt.sln.metaproj" from project "d:\Intel_Dev\CamExt\PstExt.sln" (entry point):
                    Using "MSBuild" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
                    Task "MSBuild" (TaskId:3)
                      Task Parameter:BuildInParallel=True (TaskId:3)
@@ -420,7 +420,7 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                      Additional Properties for project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj": (TaskId:3)
                        Configuration=Release (TaskId:3)
                        Platform=x64 (TaskId:3)
-15:56:08.918     0>The "Configuration" property is a global property, and cannot be modified.
+16:46:30.954     0>The "Configuration" property is a global property, and cannot be modified.
                    The "Platform" property is a global property, and cannot be modified.
                    Search paths being used for $(MSBuildExtensionsPath) are G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild;$(BuildLabSetupFilesRoot)\MSBuild
                    Trying to import G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\$(MSBuildToolsVersion)\Microsoft.Common.props using extensions path G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild
@@ -1254,8 +1254,8 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                    Overriding target "ComputeMetaGenInputs" in project "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.MetaGen.targets" with target "ComputeMetaGenInputs" from project "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets".
                    Overriding target "GetNativeManifest" in project "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" with target "GetNativeManifest" from project "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets".
                    Overriding target "GetTargetPathWithTargetPlatformMoniker" in project "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" with target "GetTargetPathWithTargetPlatformMoniker" from project "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.Cpp.DesignTime.targets".
-15:56:08.681     1>Project "d:\Intel_Dev\CamExt\PstExt.sln" (1) is building "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (2) on node 1 (Clean target(s)).
-15:56:09.134     2>Initial Properties:
+16:46:30.733     1>Project "d:\Intel_Dev\CamExt\PstExt.sln" (1) is building "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (2) on node 1 (Clean target(s)).
+16:46:31.179     2>Initial Properties:
                    __DOTNET_ADD_32BIT = 1
                    __DOTNET_PREFERRED_BITNESS = 32
                    __VSCMD_PREINIT_PATH = C:\Intel\DFPython\bin\;C:\Python38\Scripts\;C:\Python38\;C:\Program Files\Common Files\Oracle\Java\javapath;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Program Files\TortoiseGit\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Windows Kits\10\Microsoft Application Virtualization\Sequencer\;C:\Program Files\PuTTY\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Cobol\bin;C:\windows\SysWOW64\WindowsPowerShell\v1.0\Modules\TShell\TShell\;C:\Program Files\CMake\bin;c:\Program Files (x86)\Windows Kits\10\Debuggers\x64;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;c:\intel\packman\packman_cli;C:\Program Files\Cppcheck;C:\Program Files\dotnet\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\bbartel\bin;C:\Python38\Scripts\;C:\Python38\;C:\Users\bbartel\AppData\Local\Microsoft\WindowsApps;C:\Users\bbartel\AppData\Local\GitHubDesktop\bin;C:\VSCode\bin;C:\Users\bbartel\AppData\Roaming\npm;C:\Users\bbartel\.dotnet\tools;
@@ -2880,7 +2880,7 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                    YieldDuringToolExecution = true
                    ZES_ENABLE_SYSMAN = 1
 
-15:56:09.134     2>Initial Items:
+16:46:31.179     2>Initial Items:
                    _ApplicationManifestFinal
                        d:\Intel_Dev\CamExt\x64\Release\Native.pstext.manifest
                            TargetPath = Native.pstext.manifest
@@ -3539,9 +3539,9 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                            SuppressStartupBanner = true
                            PreprocessorDefinitions = _WIN64;_AMD64_=1;AMD64;WIN32_LEAN_AND_MEAN=1;_WIN32_WINNT=0x0A00;WINVER=0x0A00;WINNT=1;NTDDI_VERSION=0xA00000C;SMP_ID=\"{F5414C9C-6CDE-4673-879E-27AD5A30C4C5}\";
 
-15:56:09.134     2>Project file contains ToolsVersion="12.0". This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion="Current". For more information, please see http://go.microsoft.com/fwlink/?LinkId=293424.
+16:46:31.179     2>Project file contains ToolsVersion="12.0". This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion="Current". For more information, please see http://go.microsoft.com/fwlink/?LinkId=293424.
                    Target "EnableIntermediateOutputPathMismatchWarning" skipped, due to false condition; ('$(RestoreProjectStyle)' == 'PackageReference') was evaluated as ('' == 'PackageReference').
-15:56:09.134     2>Target "_CheckForInvalidConfigurationAndPlatform: (TargetId:6)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "_PrepareForClean" depends on it):
+16:46:31.179     2>Target "_CheckForInvalidConfigurationAndPlatform: (TargetId:6)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "_PrepareForClean" depends on it):
                    Set Property: _InvalidConfigurationMessageText=The BaseOutputPath/OutputPath property is not set for project 'pstext.vcxproj'.  Please check to make sure that you have specified a valid combination of Configuration and Platform for this project.  Configuration='Release'  Platform='x64'.
                    Set Property: _InvalidConfigurationMessageText=The BaseOutputPath/OutputPath property is not set for project 'pstext.vcxproj'.  Please check to make sure that you have specified a valid combination of Configuration and Platform for this project.  Configuration='Release'  Platform='x64'.  You may be seeing this message because you are trying to build a project without a solution file, and have specified a non-default Configuration or Platform that doesn't exist for this project.
                    Task "Error" skipped, due to false condition; ( '$(_InvalidConfigurationError)' == 'true' ) was evaluated as ( '' == 'true' ).
@@ -3562,20 +3562,20 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                    Task "Error" skipped, due to false condition; ('$(BaseIntermediateOutputPath)' != '' and !HasTrailingSlash('$(BaseIntermediateOutputPath)')) was evaluated as ('obj\' != '' and !HasTrailingSlash('obj\')).
                    Task "Error" skipped, due to false condition; ( '$(_InitialMSBuildProjectExtensionsPath)' != '' And '$(MSBuildProjectExtensionsPath)' != '$(_InitialMSBuildProjectExtensionsPath)' ) was evaluated as ( 'd:\Intel_Dev\CamExt\DLL\obj\' != '' And 'd:\Intel_Dev\CamExt\DLL\obj\' != 'd:\Intel_Dev\CamExt\DLL\obj\' ).
                    Task "Warning" skipped, due to false condition; ( '$(EnableBaseIntermediateOutputPathMismatchWarning)' == 'true' And '$(_InitialBaseIntermediateOutputPath)' != '$(BaseIntermediateOutputPath)' And '$(BaseIntermediateOutputPath)' != '$(MSBuildProjectExtensionsPath)' ) was evaluated as ( '' == 'true' And 'obj\' != 'obj\' And 'obj\' != 'd:\Intel_Dev\CamExt\DLL\obj\' ).
-15:56:09.143     2>Done building target "_CheckForInvalidConfigurationAndPlatform" in project "pstext.vcxproj".: (TargetId:6)
-15:56:09.143     2>Target "_PrepareForClean: (TargetId:7)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.BuildSteps.Targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
+16:46:31.189     2>Done building target "_CheckForInvalidConfigurationAndPlatform" in project "pstext.vcxproj".: (TargetId:6)
+16:46:31.189     2>Target "_PrepareForClean: (TargetId:7)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.BuildSteps.Targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
                    Set Property: BuildType=Clean
                    Set Property: _BuildActionType=Clean
                    Task "Delete" skipped, due to false condition; (Exists($(LastBuildState))) was evaluated as (Exists(x64\Release\pstext.tlog\pstext.lastbuildstate)).
-15:56:09.143     2>Done building target "_PrepareForClean" in project "pstext.vcxproj".: (TargetId:7)
-15:56:09.143     2>Target "BeforeClean: (TargetId:8)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
-15:56:09.143     2>Done building target "BeforeClean" in project "pstext.vcxproj".: (TargetId:8)
+16:46:31.189     2>Done building target "_PrepareForClean" in project "pstext.vcxproj".: (TargetId:7)
+16:46:31.189     2>Target "BeforeClean: (TargetId:8)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
+16:46:31.189     2>Done building target "BeforeClean" in project "pstext.vcxproj".: (TargetId:8)
                    Target "UnmanagedUnregistration" skipped, due to false condition; ((('$(_AssemblyTimestampBeforeCompile)' != '$(_AssemblyTimestampAfterCompile)' or '$(RegisterForComInterop)' != 'true' or '$(OutputType)' != 'library') or
                                        ('$(_AssemblyTimestampBeforeCompile)' == '')) and
                                       Exists('@(_UnmanagedRegistrationCache)')) was evaluated as ((('' != '' or '' != 'true' or 'library' != 'library') or
                                        ('' == '')) and
                                       Exists('obj\pstext.vcxproj.UnmanagedRegistration.cache')).
-15:56:09.143     2>Target "CoreClean: (TargetId:9)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
+16:46:31.189     2>Target "CoreClean: (TargetId:9)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
                    Using "Delete" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
                    Task "Delete" (TaskId:6)
                      Task Parameter:
@@ -3614,8 +3614,8 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                      Task Parameter:Overwrite=True (TaskId:13)
                      Task Parameter:File=x64\Release\pstext.vcxproj.FileListAbsolute.txt (TaskId:13)
                    Done executing task "WriteLinesToFile". (TaskId:13)
-15:56:09.188     2>Done building target "CoreClean" in project "pstext.vcxproj".: (TargetId:9)
-15:56:09.188     2>Target "AssignProjectConfiguration: (TargetId:10)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "PrepareProjectReferences" depends on it):
+16:46:31.230     2>Done building target "CoreClean" in project "pstext.vcxproj".: (TargetId:9)
+16:46:31.230     2>Target "AssignProjectConfiguration: (TargetId:10)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "PrepareProjectReferences" depends on it):
                    Set Property: ShouldUnsetParentConfigurationAndPlatform=true
                    Set Property: AddSyntheticProjectReferencesForSolutionDependencies=true
                    Using "AssignProjectConfiguration" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
@@ -3632,13 +3632,13 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                      Task Parameter:OnlyReferenceAndBuildProjectsEnabledInSolutionConfiguration=True (TaskId:14)
                      Task Parameter:CurrentProjectConfiguration=Release (TaskId:14)
                    Done executing task "AssignProjectConfiguration". (TaskId:14)
-15:56:09.192     2>Done building target "AssignProjectConfiguration" in project "pstext.vcxproj".: (TargetId:10)
-15:56:09.192     2>Target "_SplitProjectReferencesByFileExistence: (TargetId:11)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "PrepareProjectReferences" depends on it):
+16:46:31.237     2>Done building target "AssignProjectConfiguration" in project "pstext.vcxproj".: (TargetId:10)
+16:46:31.237     2>Target "_SplitProjectReferencesByFileExistence: (TargetId:11)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "PrepareProjectReferences" depends on it):
                    Task "ResolveNonMSBuildProjectOutput" skipped, due to false condition; ('$(BuildingInsideVisualStudio)'=='true' and '@(ProjectReferenceWithConfiguration)'!='') was evaluated as (''=='true' and ''!='').
-15:56:09.192     2>Done building target "_SplitProjectReferencesByFileExistence" in project "pstext.vcxproj".: (TargetId:11)
-15:56:09.192     2>Target "_AddOutputPathToGlobalPropertiesToRemove: (TargetId:12)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "_GetProjectReferenceTargetFrameworkProperties" depends on it):
-15:56:09.192     2>Done building target "_AddOutputPathToGlobalPropertiesToRemove" in project "pstext.vcxproj".: (TargetId:12)
-15:56:09.192     2>Target "_GetProjectReferenceTargetFrameworkProperties: (TargetId:13)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "PrepareProjectReferences" depends on it):
+16:46:31.237     2>Done building target "_SplitProjectReferencesByFileExistence" in project "pstext.vcxproj".: (TargetId:11)
+16:46:31.237     2>Target "_AddOutputPathToGlobalPropertiesToRemove: (TargetId:12)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "_GetProjectReferenceTargetFrameworkProperties" depends on it):
+16:46:31.237     2>Done building target "_AddOutputPathToGlobalPropertiesToRemove" in project "pstext.vcxproj".: (TargetId:12)
+16:46:31.237     2>Target "_GetProjectReferenceTargetFrameworkProperties: (TargetId:13)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "PrepareProjectReferences" depends on it):
                    Set Property: ReferringTargetFrameworkForProjectReferences=
                    Using "MSBuild" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
                    Task "MSBuild" (TaskId:15)
@@ -3653,25 +3653,25 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                    Task "GetReferenceNearestTargetFrameworkTask" skipped, due to false condition; ('@(_ProjectReferenceTargetFrameworkPossibilities)' != '' and '$(ReferringTargetFrameworkForProjectReferences)' != ''
                                                                            And '$(GetReferenceNearestTargetFrameworkTaskSupportsTargetPlatformParameter)' != 'true' and '%(_ProjectReferenceTargetFrameworkPossibilities.IsVcxOrNativeProj)' != 'true') was evaluated as ('' != '' and '' != ''
                                                                            And 'true' != 'true' and '' != 'true').
-15:56:09.239     2>Done building target "_GetProjectReferenceTargetFrameworkProperties" in project "pstext.vcxproj".: (TargetId:13)
+16:46:31.274     2>Done building target "_GetProjectReferenceTargetFrameworkProperties" in project "pstext.vcxproj".: (TargetId:13)
                    Target "_GetProjectReferencePlatformProperties" skipped, due to false condition; ('$(EnableDynamicPlatformResolution)' == 'true'
                                         and '$(BuildingInsideVisualStudio)' != 'true'
                                         and '@(_MSBuildProjectReferenceExistent)' != '') was evaluated as ('' == 'true'
                                         and '' != 'true'
                                         and '' != '').
-15:56:09.239     2>Target "PrepareProjectReferences: (TargetId:14)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CleanReferencedProjects" depends on it):
-15:56:09.239     2>Done building target "PrepareProjectReferences" in project "pstext.vcxproj".: (TargetId:14)
-15:56:09.239     2>Target "CleanReferencedProjects: (TargetId:15)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
+16:46:31.274     2>Target "PrepareProjectReferences: (TargetId:14)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CleanReferencedProjects" depends on it):
+16:46:31.274     2>Done building target "PrepareProjectReferences" in project "pstext.vcxproj".: (TargetId:14)
+16:46:31.274     2>Target "CleanReferencedProjects: (TargetId:15)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
                    Task "MSBuild" skipped, due to false condition; ('$(BuildingInsideVisualStudio)' != 'true' and '$(BuildProjectReferences)' == 'true' and '@(_MSBuildProjectReferenceExistent)' != '') was evaluated as ('' != 'true' and 'true' == 'true' and '' != '').
-15:56:09.239     2>Done building target "CleanReferencedProjects" in project "pstext.vcxproj".: (TargetId:15)
-15:56:09.239     2>Target "CleanPublishFolder: (TargetId:16)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
+16:46:31.274     2>Done building target "CleanReferencedProjects" in project "pstext.vcxproj".: (TargetId:15)
+16:46:31.274     2>Target "CleanPublishFolder: (TargetId:16)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
                    Task "RemoveDir" skipped, due to false condition; ('$(PublishDir)'=='$(OutputPath)app.publish\' and Exists('$(PublishDir)')) was evaluated as ('d:\Intel_Dev\CamExt\x64\Release\app.publish\'=='d:\Intel_Dev\CamExt\x64\Release\app.publish\' and Exists('d:\Intel_Dev\CamExt\x64\Release\app.publish\')).
-15:56:09.239     2>Done building target "CleanPublishFolder" in project "pstext.vcxproj".: (TargetId:16)
-15:56:09.239     2>Target "AfterClean: (TargetId:17)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
-15:56:09.239     2>Done building target "AfterClean" in project "pstext.vcxproj".: (TargetId:17)
-15:56:09.239     2>Target "BeforeCppClean: (TargetId:18)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
-15:56:09.239     2>Done building target "BeforeCppClean" in project "pstext.vcxproj".: (TargetId:18)
-15:56:09.239     2>Target "CoreCppClean: (TargetId:19)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
+16:46:31.274     2>Done building target "CleanPublishFolder" in project "pstext.vcxproj".: (TargetId:16)
+16:46:31.274     2>Target "AfterClean: (TargetId:17)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
+16:46:31.274     2>Done building target "AfterClean" in project "pstext.vcxproj".: (TargetId:17)
+16:46:31.274     2>Target "BeforeCppClean: (TargetId:18)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
+16:46:31.274     2>Done building target "BeforeCppClean" in project "pstext.vcxproj".: (TargetId:18)
+16:46:31.274     2>Target "CoreCppClean: (TargetId:19)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
                    Task "MakeDir" (TaskId:16)
                      Task Parameter:Directories=x64\Release\ (TaskId:16)
                    Done executing task "MakeDir". (TaskId:16)
@@ -3686,8 +3686,8 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                      Task Parameter:Overwrite=True (TaskId:18)
                      Task Parameter:File=x64\Release\pstext.Build.CppClean.log (TaskId:18)
                    Done executing task "WriteLinesToFile". (TaskId:18)
-15:56:09.254     2>Done building target "CoreCppClean" in project "pstext.vcxproj".: (TargetId:19)
-15:56:09.254     2>Target "CleanOutput: (TargetId:20)" in file "G:\Program Files\Windows Kits\10\build\10.0.22621.0\WindowsDriver.common.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
+16:46:31.286     2>Done building target "CoreCppClean" in project "pstext.vcxproj".: (TargetId:19)
+16:46:31.286     2>Target "CleanOutput: (TargetId:20)" in file "G:\Program Files\Windows Kits\10\build\10.0.22621.0\WindowsDriver.common.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
                    Added Item(s): FilesToDelete=x64\Release\pstext.vcxproj.FileListAbsolute.txt
                    Task "Delete" (TaskId:19)
                      Task Parameter:Files=x64\Release\pstext.vcxproj.FileListAbsolute.txt (TaskId:19)
@@ -3699,26 +3699,26 @@ Logging verbosity is set to: Diagnostic.15:56:08.027     0>Process = "G:\Program
                    Task "RemoveDir" (TaskId:21)
                    Done executing task "RemoveDir". (TaskId:21)
                    Removed Item(s): FilesToDelete=x64\Release\pstext.vcxproj.FileListAbsolute.txt
-15:56:09.285     2>Done building target "CleanOutput" in project "pstext.vcxproj".: (TargetId:20)
-15:56:09.285     2>Target "AfterCppClean: (TargetId:21)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
-15:56:09.285     2>Done building target "AfterCppClean" in project "pstext.vcxproj".: (TargetId:21)
-15:56:09.285     2>Target "PGInstrumentedClean: (TargetId:22)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
+16:46:31.318     2>Done building target "CleanOutput" in project "pstext.vcxproj".: (TargetId:20)
+16:46:31.318     2>Target "AfterCppClean: (TargetId:21)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
+16:46:31.318     2>Done building target "AfterCppClean" in project "pstext.vcxproj".: (TargetId:21)
+16:46:31.318     2>Target "PGInstrumentedClean: (TargetId:22)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "CppClean" depends on it):
                    Task "Delete" (TaskId:22)
                    Done executing task "Delete". (TaskId:22)
-15:56:09.285     2>Done building target "PGInstrumentedClean" in project "pstext.vcxproj".: (TargetId:22)
-15:56:09.285     2>Target "CppClean: (TargetId:23)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
-15:56:09.285     2>Done building target "CppClean" in project "pstext.vcxproj".: (TargetId:23)
+16:46:31.318     2>Done building target "PGInstrumentedClean" in project "pstext.vcxproj".: (TargetId:22)
+16:46:31.318     2>Target "CppClean: (TargetId:23)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (target "Clean" depends on it):
+16:46:31.318     2>Done building target "CppClean" in project "pstext.vcxproj".: (TargetId:23)
                    Target "_CheckForInvalidConfigurationAndPlatform" skipped. Previously built successfully.
                    Target "_CheckForInvalidConfigurationAndPlatform" skipped. Previously built successfully.
-15:56:09.285     2>Target "Clean: (TargetId:24)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (entry point):
-15:56:09.285     2>Done building target "Clean" in project "pstext.vcxproj".: (TargetId:24)
-15:56:09.288     2>Done Building Project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (Clean target(s)).
-15:56:09.303     1>Done executing task "MSBuild". (TaskId:3)
-15:56:09.303     1>Done building target "Clean" in project "PstExt.sln".: (TargetId:5)
-15:56:09.303     1>Done Building Project "d:\Intel_Dev\CamExt\PstExt.sln" (clean target(s)).
+16:46:31.318     2>Target "Clean: (TargetId:24)" in file "G:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets" from project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (entry point):
+16:46:31.318     2>Done building target "Clean" in project "pstext.vcxproj".: (TargetId:24)
+16:46:31.321     2>Done Building Project "d:\Intel_Dev\CamExt\DLL\pstext.vcxproj" (Clean target(s)).
+16:46:31.337     1>Done executing task "MSBuild". (TaskId:3)
+16:46:31.337     1>Done building target "Clean" in project "PstExt.sln".: (TargetId:5)
+16:46:31.337     1>Done Building Project "d:\Intel_Dev\CamExt\PstExt.sln" (clean target(s)).
 
 Build succeeded.
     0 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:01.33
+Time Elapsed 00:00:01.35
