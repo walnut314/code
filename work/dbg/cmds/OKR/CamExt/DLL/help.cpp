@@ -21,9 +21,10 @@ help(
         HMODULE hModule = GetModuleHandle(APPNAME);
 
         if (hModule) {
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "help       - displays this list.\n");
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mem_used   - Also displays camera memory in use (public) \n");
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mem_used_p - Displays camera memory in use (private) \n");
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "Intel PST Extension\n");
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "help       - Displays this list.\n");
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mem_used   - Displays camera memory in use \n");
+            //DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mem_used_p - Displays camera memory in use (private) \n");
         }
 
         DebugControl->Release();
