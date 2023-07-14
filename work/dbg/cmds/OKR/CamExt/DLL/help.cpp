@@ -25,6 +25,7 @@ help(
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "help       - Displays this list.\n");
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mem        - Displays camera memory in use\n");
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "frames     - Displays queued camera frames\n");
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "test       - Development command\n");
             //DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mem_used_p - Displays camera memory in use (private) \n");
         }
 

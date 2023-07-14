@@ -6,4 +6,5 @@ EXPORTS
     help
     mem
     frames
+    test
     mem_used_p
