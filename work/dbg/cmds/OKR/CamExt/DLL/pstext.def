@@ -4,5 +4,6 @@ EXPORTS
     DebugExtensionUninitialize
 
     help
-    mem_used
+    mem
+    frames
     mem_used_p
