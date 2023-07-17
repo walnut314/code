@@ -1,7 +1,7 @@
 #pragma once
 
 
-#define APPNAME     _T("PstExt")
+#define APPNAME     _T("PstKdExt")
 
 
 HRESULT

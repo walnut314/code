@@ -9,6 +9,9 @@
 #include <string.h>
 
 #include "extn.hpp"
+#include <string>
+
+using namespace std;
 
 static PDEBUG_CONTROL4 DebugControl;
 static PDEBUG_SYMBOLS3 DebugSymbols;
@@ -74,16 +77,29 @@ test(
     HRESULT Status = S_OK;
     Extension ext(DebugClient);
     DEBUG_VALUE val;
+    ULONG64 Info;
 
     if (args) {
         if ((args[0] == '-' || args[0] == '/') && args[1] == 'a') {
         }
     }
-    if ((Status = ext.Eval("sizeof(iacamera64!FrameContext)", &val)) != S_OK) {
-        goto _Exit;
-    }
+//    if ((Status = ext.Eval("sizeof(iacamera64!FrameContext)", &val)) != S_OK) {
+//        goto _Exit;
+//    }
 
-_Exit:
+    QueryInterfaces(DebugClient);
+    Status = DebugSymbols->GetOffsetByName("iacamera64!g_frameContexts", &Info);
+
+    size_t full_len = 256;
+    PCHAR cmd = new char[full_len];
+    sprintf_s(cmd, full_len, "dt iacamera64!_DrvFrameContext %I64x isValid", Info);
+    DebugControl->Output(DEBUG_OUTPUT_NORMAL, "\n --> %s\n", cmd);
+    Status = DebugControl->Evaluate(cmd, DEBUG_VALUE_VECTOR64, &val, NULL);
+    DebugControl->Output(DEBUG_OUTPUT_NORMAL, "\n --> %I64d\n", val.VI8);
+
+
+//_Exit:
+    ReleaseInterfaces();
     return Status;
 }
 
@@ -219,6 +235,7 @@ frames(
         Status = DebugControl->Evaluate("sizeof(iacamera64!FrameContext)", DEBUG_VALUE_INT64, &val, NULL);
         size = (ULONG64) val.I64;
         DebugControl->Output(DEBUG_OUTPUT_NORMAL, "\nFrame size: %I64d\n", size);
+        n_frames = 100; // hackhack
 
         // still need to use the directly struct here
         for (i = 0; i < n_frames; i++) {
