@@ -4292,6 +4292,7 @@ Lab: Bug Check 0x1E: KMODE_EXCEPTION_NOT_HANDLED
 k stack maybe trap, e.g. nt!KiTrap06 -- illegal instruction
     unhandled exception
 !chkimg nt or any image like pci -- may show errors - usually hardware
+kd> !chkimg -lo 50 -d !fastfat
 u Arg2 -- exception occured at
 !pte Arg2 -- --KREV (kernel, read-only, exec, valid)
 
