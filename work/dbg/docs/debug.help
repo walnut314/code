@@ -1062,7 +1062,7 @@ help                         - Displays this list
 hidppd <address> <flags>     - Dump Preparsed Data of HID device
 ib <port>                    - Read a byte from an I/O port
 id <port>                    - Read a double-word from an I/O port
-idt <vector>                 - Dump ISRs referenced by each IDT entry
+idt <vector>                 - DumpISRs referenced by each IDT entry
 ioresdes <address>           - Display IO_RESOURCE_DESCRIPTOR structure
 ioreslist <IO Resource List> - Dump IO resource requirements list
 ipi                          - Dump IPI processors state
@@ -5200,5 +5200,38 @@ If one or more of above are NOT available, do !thread on the owner thread to fin
 All entries in Power Irp Serial List
 unable to get nt!PopIrpSerialListLength
 PopIrpSerialListLength = 0
+
+Blue Tooth:
+15: kd> !bthkd.bthenuminfo
+FDO ffffcf847b47faf0 PDO ffffcf8475f80b60
+Power State: PowerDeviceD0
+TdiPdoCount: 0
+dt bthenum!_BTHENUM_FDO_DEVICE_EXTENSION ffffcf847b47fc40
+Removing: FALSE
+Removed: FALSE
+Started: TRUE
+Protocol: Unknown Protocol
+Local Radio Info ffffcf847b47fd78
+Service/Protocol Enumerator Interface ffffcf847b1f8780
+Device Enumerator Interface ffffcf847b05bf10
+
+List of Children: 
+dt nt!_RTL_RB_TREE ffffcf847b47fcc8
+--------------------------------
+
+Wait Wake IRP List: WaitWakeIrpList ffffcf847b47fc80
+----------------------------------------
+
+
+FDO ffffcf847b47eaf0 PDO ffffcf847515ed40
+Power State: PowerDeviceD0
+TdiPdoCount: 0
+dt bthenum!_BTHENUM_FDO_DEVICE_EXTENSION ffffcf847b47ec40
+Removing: FALSE
+Removed: FALSE
+Started: TRUE
+Protocol: BTHPROTO_RFCOMM
+Local Radio Info ffffcf847b47ed78
+Service/Protocol Enumerator Interface ffffcf847b1f83c0
 
 
