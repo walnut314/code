@@ -3,6 +3,7 @@
 #endif // _MSC_VER > 1000
 
 #include <stdio.h>
+#include <stdint.h>
 #include <windows.h>
 
 void PressKey(int key)
@@ -20,7 +21,7 @@ void PressKey(int key)
     SendInput(1, &ip, sizeof(INPUT));
 }
 
-void ReleaseKey()
+void ReleaseKey(int key)
 {
     INPUT ip;
 
@@ -30,17 +31,24 @@ void ReleaseKey()
     ip.ki.dwExtraInfo = 0;
  
     // Release the key
+    ip.ki.wVk = key; //0x41; // virtual-key code for the "a" key
     ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
     SendInput(1, &ip, sizeof(INPUT));
 }
 
 int main(int argc, char *argv[])
 {
+    uint32_t cnt = 0;
     while (1) {
+        PressKey(VK_MENU);
         PressKey(VK_TAB);
+        ReleaseKey(VK_TAB);
+        ReleaseKey(VK_MENU);
+        //Sleep(20000);
+        //ReleaseKey();
         Sleep(20000);
-        ReleaseKey();
-        Sleep(20000);
+        //putchar('0'+(char) cnt);
+        cnt++;
     }
 }
 
