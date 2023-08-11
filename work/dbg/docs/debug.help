@@ -1262,7 +1262,25 @@ mtrr                         - Dumps MTRR
 Type ".hh [command]" for more detailed help
 
 
-!poaction
+!poaction -- notify address
+Allocated power irps (PopIrpList - fffff80451c3d090)
+  IRP: ffffcc03b1254960 (set/S5), PDO: ffffcc03b16f27f0, CURRENT: ffffcc03b12d9de0, NOTIFY: ffffcc03b17ee4a0
+  IRP: ffffcc03b2cef960 (set/D3,), PDO: ffffcc03b16f27f0, CURRENT: ffffcc03b12d9de0
+
+12: kd> dt 0xffffcc03b17ee4a0 _PO_DEVICE_NOTIFY
+nt!_PO_DEVICE_NOTIFY
+   +0x000 Link             : _LIST_ENTRY [ 0xffffcc03`ab859480 - 0xffffcc03`ab859480 ]
+   +0x010 PowerChildren    : _LIST_ENTRY [ 0xffffcc03`b17ee4b0 - 0xffffcc03`b17ee4b0 ]
+   +0x020 PowerParents     : _LIST_ENTRY [ 0xffffcc03`b17ee4c0 - 0xffffcc03`b17ee4c0 ]
+   +0x030 TargetDevice     : 0xffffcc03`b1074e00 _DEVICE_OBJECT
+   +0x038 OrderLevel       : 0x3 ''
+   +0x040 DeviceObject     : 0xffffcc03`b16f27f0 _DEVICE_OBJECT
+   +0x048 DeviceName       : 0xffffcc03`b2125610  "\Device\000000cb"
+   +0x050 DriverName       : 0xffffcc03`b2e56dd0  "\Driver\ksthunk"
+   +0x058 ChildCount       : 0
+   +0x05c ActiveChild      : 0
+   +0x060 ParentCount      : 1
+   +0x064 ActiveParent     : 1
 
 
 kd> .sympath+ srv*;C:\git\SurfaceOemPanelDriver\Debug\x64\bin;C:\git\SurfaceTconDriver\Debug\x64\bin
