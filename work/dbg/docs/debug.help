@@ -5137,6 +5137,112 @@ see WdfAcquireInterruptLock rules in API dox
 
 best to troubleshoot by running verifier - will BC and the rule violation
 
+0: kd> !sysptes
+System PTE Information
+  Total System Ptes 4295384576
+     SysPtes list 6 has 1101 free entries for 0xe65 total PTEs
+    starting PTE: ffffb9e980000000
+  free blocks: 277   total free: 229247    largest free block: 21881
+
+0: kd> !kdexts.pagefile
+*** PARTITION fffff8006d66b480 ***
+  **** PageFile Info 1 of 3 ****
+    Page File: \??\C:\pagefile.sys dt nt!_MMPAGING_FILE ffffe58ac289e420
+      Current:   8912896 Kb  Free Space:   8912888 Kb
+      Minimum:   8912896 Kb  Maximum:     25165824 Kb
+*** Volume Manager devstack *** - DevObj: ffffe58ab7f408f0
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffffe58abc28b030  \Driver\volsnap    ffffe58abc28b180  
+  ffffe58ab7f50de0  \Driver\volume     ffffe58ab7f50f30  
+  ffffe58ab7f748d0  \Driver\rdyboost   ffffe58ab7f74a20  
+  ffffe58abc288370  \Driver\iorate     ffffe58abc2884c0  
+  ffffe58abc289030  \Driver\fvevol     ffffe58abc289180  
+> ffffe58ab7f408f0  \Driver\volmgr     ffffe58ab7f40a40  HarddiskVolume3
+!DevNode ffffe58abc09d8c0 :
+  DeviceInst is "STORAGE\Volume\{e2eb7825-3a93-11ee-ab09-806e6f6e6963}#0000000011500000"
+  ServiceName is "volume"
+    Vpb: ffffe58abc13d920
+*** Filesystem devstack *** DevObj: ffffe58abc294030
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffffe58ab7f58c90  \FileSystem\FltMgr ffffe58ab7f58de0  
+> ffffe58abc294030  \FileSystem\Ntfs   ffffe58abc2941b0  
+    FileSystem: \FileSystem\Ntfs
+Cannot get  ntfs!VOLUME_DEVICE_OBJECT.Vcb @ ffffe58abc294030
+
+0: kd> dt nt!_MMPAGING_FILE ffffe58ac289e420
+   +0x000 Size             : 0x220000
+   +0x008 MaximumSize      : 0x600000
+   +0x010 MinimumSize      : 0x220000
+   +0x018 FreeSpace        : 0x21fffe
+   +0x020 PeakUsage        : 0
+   +0x028 HighestPage      : 0
+   +0x030 FreeReservationSpace : 0x21e0e6
+   +0x038 File             : 0xffffe58a`c2ac1480 _FILE_OBJECT
+   +0x040 Entry            : 0xffffe58a`c2a86310  -> 0xffffe58a`c2b593f0 _MMMOD_WRITER_MDL_ENTRY
+   +0x048 NumberOfModWriterEntries : 2
+   +0x050 PfnsToFree       : _SLIST_HEADER
+   +0x060 PageFileName     : _UNICODE_STRING "\??\C:\pagefile.sys"
+   +0x070 Bitmaps          : 0xffffe58a`bb120000 _MI_PAGING_FILE_SPACE_BITMAPS
+   +0x078 AllocationBitmapHint : 2
+   +0x07c LargestAllocationCluster : 0x100
+   +0x080 RefreshAllocationCluster : 4
+   +0x084 LastRefreshAllocationCluster : 0
+   +0x088 ReservedClusterSizeAggregate : 0x400
+   +0x08c MaximumRunLengthInBitmaps : 0x1f
+   +0x090 BitmapsCacheLengthTree : _RTL_RB_TREE
+   +0x0a0 BitmapsCacheLocationTree : _RTL_RB_TREE
+   +0x0b0 BitmapsCacheFreeList : _LIST_ENTRY [ 0xffffe58a`c2b34150 - 0xffffe58a`c2b34070 ]
+   +0x0c0 BitmapsCacheEntries : 0xffffe58a`c2b34000 _MI_PAGEFILE_BITMAPS_CACHE_ENTRY
+   +0x0c8 ToBeEvictedCount : 0
+   +0x0c8 HybridPriority   : 0
+   +0x0cc PageFileNumber   : 0y0000
+   +0x0cc WsSwapPagefile   : 0y0
+   +0x0cc NoReservations   : 0y1
+   +0x0cc VirtualStorePagefile : 0y0
+   +0x0cc SwapSupported    : 0y1
+   +0x0cc NodeInserted     : 0y1
+   +0x0cc StackNotified    : 0y1
+   +0x0cc BackedBySCM      : 0y0
+   +0x0cc SpecialPurposeMemory : 0y0
+   +0x0cc Spare0           : 0y000
+   +0x0ce AdriftMdls       : 0y0
+   +0x0ce Spare1           : 0y0000000 (0)
+   +0x0cf IgnoreReservations : 0y0
+   +0x0cf Spare2           : 0y0000000 (0)
+   +0x0d0 PageHashPages    : 0
+   +0x0d4 PageHashPagesPeak : 0
+   +0x0d8 PageHash         : 0xffffe2fe`ecc00000 _MI_PAGE_HASH
+   +0x0e0 FileHandle       : 0xffffffff`80000af0 Void
+   +0x0e8 SpinLock         : 0n0
+   +0x0f0 FlowThroughReadRoot : _RTL_AVL_TREE
+   +0x0f8 Partition        : 0xfffff800`6d66b480 _MI_PARTITION
+   +0x100 FileObjectNode   : _RTL_BALANCED_NODE
+   +0x100 ExtentsTree      : _RTL_RB_TREE
+
+0: kd> !vpb ffffe58abc13d920
+Vpb at        0xffffe58abc13d920
+Flags:        0x1 mounted 
+DeviceObject: 0xffffe58abc294030 (dt nt!DEVICE_OBJECT)
+RealDevice:   0xffffe58ab7f408f0 (dt nt!DEVICE_OBJECT)
+RefCount:     9040
+Volume Label: "Local Disk"
+
+0: kd> !fileobj 0xffffe58ac2ac1480 
+    \pagefile.sys
+Device Object: 0xffffe58ab7f408f0   \Driver\volmgr
+Vpb: 0xffffe58abc13d920
+Event signalled
+Access: Read Write SharedWrite 
+Flags:  0x40008
+    No Intermediate Buffering
+    Handle Created
+FsContext: 0xffffe58ac2b2bce0   FsContext2: 0xffffe58ac27dfdb0
+CurrentByteOffset: 0
+Cache Data:
+  Section Object Pointers: ffffe58abede2218
+  Shared Cache Map: 00000000
+
+
 Lab Bugcheck 0x1E: KMODE_EXCEPTION_NOT_HANDLED
 ==============================================
 > u Arg2
