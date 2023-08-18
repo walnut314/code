@@ -7,6 +7,7 @@ note: windbg can be used to open drivers to compare versions for fix
 > uf driver!function
 
 kPnL
+sysptes                      - Dumps the system PTEs
 
 start:
 .lines
@@ -1782,9 +1783,7 @@ Object: ffffa708ecf7c930  Type: (ffffa708ea4e2220) Device
 6: kd> !drvobj \Driver\volmgr 
 Driver object (ffffa708ec995e30) is for:
  \Driver\volmgr
-
 Driver Extension List: (id , addr)
-
 Device Object list:
 ffffa708ecee38f0  ffffa708ecf7c930  ffffa708eceb3b40  ffffa708ecee2b90
 ffffa708ec921900  
@@ -1794,7 +1793,6 @@ Object: ffffa708ec939d20  Type: (ffffa708ea4e24e0) Driver
     ObjectHeader: ffffa708ec939cf0 (new version)
     HandleCount: 0  PointerCount: 7
     Directory Object: ffff808c58cd7420  Name: mountmgr
-
 
 6: kd> !drvobj ffffa708ec939d20
 Driver object (ffffa708ec939d20) is for:
