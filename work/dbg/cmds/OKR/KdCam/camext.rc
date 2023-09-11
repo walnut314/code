@@ -1,8 +1,6 @@
 //+-------------------------------------------------------------------------
 //
-//  Microsoft Windows
-//
-//  Copyright (C) Microsoft Corporation, 1997 - 1999
+//  Copyright (C) Intel Corporation, 2023
 //
 //  File:       camext.rc
 //
@@ -13,10 +11,10 @@
 
 #define VER_FILETYPE                VFT_DLL
 #define VER_FILESUBTYPE             VFT2_UNKNOWN
-#define VER_FILEDESCRIPTION_STR     "AIC78xx miniport debugger extensions"
+#define VER_FILEDESCRIPTION_STR     "Camera debugger extensions"
 
-#define VER_INTERNALNAME_STR        "aic78xx.dll"
-#define VER_ORIGINALFILENAME_STR    "aic78xx.dll"
+#define VER_INTERNALNAME_STR        "camext.dll"
+#define VER_ORIGINALFILENAME_STR    "camext.dll"
 #define VER_LANGNEUTRAL
 
 #include <common.ver>

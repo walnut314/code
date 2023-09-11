@@ -1,12 +1,13 @@
-LIBRARY XXDBG
+LIBRARY CamExt
 
 EXPORTS
     WinDbgExtensionDllInit
     CheckVersion
     ExtensionApiVersion
-    mem
     help
     version
+    mem
+    frames
 
 
 
