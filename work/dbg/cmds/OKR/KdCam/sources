@@ -1,0 +1,38 @@
+!IF 0
+
+Copyright (C) Microsoft Corporation, 1997 - 1999
+
+Module Name:
+
+    sources.
+
+!ENDIF
+
+TARGETNAME=camext
+TARGETPATH=obj
+TARGETTYPE=DYNLINK
+
+!IF 0
+USE_NTDLL=1
+!ENDIF
+USE_LIBCMT=1
+
+
+C_DEFINES=$(C_DEFINES) -D_NTSYSTEM_
+
+INCLUDES=$(DDK_INC_PATH)
+
+INCLUDES=d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\ISP\hrt2;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\ISP\hrt2\inc;\
+         $(DDK_INC_PATH)
+
+SOURCES=camext.c   \
+        camext.rc
+
+UMTYPE=windows
+DLLDEF=$(O)\camext.def
+
+TARGETLIBS=G:\WinDDK\7600.16385.1\lib\wnet\amd64\kernel32.lib
+
+DLLENTRY=_DllMainCRTStartup
+

@@ -1,0 +1,12 @@
+LIBRARY XXDBG
+
+EXPORTS
+    WinDbgExtensionDllInit
+    CheckVersion
+    ExtensionApiVersion
+    mem
+    help
+    version
+
+
+
