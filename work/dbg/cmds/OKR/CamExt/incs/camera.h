@@ -20,10 +20,10 @@ struct _memory_range {
     vied_virtual_address_t vied_addr;          // Buffer device virtual address
     HANDLE                 dvmm_node;          // Non-vsm mode only, for DVMM management
     HANDLE                 vtl0_buffer_handle; // VSM mode only, for VTL0 insecure buffer
+    HANDLE                 vtl1_secure_handle; // VSM mode only, for VTL1 secure section buffer handle
     GUID                   vtl1_buffer_guid;   // VSM mode only, for VTL1 secure buffer
-    PMDL                   page_addr;          // VTL0 inscure buffer mdl
-    NTSTATUS               status;             // mem_status
-    size_t                 actual_size;        // Buffer size
+    PMDL page_addr;                            // VTL0 inscure buffer mdl
+    size_t actual_size;                        // Buffer size
 };
 
 

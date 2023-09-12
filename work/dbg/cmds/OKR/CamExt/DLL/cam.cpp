@@ -259,18 +259,20 @@ frames(
 // this is for use with privates
 HRESULT
 CALLBACK
-mem_used_p(
+mem2(
     _In_ PDEBUG_CLIENT DebugClient,
     _In_opt_ PCSTR args
     )
 {
     HRESULT Status = S_OK;
     BOOL IsAll = FALSE;
-    ULONG BytesRead;
-    ULONG64 Info;
+    ULONG dwBytesRead;
+    ULONG64 Mem_List_Addr;
+    ULONG64 Flink;
+    ULONG64 Blink;
     LIST_ENTRY list;
-    ULONG64 listAddr;
-    char cmd[] = "!list -t nt!_LIST_ENTRY.Flink -e -x \"dt iacamera64!_memory_range @$extret host_addr page_addr actual_size\" \0";
+    memory_range_t mem;
+    size_t total_size = 0;
 
     __try {
         if ((Status = QueryInterfaces(DebugClient)) != S_OK) {
@@ -290,13 +292,21 @@ mem_used_p(
             return Status;
         }
 
-        Status = DebugSymbols->GetOffsetByName("iacamera64!used_mem_list", &Info);
-        Status = DebugDataSpaces->ReadVirtual(Info, &list, sizeof(LIST_ENTRY), &BytesRead);
-        size_t full_len = strlen(cmd) + 4*sizeof(ULONG64);
-        PCHAR full_cmd = new char[full_len];
-        listAddr = (ULONG64) list.Flink;
-        sprintf_s(full_cmd, full_len, "%s %I64x", cmd, listAddr);
-        Exec(cmd);
+        Status = DebugSymbols->GetOffsetByName("iacamera64!used_mem_list", &Mem_List_Addr);
+        Status = DebugDataSpaces->ReadVirtual(Mem_List_Addr, &list, sizeof(LIST_ENTRY), &dwBytesRead);
+
+        Flink = (ULONG64) list.Flink;
+        Blink = (ULONG64) list.Blink;
+
+        while (Flink != Blink) {
+            Status = DebugDataSpaces->ReadVirtual(Flink, &mem, sizeof(memory_range_t), &dwBytesRead);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "host addr %I64x\n", mem.host_addr);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mdl       %I64x\n", mem.page_addr);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "size      0x%x\n",  mem.actual_size);
+            total_size += mem.actual_size;
+            Flink = (ULONG64) mem.list.Flink;
+        }
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "total size 0n%d bytes, 0n%d meg \n",  total_size, total_size/1024/1024);
 
     }
 

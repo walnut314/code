@@ -5,6 +5,6 @@ EXPORTS
 
     help
     mem
+    mem2
     frames
-    test
-    mem_used_p
+
