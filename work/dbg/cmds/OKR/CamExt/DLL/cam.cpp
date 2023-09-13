@@ -274,8 +274,9 @@ mem2(
     ULONG64 Flink;
     ULONG64 Blink;
     LIST_ENTRY list;
-    memory_range_t mem;
+    memory_range_t mem = {0};
     size_t total_size = 0;
+    int n_entries = 0;
 
     __try {
         if ((Status = QueryInterfaces(DebugClient)) != S_OK) {
@@ -301,15 +302,42 @@ mem2(
         Flink = (ULONG64) list.Flink;
         Blink = (ULONG64) list.Blink;
 
+#if 0
+dt iacamera64!_memory_range ffffb58e5a2db4f0
+   +0x000 list             : _LIST_ENTRY [ 0xffffb58e`40befb70 - 0xfffff805`3e2c74f0 ]
+   +0x010 host_addr        : 0xffff9301`bf93f000
+   +0x018 vied_addr        : 0
+   +0x020 dvmm_node        : (null) 
+   +0x028 vtl0_buffer_handle : (null) 
+   +0x030 vtl1_secure_handle : (null) 
+   +0x038 vtl1_buffer_guid : _GUID {00000000-0000-0000-0000-000000000000}
+   +0x048 page_addr        : 0xffffb58e`464f7f50 _MDL
+   +0x050 actual_size      : 0x1000
+#endif        
         while (Flink != Blink) {
             Status = DebugDataSpaces->ReadVirtual(Flink, &mem, sizeof(memory_range_t), &dwBytesRead);
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "host addr %I64x\n", mem.host_addr);
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "mdl       %I64x\n", mem.page_addr);
-            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "size      0x%x\n",  mem.actual_size);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "dt iacamera64!_memory_range 0x%I64x\n", Flink);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x000 list           : _LIST_ENTRY [ 0x%I64x - 0x%I64x ]\n", mem.list.Flink, mem.list.Blink);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x010 host_addr      : 0x%I64x\n", mem.host_addr);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x018 vied_addr      : 0x%I64x\n", mem.vied_addr);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x048 page_addr      : 0x%I64x _MDL\n", mem.page_addr);
+            DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x050 actual_size    : 0x%x\n",  mem.actual_size);
             total_size += mem.actual_size;
             Flink = (ULONG64) mem.list.Flink;
+            n_entries++;
         }
-        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "total size 0n%d bytes, 0n%d meg \n",  total_size, total_size/1024/1024);
+        // last one
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "dt iacamera64!_memory_range 0x%I64x\n", Flink);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x000 list           : _LIST_ENTRY [ 0x%I64x - 0x%I64x ]\n", mem.list.Flink, mem.list.Blink);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x010 host_addr      : 0x%I64x\n", mem.host_addr);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x018 vied_addr      : 0x%I64x\n", mem.vied_addr);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x048 page_addr      : 0x%I64x _MDL\n", mem.page_addr);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "   +0x050 actual_size    : 0x%x\n",  mem.actual_size);
+        total_size += mem.actual_size;
+        n_entries++;
+
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "\ntotal mem alloc'd         : %I64d\n",  total_size/1024/1024);
+        DebugControl->Output(DEBUG_OUTPUT_NORMAL, "number of entries in list : %d\n",  n_entries);
 
     }
 
