@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "extn.hpp"
+//#include "extn.hpp"
 #include <string>
 
 using namespace std;
@@ -67,6 +67,7 @@ ReleaseInterfaces(
     }
 }
 
+#if 0
 HRESULT
 CALLBACK
 test(
@@ -102,6 +103,7 @@ test(
     ReleaseInterfaces();
     return Status;
 }
+#endif
 
 HRESULT
 CALLBACK
@@ -136,7 +138,7 @@ mem(
             }
         } else { // args is never NULL
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "!cam1 usage: wusup\n");
-            return Status;
+            __leave;
         }
 
         Status = DebugControl->SetExpressionSyntax(DEBUG_EXPR_MASM);
@@ -215,7 +217,8 @@ frames(
             }
         } else { // args is never NULL
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "!cam1 usage: wusup\n");
-            return Status;
+            __leave;
+
         }
 
         Status = DebugSymbols->GetOffsetByName("iacamera64!g_frameContexts", &Info);
@@ -289,7 +292,7 @@ mem2(
             }
         } else { // args is never NULL
             DebugControl->Output(DEBUG_OUTPUT_NORMAL, "!cam1 usage: wusup\n");
-            return Status;
+            __leave;
         }
 
         Status = DebugSymbols->GetOffsetByName("iacamera64!used_mem_list", &Mem_List_Addr);
