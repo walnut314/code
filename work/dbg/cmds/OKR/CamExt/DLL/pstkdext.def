@@ -1,0 +1,10 @@
+EXPORTS
+
+    DebugExtensionInitialize
+    DebugExtensionUninitialize
+
+    help
+    mem
+    mem2
+    frames
+

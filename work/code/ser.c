@@ -7,8 +7,8 @@
 
 // https://msdn.microsoft.com/en-us/library/ff802693.aspx
 //
-char PORT[] = "com4"; // #customize this! Find it in device manager.
-int BAUD = 3000000;
+char PORT[] = "com3"; // #customize this! Find it in device manager.
+int BAUD = 38400; //3000000;
 
 void hexdump(const unsigned char *buffer, unsigned long long length)
 {
@@ -72,14 +72,14 @@ BOOL WriteABuffer(HANDLE hComm, char * lpBuf, DWORD dwToWrite)
     // Issue write.
     printf("writing %s\n", lpBuf);
     if (!WriteFile(hComm, lpBuf, dwToWrite, &dwWritten, &osWrite)) {
-        //printf("looks like it pended %x\n", GetLastError());
+        printf("looks like it pended %x\n", GetLastError());
         if (GetLastError() != ERROR_IO_PENDING) { 
             // WriteFile failed, but isn't delayed. Report error and abort.
             printf("not pending %d\n", GetLastError());
             fRes = FALSE;
         } else {
             // Write is pending.
-            //printf("write pended...\n");
+            printf("write pended...\n");
             dwRes = WaitForSingleObject(osWrite.hEvent, INFINITE);
             switch(dwRes) {
             // OVERLAPPED structure's event has been signaled. 
@@ -206,7 +206,7 @@ void loop(HANDLE hComm)
     char buffer[256];
     int len;
     while (1) {
-        //WriteABuffer(hComm, "[r]", 3);
+        WriteABuffer(hComm, "\n", 1);
         if (len = ReadABuffer(hComm, buffer, 256)) {
             if (len) { //strlen(buffer)) {
                 printf(">>>\n");
@@ -222,7 +222,7 @@ void loop(HANDLE hComm)
 int main()
 {
     HANDLE hComm;
-    hComm = CreateFileA("\\\\.\\COM4",
+    hComm = CreateFileA("\\\\.\\COM3",
                         GENERIC_READ | GENERIC_WRITE, 
                         0, 
                         0, 

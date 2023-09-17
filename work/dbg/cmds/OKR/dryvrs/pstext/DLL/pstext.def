@@ -1,0 +1,12 @@
+EXPORTS
+
+    DebugExtensionInitialize
+    DebugExtensionUninitialize
+
+    help
+    idt
+    st
+    mem_used
+    mem_used2
+    cam1
+    cam2

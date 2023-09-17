@@ -1,0 +1,13 @@
+LIBRARY CamExt
+
+EXPORTS
+    WinDbgExtensionDllInit
+    CheckVersion
+    ExtensionApiVersion
+    help
+    version
+    mem
+    frames
+
+
+

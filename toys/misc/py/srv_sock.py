@@ -2,7 +2,7 @@
 
 import socket
 
-HOST = ''
+HOST = 'localhost'
 PORT = 9876
 ADDR = (HOST,PORT)
 BUFSIZE = 4096

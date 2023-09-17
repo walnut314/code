@@ -1,0 +1,33 @@
+
+Place this directory at:
+d:\Intel_Dev\Bugs\Dumps\PST\Camera_PST_1E\Camera_Src_Sym\ADLN_Luxor_9633_Src\Camera\Ext
+
+or in general: (in the camera source tree)
+...\Camera\Ext
+
+
+https://github.com/comaeio/SwishDbgExt
+https://github.com/AndreyBazhan/DbgExt.git
+https://github.com/NationalSecurityAgency/ghidra/blob/master/Ghidra/Debug/Debugger-agent-dbgmodel/src/sctldbg/cpp/sctldbg.cpp
+
+3: kd> !pstext.mem_used2
+list: fffff8038cd65e60
+flink: ffffe58b446cc5e0
+blink: ffffe58b508131e0
+host_addr   : 0xffff9a80ad1ea000
+page_addr   : 0xffffe58b44970d50
+actual_size : 0x1
+
+3: kd> dt iacamera64!_memory_range ffffe58b446cc5e0
+   +0x000 list             : _LIST_ENTRY [ 0xffffe58b`446cc650 - 0xfffff803`8cd65e60 ]
+   +0x010 host_addr        : 0xffff9a80`ad1ea000
+   +0x018 vied_addr        : 0
+   +0x020 dvmm_node        : (null) 
+   +0x028 vtl0_buffer_handle : (null) 
+   +0x030 vtl1_buffer_guid : _GUID {00000000-0000-0000-0000-000000000000}
+   +0x040 page_addr        : 0xffffe58b`44970d50 _MDL
+   +0x048 status           : 1 ( IN_USE )
+   +0x050 actual_size      : 0x1000
+
+
+   and

@@ -1,0 +1,177 @@
+
+3: kd> !process 0 1 powershell.exe
+PROCESS ffff930b7e2950c0
+    SessionId: 1  Cid: 36c8    Peb: a3c2450000  ParentCid: 2268
+    DirBase: 41adfe000  ObjectTable: ffffa602c436fb40  HandleCount: 757.
+    Image: powershell.exe
+
+3: kd> .process /r /p ffff930b7e2950c0
+Implicit process is now ffff930b`7e2950c0
+
+3: kd> .thread ffff930b7b068080
+Implicit thread is now ffff930b`7b068080
+3: kd> kv
+  *** Stack trace for last set context - .thread/.cxr resets it
+ # Child-SP          RetAddr               : Args to Child                                                           : Call Site
+00 ffff9105`af9a7150 fffff807`86e85934     : 00006cf4`87e16348 00006cf4`901efbc8 00006cf4`81586328 ffff930b`7ea81980 : pst!PstEvtDeviceFileCreate+0x56 [F:\dryvrz\pst\sys\pst.c @ 441] 
+01 ffff9105`af9a71a0 fffff807`86e863ea     : 00000000`00000000 00000000`00000103 ffff9105`af9a7269 ffff930b`6fe10430 : Wdf01000!FxFileObjectFileCreate::Invoke+0x58 
+02 ffff9105`af9a71d0 fffff807`86e85518     : ffff930b`7ea79cd0 ffff930b`6fe10401 ffff930b`7eaebc01 ffff930b`6fe10430 : Wdf01000!FxPkgGeneral::OnCreate+0x86e 
+03 ffff9105`af9a72d0 fffff807`86e07b41     : ffff930b`6fb31720 ffff930b`6fb31720 00000000`00000000 00000000`00000000 : Wdf01000!FxPkgGeneral::Dispatch+0xf8
+04 (Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : Wdf01000!DispatchWorker+0x2e
+05 (Inline Function) --------`--------     : --------`-------- --------`-------- --------`-------- --------`-------- : Wdf01000!FxDevice::Dispatch+0x3d 
+06 ffff9105`af9a7330 fffff807`830d00a5     : 00000000`00000000 ffff930b`6fb31720 ffff9105`af9a7690 ffff930b`6fb31720 : Wdf01000!FxDevice::DispatchWithLock+0x81
+07 ffff9105`af9a7380 fffff807`834e2979     : 00000000`00000000 ffff9105`af9a7690 ffff930b`6fb31720 ffff930b`77eb5e30 : nt!IofCallDriver+0x55
+08 ffff9105`af9a73c0 fffff807`834de0a7     : fffff807`834e20b0 fffff807`834e20b0 ffffa602`c3a249b0 ffff930b`6699c640 : nt!IopParseDevice+0x8c9
+09 ffff9105`af9a7590 fffff807`834dd4d2     : ffffa602`c3a7c630 ffff9105`af9a77c0 00000000`00000040 ffff930b`6699cd20 : nt!ObpLookupObjectName+0x697
+0a ffff9105`af9a7730 fffff807`834c1cf9     : 00000000`00000000 ffff930b`7b1d1aa0 000000a3`c3c0d838 00000000`00000001 : nt!ObOpenObjectByNameEx+0x1f2
+0b ffff9105`af9a7860 fffff807`834c18a9     : 000000a3`c3c0d800 00000000`00000000 000000a3`c3c0d838 000000a3`c3c0d808 : nt!IopCreateFile+0x439
+0c ffff9105`af9a7920 fffff807`8323e1e5     : ffff930b`7b068080 00000000`00000100 00000000`00000000 00000000`00000000 : nt!NtCreateFile+0x79
+0d ffff9105`af9a79b0 00007ff9`a6def6f4     : 00007ff9`a455aabd 00000000`00000000 00000000`00000000 00000214`00796a60 : nt!KiSystemServiceCopyEnd+0x25 (TrapFrame @ ffff9105`af9a7a20)
+0e 000000a3`c3c0d778 00007ff9`a455aabd     : 00000000`00000000 00000000`00000000 00000214`00796a60 00000000`00000000 : ntdll!NtCreateFile+0x14
+0f 000000a3`c3c0d780 00007ff9`a455a40c     : 00000000`00000000 00000000`00000000 00000000`00000001 00000214`0064bab0 : KERNELBASE!CreateFileInternal+0x5ad
+10 000000a3`c3c0d8f0 00007ff9`3866b1f0     : 00000000`00000003 00000000`00000000 00000000`c0000000 00000214`002bc020 : KERNELBASE!CreateFileW+0x7c
+11 000000a3`c3c0d970 00000000`00000003     : 00000000`00000000 00000000`c0000000 00000214`002bc020 00000000`00000003 : 0x00007ff9`3866b1f0
+12 000000a3`c3c0d978 00000000`00000000     : 00000000`c0000000 00000214`002bc020 00000000`00000003 00000000`00000040 : 0x3
+
+3: kd> !thread ffff930b7b068080
+THREAD ffff930b7b068080  Cid 36c8.04e0  Teb: 000000a3c2485000 Win32Thread: ffff930b7e4bc810 RUNNING on processor 3
+IRP List:
+    ffff930b6fb31720: (0006,0118) Flags: 00000884  Mdl: 00000000
+Not impersonating
+DeviceMap                 ffffa602c9ed06f0
+Owning Process            ffff930b7e2950c0       Image:         powershell.exe
+
+3: kd> !irp ffff930b6fb31720
+Irp is active with 1 stacks 1 is current (= 0xffff930b6fb317f0)
+ No Mdl: No System Buffer: Thread ffff930b7b068080:  Irp stack trace.  
+     cmd  flg cl Device   File     Completion-Context
+>[IRP_MJ_CREATE(0), N/A(0)]
+            0  1 ffff930b6db0fd90 ffff930b77eb5e30 00000000-00000000    pending
+	       \Driver\pst
+			Args: ffff9105af9a7508 01000060 00030000 00000000
+
+3: kd> dt -r nt!_IO_STACK_LOCATION 0xffff930b6fb317f0
+   +0x000 MajorFunction    : 0 ''
+   +0x001 MinorFunction    : 0 ''
+   +0x002 Flags            : 0 ''
+   +0x003 Control          : 0x1 ''
+   +0x008 Parameters       : <unnamed-tag>
+      +0x000 Create           : <unnamed-tag>
+         +0x000 SecurityContext  : 0xffff9105`af9a7508 _IO_SECURITY_CONTEXT
+         +0x008 Options          : 0x1000060
+         +0x010 FileAttributes   : 0
+         +0x012 ShareAccess      : 3
+         +0x018 EaLength         : 0
+   +0x028 DeviceObject     : 0xffff930b`6db0fd90 _DEVICE_OBJECT
+      +0x000 Type             : 0n3
+      +0x002 Size             : 0x178
+      +0x004 ReferenceCount   : 0n1
+      +0x008 DriverObject     : 0xffff930b`786a7b90 _DRIVER_OBJECT
+         +0x000 Type             : 0n4
+         +0x002 Size             : 0n336
+         +0x008 DeviceObject     : 0xffff930b`6db0fd90 _DEVICE_OBJECT
+         +0x010 Flags            : 0x12
+         +0x018 DriverStart      : 0xfffff807`becf0000 Void
+         +0x020 DriverSize       : 0xd000
+         +0x028 DriverSection    : 0xffff930b`783ba400 Void
+         +0x030 DriverExtension  : 0xffff930b`786a7ce0 _DRIVER_EXTENSION
+         +0x038 DriverName       : _UNICODE_STRING "\Driver\pst"
+         +0x048 HardwareDatabase : 0xfffff807`83b53730 _UNICODE_STRING "\REGISTRY\MACHINE\HARDWARE\DESCRIPTION\SYSTEM"
+         +0x050 FastIoDispatch   : (null) 
+         +0x058 DriverInit       : 0xfffff807`becf23c0           long  pst!FxDriverEntry+0
+         +0x060 DriverStartIo    : (null) 
+         +0x068 DriverUnload     : 0xfffff807`becf2560           void  pst!FxStubDriverUnload+0
+         +0x070 MajorFunction    : [28] 0xfffff807`86e07ac0           long  Wdf01000!FxDevice::DispatchWithLock+0
+      +0x040 DeviceExtension  : 0xffff930b`781e9fa0 Void
+      +0x048 DeviceType       : 0x22
+      +0x04c StackSize        : 1 ''
+      +0x050 Queue            : <unnamed-tag>
+         +0x000 ListEntry        : _LIST_ENTRY [ 0x00000000`00000000 - 0x00000000`00000000 ]
+         +0x000 Wcb              : _WAIT_CONTEXT_BLOCK
+      +0x098 AlignmentRequirement : 0
+      +0x0a0 DeviceQueue      : _KDEVICE_QUEUE
+         +0x000 Type             : 0n20
+         +0x002 Size             : 0n40
+         +0x008 DeviceListHead   : _LIST_ENTRY [ 0xffff930b`6db0fe38 - 0xffff930b`6db0fe38 ]
+         +0x018 Lock             : 0
+         +0x020 Busy             : 0 ''
+         +0x020 Reserved         : 0y00000000 (0)
+         +0x020 Hint             : 0y00000000000000000000000000000000000000000000000000000000 (0)
+      +0x0c8 Dpc              : _KDPC
+         +0x000 TargetInfoAsUlong : 0
+         +0x000 Type             : 0 ''
+         +0x001 Importance       : 0 ''
+         +0x002 Number           : 0
+         +0x008 DpcListEntry     : _SINGLE_LIST_ENTRY
+         +0x010 ProcessorHistory : 0
+         +0x018 DeferredRoutine  : (null) 
+         +0x020 DeferredContext  : (null) 
+         +0x028 SystemArgument1  : (null) 
+         +0x030 SystemArgument2  : (null) 
+         +0x038 DpcData          : (null) 
+      +0x108 ActiveThreadCount : 0
+      +0x110 SecurityDescriptor : 0xffffa602`c3fb7820 Void
+      +0x118 DeviceLock       : _KEVENT
+         +0x000 Header           : _DISPATCHER_HEADER
+      +0x130 SectorSize       : 0
+      +0x132 Spare1           : 0
+      +0x138 DeviceObjectExtension : 0xffff930b`6db0ff08 _DEVOBJ_EXTENSION
+         +0x000 Type             : 0n13
+         +0x002 Size             : 0
+         +0x008 DeviceObject     : 0xffff930b`6db0fd90 _DEVICE_OBJECT
+         +0x010 PowerFlags       : 0
+         +0x018 Dope             : (null) 
+         +0x020 ExtensionFlags   : 0
+         +0x028 DeviceNode       : (null) 
+         +0x030 AttachedTo       : (null) 
+         +0x038 StartIoCount     : 0n0
+         +0x03c StartIoKey       : 0n0
+         +0x040 StartIoFlags     : 0
+         +0x048 Vpb              : (null) 
+         +0x050 DependencyNode   : (null) 
+         +0x058 InterruptContext : (null) 
+         +0x060 InterruptCount   : 0n0
+         +0x068 VerifierContext  : (null) 
+      +0x140 Reserved         : (null) 
+   +0x030 FileObject       : 0xffff930b`77eb5e30 _FILE_OBJECT
+      +0x000 Type             : 0n5
+      +0x002 Size             : 0n216
+      +0x008 DeviceObject     : 0xffff930b`6db0fd90 _DEVICE_OBJECT
+         +0x000 Type             : 0n3
+         +0x002 Size             : 0x178
+         +0x004 ReferenceCount   : 0n1
+         +0x008 DriverObject     : 0xffff930b`786a7b90 _DRIVER_OBJECT
+         +0x010 NextDevice       : (null) 
+         +0x018 AttachedDevice   : (null) 
+         +0x020 CurrentIrp       : (null) 
+         +0x028 Timer            : (null) 
+         +0x030 Flags            : 0x84c
+         +0x034 Characteristics  : 0x100
+         +0x038 Vpb              : (null) 
+         +0x040 DeviceExtension  : 0xffff930b`781e9fa0 Void
+         +0x048 DeviceType       : 0x22
+         +0x04c StackSize        : 1 ''
+         +0x110 SecurityDescriptor : 0xffffa602`c3fb7820 Void
+         +0x118 DeviceLock       : _KEVENT
+         +0x138 DeviceObjectExtension : 0xffff930b`6db0ff08 _DEVOBJ_EXTENSION
+      +0x0b0 CompletionContext : (null) 
+      +0x0c0 IrpList          : _LIST_ENTRY [ 0xffff930b`77eb5ef0 - 0xffff930b`77eb5ef0 ]
+         +0x000 Flink            : 0xffff930b`77eb5ef0 _LIST_ENTRY [ 0xffff930b`77eb5ef0 - 0xffff930b`77eb5ef0 ]
+         +0x008 Blink            : 0xffff930b`77eb5ef0 _LIST_ENTRY [ 0xffff930b`77eb5ef0 - 0xffff930b`77eb5ef0 ]
+   +0x038 CompletionRoutine : (null) 
+   +0x040 Context          : (null) 
+
+0: kd> lmDvmpst
+Browse full module list
+start             end                 module name
+fffff807`becf0000 fffff807`becfd000   pst        (private pdb symbols)  c:\symbols\pst.pdb\0E68487E96D347F58FD64670B000A1F82\pst.pdb
+    Loaded symbol image file: pst.SYS
+    Image path: pst.SYS
+    Image name: pst.SYS
+    Browse all global symbols  functions  data
+    Timestamp:        Wed Apr  5 10:35:48 2023 (642DB174)
+    CheckSum:         0001709B
+    ImageSize:        0000D000
+    Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
+    Information from resource tables:
+

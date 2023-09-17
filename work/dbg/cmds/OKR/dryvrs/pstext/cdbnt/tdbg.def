@@ -1,0 +1,7 @@
+LIBRARY "TDBG.DLL"
+
+EXPORTS
+    WinDbgExtensionDllInit
+    ExtensionApiVersion
+    dumpstrings
+    help

@@ -1,0 +1,17 @@
+
+
+From: Bart Bartel [mailto:bbartel@microsoft.com] 
+Sent: Friday, June 05, 2009 4:02 PM
+To: Fatih Comlekoglu
+Cc: MSSolve Case Email
+Subject: RE: [REG:109012905530270] kmdf/disk filter INF installer app
+
+Hi Fatih,
+I figured it out.  In DriverEntry, 
+I now call IoRegisterBootDriverReinitialization, 
+which calls back after all boot devices have been started.  
+In that callback, I get the signatures, and then look up the 
+disk(s) and enable monitoring.
+
+Thanks,
+Bart

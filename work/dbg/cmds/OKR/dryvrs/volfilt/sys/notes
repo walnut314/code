@@ -1,0 +1,65 @@
+# Mon, 07 Mar 2011 5:41:19 PM Pacific Standard Time
+
+Connected to Windows 7 7601 x86 compatible target at (Mon Mar  7 17:07:56.112 2011 (UTC - 8:00)), ptr64 FALSE
+
+0: kd> !devstack 86c011e0
+  !DevObj   !DrvObj            !DevExt   ObjectName
+  86c03020  \Driver\partmgr    86c030d8  
+  86c025e0  \Driver\genkfilt   86c02fe8  
+> 86c011e0  \Driver\Disk       86c01298  DR1
+  85d46028  \Driver\iaStor     85d460e0  IAAStorageDevice-1
+!DevNode 85d618f8 :
+  DeviceInst is "IDE\DiskWDC_WD6402AAEX-00Z3A0___________________05.01D05\4&3286f775&0&0.1.0"
+  ServiceName is "disk"
+
+
+GenKFilt: Filter Driver.
+Built Mar  7 2011 17:05:29
+creating MBR event \Device\GenKFiltEvent
+success creating symlink to event...
+device number 1
+ device_init 80d867e0
+device number 2
+ device_init 80d867e0
+FilterEvtDevicePrepareHardware: 
+GetDiskNumber succeeded - disk number 0
+GetDiskSignature - failed 0xc0000010
+IRP_MJ_READ 0-512 disk# 0 Blocked 0 
+IRP_MJ_READ 0-512 disk# 0 Blocked 0 
+IRP_MJ_READ 0-512 disk# 0 Blocked 0 
+IRP_MJ_READ 0-512 disk# 0 Blocked 0 
+IRP_MJ_READ 0-512 disk# 0 Blocked 0 
+FilterEvtDevicePrepareHardware: 
+GetDiskNumber succeeded - disk number 1
+GetDiskSignature - failed 0xc0000010
+IRP_MJ_READ 0-512 disk# 1 Blocked 0 
+IRP_MJ_READ 0-512 disk# 1 Blocked 0 
+IRP_MJ_READ 0-512 disk# 1 Blocked 0 
+IRP_MJ_READ 0-512 disk# 1 Blocked 0 
+IRP_MJ_READ 0-512 disk# 1 Blocked 0 
+FilterReinit ...count 1
+GetBootSignature success...:
+BootDeviceSignature   bd68f5dc
+SystemDeviceSignature bd68f5dc
+starting monitor of disk 1
+starting monitor of disk 1
+
+Added:
+
+    switch (IoControlCode) {
+        case IOCTL_SCSI_PASS_THROUGH:
+            DbgPrint("IOCTL_SCSI_PASS_THROUGH...\n");
+            break;
+        case IOCTL_SCSI_PASS_THROUGH_DIRECT:
+            DbgPrint("IOCTL_SCSI_PASS_THROUGH_DIRECT...\n");
+            break;
+        case IOCTL_ATA_PASS_THROUGH:
+            DbgPrint("IOCTL_ATA_PASS_THROUGH...\n");
+            break;
+        case IOCTL_ATA_PASS_THROUGH_DIRECT:
+            DbgPrint("IOCTL_ATA_PASS_THROUGH_DIRECT...\n");
+            break;
+    }
+
+// test this...
+

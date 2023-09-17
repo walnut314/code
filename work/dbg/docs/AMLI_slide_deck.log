@@ -1,0 +1,541 @@
+
+
+Overview
+1. list ACPI devs and devnodes
+2. make assoc bwtn ACPI names and devnodes/driver
+3. bps w/driver and AML combined
+
+
+Reference ACPI spec: https://uefi.org/specs/ACPI/6.4/
+
+****************************************
+1. AMLI is a debugger inside a debugger (WinDbg/KD)
+
+0: kd> !amli
+Usage: amli <cmd> [arguments ...]
+where <cmd> is one of the following:
+
+Help                     - ? [<Cmd>]
+Clear Breakpoints        - bc <bp list> | *
+Disable Breakpoints      - bd <bp list> | *
+Enable Breakpoints       - be <bp list> | *
+List Breakpoints         - bl
+Set Breakpoints          - bp <MethodName> | <CodeAddr> ...
+Clear Event Log          - cl
+Request entering debugger- debugger
+Dump Heap                - dh [<Addr>]
+Dump Event Log           - dl
+Dump Name Space Object   - dns [[/s] [<NameStr> | <Addr>]]
+Dump Data Object         - do <Addr>
+Dump Stack               - ds [/v] [<Addr>]
+Find NameSpace Object    - find <NameSeg>
+List All Contexts        - lc
+Display Nearest Method   - ln [<MethodName> | <CodeAddr>]
+Display Context Info.    - r <Context>
+Set Debugger Options     - set [traceon | traceoff] [nesttraceon | nesttraceoff] [spewon | spewoff]
+                               [dbgbrkon | dbgbrkoff] [lbrkon | lbrkoff] [errbrkon | errbrkoff]
+                               [verboseon | verboseoff] [logon | logoff] [logmuton | logmutoff]
+Unassemble AML code      - u [<MethodName> | <CodeAddr>]
+
+
+0: kd> !amli set spewon verboseon traceon
+Loading symbols for fffff803`28a90000         ACPI.sys ->   ACPI.sys
+
+0: kd> !amli set
+AMLTrace        =on
+AMLDebugSpew    =on
+DebuggerBreak   =off
+LoadDDBBreak    =off
+ErrorBreak      =off
+VerboseMode     =on
+LogEvent        =on
+LogSize         =204
+
+
+2. The basis for amli debugging is the ACPI spec.
+
+6: kd> !nstree
+nstree:  dumping object at ffffc48f4ae10048
+\___ (ffffc48f4ae10048) - Unknown
+| _GPE (ffffc48f4ae100f8) - Unknown
+
+snippet
+
+| | SSH_ (ffffc48f4aefcd58) - Device ffffc48f49685830
+| | | _HID (ffffc48f4aefce08) - String - MSHW0084
+| | | SULS (ffffc48f4aefceb8) - Integer - 0000000000000000
+| | | _S0W (ffffc48f4aefcf68) - Integer - 0000000000000003
+| | | _STA (ffffc48f4aefd018) - Method - Flags 0000000000000000 Start ffffc48f4aefd18a Len 000000000000000d
+| | | _DEP (ffffc48f4aefd228) - Package - NumElements 1
+| | | SBUF (ffffc48f4aefd358) - Buffer - 4aefd2d8 L=006d
+| | | BAUD (ffffc48f4aefd490) - Buffer Field Ptr=4aefd2d8 Len=6d Offset=c Start=0NumBits=20 Flgas=3
+| | | _INI (ffffc48f4aefd540) - Method - Flags 0000000000000000 Start ffffc48f4aefd6b2 Len 000000000000006f
+| | | _CRS (ffffc48f4aefd738) - Method - Flags 0000000000000000 Start ffffc48f4aefd8aa Len 0000000000000000
+| | | _DSM (ffffc48f4aefd8c0) - Method - Flags 0000000000000004 Start ffffc48f4aefda32 Len 000000000000018d
+
+3. The routines that can be debugged are the ACPI methods:
+
+0: kd> !gbl
+
+Good Bios List Entry --- Machine BIOS Date 
+
+[MSFTMSFT]
+AcpiOemId="FACP","MSFT  "
+AcpiOemTableId="FACP","MSFT    "
+AcpiOemRevision=">=","FACP",0
+AcpiRevision=">=","FACP",6
+AcpiCreatorRevision=">=","FACP",20191121
+
+0: kd> !facs ==> Dumps the Firmware ACPI Control Structure
+FACS - ffffb20069b65000
+  Signature:               FACS
+  Length:                  0x000040
+  Hardware Signature:      0xb4f883b5
+  Firmware Wake Vector:    00000000
+  Global Lock :            00000000
+  Flags:                   00000000
+
+0: kd> !fadt ==> Dumps the Fixed ACPI Description Table
+FADT -- fffff8032524bf20
+FADT revision is 6, which is not understood by this debugger
+HEADER - fffff8032524bf20
+  Signature:               FACP
+  Length:                  0x00000114
+  Revision:                0x06
+  Checksum:                0x22
+  OEMID:                   MSFT  
+  OEMTableID:              MSFT    
+  OEMRevision:             0x00000000
+  CreatorID:               MSFT
+  CreatorRev:              0x20191121
+FADT - BODY - fffff8032524bf44
+  FACS:                    0x95b9e000
+  DSDT:                    0x95bdf000
+  Int Model:               Dual PIC
+  SCI Vector:              0x009
+  SMI Port:                0x000000b2
+  ACPI On Value:           0x0f0
+  ACPI Off Value:          0x0f1
+  SMI CMD For S4 State:    0x000
+  PM1A Event Block:        0x00001800
+  PM1B Event Block:        0x00000000
+  PM1 Event Length:        0x004
+  PM1A Control Block:      0x00001804
+  PM1B Control Block:      0x00000000
+  PM1 Control Length:      0x002
+  PM2 Control Block:       0x00001850
+  PM2 Control Length:      0x001
+  PM Timer Block:          0x00001808
+  PM Timer Length:         0x004
+  GP0 Block:               0x00001860
+  GP0 Length:              0x020
+  GP1 Block:               0x00000000
+  GP1 Length:              0x00000000
+  GP1 Base:                0x00000000
+  C2 Latency:              0x00065
+  C3 Latency:              0x003e9
+  Memory Flush Size:       0x00000
+  Memory Flush Stride:     0x00000
+  Duty Cycle Index:        0x001
+  Duty Cycle Index Width:  0x003
+  Day Alarm Index:         0x00d
+  Month Alarm Index:       0x000
+  Century byte (CMOS):     0x032
+  Boot Architecture:       0x0001
+    The machine does not contain a legacy i8042
+  Flags:                   0x0020c4f5
+    WRITEBACKINVALIDATE_WORKS .................. SET
+    WRITEBACKINVALIDATE_DOESNT_INVALIDATE ...... CLEAR
+    SYSTEM_SUPPORTS_C1 ......................... SET
+    P_LVL2_UP_ONLY ............................. CLEAR
+    PWR_BUTTON_GENERIC ......................... SET
+    SLEEP_BUTTON_GENERIC ....................... SET
+    RTC_WAKE_GENERIC ........................... SET
+    RTC_WAKE_FROM_S4 ........................... SET
+    TMR_VAL_EXT ................................ CLEAR
+    DCK_CAP .................................... CLEAR
+    RESET_CAP .................................. SET
+      RESET_VALUE: 6
+      RESET_REG: System I/O - 0000000000000cf9
+    SEALED_CASE_CAP ............................ CLEAR
+    HEADLESS_CAP ............................... CLEAR
+    CPU_SW_SLP_CAP ............................. CLEAR
+    PCI_EXP_WAK ................................ SET
+    USE_PLATFORM_CLOCK ......................... SET
+    RTC_WAKE_VALID_FROM_S4 ..................... CLEAR
+    REMOTE_POWER_ON_CAPABLE .................... CLEAR
+    FADT_FORCE_CLUSTERED_APIC_MODE ............. CLEAR
+    FADT_FORCE_APIC_PHYSICAL_DESTINATION_MODE .. CLEAR
+    ACPI_HARDWARE_NOT_PRESENT .................. CLEAR
+    AOAC_CAPABLE_PLATFORM ...................... SET
+  
+
+Look at SSH_ and _UA00
+\___ (ffff918942f10048) - Unknown
+| _GPE (ffff918942f100f8) - Unknown
+| | PC00 (ffff918942f818b0) - Device ffff918940508c10
+| | | UA00 (ffff918943aa14e8) - Device ffff9189405f6c10
+| | | | _DSM (ffff918943aa1598) - Method - Flags 000000000000000c Start ffff918943aa170a Len 0000000000000021
+| | | | _ADR (ffff918943aa1740) - Method - Flags 0000000000000000 Start ffff918943aa18b2 Len 0000000000000001
+| | | | _PS3 (ffff918943aa18c8) - Method - Flags 0000000000000000 Start ffff918943aa1a3a Len 0000000000000005
+| | | | _PS0 (ffff918943aa1a58) - Method - Flags 0000000000000000 Start ffff918943aa1bca Len fffffffffffffffb
+| | | | M0D3 (ffff918943ab9528) - Method - Flags 0000000000000000 Start ffff918943ab969a Len 0000000000000004
+| | | | M1D3 (ffff918943ab96b8) - Method - Flags 0000000000000000 Start ffff918943ab982a Len 0000000000000004
+
+\___ (ffff918942f10048) - Unknown
+| _GPE (ffff918942f100f8) - Unknown
+| | SSH_ (ffff918943b2b7d0) - Device ffff918941c9ec10
+| | | _HID (ffff918943b2b880) - String - MSHW0084
+| | | SULS (ffff918943b2b930) - Integer - 0000000000000000
+| | | _S0W (ffff918943b2b9e0) - Integer - 0000000000000003
+| | | PSBR (ffff918943b2ba90) - Integer - 00000000003d0900
+| | | _STA (ffff918943b2bb40) - Method - Flags 0000000000000000 Start ffff918943b2bcb2 Len fffffffffffffffe
+| | | SBUF (ffff918943b2bd80) - Buffer - 43b2bd00 L=006d
+| | | BAUD (ffff918943b2beb8) - Buffer Field Ptr=43b2bd00 Len=6d Offset=c Start=0NumBits=20 Flgas=3
+| | | PIN1 (ffff918943b2bf68) - Buffer Field Ptr=43b2bd00 Len=6d Offset=3c Start=0NumBits=10 Flgas=2
+| | | PIN2 (ffff918943b2c058) - Buffer Field Ptr=43b2bd00 Len=6d Offset=5f Start=0NumBits=10 Flgas=2
+| | | _INI (ffff918943b2c148) - Method - Flags 0000000000000000 Start ffff918943b2c2ba Len 0000000000000092
+| | | _CRS (ffff918943b2c368) - Method - Flags 0000000000000000 Start ffff918943b2c4da Len 0000000000000000
+| | | _DSM (ffff918943b2c4f0) - Method - Flags 0000000000000004 Start ffff918943b2c662 Len 00000000000001ee
+| | | _DEP (ffff918943b2c8a8) - Package - NumElements 1
+| | | PINI (ffff918943b2c958) - Method - Flags 0000000000000000 Start ffff918943b2caca Len fffffffffffffffd
+
+Dependency in SSH_
+0: kd> !nsobj ffff918943b2c8a8
+nsobj:  dumping object at ffff918943b2c8a8
+NameSpace Object \ (ffff918943b2c8a8) - Device 0000000000000000
+  Flink 0000000000000000Blink  000000dca1f7d020
+  Parent 0000000000000000  Child 0000000000000000
+  Value 0000000000000000  Length 0000000000000000
+  Buffer 0000000000000000  Flags 0000000000000000
+    Object Data - ffff918943b2c8e8 Type - 04 <Package> NumElements=0000000000000001
+      Object Data - ffff918943b2c870 Type - 02 <String> String=\_SB_.PC00.UA00
+
+UA00 Address:
+0: kd> !amli u ffff918943aa18b2
+ffff918943aa18b2:[\_SB.PC00.UA00._ADR]
+ffff918943aa18b2 : Return(0x1e0000)
+
+0: kd> !amli set dbgbrkon
+
+0: kd> !amli set
+AMLTrace        =on
+AMLDebugSpew    =on
+DebuggerBreak   =on
+LoadDDBBreak    =off
+ErrorBreak      =off
+VerboseMode     =on
+LogEvent        =on
+LogSize         =204
+
+0: kd> !amli bp ffff918943b2bcb2
+
+0: kd> !amli bl
+ 0: <e> ffff918943b2bcb2:[\_SB.SSH._STA]
+
+0: kd> g
+The target has requested that the debugger execute a command: !amli err 0xb FFFF91894BA1C040 FFFF918950BF8FA0 0000000000000000 0000000000000000;g
+
+AMLI: FFFF91894BA1C040: \_SB.SSH._STA()
+ffff918943b2bcb2: {
+ffff918943b2bcb2: | 
+Hit Breakpoint 0.
+
+1: kd> kv
+ # Child-SP          RetAddr               : Args to Child                                                           : Call Site
+00 ffffd50d`71eb6e40 fffff803`28af7838     : 00000000`00000080 fffff803`24bdf8a4 00000000`00000019 fffff803`24a28dc0 : ACPI!DebugQuit+0x30
+01 ffffd50d`71eb6e80 fffff803`28af79a2     : 00000000`00000000 00000000`00000011 00000000`00000000 00000000`00000000 : ACPI!DbgExecuteCmd+0xe4
+02 ffffd50d`71eb6ee0 fffff803`28af6801     : ffff9189`4ac37090 00000000`00000000 ffff9189`4ac37010 ffff9189`4ac37090 : ACPI!Debugger+0x122
+03 ffffd50d`71eb7250 fffff803`28aca90b     : fffff803`28b00940 00000000`00000000 ffff9189`43b2bcb2 fffff803`28b11a40 : ACPI!AMLIDebugger+0x2d
+04 ffffd50d`71eb7280 fffff803`28aa0a1f     : 00000000`00000000 ffffd50d`71eb7399 ffffd50d`71eb7418 00000000`00000000 : ACPI!ParseScope+0x2609b
+05 ffffd50d`71eb72e0 fffff803`28a9e493     : 00000000`00000010 ffff9189`4ac37010 00000000`00000000 00000000`00000016 : ACPI!RunContext+0x1ef
+06 ffffd50d`71eb7400 fffff803`28a9d6a5     : ffff9189`4ac37010 00000000`00000080 ffff9189`4ac37010 00000000`0000081f : ACPI!InsertReadyQueue+0x403
+07 ffffd50d`71eb7450 fffff803`28ab5690     : ffff9189`4ac37010 00000000`00000000 00000000`00000000 ffffb200`69880180 : ACPI!RestartCtxtPassive+0x35
+08 ffffd50d`71eb7480 fffff803`248478f5     : ffff9189`40abc040 fffff803`28ab5550 00000000`00000000 ffff9189`40af5040 : ACPI!ACPIWorkerThread+0x140
+09 ffffd50d`71eb74f0 fffff803`24a19644     : ffffb200`69880180 ffff9189`40abc040 fffff803`248478a0 39393939`39393939 : nt!PspSystemThreadStartup+0x55
+0a ffffd50d`71eb7540 00000000`00000000     : ffffd50d`71eb8000 ffffd50d`71eb1000 00000000`00000000 00000000`00000000 : nt!KiStartSystemThread+0x34
+1: kd> .frame 0n5;dv /t /v
+05 ffffd50d`71eb72e0 fffff803`28a9e493     ACPI!RunContext+0x1ef
+1: kd> !amli r ffff9189`4ac37010
+
+Context=ffff91894ac37010*, Queued=NO , ResListHead=ffff91894ac37040
+ThreadID=ffff918940abc040, Flags=00000130, pbOp=ffff918943b2bcb2:[\_SB.SSH._STA]
+StackTop=ffff91894ac37810, UsedStackSize=0 bytes, FreeStackSize=920 bytes
+LocalHeap=ffff91894ac371f0, CurrentHeap=ffff91894ac371f0, UsedHeapSize=648 bytes
+Object=\_SB.SSH._STA, Scope=\_SB.SSH._STA, ObjectOwner=ffff91894ac373d8, SyncLevel=0
+AsyncCallBack=fffff80328ab47d0, CallBackData=ffff91895181e7c0, CallBackContext=ffff91895181e770
+
+MethodObject=\_SB.SSH._STA
+ffff91894ac37280: Local0=Unknown()
+ffff91894ac372a8: Local1=Unknown()
+ffff91894ac372d0: Local2=Unknown()
+ffff91894ac372f8: Local3=Unknown()
+ffff91894ac37320: Local4=Unknown()
+ffff91894ac37348: Local5=Unknown()
+ffff91894ac37370: Local6=Unknown()
+ffff91894ac37398: Local7=Unknown()
+ffff91894ac37090: RetObj=Unknown()
+
+Next AML Pointer: ffff918943b2bcb2:[\_SB.SSH._STA]
+
+ffff918943b2bcb2 : Return(0xf)
+
+1: kd> !amli u ffff918943b2bcb2
+ffff918943b2bcb2:[\_SB.SSH._STA]
+ffff918943b2bcb2 : Return(0xf)
+
+1: kd> !amli bp ffff918943b2c662
+
+1: kd> !amli bl
+ 0: <e> ffff918943b2bcb2:[\_SB.SSH._STA]
+ 1: <e> ffff918943b2c662:[\_SB.SSH._DSM]
+
+
+To look at just \_SB.SSH:
+!amli dns /s \_SB.SSH
+
+0: kd> !amli dns /s \_SB.SSH
+
+ACPI Name Space: \_SB.SSH (ffffd588dab2b7d0)
+Device(SSH_)
+| String(_HID:Str="MSHW0084")
+| Integer(SULS:Value=0x0000000000000000[0])
+| Integer(_S0W:Value=0x0000000000000003[3])
+| Integer(PSBR:Value=0x00000000003d0900[4000000])
+| Method(_STA:Flags=0x0,CodeBuff=ffffd588dab2bcb2,Len=3)
+| Buffer(SBUF:Ptr=ffffd588dab2bd00,Len=109){
+    0x8e,0x22,0x00,0x02,0x00,0x03,0x02,0x35,0x00,0x01,0x0a,0x00,0x00,0x09
+    0x3d,0x00,0x40,0x00,0x40,0x00,0x00,0xc0,0x5c,0x5f,0x53,0x42,0x2e,0x50
+    0x43,0x30,0x30,0x2e,0x55,0x41,0x30,0x30,0x00,0x8c,0x20,0x00,0x01,0x00
+    0x01,0x00,0x19,0x00,0x03,0x00,0x00,0x00,0x00,0x17,0x00,0x00,0x19,0x00
+    0x23,0x00,0x00,0x00,0x2a,0x01,0x5c,0x5f,0x53,0x42,0x2e,0x47,0x50,0x49
+    0x30,0x00,0x8c,0x20,0x00,0x01,0x01,0x01,0x00,0x09,0x00,0x03,0x00,0x00
+    0x00,0x00,0x17,0x00,0x00,0x19,0x00,0x23,0x00,0x00,0x00,0x2a,0x01,0x5c
+    0x5f,0x53,0x42,0x2e,0x47,0x50,0x49,0x30,0x00,0x79,0x00}
+| BufferField(BAUD:Ptr=ffffd588dab2bd00,Len=109,ByteOffset=0xc,StartBit=0x0,NumBits=32,FieldFlags=0x3)
+| BufferField(PIN1:Ptr=ffffd588dab2bd00,Len=109,ByteOffset=0x3c,StartBit=0x0,NumBits=16,FieldFlags=0x2)
+| BufferField(PIN2:Ptr=ffffd588dab2bd00,Len=109,ByteOffset=0x5f,StartBit=0x0,NumBits=16,FieldFlags=0x2)
+| Method(_INI:Flags=0x0,CodeBuff=ffffd588dab2c2ba,Len=151)
+| Method(_CRS:Flags=0x0,CodeBuff=ffffd588dab2c4da,Len=5)
+| Method(_DSM:Flags=0x4,CodeBuff=ffffd588dab2c662,Len=499)
+| Package(_DEP:NumElements=1){
+| | String(:Str="\_SB_.PC00.UA00")
+| }
+| Method(PINI:Flags=0x0,CodeBuff=ffffd588dab2caca,Len=2)
+
+
+Play w/Ambient light sensor
+http://www.solteamopto.com.tw/product_sensor_jsa1141.php?language=en
+
+| | | | ALSD (ffff918943b2ebd0) - Device ffff918941cacc10
+| | | | | _HID (ffff918943b2ece0) - String - JSA1141
+| | | | | _S0W (ffff918943b2ed90) - Integer - 0000000000000003
+| | | | | _STA (ffff918943b2ee40) - Method - Flags 0000000000000000 Start ffff918943b2efb2 Len fffffffffffffffe
+| | | | | RBUF (ffff918943b2f058) - Buffer - 43b2f000 L=0046
+| | | | | _CRS (ffff918943b2f108) - Method - Flags 0000000000000000 Start ffff918943b2f27a Len 0000000000000000
+| | | | | _DSM (ffff918943b2f290) - Method - Flags 0000000000000004 Start ffff918943b2f402 Len 000000000000007c
+
+0: kd> !amli find ALSD
+\_SB.PC00.I2C4.ALSD
+
+0: kd> !amli dns /s \_SB.PC00.I2C4.ALSD
+
+ACPI Name Space: \_SB.PC00.I2C4.ALSD (ffffd588dab2ebd0)
+Device(ALSD)
+| String(_HID:Str="JSA1141")
+| Integer(_S0W:Value=0x0000000000000003[3])
+| Method(_STA:Flags=0x0,CodeBuff=ffffd588dab2efb2,Len=3)
+| Buffer(RBUF:Ptr=ffffd588dab2f000,Len=70){
+    0x8e,0x1e,0x00,0x02,0x00,0x01,0x02,0x00,0x00,0x01,0x06,0x00,0x80,0x1a
+    0x06,0x00,0x38,0x00,0x5c,0x5f,0x53,0x42,0x2e,0x50,0x43,0x30,0x30,0x2e
+    0x49,0x32,0x43,0x34,0x00,0x8c,0x20,0x00,0x01,0x00,0x01,0x00,0x13,0x00
+    0x03,0x00,0x00,0x00,0x00,0x17,0x00,0x00,0x19,0x00,0x23,0x00,0x00,0x00
+    0xa1,0x00,0x5c,0x5f,0x53,0x42,0x2e,0x47,0x50,0x49,0x30,0x00,0x79,0x00}
+| Method(_CRS:Flags=0x0,CodeBuff=ffffd588dab2f27a,Len=5)
+| Method(_DSM:Flags=0x4,CodeBuff=ffffd588dab2f402,Len=129)
+
+
+Button press:
+============
+ffff918943b01c02: | \_SB_.PC00.TCON()
+ffffd588dab0172f: | | ADBG("D3Cold Entry")
+ffff918943b01303: | | | | ADBG("D3Cold Exit")
+
+0: kd> !acpikd.help
+ACPIKD supports the following commands
+  acpiext          - display ACPI extension information
+  acpilist         - display all of ACPI's global lists
+  acpitree         - display ACPI extensions in tree format
+  booleans         - display all of ACPI's global booleans
+  buildentry       - display a build entry in detail
+  buildlist        - display all of ACPI's build entries in list format
+  debuglevel       - control the debug output from ACPI
+  getentry         - display a get entry in detail
+  getlist          - display all of ACPI's get entries in list format
+  gpe              - display GPE routing information
+  help             - this command
+  locks            - display all of ACPI's global locks
+  pointers         - display all of ACPI's global pointers
+  powerentry       - display a pointer entry in detail
+  powerlist        - display all of ACPI's power entries in list format
+  powerres         - display power resource information
+  stack            - display an AML Context in detail
+  ulongs           - display all of ACPI's global ulongs
+  vars             - display all of ACPI's global variables/locks
+  worker           - display information about the ACPI worker thread
+
+0: kd> !devstack ffffd588dbcd5dc0
+  !DevObj           !DrvObj            !DevExt           ObjectName
+  ffffd588dbe50db0  \Driver\SurfaceAlsDriverffffd588de154310  
+  ffffd588dbe52b70  \Driver\vhf        ffffd588dbfdddb0  
+> ffffd588dbcd5dc0  \Driver\ACPI       ffffd588db0acc10  0000004e
+!DevNode ffffd588dbc888a0 :
+  DeviceInst is "ACPI\JSA1141\4&62bb289&0"
+  ServiceName is "SurfaceAlsDriver"
+
+0: kd> !devobj ffffd588dbcd5dc0
+Device object (ffffd588dbcd5dc0) is for:
+ 0000004e \Driver\ACPI DriverObject ffffd588d8234740
+Current Irp 00000000 RefCount 0 Type 00000032 Flags 00003040
+SecurityDescriptor ffffab827464d4e0 DevExt ffffd588db0acc10 DevObjExt ffffd588dbcd5f10 DevNode ffffd588dbc888a0 
+ExtensionFlags (0000000000)  
+Characteristics (0x00000180)  FILE_AUTOGENERATED_DEVICE_NAME, FILE_DEVICE_SECURE_OPEN
+AttachedDevice (Upper) ffffd588dbe52b70 \Driver\vhf
+Device queue is not busy.
+  
+0: kd> dt acpi!_DEVICE_EXTENSION ffffd588db0acc10
+0: kd> dt acpi!_DEVICE_EXTENSION ffffd588db0acc10
+   +0x000 TriageInfo       : 0xfffff807`138ae360 _ACPI_TRIAGE_INFO
+   +0x008 Flags            : 0x05402000`00010a60
+   +0x008 UFlags           : <unnamed-tag>
+   +0x010 Signature        : 0x5f534750
+   +0x014 DebugFlags       : 0
+   +0x018 DispatchTable    : 0xfffff807`1389d080 IRP_DISPATCH_TABLE
+   +0x020 WorkContext      : WORK_QUEUE_CONTEXT
+   +0x020 Fdo              : _FDO_DEVICE_EXTENSION
+   +0x020 Filter           : _FILTER_DEVICE_EXTENSION
+   +0x020 Pdo              : _PDO_DEVICE_EXTENSION
+   +0x0a0 WorkQueue        : EXTENSION_WORKER
+   +0x0a0 Button           : BUTTON_EXTENSION
+   +0x0a0 Thermal          : THERMAL_EXTENSION
+   +0x0a0 Fan              : FAN_EXTENSION
+   +0x0a0 LinkNode         : LINK_NODE_EXTENSION
+   +0x0a0 Dock             : DOCK_EXTENSION
+   +0x0a0 Processor        : _PROCESSOR_DEVICE_EXTENSION
+   +0x0a0 Module           : _MODULE_DEVICE_EXTENSION
+   +0x0a0 Ec               : _EC_DEVICE_EXTENSION
+   +0x0a0 PciRoot          : _PCI_ROOT_EXTENSION
+   +0x0a0 ProcessorContainer : _PROCESSOR_CONTAINER_EXTENSION
+   +0x0a0 Pep              : PEP_EXTENSION
+   +0x170 DeviceState      : 3 ( ActiveRunning )
+   +0x174 PreviousState    : 2 ( Started )
+   +0x178 PowerInfo        : _ACPI_POWER_INFO
+   +0x260 DeviceInformation : _ACPI_DEVICE_INFORMATION
+   +0x288 FirmwareDependencies : (null) 
+   +0x290 CoolingExtension : (null) 
+   +0x298 CoolingEligible  : 0x1 ''
+   +0x299 KeepPowerResourceOnForResume : 0 ''
+   +0x29c OperationRegionMask : 0
+   +0x2a0 ResourceList     : (null) 
+   +0x2a8 TranslatedResourceList : 0xffffab82`77cb2870 _CM_RESOURCE_LIST
+   +0x2b0 PnpResourceList  : (null) 
+   +0x2b8 ForceActiveBothInterrupts : (null) 
+   +0x2c0 ForceActiveBothInterruptsCount : 0xffffffff
+   +0x2c8 InterruptPolarityCacheListHead : _LIST_ENTRY [ 0xffffd588`dbf8b490 - 0xffffd588`dbf8b490 ]
+   +0x2d8 OutstandingIrpCount : 0n1
+   +0x2dc ReferenceCount   : 0n4
+   +0x2e0 HibernatePathCount : 0n0
+   +0x2e4 PagingPathCount  : 0n0
+   +0x2e8 SpecialPathCount : 0n0
+   +0x2f0 RemoveEvent      : (null) 
+   +0x2f8 AcpiObject       : 0xffffd588`dab2ec48 _NSObjRef
+   +0x300 DeviceObject     : 0xffffd588`dbcd5dc0 _DEVICE_OBJECT
+   +0x308 TargetDeviceObject : 0xffffd588`db9e9b30 _DEVICE_OBJECT <== I2C device
+   +0x310 PhysicalDeviceObject : 0xffffd588`dbcd5dc0 _DEVICE_OBJECT
+   +0x318 ParentExtension  : 0xffffd588`d79eec10 _DEVICE_EXTENSION
+   +0x320 ChildDeviceList  : _LIST_ENTRY [ 0xffffd588`db0acf30 - 0xffffd588`db0acf30 ]
+   +0x330 SiblingDeviceList : _LIST_ENTRY [ 0xffffd588`d79eef30 - 0xffffd588`d79eef30 ]
+   +0x340 EjectDeviceHead  : _LIST_ENTRY [ 0xffffd588`db0acf50 - 0xffffd588`db0acf50 ]
+   +0x350 EjectDeviceList  : _LIST_ENTRY [ 0xffffd588`db0acf60 - 0xffffd588`db0acf60 ]
+   +0x360 NotificationListHead : _LIST_ENTRY [ 0xffffd588`db0acf70 - 0xffffd588`db0acf70 ]
+   +0x370 RemovedDevice    : _LIST_ENTRY [ 0x00000000`00000000 - 0x00000000`00000000 ]
+   +0x380 AcpiObjectName   : 0
+   +0x388 NotificationDispatchLock : _KEVENT
+   +0x3a0 NotificationWorkItem : (null) 
+   +0x3a8 NotificationWorkerInProgress : 0 ''
+   +0x3ac CcaEvaluationState : 0 ( CcaNotEvaluated )
+   +0x3b0 NativeMethodHandle : (null) 
+   +0x3b8 CurrentResetRequest : (null) 
+   +0x3c0 SkDeviceToken    : 0
+   +0x3c8 WakeEventDeviceContext : _WAKE_EVENT_DEVICE_CONTEXT
+   +0x3e8 AuxiliaryFlags   : 0x00000009`821808a0
+   +0x3e8 AuxiliaryUFlags  : <unnamed-tag>
+
+0: kd> dx -id 0,0,ffffd588d7eeb040 -r1 (*((ACPI!_ACPI_DEVICE_INFORMATION *)0xffffd588db0ace70))
+(*((ACPI!_ACPI_DEVICE_INFORMATION *)0xffffd588db0ace70))                 [Type: _ACPI_DEVICE_INFORMATION]
+    [+0x000] HardwareIdentifier : 0xffffd588d8e8d680 : "ACPI\JSA1141" [Type: char *]
+    [+0x000] Address          : 0xffffd588d8e8d680 [Type: unsigned __int64]
+    [+0x008] InstanceIdentifier : 0x0 [Type: char *]
+    [+0x010] SubSystem        : 0x0 [Type: char *]
+    [+0x018] HardwareRevision : 0x0 [Type: unsigned long]
+    [+0x020] UClassCode       : 0x0 [Type: unsigned __int64]
+    [+0x020] ClassCode        [Type: <unnamed-tag>]
+
+From !nstree
+| | | | ALSD (ffffd588dab2ebd0) - Device ffffd588db0acc10
+| | | | | _HID (ffffd588dab2ece0) - String - JSA1141
+| | | | | _S0W (ffffd588dab2ed90) - Integer - 0000000000000003
+| | | | | _STA (ffffd588dab2ee40) - Method - Flags 0000000000000000 Start ffffd588dab2efb2 Len fffffffffffffffe
+| | | | | RBUF (ffffd588dab2f058) - Buffer - dab2f000 L=0046
+| | | | | _CRS (ffffd588dab2f108) - Method - Flags 0000000000000000 Start ffffd588dab2f27a Len 0000000000000000
+| | | | | _DSM (ffffd588dab2f290) - Method - Flags 0000000000000004 Start ffffd588dab2f402 Len 000000000000007c
+
+From acpi!_DEVICE_EXTENSION
+   +0x2f8 AcpiObject       : 0xffffd588dab2ec48 _NSObjRef
+
+0: kd> dt 0xffffd588dab2ec48 _NSObjRef
+ACPI!_NSObjRef
+   +0x000 Object           : 0xffffd588dab2ebd0 _NSObj
+   +0x008 ReferenceCount   : 0n1
+
+0: kd> dt 0xffffd588dab2ebd0 _NSObj
+ACPI!_NSObj
+   +0x000 list             : _LIST_ENTRY [ 0xffffd588`daaa0408 - 0xffffd588`daab8718 ]
+   +0x010 pnsParent        : 0xffffd588`daaa03f0 _NSObj
+   +0x018 childListHead    : _LIST_ENTRY [ 0xffffd588`dab2ece0 - 0xffffd588`dab2f290 ]
+   +0x028 dwNameSeg        : 0x44534c41
+   +0x030 hOwner           : 0xffffd588`dab2da58 Void
+   +0x038 pnsOwnedNext     : (null) 
+   +0x040 ObjData          : _ObjData
+   +0x068 Context          : 0xffffd588`db0acc10 Void
+   +0x070 ReferenceCount   : 0n2
+   +0x078 Self             : _NSObjRef
+   +0x088 NativeObject     : (null) 
+   +0x090 StatsEvalCount   : _ULARGE_INTEGER 0x0
+   +0x098 StatsEvalPeriod  : _ULARGE_INTEGER 0xffffffff`ffffffff
+
+0: kd> !amli dns /s \_SB.PC00.I2C4.ALSD
+ACPI Name Space: \_SB.PC00.I2C4.ALSD (ffffd588dab2ebd0)
+Device(ALSD)
+| String(_HID:Str="JSA1141")
+| Integer(_S0W:Value=0x0000000000000003[3])
+| Method(_STA:Flags=0x0,CodeBuff=ffffd588dab2efb2,Len=3)
+| Buffer(RBUF:Ptr=ffffd588dab2f000,Len=70){
+	0x8e,0x1e,0x00,0x02,0x00,0x01,0x02,0x00,0x00,0x01,0x06,0x00,0x80,0x1a
+	0x06,0x00,0x38,0x00,0x5c,0x5f,0x53,0x42,0x2e,0x50,0x43,0x30,0x30,0x2e
+	0x49,0x32,0x43,0x34,0x00,0x8c,0x20,0x00,0x01,0x00,0x01,0x00,0x13,0x00
+	0x03,0x00,0x00,0x00,0x00,0x17,0x00,0x00,0x19,0x00,0x23,0x00,0x00,0x00
+	0xa1,0x00,0x5c,0x5f,0x53,0x42,0x2e,0x47,0x50,0x49,0x30,0x00,0x79,0x00}
+| Method(_CRS:Flags=0x0,CodeBuff=ffffd588dab2f27a,Len=5)
+| Method(_DSM:Flags=0x4,CodeBuff=ffffd588dab2f402,Len=129)
+
+0: kd> !amli dl
+12:56:49.035 [ffffffffffffffff] D1=ffffffffffffffff,D2=0,D3=10000000f,D4=00000001,D5=3345623717dbb1d8,D6=ffff8a8003331380,D7=ffffd588d9141af0
+20:15:25.751 [ffffd588d7e97040] FinishedContext       Context=ffffd588e8c13010 rc=8004
+    QTh=0 QCt=0 QFg=00000000
+20:15:25.751 [ffffd588d7e97040] InsertReadyQueue      Context=ffffd588e1275010
+    \_SB.SSH._STA
+    QTh=0 QCt=ffffd588e1275010 QFg=00000000 pbOp=0AMLI_DBGERR: Failed to find symbol of the address
+20:15:25.752 [ffffd588d7e97040] FinishedContext       Context=ffffd588e1275010 rc=8004
+    QTh=0 QCt=0 QFg=00000000
+

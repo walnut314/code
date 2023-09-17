@@ -1,0 +1,51 @@
+!IF 0
+
+Copyright (C) Intel Corporation, 2023
+
+Module Name:
+
+    sources.
+
+!ENDIF
+
+TARGETNAME=camext
+TARGETPATH=obj
+TARGETTYPE=DYNLINK
+USE_LIBCMT=1
+
+C_DEFINES=$(C_DEFINES) -D_NTSYSTEM_ -DIS_ISP_2400_SYSTEM -DSYSTEM_hive_isp_css_2401_system
+
+!IF 0
+INCLUDES="C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared";\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\ISP\hrt2;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\ISP\hrt2\inc;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\ISP\winwrapper;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\Platform\BXT\isp\css\hrt;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\Platform\BXT\isp\css\css_2401_system;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\Platform\BXT\isp\css\hive_isp_css_include;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\Platform\BXT\isp\css\hive_isp_css_2400_system;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\Include;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\Platform\BXT\isp\css\css_2401_system\host;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\iacamera\CmdQueueBased\ISysCtl\ISysFW\support;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\Platform\BXT\isp\css;\
+         $(DDK_INC_PATH)
+!ENDIF
+
+INCLUDES="C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared";\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\ISP\hrt2;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\ISP\hrt2\inc;\
+         d:\Intel_Dev\Bugs\Cam_Src\MTL_Full_Source_13489\Camera\Include;\
+         G:\WinDDK\7600.16385.1\Debuggers\sdk\inc;\
+         $(DDK_INC_PATH)
+
+         
+SOURCES=camext.c    \
+        camext.rc
+
+UMTYPE=windows
+DLLDEF=$(O)\camext.def
+
+TARGETLIBS=G:\WinDDK\7600.16385.1\lib\wnet\amd64\kernel32.lib
+
+DLLENTRY=_DllMainCRTStartup
+

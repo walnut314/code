@@ -1,0 +1,16 @@
+
+
+AMD64_OBJECTS=\
+ $(OBJ_PATH)\$O\fltrinstall.obj \
+
+
+
+
+
+# lowercased
+BASEDIR=c:\winddk\7600.16385.1
+OBJECT_ROOT=c:\winddk\7600.16385.1
+MAKEDIR_LOWERCASE=e:\backup\dev\filters\kmdf_filter\volfilt\install
+OBJ_PATH=e:\backup\dev\filters\kmdf_filter\volfilt\install
+CONCURRENT_MIDL=0
+CONCURRENT_MANIFEST_BUILD=0
