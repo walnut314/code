@@ -1,0 +1,5 @@
+
+gcc -S list.c
+$ this produces list.exe
+gcc list.s -o list
+
