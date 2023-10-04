@@ -1,0 +1,25 @@
+// stdafx.h : include file for standard system include files,
+// or project specific include files that are used frequently, but
+// are changed infrequently
+//
+
+#pragma once
+
+#include "targetver.h"
+
+//#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+// Windows Header Files:
+#include <Windows.h>
+//#include "D:\Program Files\Windows Kits\10\Include\10.0.22621.0\km\ntddk.h"
+#define KDEXT_64BIT
+#include <wdbgexts.h>
+#include <DbgEng.h>
+#include <imagehlp.h>
+
+#include <tchar.h>
+
+// TODO: reference additional headers your program requires here
+//extern WINDBG_EXTENSION_APIS ExtensionApis;
+//#define dprintf (ExtensionApis.lpOutputRoutine)
+#include "..\incs\camera.h"
+
