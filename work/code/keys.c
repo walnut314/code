@@ -1,10 +1,13 @@
 #include <windows.h>
 #include <stdio.h>
+
+// https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+
 HHOOK _k_hook;
 LRESULT __stdcall k_Callback1(int nCode, WPARAM wParam, LPARAM lParam)
 {
     PKBDLLHOOKSTRUCT key = (PKBDLLHOOKSTRUCT)lParam;
-    //a key was pressed
+
     if (wParam == WM_KEYDOWN && nCode == HC_ACTION)
     {
         switch (key->vkCode)
@@ -15,14 +18,18 @@ LRESULT __stdcall k_Callback1(int nCode, WPARAM wParam, LPARAM lParam)
         case VK_F2:
             puts("F2");
             break;
-
         case VK_F3:
             puts("F3");
             break;
-
         case VK_F4:
             puts("F4");
             break;
+
+        default:
+            putchar(key->vkCode);
+            putchar('\n');
+            break;
+            
         }
     }
 
