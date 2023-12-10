@@ -78,7 +78,7 @@ void grid_destroy(grid_ptr *grid)
 }
 #endif
 
-#if 1
+#if 0
 int main()
 {
     grid_ptr g = grid_new(4);
