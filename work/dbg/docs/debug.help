@@ -35,6 +35,9 @@ latest Windbg: \\dbg\privates\latest
 KiBugCheckDriver                 : 0xffffe10585a70668 : "SurfaceSystemManagementFrameworkDriver.sys" [Type: _UNICODE_STRING *]
     [<Raw View>]     [Type: _UNICODE_STRING]
 
+lists VPUs:
+dx -r1 @$cursession.Devices.PnPDevices.DeviceTree.Flatten(n => n.Children).Where(n => n.InstancePath.Contains("PCI") && n.InstancePath.Contains("6240"))[0]
+
 
 !Winde.help
 
