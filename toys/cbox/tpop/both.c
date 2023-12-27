@@ -69,13 +69,15 @@ int main(void)
     char encrypted[20];
     char decrypted[20];
 
+    printf("message: %s\n", message);
+
     ResetCipher(key);
     Encrypt(message, encrypted);
+    printf("encrypt: %s\n", encrypted);
 
     ResetCipher(key);
     Decrypt(decrypted, encrypted);
-
-    printf("output: %s\n", decrypted);
+    printf("decrypt: %s\n", decrypted);
 
     return 0;
 }
