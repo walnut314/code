@@ -1,8 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-int a[] = {55,41,59,26,53,58,97,93};
-
-#define SWAP(i, j) { int tmp = a[i]; a[i] = a[j]; a[j] = tmp; }
 
 void show(int a[], int n)
 {
@@ -13,48 +12,35 @@ void show(int a[], int n)
     printf("\n");
 }
 
-void swap(int i, int j)
+void swap(int a[], int i, int j)
 {
     int tmp = a[i]; a[i] = a[j]; a[j] = tmp;
 }
 
-void qsort(int a[], int l, int u)
+void quicksort(int v[], int n)
 {
-    if (l >= u) return;
-    int m = l;
-    for (int i = l+1; i <= u; i++) {
-        if (a[i] < a[l])
-            swap(++m, i); // move m to proper location
+    int i, last;
+    if (n <= 1) return;
+    swap(v, 0, rand() % n);
+    for (last = 0, i = 1; i < n; i++) {
+        if (v[i] < v[0])
+            swap(v, ++last, i); // move m to proper location
     }
-    swap(l, m); // then swap l and m
-    printf("> "); show(a, u);
-    qsort(a, l, m-1);
-    qsort(a, m+1, u);
-}
-
-// sedgewick
-void qsort2(int a[], int l, int r)
-{
-    int v, i, j, t;
-    if (r > l) {
-        v = a[r]; i = l-1; j = r;
-        for (;;) {
-            while (a[++i] < v) ; // increment i to v
-            while (a[--j] > v) ; // decrement j to v
-            if (i >= j) break; // after this i and j are bounding v
-            t = a[i]; a[i] = a[j]; a[j] = t;
-        }
-        t = a[i]; a[i] = a[r]; a[r] = t;
-        qsort2(a, l, i-1);
-        qsort2(a, i+1, r);
-    }
+    swap(v, 0, last);
+    quicksort(v, last);
+    quicksort(v+last+1, n-last-1);
 }
 
 void main()
 {
+    int a[] = {55,41,59,26,53,58,97,93};
     int n = sizeof(a)/sizeof(a[0]);
+    time_t t;
+
+    srand((unsigned) time(&t));
+
     show(a, n);
-    qsort(a, 0, n);
+    quicksort(a, n);
     show(a, n);
 }
 
