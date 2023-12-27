@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 void show(int a[], int n)
 {
     printf("[%d,%d] ", 0, n);
@@ -26,7 +25,7 @@ void quicksort(int v[], int n)
         if (v[i] < v[0])
             swap(v, ++last, i); // move m to proper location
     }
-    swap(v, 0, last);
+    swap(v, 0, last); // put pivot to proper location
     quicksort(v, last);
     quicksort(v+last+1, n-last-1);
 }
