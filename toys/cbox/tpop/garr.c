@@ -18,7 +18,15 @@ enum { NVINIT = 1, NVGROW = 2 };
 
 int delname(char *name)
 {
-    return 0;
+    int i = 0;
+    for (int i = 0; i < nvtab.nval; i++) {
+        if (!strcmp(nvtab.nameval[i].name, name)) {
+            memmove(nvtab.nameval+i, nvtab.nameval+i+1, (nvtab.nval-(i+1))*sizeof(Nameval));
+            nvtab.nval--;
+            return 1;
+        }
+    }
+    return 1;
 }
 
 int addname(Nameval newname)
@@ -66,5 +74,7 @@ int main()
         nval->value = i;
         addname(*nval);
     }
+    show();
+    delname("wilma");
     show();
 }
