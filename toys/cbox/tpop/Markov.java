@@ -1,9 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-
 public class Markov {
-
 
     class Prefix {
         public Vector pref;
@@ -11,9 +9,13 @@ public class Markov {
 
         Prefix(int prefix, String word)
         {
-            System.out.println("Prefix ctor");
+            System.out.println("Prefix1 ctor");
         }
 
+        Prefix(int prefix)
+        {
+            System.out.println("Prefix2 ctor");
+        }
     }
 
     class Chain {
@@ -26,6 +28,25 @@ public class Markov {
         public void build(InputStream in) //throws IOException
         {
             System.out.println("Chain: build");
+            StreamTokenizer st = new StreamTokenizer(in);
+            st.resetSyntax();
+            st.wordChars(0, Character.MAX_VALUE);
+            st.whitespaceChars(0, ' ');
+            while (st.nextToken() != st.TT_EOF) {
+                add(st.sval);
+            }
+        }
+
+        private void add(String word)
+        {
+            Vector suf = (Vector) statetab.get(prefix);
+            if (suf == null) {
+                suf = new Vector();
+                statetab.put(new Prefix(prefix), suf);
+            }
+            suf.addElement(word);
+            prefix.pref.removeElementAt(0);
+            prefix.pref.addElement(word);
         }
 
         public void generate(int nwords)
