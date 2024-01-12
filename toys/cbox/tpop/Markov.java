@@ -12,7 +12,7 @@ public class Markov {
             System.out.println("Prefix1 ctor");
         }
 
-        Prefix(int prefix)
+        Prefix(Prefix prefix)
         {
             System.out.println("Prefix2 ctor");
         }
@@ -25,7 +25,7 @@ public class Markov {
         Prefix prefix = new Prefix(NPREF, NONWORD);
         Random rand = new Random();
 
-        public void build(InputStream in) //throws IOException
+        public void build(InputStream in) throws IOException
         {
             System.out.println("Chain: build");
             StreamTokenizer st = new StreamTokenizer(in);
@@ -68,7 +68,12 @@ public class Markov {
         Chain chain = new Chain();
         int nwords = MAXGEN;
         System.out.println("dude, wudup");
-        chain.build(System.in);
+        try {
+            chain.build(System.in);
+        } catch (IOException ioexcpt)
+        {
+            System.out.println("bang");
+        } 
         chain.generate(nwords);
     }
 }
