@@ -65,11 +65,14 @@ public class Markov {
 
     public void run()
     {
-        Chain chain = new Chain();
         int nwords = MAXGEN;
+        Chain chain = new Chain();
         System.out.println("dude, wudup");
+
         try {
-            chain.build(System.in);
+            File file = new File("markov-chain-test-text.txt");
+            FileInputStream fileInputStream = new FileInputStream(file);
+            chain.build(fileInputStream);
         } catch (IOException ioexcpt)
         {
             System.out.println("bang");
