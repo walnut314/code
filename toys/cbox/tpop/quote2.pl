@@ -4,6 +4,7 @@
 #%quotes = $q->yahoo ("IBM", "SGI"); 
 #print Dumper(\%quotes);
 
+# https://metacpan.org/pod/Finance::Quote
 # usage: ./quote2.pl nyse MSFT
 
 use strict;
