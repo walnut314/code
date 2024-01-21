@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+# https://metacpan.org/pod/Finance::YahooQuote
+
 use Finance::YahooQuote;
 use Data::Dumper;
 
@@ -15,7 +17,7 @@ useRealtimeQueryFormat();     # switch to real-time query format
 @quotes = getcustomquote(["DELL","IBM"], # using custom format
                          ["Name","Book Value"]); # note array refs
 #print @quotes;
-print Dumper(@quote);
+print Dumper(@quotes);
 #oreach (@quotes)
 #
 #   foreach $item (@_$ARRAYREF) {
@@ -27,3 +29,8 @@ print Dumper(@quote);
 #      print "$_\n";
 #  }
 #
+foreach my $stock (@quotes) {
+    print "$stock:\t\t",
+          "Volume: ", $stock{"volume"}, "\t",
+          "Price: " , $stock{"open"}, "\n";
+}

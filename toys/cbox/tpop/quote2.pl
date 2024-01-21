@@ -5,6 +5,7 @@
 #print Dumper(\%quotes);
 
 # https://metacpan.org/pod/Finance::Quote
+# https://www.foo.be/docs/tpj/issues/vol5_3/tpj0503-0006.html
 # usage: ./quote2.pl nyse MSFT
 
 use strict;
