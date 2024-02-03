@@ -1,3 +1,14 @@
+https://stackoverflow.com/questions/44025899/importerror-no-module-named-pandas-pandas-installed-pip
+pip install virtualenv
+After installing this, run this command one by one inside your root project directory:
+
+virtualenv venv
+source venv/bin/activate
+Now your directory is secure and you can install your required packages inside.
+
+pip install pandas
+
+
 Physics and Python:
 ==================
 http://www-personal.umich.edu/~mejn/cp/programs.html

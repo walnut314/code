@@ -46,14 +46,14 @@ stopTime = time.time()
 
 print('Elapsed time = ', stopTime - startTime, ' seconds')
 
-#for i in range(len(yt)):
-##for ys in yt:
-#idx = np.argmax(np.abs(yt))
-freq = freqs[idx]
-    if yt[i].imag > 10.0:
-#        print(i, yt[i].imag, f[i])
-
 freqs = np.fft.fftfreq(len(yt))
+#for i in range(len(yt)):
+#    for ys in yt:
+#        idx = np.argmax(np.abs(yt))
+#        freq = freqs[idx]
+#        if yt[i].imag > 10.0:
+#            print(i, yt[i].imag, f[i])
+
 
 print("min, max")
 print(freqs.min(), freqs.max())

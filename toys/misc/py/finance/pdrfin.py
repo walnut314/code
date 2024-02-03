@@ -10,6 +10,14 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 
+year = '2021'
+month = '2'
+day = '12'
+start_datum = year + '-' + month + '-' + day
+end_datum   = year + '-' + month + '-' + day
+
+
+
 # Tickers list
 # We can add and delete any ticker from the list to get desired ticker live data
 #ticker_list = ['AMZN', 'MSFT', 'WDC', 'FB', 'AAPL']
@@ -41,8 +49,12 @@ def getData(ticker):
 # for tik in ticker_list:
 
 def analyze(tik):
-    data = getData(tik)
+#data = getData2(tik)
+    print("analyze " + tik)
+    data = getData2(tik, start_datum, end_datum)
+    
     if data is None:
+        print("analyze data is None")
         return
 #    for dp in data:
 #        print(dp)
@@ -136,12 +148,6 @@ def getData2(ticker, start_datum, end_datum):
     finally:
         return data
 
-year = '2021'
-month = '2'
-day = '12'
-start_datum = year + '-' + month + '-' + day
-end_datum   = year + '-' + month + '-' + day
-
 def all_data(tik):
     print(start_datum)
     print(end_datum)
@@ -153,7 +159,7 @@ def all_data(tik):
 def main():
     for tik in ticker_list:
         all_data(tik)
-#       analyze(tik)
+        analyze(tik)
 
 #     process('nyse.csv');
 #     process('nasdaq.csv');
