@@ -13,7 +13,10 @@ use Finance::Quote;
 use Data::Dumper;
 
 
-my $exchange = shift;	# Where we fetch our stocks from.
+# usage: ./quotes2.pl INTC IBM IVV
+
+#my $exchange = "NYSE"; #shift;	# Where we fetch our stocks from.
+my $exchange = "NASDAQ"; #shift;	# Where we fetch our stocks from.
 my @symbols = @ARGV;    # Which stocks we want.
 
 my $quoter = Finance::Quote->new;      # Create the F::Q object.
@@ -23,6 +26,9 @@ $quoter->timeout(30);	# Cancel fetch operation if it
 
 # Grab our information and place it into %info.
 my %info = $quoter->fetch($exchange, @symbols);
+print Dumper(\%info);
+
+exit;
 
 foreach my $stock (@symbols) {
 	unless ($info{$stock, "success"}) {
