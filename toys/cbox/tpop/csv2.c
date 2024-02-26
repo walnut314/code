@@ -4,8 +4,6 @@
 
 #include "csv.h"
 
-char buf[200];
-
 static void reset(void)
 {
     free(line);
