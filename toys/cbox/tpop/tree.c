@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 typedef struct _Nameval {
-    char *name;
+    const char *name;
     int  value;
     struct _Nameval *left;  // lesser
     struct _Nameval *right; // greater
 } Nameval;
 
-Nameval *newitem(char *name, int value)
+Nameval *newitem(const char *name, int value)
 {
     Nameval *newp;
     newp = (Nameval *) malloc(sizeof(Nameval));
@@ -36,7 +37,7 @@ Nameval *insert(Nameval *treep, Nameval *newp)
     return treep;
 }
 
-Nameval *lookup(Nameval *treep, char *name)
+Nameval *lookup(Nameval *treep, const char *name)
 {
     if (treep == NULL) return NULL;
     int cmp = strcmp(name, treep->name);
@@ -78,17 +79,17 @@ void freeall(Nameval *treep)
 
 int main()
 {
-    char *nms[] = { "fred", "wilma", "barney", "betty" };
+    const char *nms[] = { "fred", "wilma", "barney", "betty" };
 
-    Nameval *nvtree = newitem("dude", 0xdeadbeef);
+    Nameval *nvtree = newitem((const char *) "dude", 0xdeadbeef);
     Nameval *nval;
     for (int i = 0; i < 4; i++) {
         //addfront(nvlist, newitem(nms[i], i));
         insert(nvtree, newitem(nms[i], i));
     }
-    Nameval *s = lookup(nvtree, "dude");
+    Nameval *s = lookup(nvtree, (const char *) "dude");
     if (s) printf("sea: %s -> %x\n", s->name, s->value);
 
-    applyinorder(nvtree, printnv, "dude: %s \t- %x\n");
+    applyinorder(nvtree, printnv, (void *) "dude: %s \t- %x\n");
     freeall(nvtree);
  }
