@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os, sys
 import binascii
@@ -71,12 +71,6 @@ def hexdump3(prefix, address, data, offset=0):
 """
 
 def main():
-    ret="#012abc"
-    #ret="#~½|"
-    for c in ret:
-        print "%s  -  %02x" % (c,ord(c))
-
-    return
 
     s = sys.stdin.read()    
     hexdump2(s, 256)
