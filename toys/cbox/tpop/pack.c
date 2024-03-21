@@ -86,7 +86,7 @@ int unpack(uchar *buf, char *fmt, ...)
 
 int pack_type0(uchar *buf, ushort count, uchar val, ulong data)
 {
-    return pack(buf, "cscl", 'd', count, val, data);
+    return pack(buf, "cscl", 0x0, count, val, data);
 }
 
 int unpack_type0(int n, uchar *buf)
@@ -94,15 +94,21 @@ int unpack_type0(int n, uchar *buf)
     uchar c1, c2;
     ushort count;
     ulong dw;
+    static int counter = 0;
+    counter++;
     if (unpack(buf, "cscl", &c1, &count, &c2, &dw) != n)
         return -1;
-    printf("c1: %c, count: %d, c2: %c, data: %lx\n", c1, count, c2, dw);
-    return n;
+    printf("type0 c1: %d, count: %d, c2: %c, data: %lx\n", c1, count, c2, dw);
+    if (counter < 4) {
+        return n;
+    } else {
+        return -1;
+    }
 }
 
 int pack_type1(uchar *buf, ushort count, ulong dw1, ulong dw2)
 {
-    return pack(buf, "csll", 'e', count, dw1, dw2);
+    return pack(buf, "csll", 0x1, count, dw1, dw2);
 }
 
 int unpack_type1(int n, uchar *buf)
@@ -110,19 +116,25 @@ int unpack_type1(int n, uchar *buf)
     uchar c;
     ushort count;
     ulong dw1, dw2;
+    static int counter = 0;
+    counter++;
     if (unpack(buf, "csll", &c, &count, &dw1, &dw2) != n)
         return -1;
-    printf("c1: %c, count: %d, dw1: %c, dw2: %lx\n", c, count, dw1, dw2);
-    return n;
+    printf("type1 c1: %d, count: %d, dw1: %lx, dw2: %lx\n", c, count, dw1, dw2);
+    if (counter < 4) {
+        return n;
+    } else {
+        return -1;
+    }
 }
 
 int readpacket(int network, uchar *buf, size_t bufsize)
 {
     switch (network) {
         case 0:
-            return pack_type0(buf, 2, 4, 1234);
+            return pack_type0(buf, 2, 'e', 0x1234);
         case 1:
-            return pack_type1(buf, 4, 1234, 5678);
+            return pack_type1(buf, 4, 0x5678, 0x9abc);
         default:
             return 0;
     }
@@ -130,9 +142,7 @@ int readpacket(int network, uchar *buf, size_t bufsize)
 
 int (*unpackfn[])(int, uchar *) = {
     unpack_type0,
-    unpack_type1,
-    unpack_type2,
-    unpack_type3};
+    unpack_type1};
 
 void receive(int network)
 {
@@ -145,7 +155,7 @@ void receive(int network)
             printf("bad packet type 0x%x\n", type);
             return;
         }
-        if ((*unpackfn[type](n, buf,) < 0)) {
+        if ((unpackfn[type](n, buf) < 0)) {
             printf("protocol error, type 0x%x, length %d\n", type, n);
             return;
         }
@@ -155,13 +165,7 @@ void receive(int network)
 
 int main()
 {
-    uchar buf[256];
-    int ret;
-    memset(buf, 0, 256);
-    ret = pack_type0(buf, 0, 'a', 0xdeadbeef);
-    printf("ret: %d\n", ret);
-
-    ret = unpack_type0(8, buf);
-    printf("ret: %d\n", ret);
+    receive(0);
+    receive(1);
 }
 
