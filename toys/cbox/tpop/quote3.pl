@@ -4,8 +4,8 @@ use Finance::QuoteHist::Yahoo;
 
 $q = new Finance::QuoteHist::Yahoo
      (
-      symbols    => "SPY",
-      start_date => '01/01/2024',
+      symbols    => [qw(SPY IBM UPS AMZN WDC)],
+      start_date => '03/01/2024',
       end_date   => 'today',
      );
 
