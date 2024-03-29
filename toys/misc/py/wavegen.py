@@ -24,11 +24,11 @@ plt.show()
 
 #exit()
 
-mpl.pyplot.plot(x, y)
-#plt.xlabel('sample(n)')
-#plt.ylabel('voltage(V)')
+plt.plot(x, y)
+plt.xlabel('sample(n)')
+plt.ylabel('voltage(V)')
 
-#plt.show()
+plt.show()
 
 f = open("wave.csv", 'wt')
 try:
