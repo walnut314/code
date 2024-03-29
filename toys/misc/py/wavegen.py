@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -24,11 +24,11 @@ plt.show()
 
 #exit()
 
-plt.plot(x, y)
-plt.xlabel('sample(n)')
-plt.ylabel('voltage(V)')
+mpl.pyplot.plot(x, y)
+#plt.xlabel('sample(n)')
+#plt.ylabel('voltage(V)')
 
-plt.show()
+#plt.show()
 
 f = open("wave.csv", 'wt')
 try:
