@@ -6,6 +6,8 @@ install on mac:
 in python script:
 #!/usr/bin/env python3
 
+open anaconda navigator
+launch root -> terminal
 
 
 
