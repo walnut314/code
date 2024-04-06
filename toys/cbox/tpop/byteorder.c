@@ -20,7 +20,7 @@ int main()
     // x = 0x11223344UL; // 32-bit long
     x = 0x1122334455667788UL; // 64-bit long
     p = (unsigned char *) &x;
-    printf("ulong address %016lx\n", (unsigned long) p);
+    printf("0x%016lx       ==> base address\n", (unsigned long) p);
     for (i = 0; i < sizeof(long); p++, i++) {
         printf("%02lx ", ((unsigned long) p) & 0xff);
     }
