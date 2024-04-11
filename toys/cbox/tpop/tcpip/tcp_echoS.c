@@ -8,12 +8,45 @@
 #define RCVBUFSIZE  (32)
 #define MAXPENDING  (5)
 
+typedef struct _msg {
+    int type;
+    double amt;
+} msg;
+
 // usage:  ./srv.out 5000
 
 void DieWithError(char *errorMessage)
 {
     perror(errorMessage);
     exit(1);
+}
+
+void RcvMsg(int clntSocket)
+{
+    msg message;
+    void *buffer = &message;
+    int rbytes, rv;
+    for (rbytes = 0; rbytes < sizeof(message); rbytes += rv) {
+        if ((rv = recv(clntSocket, buffer+rbytes, sizeof(message)-rbytes, 0)) <= 0) {
+            DieWithError("recv() failed");
+        }
+    }
+    printf("got it!\n");
+    printf("dude: %d %lf\n", message.type, message.amt);
+
+
+    int recvMsgSize = sizeof(message);
+    char *echoBuffer = (char *) buffer;
+    while (recvMsgSize > 0) {
+        if (send(clntSocket, echoBuffer, recvMsgSize, 0) != recvMsgSize)
+            DieWithError("send() failed");
+        if ((recvMsgSize = recv(clntSocket, echoBuffer, RCVBUFSIZE, 0)) < 0)
+            DieWithError("recv() failed");
+    }
+ 
+
+
+    close(clntSocket);
 }
 
 void HandleTCPClient(int clntSocket)
@@ -67,7 +100,8 @@ int main(int argc, char *argv[])
         if ((clntSock = accept(servSock, (struct sockaddr *) &echoClntAddr, &clntLen)) < 0)
             DieWithError("accept() failed");
         printf("handlingclient %s\n", inet_ntoa(echoClntAddr.sin_addr));
-        HandleTCPClient(clntSock);
+        //HandleTCPClient(clntSock);
+        RcvMsg(clntSock);
     }
 
 }

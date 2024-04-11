@@ -15,6 +15,11 @@ void DieWithError(char *errorMessage)
     exit(1);
 }
 
+typedef struct _msg {
+    int type;
+    double amt;
+} msg;
+
 int main(int argc, char *argv[])
 {
     int sock;
@@ -52,6 +57,13 @@ int main(int argc, char *argv[])
 
     echoStringLen = strlen(echoString);
 
+    msg message;
+    message.type = 42;
+    message.amt = 3.141592;
+    echoString =(char *)  &message;
+    echoStringLen = sizeof(message);
+
+    //if (send(sock, echoString, echoStringLen, 0) != echoStringLen)
     if (send(sock, echoString, echoStringLen, 0) != echoStringLen)
         DieWithError("send() sent a different number of bytes than expected");
 
@@ -62,10 +74,14 @@ int main(int argc, char *argv[])
             DieWithError("recv() failed or connection closed prematurely");
         totalBytesRcvd += bytesRcvd;
         echoBuffer[bytesRcvd] = '\0';
-        printf(echoBuffer);
+        //printf(echoBuffer);
     }
 
-    printf("\n");
+    msg *m = (msg *) echoBuffer;
+    printf("got it back\n");
+    printf("wusup: %d %lf\n", m->type, m->amt);
+
+
     close(sock);
     exit(0);
 
