@@ -20,21 +20,22 @@ int main(int argc, char *argv[])
     int sock;
     unsigned int echoStringLen;
     int rcvBufferSize;
-    int sockOptSize;
+    unsigned int sockOptSize;
 
     if ((sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
         DieWithError("socket failed");
 
 
-    sockOptSize = sizeof(rcvBufferSize);
+    sockOptSize = 1; //sizeof(rcvBufferSize);
     if (getsockopt(sock, SOL_SOCKET, SO_RCVBUF, &rcvBufferSize, &sockOptSize) < 0)
         DieWithError("getsockopt() failed 1");
 
-    printf("initial rcv buffer: %d\n", rcvBufferSize);
+    printf("initial rcv buffer: 0x%x\n", rcvBufferSize);
     rcvBufferSize *= 2;
-    if (getsockopt(sock, SOL_SOCKET, SO_RCVBUF, &rcvBufferSize, sizeof(rcvBufferSize)) < 0)
+    sockOptSize = sizeof(rcvBufferSize);
+    if (getsockopt(sock, SOL_SOCKET, SO_RCVBUF, &rcvBufferSize, &sockOptSize) < 0)
         DieWithError("getsockopt() failed 2");
-    printf("final rcv buffer: %d\n", rcvBufferSize);
+    printf("final rcv buffer: 0x%x -> %dKb\n", rcvBufferSize, rcvBufferSize/1024);
 
 
     close(sock);
