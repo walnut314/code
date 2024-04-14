@@ -20,9 +20,12 @@ int main()
     for (int i = 0; i < 8; i++) {
 
 
-        printf("vel(%lf, %lf)\n", xvelocity, yvelocity);
-        printf("pos(%lf, %lf)\n", xposition, yposition);
-        printf("\n");
+        //printf("vel(%lf, %lf)\n", xvelocity, yvelocity);
+        //printf("pos(%lf, %lf)\n", xposition, yposition);
+        //printf("\n");
+
+        // CSV output
+        printf("%lf, %lf\n", xposition, yposition);
 
         yvelocity = -9.8 * Time; // Apply gravity
 
