@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     unsigned int recvStringLen;
     struct ip_mreq multicastRequest;
 
+    printf("argc: %d\n", argc);
     if (argc != 3) {
         fprintf(stderr, "Usage: %s <Multicast IP> <Broadcast Port>\n", argv[0]);
         exit(1);
