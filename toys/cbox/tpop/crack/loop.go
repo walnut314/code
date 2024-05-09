@@ -1,6 +1,7 @@
 package main
 
 import (
+        "os"
         "fmt"
         "math"
        )
@@ -77,7 +78,32 @@ func DoGeom() {
     rpt.Print()
 }
 
+type Logger struct {
+    out *os.File
+}
+
+func (l Logger) Log(s string) {
+    out := l.out
+    if (out == nil) {
+        out = os.Stderr
+    }
+    fmt.Fprintf(out, "%s [%d]: %s\n", os.Args[0], os.Getppid(), s)
+}
+
+func (l *Logger) SetOutput(out *os.File) {
+    l.out = out
+}
+
 func main() {
+    var log Logger
+    file,err := os.Create("dude.txt")
+    if err != nil {
+        fmt.Printf("err: %s\n", err)
+    }
+    log.SetOutput(file)
+    log.Log("oh crap")
+
+
     loops := 1
     for loops > 0 {
         fmt.Printf("\nNumber of loops?\n")
@@ -115,7 +141,7 @@ L:
     fmt.Printf("%d %s\n", x.count, x.Val)
     z = 37
     fmt.Printf("z: %d\n", z)
-    log(z)
+    //log(z)
     y := Log(&x)
     fmt.Printf("Log ret: %d\n", y)
 
