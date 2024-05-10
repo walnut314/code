@@ -94,6 +94,43 @@ func (l *Logger) SetOutput(out *os.File) {
     l.out = out
 }
 
+type stackEntry struct {
+    next *stackEntry
+    value interface{}
+}
+type stack struct {
+    top *stackEntry
+}
+func (s *stack) Push(v interface{}) {
+    var e stackEntry
+    e.value = v
+    e.next = s.top
+    s.top = &e
+}
+func (s *stack) Pop() interface{} {
+    if s.top == nil {
+        return nil
+    }
+    v := s.top.value
+    s.top = s.top.next
+    return v
+}
+
+func stackTest() {
+    var s stack
+    for i := 0; i < 4; i++ {
+        v := i
+        s.Push(v)
+    }
+    for { 
+        v := s.Pop()
+        if v == nil {
+            break;
+        }
+        fmt.Printf("pop: %d\n", v);
+    }
+}
+
 func main() {
     var log Logger
     file,err := os.Create("dude.txt")
@@ -146,5 +183,7 @@ L:
     fmt.Printf("Log ret: %d\n", y)
 
     DoGeom()
+
+    stackTest();
 }
 
