@@ -1,5 +1,6 @@
 package main
 
+// https://github.com/CodeFreezr/phrasebook/tree/master/examples
 import (
         "os"
         "fmt"
@@ -94,19 +95,62 @@ func (l *Logger) SetOutput(out *os.File) {
     l.out = out
 }
 
-type stackEntry struct {
-    next *stackEntry
+// stack stuff
+type stackEntry interface {
+    pop() (interface{}, stackEntry)
+}
+type genericStackEntry struct {
+    next stackEntry
     value interface{}
+}
+func (g genericStackEntry) pop() (interface{}, stackEntry) {
+    return g.value, g.next
+}
+type integerStackEntry struct {
+    value int64
+    count int
+    next stackEntry
+}
+func (i *integerStackEntry) pop() (interface{}, stackEntry) {
+    if (i.count > 0) {
+        i.count--
+        return i.value, i
+    }
+    return i.value, i.next
 }
 type stack struct {
     top *stackEntry
+    isInteger bool
 }
-func (s *stack) Push(v interface{}) {
-    var e stackEntry
+/*
+func (s *stack) PushInt(v int64) {
+    if (s.isInteger) {
+        top := s.top.(*integerStackEntry)
+        if top.value == v {
+            top.count++
+            return
+        }
+    }
+    var e integerStackEntry
     e.value = v
     e.next = s.top
     s.top = &e
+    s.isInteger = true
 }
+*/
+func (s *stack) Push(v interface{}) {
+    switch val := v.(type) {
+        //case int64: s.pushInt(val)
+        //case int:   s.pushInt(int64(val))
+        default:
+            var e genericStackEntry
+            e.value = v
+            e.next = s.top
+            s.top = &e
+            s.isInteger = false
+    }
+}
+/*
 func (s *stack) Pop() interface{} {
     if s.top == nil {
         return nil
@@ -115,13 +159,16 @@ func (s *stack) Pop() interface{} {
     s.top = s.top.next
     return v
 }
-
+*/
+//func (s *stack) Push(v interface{}) {
+//}
 func stackTest() {
     var s stack
     for i := 0; i < 4; i++ {
         v := i
         s.Push(v)
     }
+/*
     for { 
         v := s.Pop()
         if v == nil {
@@ -129,6 +176,7 @@ func stackTest() {
         }
         fmt.Printf("pop: %d\n", v);
     }
+*/
 }
 
 func main() {
