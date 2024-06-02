@@ -30,8 +30,13 @@ void shift_left(int a[], int i, int n)
 
 int main()
 {
-    int a[] = {'a','b','c','d','e','f','g','h'};
+    //int a[] = {'a','b','c','d','e','f','g','h'};
+    int a[] = {'a','b','c'};
     int len = sizeof(a) / sizeof(a[0]);
-    shift_left(a, 3, len);
+    //shift_left(a, 3, len);
+
+    show(a, len);
+    reverse(a, 0, 2); // swap 0 and 2
+    show(a, len);
 }
 

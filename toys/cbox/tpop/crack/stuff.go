@@ -141,7 +141,7 @@ func stackTest() {
     fmt.Printf("last: %v\n", s.Pop())
 }
 
-func main() {
+func my_logger() {
     var log Logger
     file,err := os.Create("dude.txt")
     if err != nil {
@@ -197,3 +197,15 @@ L:
     stackTest();
 }
 
+func slicer() {
+    var a = [...]int{1,2,3,4}
+    var a1 = a[2:]
+    var a2 = a[:3]
+    var a3 = a[:]
+    fmt.Printf("%d, %d, %d\n", len(a1), len(a2), len(a3))
+
+}
+
+func main() {
+    slicer()
+}
