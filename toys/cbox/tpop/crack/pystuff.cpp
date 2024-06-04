@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <vector>
 
+// g++ -std=c++14 pystuff.cpp
+
 using namespace std;
 
 int findSmallest(vector<int>& arr)
@@ -27,9 +29,11 @@ void show(const vector<int>& arr)
 
 vector<int> selsort(vector<int>& arr)
 {
-    vector<int> newArr(arr.size());
-    for (int i = 0; i < arr.size(); i++) {
+    vector<int> newArr;
+    int len = arr.size();
+    for (int i = 0; i < len; i++) {
         int smallest = findSmallest(arr);
+        printf("smallest: %d -> %d\n", smallest, arr[smallest]);
         int ele = arr[smallest];
         newArr.push_back(ele);
         arr.erase(arr.begin() + smallest);
@@ -43,13 +47,5 @@ int main()
     vector<int> arr = {7,1,3,9,4};
     show(arr);
     vector<int> newarr = selsort(arr);
-    //show(newarr);
-
-#if 0
-    int list[] = {7,1,3,9,4};
-    int len = sizeof(list)/sizeof(list[0]);
-    show(list, len);
-    int *newarr = selsort(list, len);
-    show(newarr, len);
-#endif
+    show(newarr);
 }

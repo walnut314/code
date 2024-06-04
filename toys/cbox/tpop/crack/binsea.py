@@ -6,7 +6,7 @@ def binsea(list, item):
     high = len(list) - 1
 
     while low <= high:
-        mid = (low+high)
+        mid = (low + high) // 2
         guess = list[mid]
         if guess == item:
             return mid
@@ -18,13 +18,14 @@ def binsea(list, item):
     
 
 def main():
+    find = 3
     list = [1,2,3,4]
     print(list)
-    i = binsea(list, 5)
+    i = binsea(list, find)
     if i != None:
         print("found: " + str(list[i]))
     else:
-        print("not found")
+        print(str(find) + " was not found")
 
 if __name__ == '__main__':
     try:
