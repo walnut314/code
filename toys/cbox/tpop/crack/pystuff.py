@@ -17,6 +17,15 @@ def selsort(arr):
         newArr.append(arr.pop(smallest))
     return newArr
 
+def qsort(arr):
+    if len(arr) < 2:
+        return arr
+    else:
+        pivot = arr[0]
+        less    = [v for v in arr[1:] if v <= pivot]
+        greater = [v for v in arr[1:] if v > pivot]
+        return qsort(less) + [pivot] + qsort(greater)
+
 def sum(arr):
     if len(arr) == 0:
         return 0
@@ -34,7 +43,10 @@ def test_selsort():
     print(newarr)
 
 def main():
-    test_rsum()
+#    test_rsum()
+    list = [7,1,3,9,4]
+    print("qsort: " + str(qsort(list)))
+
 
 if __name__ == '__main__':
     try:
