@@ -233,7 +233,7 @@ int sequential_search(char *s, int n, char k)
     return -1;
 }
 
-int binsearch(char *s, int n, char k)
+int binsearch(int *s, int n, char k)
 {
 /*
  * binary search of array s of size n
@@ -243,7 +243,9 @@ int binsearch(char *s, int n, char k)
     low = 0;
     high = n-1;
     while (low <= high) {
+        printf("hello, binsearch: low %d, hi %d\n", low, high);
         mid = (low+high)/2;
+        printf("is it %d @ %d\n", s[mid], mid);
         if (k > s[mid]) low = mid + 1;
         else if (k < s[mid]) high = mid - 1;
         else return k;
@@ -587,16 +589,16 @@ void test_sort()
     //read_quoted_string(s);
     //printf("%s\n", s);
     //string_show(s);
-    show(a, sz);
     //seasort_reverse(a, sz);
-    //selection_sort(a, sz);
+    selection(a, sz);
+    show(a, sz);
     //printf("bubble: "); bubble(a, sz);
     //printf("insertion: "); insertion(a, sz);
-    printf("merge sort: "); merge_sort(a, 0, sz-1);
+    //printf("merge sort: "); merge_sort(a, 0, sz-1);
     //printf("quicksort: "); quicksort(a, 0, sz-1);
     //printf("shell: "); shell(a,sz);
+    //printf("binsearch %d\n", binsearch(a, sz, 42));
     show(a, sz);
-    //printf("binsearch %d\n", binsearch(42, a, sz));
     //test_zip();
   
 }
@@ -604,11 +606,11 @@ void test_sort()
 int main()
 {
     //test_strings();
-    //test_sort();
+    test_sort();
     //subsets();
     //sequencer();
-    int a[] = {2,9,1,3,6,4};
-    int len = sizeof(a) / sizeof(a[0]);
+    //int a[] = {2,9,1,3,6,4};
+    //int len = sizeof(a) / sizeof(a[0]);
     //show(a, len);
     //bubble(a, len);
     //insertion(a, len);
@@ -616,7 +618,7 @@ int main()
     //counting_sort();
     // unit test digit10(n,k)
     //printf("%d\n", digit(321,3));
-    radix_sort();
+    //radix_sort();
 
     //printf("test bit stuff\n");
     //test_bits();

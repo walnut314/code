@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+
 
 
 def binsea(list, item):
