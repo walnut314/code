@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "harness.h"
 
 int interval_search(int *s, int n, int k)
 {
@@ -32,25 +33,73 @@ int interval_search(int *s, int n, int k)
 }
 
 float tax[] = {0.0,0.14,0.15,0.16,0.17,0.18,0.19,0.20};
+int bracket[] = {0, 2200, 2700, 3200, 3700, 4200, 4700, 10000};
+int len = sizeof(bracket)/sizeof(bracket[0]);
 
 int main()
 {
-    int bracket[] = {0, 2200, 2700, 3200, 3700, 4200, 4700, 10000};
-    int len = sizeof(bracket)/sizeof(bracket[0]);
-    int test[] = {-100, -1, 0, 1, 1099, 1100, 1101, 
-                   2199, 2200, 2201, 
-                   2399, 2400, 2401, 2699, 2700, 2701, 
-                   2899, 2900, 2901, 3199, 3200, 3201, 
-                   3399, 3400, 3401, 3699, 3700, 3701, 
-                   3999, 4000, 4001, 4199, 4200, 4201, 
-                   4399, 4400, 4401, 4699, 4700, 4701, 
-                   8999, 9000, 9001, 9999, 10000, 10001};
-    int tests = sizeof(test)/sizeof(test[0]);
+    HARNESS htests[] = {
+        -100, 0, 0, false,
+        -1, 0, 0, false,
+        0, 0, 0, false,
+        1, 0, 0, false,
+       1099, 0, 0, false,
+       1100, 0, 0, false,
+       1101, 0, 0, false,
+       2199, 0, 0, false,
+       2200, 0, 0, false,
+       2201, 0, 1, false,
+       2399, 0, 1, false,
+       2400, 0, 1, false,
+       2401, 0, 1, false,
+       2699, 0, 1, false,
+       2700, 0, 1, false,
+       2701, 0, 2, false,
+       2899, 0, 2, false,
+       2900, 0, 2, false,
+       2901, 0, 2, false,
+       3199, 0, 2, false,
+       3200, 0, 2, false,
+       3201, 0, 3, false,
+       3399, 0, 3, false,
+       3400, 0, 3, false,
+       3401, 0, 3, false,
+       3699, 0, 3, false,
+       3700, 0, 3, false,
+       3701, 0, 4, false,
+       3999, 0, 4, false,
+       4000, 0, 4, false,
+       4001, 0, 4, false,
+       4199, 0, 4, false,
+       4200, 0, 4, false,
+       4201, 0, 5, false,
+       4399, 0, 5, false,
+       4400, 0, 5, false,
+       4401, 0, 5, false,
+       4699, 0, 5, false,
+       4700, 0, 5, false,
+       4701, 0, 6, false,
+       8999, 0, 6, false,
+       9000, 0, 6, false,
+       9001, 0, 6, false,
+       9999, 0, 6, false,
+      10000, 0, 6, false,
+      10001, 0, 6, false,
+    };
+
+    int tests = sizeof(htests)/sizeof(htests[0]);
     int ret; 
 
     for (int i = 0; i < tests; i++) {
-        ret = interval_search(bracket, len, test[i]);
-        printf("tax: %6d : mid [%d] => bracket %6d --> tax: %0.2f\n", test[i], ret, bracket[ret], tax[ret]);
+        htests[i].out = interval_search(bracket, len, htests[i].in);
+        if (htests[i].out == htests[i].expect) {
+            htests[i].pass = true;
+            printf("htests[%02d] = PASS\n", i);
+        } else {
+            printf("htests[%02d] = FAIL ==> ", i);
+            printf("  expected: %d, rec'd: %d\n", htests[i].expect, htests[i].out);
+        }
+        //printf("tax: %6d : mid [%d] => bracket %6d --> tax: %0.2f\n", test[i], ret, bracket[ret], tax[ret]);
     }
 
 }
