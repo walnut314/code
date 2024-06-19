@@ -1,4 +1,47 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+typedef struct _list {
+    struct _list *next;
+    int val;
+} list;
+
+void list_show(list *l)
+{
+    list *next = l;
+    while (next) {
+        printf("%d ", next->val);
+        next = next->next;
+    }
+    printf("\n");
+}
+
+void list_add(list *head, int val)
+{
+    list *new = (list *) malloc(sizeof(list));
+    new->val = val;
+    new->next = head->next;
+    head->next = new;
+}
+
+list *list_pop(list *head)
+{
+    list *t = head->next;
+    head->next = t->next;
+    return t;
+}
+
+list *list_reverse(list *head)
+{
+    list *p = head->next, *q, *r = NULL;
+    while (p) {
+        q = p->next;
+        p->next = r;
+        r = p;
+        p = q;
+    }
+    return r;
+}
 
 int count_bits(int val)
 {
@@ -45,4 +88,22 @@ int main(int argc, char *argv[])
     show(a, len);
     isort(a, len);
     show(a, len);
+
+    list head;
+    head.next = NULL;
+    for (int i = 0; i < len; i++) {
+        list_add(&head, a[i]);
+    }
+    list_show(head.next);
+    printf("reverse\n");
+    list *l = list_reverse(&head);
+    list_show(l);
+    head.next = l;
+    while (head.next) {
+        list *t = list_pop(&head);
+        printf("%d ", t->val);
+        free(t);
+    }
+    printf("\n");
+
 }
