@@ -80,14 +80,19 @@ void freeall(Nameval *treep)
 int main()
 {
     const char *nms[] = { "fred", "wilma", "barney", "betty" };
+    int len = sizeof(nms)/sizeof(nms[0]);
+
+    printf("num of entries: %d\n", len);
 
     Nameval *nvtree = newitem((const char *) "dude", 0xdeadbeef);
     Nameval *nval;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < len; i++) {
         //addfront(nvlist, newitem(nms[i], i));
         insert(nvtree, newitem(nms[i], i));
     }
     Nameval *s = lookup(nvtree, (const char *) "dude");
+    if (s) printf("sea: %s -> %x\n", s->name, s->value);
+    s = lookup(nvtree, (const char *) "barney");
     if (s) printf("sea: %s -> %x\n", s->name, s->value);
 
     applyinorder(nvtree, printnv, (void *) "dude: %s \t- %x\n");

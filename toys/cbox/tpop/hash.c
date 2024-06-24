@@ -44,11 +44,15 @@ Nameval *lookup(char *name, int create, int value)
 int main()
 {
     char *nms[] = { "fred", "wilma", "barney", "betty" };
+    int len = sizeof(nms)/sizeof(nms[0]);
+
+    printf("number of entries: %d\n", len);
+
     Nameval *nval;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < len; i++) {
         lookup(nms[i], 1, i);
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < len; i++) {
         if ((nval = lookup(nms[i], 1, i)) != NULL) {
             printf("found: %s \t %x\n", nval->name, nval->value);
         }
