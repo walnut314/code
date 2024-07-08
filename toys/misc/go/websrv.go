@@ -14,7 +14,7 @@ func main() {
     http.HandleFunc("/", handler)
     http.HandleFunc("/count", counter)
     //log.Fatal(http.ListenAndServe("localhost:8000", nil))
-    http.ListenAndServe(":80", nil)
+    http.ListenAndServe(":5000", nil)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
