@@ -1,0 +1,16 @@
+<style>
+  .done { color:red; padding:3px 0; margin:5px 0; font-style:italic; }
+  .notdone { color:green; padding:3px 0; margin:5px 0; font-style:italic; }
+</style>
+
+<h1>{{.PageTitle}}</h1>
+<ul>
+    {{range .Todos}}
+        {{if .Done}}
+            <li class="done">{{.Title}} Done</li>
+        {{else}}
+            <li class="notdone">{{.Title}} Not done</li>
+        {{end}}
+    {{end}}
+</ul> 
+
