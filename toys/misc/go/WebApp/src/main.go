@@ -9,6 +9,7 @@ import (
     "fmt"
     "encoding/json"
     "html/template"
+    "time"
 )
 
 type App struct {
@@ -27,10 +28,25 @@ func (a *App) indexHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprint(w, "<h1>Hello Again To You!</h1>")
 }
 
+type Response struct {
+    CurrentTime string
+    Name string
+}
+
 func (a *App) dudeHandler(w http.ResponseWriter, r *http.Request) {
     // http://localhost:5000/dude/?name=bart
-    nm := r.URL.Query().Get("name")
-    fmt.Fprintf(w, "Dude, wusup %s -> %d", nm, 77)
+    //nm := r.URL.Query().Get("name")
+    //fmt.Fprintf(w, "Dude, wusup %s -> %d", nm, 77)
+
+    ctime := Response{
+        CurrentTime: time.Now().Format(time.RFC3339),
+        Name: "hooda dawg",
+    }
+    byteArray, err := json.Marshal(ctime)
+    if err != nil {
+        fmt.Println(err)
+    }
+    w.Write(byteArray)
 }
 
 func (a *App) htmlHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,19 +92,22 @@ type TodoPageData struct {
             },
     }
 */
-    title1 := "hooky"
-    title2 := "dooky"
-    title3 := "dorf"
-    ptitle := "dude"
+    title1 := "Quiet time"
+    title2 := "Church"
+    title3 := "Yard walkaround"
+    title4 := "Pay bills"
+    ptitle := "dude just do it!"
     todo1 := Todo{Title: title1, Done: false}
     todo2 := Todo{Title: title2, Done: true}
     todo3 := Todo{Title: title3, Done: true}
+    todo4 := Todo{Title: title4, Done: false}
     page  := TodoPageData{
         PageTitle: ptitle, 
             Todos: []Todo{
                 todo1, 
                 todo2,
                 todo3,
+                todo4,
                 },
             }
     // next put data in CSV
@@ -154,24 +173,25 @@ func logging(f http.HandlerFunc) http.HandlerFunc {
 }
 
 func middleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("Executing middleware pre-path: %s\n", r.URL.Path)
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        fmt.Printf("Executing middleware pre-path: %s\n", r.URL.Path)
         switch (r.URL.Path) {
             case "/":
                 fmt.Println("path: /")
             case "/dude/":
                 fmt.Println("path: /dude/");
         }
-		next.ServeHTTP(w, r)
-		fmt.Printf("Executing middleware post-path: %s\n", r.URL.Path)
-	})
+        next.ServeHTTP(w, r)
+        fmt.Printf("Executing middleware post-path: %s\n", r.URL.Path)
+    })
 }
 
 func (a *App) Init() {
-	finalIndexHandler := http.HandlerFunc(a.indexHandler)
-	finalDudeHandler  := http.HandlerFunc(a.dudeHandler)
+    //finalIndexHandler := http.HandlerFunc(a.indexHandler)
+    finalDudeHandler  := http.HandlerFunc(a.dudeHandler)
 
-    a.Router.Handle("/",            middleware(finalIndexHandler))
+    a.Router.Handle("/", http.FileServer(http.Dir("web")))    
+    //a.Router.Handle("/",            middleware(finalIndexHandler))
     a.Router.Handle("/dude/",       middleware(finalDudeHandler))
 
     a.Router.HandleFunc("/json/",   a.jsonHandler)
