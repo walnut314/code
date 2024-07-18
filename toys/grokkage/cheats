@@ -1,4 +1,4 @@
-7/25/2022 11:27:44 AM     D:\dev\code\toys\grokkage\cheats
+7/18/2024 09:27:44 AM     D:\dev\code\toys\grokkage\cheats
 
 ------------------count bits------------------------------------------------
     int cnt = 0; while (x) { cnt++; x &= (x-1); }
@@ -7,7 +7,7 @@
         d = c;
         while (d > 0 && a[d] < a[d-1]) { exchg(a[d], a[d-1]); d--; }
 ------------------list------------------------------------------------------
-reversal:               while (p)
+reversal:               while (p)           usage: returns pure headless list
 p=list,q,r=null             q = p->next
                             p->next = r
                             r = p
@@ -49,9 +49,11 @@ elseif (X > T->x) ins(T->RIGHT, X)      N = GET(); PROCESS(N)
                                         if (N->LEFT)  PUT(N->LEFT, Q)
                                         if (N->RIGHT) PUT(N->RIGHT, Q)
 ---------------------------search-------------------------------------------
-    binsearch:
 ----------------------------------------------------------------------------
 endian: uint32 x = 0x11223344L; (H->L), char *p = &x; loop: p[i] addrs increase
 bit count: while (x) {  bits+ss+; x &= (x-1); }
-fifo
+----------------------------------------------------------------------------
+binsearch
+fifo: list & array
+hash
 

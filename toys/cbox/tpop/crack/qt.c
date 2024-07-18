@@ -8,6 +8,7 @@ typedef struct _list {
 
 void list_show(list *l)
 {
+    printf("list show:\n");
     list *next = l;
     while (next) {
         printf("%d ", next->val);
