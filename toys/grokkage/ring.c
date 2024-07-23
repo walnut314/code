@@ -104,3 +104,7 @@ void ring_test()
 }
 #endif
 
+int main()
+{
+    ring_test();
+}

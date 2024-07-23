@@ -14,7 +14,7 @@ typedef struct _map_entry {
     int value;
 } map_entry;
 
-struct map {
+typedef struct map {
     unsigned int buckets;
     unsigned int multiplier;
     map_entry **prtab;
@@ -148,13 +148,14 @@ void iterate(map_ptr tab) {
     printf("hash iterate...(exit)\n");
 }
 
-#if 0
+#if 1
 int main()
 {
     map_entry *pr;
     char key[8];
     map *tab;
-    tab = map_new(NBUCKETS, MULTIPLIER);
+    int value;
+    tab = map_new();
 
     map_insert(tab, "dude", 76);
     map_insert(tab, "dude", 76);
@@ -164,20 +165,20 @@ int main()
     map_insert(tab, "rowdy", 80);
 
     strcpy(key, "dude");
-    if (map_lookup(tab, key)) {
-        printf("found: %s -> %d\n", key, pr->value);
+    if (map_lookup(tab, key, &value)) {
+        printf("found: %s -> %d\n", key, value);
     } else {
         printf("not found: %s\n", key);
     }
 
     iterate(tab);
 
-    if (map_remove(tab, key)) {
-        printf("removed %s -> %d\n", pr->key, pr->value);
+    if (map_remove(tab, key, &value)) {
+        printf("removed %s -> %d\n", key, value);
         free(pr);
     }
-    if (map_lookup(tab, key)) {
-        printf("found: %s -> %d\n", key, pr->value);
+    if (map_lookup(tab, key, &value)) {
+        printf("found: %s -> %d\n", key, value);
     } else {
         printf("not found: %s\n", key);
     }

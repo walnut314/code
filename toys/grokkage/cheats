@@ -1,17 +1,16 @@
 7/18/2024 09:27:44 AM     D:\dev\code\toys\grokkage\cheats
 
-------------------count bits------------------------------------------------
+------------------count bits in x ------------------------------------------
     int cnt = 0; while (x) { cnt++; x &= (x-1); }
 ------------------insert sort-----------------------------------------------
-    for (c = 1 ; c <= n - 1; c++) => exchg(a,b) {swap a and b}
-        d = c;
-        while (d > 0 && a[d] < a[d-1]) { exchg(a[d], a[d-1]); d--; }
-------------------list------------------------------------------------------
-reversal:               while (p)           usage: returns pure headless list
-p=list,q,r=null             q = p->next
-                            p->next = r
-                            r = p
-                            p = q
+    for (i = 1 ; c = n; i++) {
+        t = a[i]
+        for (j = i; j > 0 && a[j-1] > t; j--) a[j] = a[j-1]
+        a[j] = t
+    }
+------------------list reverse ---------------------------------------------
+p=list,q,r=null         while (p)           usage: returns pure headless list
+                            q = p->next; p->next = r; r = p; p = q
                         return r
 ------------------max heap---------------------------------------------------
 heap[256]; heap[0] = INT_MAX; size=0; ins: loop(a): heap[++size] = a[i]; up(size);
@@ -48,12 +47,20 @@ elseif (X < T->x) ins(T->LEFT, X)   while (!empty(Q))
 elseif (X > T->x) ins(T->RIGHT, X)      N = GET(); PROCESS(N)
                                         if (N->LEFT)  PUT(N->LEFT, Q)
                                         if (N->RIGHT) PUT(N->RIGHT, Q)
----------------------------search-------------------------------------------
 ----------------------------------------------------------------------------
 endian: uint32 x = 0x11223344L; (H->L), char *p = &x; loop: p[i] addrs increase
-bit count: while (x) {  bits+ss+; x &= (x-1); }
 ----------------------------------------------------------------------------
-binsearch
+int binsearch(int *s, int n, char k) {
+    int low=0, high=n-1, mid;
+    while (low <= high) {
+        mid = (low+high)/2;
+        if (k > s[mid]) low = mid + 1;
+        else if (k < s[mid]) high = mid - 1;
+        else return k;
+    }
+    return -1;
+}
+----------------------------------------------------------------------------
 fifo: list & array
 hash
 

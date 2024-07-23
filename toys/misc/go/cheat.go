@@ -64,6 +64,12 @@ func HeapTest() {
     HeapShow(heap)
 }
 
+type Trie struct {
+}
+
+func TrieTest() {
+}
+
 func count_bits(a int) int {
     num_bits := 0
     for ; a > 0 ; {
