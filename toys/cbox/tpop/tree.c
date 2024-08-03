@@ -3,17 +3,17 @@
 #include <string.h>
 #include <stdint.h>
 
-typedef struct _Nameval {
+typedef struct _Tree {
     const char *name;
     int  value;
-    struct _Nameval *left;  // lesser
-    struct _Nameval *right; // greater
-} Nameval;
+    struct _Tree *left;  // lesser
+    struct _Tree *right; // greater
+} Tree;
 
-Nameval *newitem(const char *name, int value)
+Tree *newitem(const char *name, int value)
 {
-    Nameval *newp;
-    newp = (Nameval *) malloc(sizeof(Nameval));
+    Tree *newp;
+    newp = (Tree *) malloc(sizeof(Tree));
     newp->name = name;
     newp->value = value;
     newp->left = NULL;
@@ -21,7 +21,7 @@ Nameval *newitem(const char *name, int value)
     return newp;
 }
 
-Nameval *insert(Nameval *treep, Nameval *newp)
+Tree *insert(Tree *treep, Tree *newp)
 {
     if (treep == NULL) return newp;
     int cmp = strcmp(newp->name, treep->name);
@@ -37,7 +37,7 @@ Nameval *insert(Nameval *treep, Nameval *newp)
     return treep;
 }
 
-Nameval *lookup(Nameval *treep, const char *name)
+Tree *lookup(Tree *treep, const char *name)
 {
     if (treep == NULL) return NULL;
     int cmp = strcmp(name, treep->name);
@@ -53,14 +53,14 @@ Nameval *lookup(Nameval *treep, const char *name)
     return NULL;
 }
 
-void printnv(Nameval *p, void *arg)
+void printnv(Tree *p, void *arg)
 {
     char *fmt;
     fmt = (char *) arg;
     printf(fmt, p->name, p->value);
 }
 
-void applyinorder(Nameval *treep, void (*fn)(Nameval*, void*), void *arg)
+void applyinorder(Tree *treep, void (*fn)(Tree*, void*), void *arg)
 {
     if (treep == NULL) return;
     applyinorder(treep->left, fn, arg);
@@ -68,7 +68,7 @@ void applyinorder(Nameval *treep, void (*fn)(Nameval*, void*), void *arg)
     applyinorder(treep->right, fn, arg);
 }
 
-void freeall(Nameval *treep)
+void freeall(Tree *treep)
 {
     if (treep == NULL) return;
     freeall(treep->left);
@@ -84,13 +84,13 @@ int main()
 
     printf("num of entries: %d\n", len);
 
-    Nameval *nvtree = newitem((const char *) "dude", 0xdeadbeef);
-    Nameval *nval;
+    Tree *nvtree = newitem((const char *) "dude", 0xdeadbeef);
+    Tree *nval;
     for (int i = 0; i < len; i++) {
         //addfront(nvlist, newitem(nms[i], i));
         insert(nvtree, newitem(nms[i], i));
     }
-    Nameval *s = lookup(nvtree, (const char *) "dude");
+    Tree *s = lookup(nvtree, (const char *) "dude");
     if (s) printf("sea: %s -> %x\n", s->name, s->value);
     s = lookup(nvtree, (const char *) "barney");
     if (s) printf("sea: %s -> %x\n", s->name, s->value);

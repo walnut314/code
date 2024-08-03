@@ -119,22 +119,13 @@ func bfs(graph map[string][]string, start string) bool {
     search_queue.PushBack(graph[start])
     searched := map[string]int{};
     fmt.Println(start)
-    //fmt.Println("bfs enter: " + start);
     for ; search_queue.Len() > 0; {
         e := search_queue.Front()
         names := e.Value.([]string)
-        //fmt.Println(reflect.TypeOf(names))
-            
         for _,name := range names {
-            //fmt.Println(name)
             search_queue.PushBack(graph[name])
             if _, ok := searched[name]; ok {
-                //fmt.Println(name + " already seen")
             } else {
-                //if name[len(name)-1] == 'm' {
-                //    fmt.Println("found " + name)
-                //    return true
-                //}
                 searched[name] = 1
                 fmt.Println(name)
                 search_queue.PushBack(graph[name])
@@ -142,7 +133,28 @@ func bfs(graph map[string][]string, start string) bool {
         }
         search_queue.Remove(e)
     }
-    //fmt.Println("bfs exit: ");
+    return false
+}
+
+func bfs2(graph map[string][]string, start string) bool {
+    search_queue := list.New()
+    search_queue.PushBack(start)
+    searched := map[string]bool{};
+    fmt.Println(start)
+    searched[start] = true
+    for ; search_queue.Len() > 0; {
+        e := search_queue.Front()
+        nm := e.Value.(string)
+        names := graph[nm]
+        for _,name := range names {
+            if !searched[name] {
+                searched[name] = true
+                fmt.Println(name)
+                search_queue.PushBack(name)
+            }
+        }
+        search_queue.Remove(e)
+    }
     return false
 }
 
@@ -196,6 +208,25 @@ func dfs(tree map[string][]string, start string) {
     }
 }
 
+type Tree struct {
+    left  *Tree
+    right *Tree
+    val   int
+}
+
+func TreeInsert(root *Tree, val int) *Tree {
+    if root == nil {
+        root = &Tree{nil, nil, val}
+        return root
+    } else if val < root.val {
+        root.left = TreeInsert(root.left, val)
+    } else if val > root.val {
+        root.right = TreeInsert(root.right, val)
+    }
+
+    return root
+}
+
 func main() {
     a := []int{4,1,8,2,5}
     arrshow(a)
@@ -234,7 +265,9 @@ func main() {
     graph["thom"]   = append(graph["thom"], "")
     graph["jonny"]  = append(graph["jonny"], "")
     bfs(graph, "you")
-
+    fmt.Println("\nBFS2...graph")
+    bfs2(graph, "you")
+/*
     tree := map[string][]string{}
     tree["root"]        = append(tree["root"], "2001", "odyssey.png")
     tree["2001"]        = append(tree["2001"], "a.png", "space.png")
@@ -248,5 +281,11 @@ func main() {
     fmt.Println("\ndfs_r...tree")
     visited := map[string]bool{};
     dfs_r(tree, visited, "root")
-
+*/
+    tree2 := &Tree{}
+    for i := range a {
+        fmt.Println(i)
+        tree2 = TreeInsert(tree2, i)
+    }
+    fmt.Println(tree2)
 }
