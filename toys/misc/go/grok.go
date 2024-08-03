@@ -2,7 +2,21 @@ package main
 
 import (
     "fmt"
+    "container/list"
+    //"container/stack"
+    //"github.com/golang-collections/collections/stack"
+    //"reflect"
+    //"strings"
 )
+
+func check_voter(m map[string]int, s string) string {
+    if _, ok := m[s]; ok {
+        return s + " already voted"
+    } else {
+        m[s] = 1
+        return "let " + s + " vote now"
+    }
+}
 
 func sum(a []int) int {
     if len(a) == 0 {
@@ -100,6 +114,88 @@ func arrshow(a []int) {
     fmt.Printf("\n")
 }
 
+func bfs(graph map[string][]string, start string) bool {
+    search_queue := list.New()
+    search_queue.PushBack(graph[start])
+    searched := map[string]int{};
+    fmt.Println(start)
+    //fmt.Println("bfs enter: " + start);
+    for ; search_queue.Len() > 0; {
+        e := search_queue.Front()
+        names := e.Value.([]string)
+        //fmt.Println(reflect.TypeOf(names))
+            
+        for _,name := range names {
+            //fmt.Println(name)
+            search_queue.PushBack(graph[name])
+            if _, ok := searched[name]; ok {
+                //fmt.Println(name + " already seen")
+            } else {
+                //if name[len(name)-1] == 'm' {
+                //    fmt.Println("found " + name)
+                //    return true
+                //}
+                searched[name] = 1
+                fmt.Println(name)
+                search_queue.PushBack(graph[name])
+            }
+        }
+        search_queue.Remove(e)
+    }
+    //fmt.Println("bfs exit: ");
+    return false
+}
+
+func dfs_r(tree map[string][]string, visited map[string]bool, start string) { 
+    // Mark the current node as visited
+    if !visited[start] {
+        visited[start] = true
+        fmt.Println(start)
+    }
+    names := tree[start]
+    for _,name := range names {
+        v := visited[name]
+        if (!v) {
+            fmt.Println(name)
+            visited[name] = true
+            dfs_r(tree, visited, name)
+        }
+    }
+}
+
+type stack []string
+func (s stack) Push(v string) stack {
+    return append(s, v)
+}
+
+func (s stack) Pop() (stack, string) {
+    // FIXME: What do we do if the stack is empty, though?
+    l := len(s)
+    return  s[:l-1], s[l-1]
+}
+
+func dfs(tree map[string][]string, start string) { 
+    s := make(stack, 0)
+    s = s.Push(start)
+    n := ""
+    fmt.Println(len(s))
+    searched := map[string]bool{};
+    searched[start] = true
+    fmt.Println(start)
+    for len(s) > 0 {
+        s,n = s.Pop()
+        names := tree[n]
+        for _,name := range names {
+            v := searched[name]
+            if (!v) {
+                searched[name] = true
+                s = s.Push(name)
+                fmt.Println(name)
+            }
+        }
+    }
+}
+
 func main() {
     a := []int{4,1,8,2,5}
     arrshow(a)
@@ -116,4 +212,41 @@ func main() {
     arrshow(c)
     d := qsort(c)
     arrshow(d)
+
+    voted := map[string]int{}
+    //m = map[string]float32 {
+    //    "apple": 0.67,
+    //    "milk": 1.49,
+    //    "avocado": 1.89,
+    //}
+    name := "chip"
+    fmt.Println(check_voter(voted, name))
+    fmt.Println(check_voter(voted, name))
+
+    fmt.Println("\nBFS...graph")
+    graph := map[string][]string{}
+    graph["you"]    = append(graph["you"], "alice", "bob", "claire")
+    graph["bob"]    = append(graph["bob"], "anuj", "peggy")
+    graph["alice"]  = append(graph["alice"], "peggy")
+    graph["claire"] = append(graph["claire"], "thom", "jonny")
+    graph["anuj"]   = append(graph["anuj"], "")
+    graph["peggy"]  = append(graph["peggy"], "")
+    graph["thom"]   = append(graph["thom"], "")
+    graph["jonny"]  = append(graph["jonny"], "")
+    bfs(graph, "you")
+
+    tree := map[string][]string{}
+    tree["root"]        = append(tree["root"], "2001", "odyssey.png")
+    tree["2001"]        = append(tree["2001"], "a.png", "space.png")
+    tree["odyssey.png"] = append(tree["odyssey.png"], "")
+    tree["a.png"]       = append(tree["a.png"], "")
+    tree["space.png"]   = append(tree["space.png"], "")
+    fmt.Println("\nbfs...tree")
+    bfs(tree, "root")
+    fmt.Println("\ndfs...tree")
+    dfs(tree, "root")
+    fmt.Println("\ndfs_r...tree")
+    visited := map[string]bool{};
+    dfs_r(tree, visited, "root")
+
 }
