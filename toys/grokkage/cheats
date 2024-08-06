@@ -3,11 +3,17 @@
 ------------------count bits in x ------------------------------------------
     int cnt = 0; while (x) { cnt++; x &= (x-1); }
 ------------------insert sort-----------------------------------------------
-    for (i = 1 ; c = n; i++) {
-        t = a[i]
-        for (j = i; j > 0 && a[j-1] > t; j--) a[j] = a[j-1]
-        a[j] = t
+void insort(int a[], int n) {
+    for (int i = 1 ; i < n; i++) {
+        int j = i;
+        while (j > 0 && a[j] < a[j-1]) {
+            int t = a[j];
+            a[j] = a[j-1];
+            a[j-1] = t;
+            j--;
+        }
     }
+}
 ------------------list reverse ---------------------------------------------
 p=list,q,r=null         while (p)           usage: returns pure headless list
                             q = p->next; p->next = r; r = p; p = q
