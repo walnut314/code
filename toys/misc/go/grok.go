@@ -214,17 +214,39 @@ type Tree struct {
     val   int
 }
 
-func TreeInsert(root *Tree, val int) *Tree {
-    if root == nil {
-        root = &Tree{nil, nil, val}
-        return root
-    } else if val < root.val {
-        root.left = TreeInsert(root.left, val)
-    } else if val > root.val {
-        root.right = TreeInsert(root.right, val)
+//func (t Tree)Insert(root *Tree, val int) *Tree {
+func (t *Tree) Insert(val int) *Tree {
+    if t == nil {
+        t = &Tree{nil, nil, val}
+        return t
+    } else if val < t.val {
+        t.left = t.left.Insert(val)
+        //root.left = TreeInsert(root.left, val)
+    } else if val > t.val {
+        t.right = t.right.Insert(val)
+        //root.right = TreeInsert(root.right, val)
     }
+    return t
+}
 
-    return root
+func (t *Tree) Traverse() {
+    if t == nil {
+        return
+    }
+    t.left.Traverse()
+    fmt.Printf("%d ", t.val)
+    t.right.Traverse()
+}
+
+type Map struct {
+    leaf map[string][]string
+}
+
+func (m *Map) Insert(root string, val string) {
+    if m.leaf == nil {
+        m.leaf = make(map[string][]string, 0)
+    }
+    m.leaf[root] = append(m.leaf[root], val)
 }
 
 func main() {
@@ -282,10 +304,26 @@ func main() {
     visited := map[string]bool{};
     dfs_r(tree, visited, "root")
 */
+    fmt.Println("Tree...")
     tree2 := &Tree{}
     for i := range a {
         fmt.Println(i)
-        tree2 = TreeInsert(tree2, i)
+        tree2 = tree2.Insert(i)
     }
-    fmt.Println(tree2)
+    tree2.Traverse()
+    fmt.Println()
+
+    fmt.Println("Map...")
+    mapper := &Map{}
+
+    mapper.Insert("root", "2001")
+    mapper.Insert("root", "odyssey.png")
+    mapper.Insert("2001", "a.png")
+    mapper.Insert("2001", "space.png")
+    mapper.Insert("odyssey.png", "")
+    mapper.Insert("a.png", "")
+    mapper.Insert("space.png", "")
+
+    fmt.Println(mapper)
+
 }
